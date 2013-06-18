@@ -1,0 +1,10 @@
+# coming from ide
+.classpath
+.idea
+.project
+tsaap-notes.iml
+
+# build results
+target
+bin
+.class

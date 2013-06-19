@@ -2,7 +2,7 @@
 .classpath
 .idea
 .project
-tsaap-notes.iml
+*.iml
 
 # build results
 target

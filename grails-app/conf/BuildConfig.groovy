@@ -38,7 +38,7 @@ grails.project.dependency.resolution = {
     compile ":scaffolding:1.0.0"
     compile ':cache:1.0.1'
     compile ":spring-security-core:1.2.7.3"
-    compile ":taggable:1.0.1"
+
 
 
     // plugins for the runtime only

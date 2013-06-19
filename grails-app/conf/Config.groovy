@@ -22,6 +22,6 @@ log4j = {
 }
 
 // Added by the Spring Security Core plugin:
-grails.plugins.springsecurity.userLookup.userDomainClassName = 'org.tsaap.notes.directory.User'
-grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'org.tsaap.notes.directory.UserRole'
-grails.plugins.springsecurity.authority.className = 'org.tsaap.notes.directory.Role'
+grails.plugins.springsecurity.userLookup.userDomainClassName = 'org.tsaap.directory.User'
+grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'org.tsaap.directory.UserRole'
+grails.plugins.springsecurity.authority.className = 'org.tsaap.directory.Role'

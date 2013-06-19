@@ -1,4 +1,4 @@
-package org.tsaap.notes.directory
+package org.tsaap.directory
 
 import org.apache.commons.lang.builder.HashCodeBuilder
 

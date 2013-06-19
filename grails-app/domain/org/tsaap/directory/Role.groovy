@@ -1,4 +1,4 @@
-package org.tsaap.notes.directory
+package org.tsaap.directory
 
 class Role {
 

@@ -9,7 +9,8 @@ grails.project.dependency.resolution = {
     // uncomment to disable ehcache
     // excludes 'ehcache'
   }
-  log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
+  log "warn"
+  // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
   repositories {
     grailsCentral()
     mavenLocal()
@@ -23,6 +24,9 @@ grails.project.dependency.resolution = {
   dependencies {
     // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
     // runtime 'mysql:mysql-connector-java:5.1.24'
+
+    // dependencies for tests
+    test "org.spockframework:spock-grails-support:0.7-groovy-2.0"
   }
 
   plugins {
@@ -39,7 +43,10 @@ grails.project.dependency.resolution = {
     compile ':cache:1.0.1'
     compile ":spring-security-core:1.2.7.3"
 
-
+    // plugins for test step
+    test(":spock:0.7") {
+      exclude "spock-grails-support"
+    }
 
     // plugins for the runtime only
     runtime ":hibernate:3.6.10.M3"

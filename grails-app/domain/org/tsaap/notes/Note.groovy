@@ -16,5 +16,6 @@ class Note {
     rootResource nullable: true
     parentNote nullable: true
     context nullable: true
+    content maxSize: 280
   }
 }

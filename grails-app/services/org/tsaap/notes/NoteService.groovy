@@ -5,6 +5,8 @@ import org.tsaap.resources.ResourceDescription
 
 class NoteService {
 
+  NoteHelper noteHelper
+
   /**
    * Add a new note
    * @param author the author
@@ -26,10 +28,24 @@ class NoteService {
                             parentNote: parentNote)
     // save the note
     theNote.save()
-    // parse tags
 
+    // manage tags
+    def tags = noteHelper.tagsFromContent()
+    tags.each {
+      Tag tag = Tag.findOrSaveWhere(name: it)
+      new NoteTag(note: theNote, tag: tag).save()
+    }
 
+    // manage mentions
+    def mentions = noteHelper.mentionsFromContent()
+    mentions.each {
+      User user = User.findByUsername(it)
+      if (user) {
+        new NoteMention(note: theNote, mention: user).save()
+      }
+    }
+
+    // return the note
     theNote
-
   }
 }

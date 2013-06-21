@@ -20,13 +20,32 @@ class NoteHelperSpec extends Specification {
 
     where:
     content | tags
-    "a simple #content with no #spaces in the content" | ["content","spaces"]
+    "a simple #content, with no #spaces in the content" | ["content","spaces"]
     "a simple #content with no #spaces in the content but with #content a copy" | ["content","spaces"]
     "a simple #content\n #another\r #tag3\n with #spaces\t in the content" | ["content","another","tag3","spaces"]
-    "a simple with not tags" | []
-    "a simple with not @tags" | []
+    "a simple with no tags" | []
+    "a simple with no @tags" | []
     "Is it #LOWERCASE ?" | ["lowercase"]
 
   }
+
+  def "contents and corresponding mentions"() {
+
+      setup:
+      NoteHelper noteHelper = new NoteHelper()
+
+      expect:
+      noteHelper.mentionsFromContent(content) == mentions
+
+      where:
+      content | mentions
+      "a simple @content, with no @spaces in the content" | ["content","spaces"]
+      "a simple @content with no @spaces in the content but with @content a copy" | ["content","spaces"]
+      "a simple @content\n @another\r @tag3\n with @spaces\t in the content" | ["content","another","tag3","spaces"]
+      "a simple with no mentions" | []
+      "a simple with no #mentions" | []
+      "Is it @LOWERCASE ?" | ["lowercase"]
+
+    }
 
 }

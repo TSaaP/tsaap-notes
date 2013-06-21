@@ -30,14 +30,14 @@ class NoteService {
     theNote.save()
 
     // manage tags
-    def tags = noteHelper.tagsFromContent()
+    def tags = noteHelper.tagsFromContent(content)
     tags.each {
       Tag tag = Tag.findOrSaveWhere(name: it)
       new NoteTag(note: theNote, tag: tag).save()
     }
 
     // manage mentions
-    def mentions = noteHelper.mentionsFromContent()
+    def mentions = noteHelper.mentionsFromContent(content)
     mentions.each {
       User user = User.findByUsername(it)
       if (user) {

@@ -1,9 +1,14 @@
 package org.tsaap.notes
 
+import groovy.transform.CompileStatic
+
+import java.util.regex.Pattern
+
 /**
  *
  * @author franck Silvestre
  */
+@CompileStatic
 class NoteHelper {
 
   /**
@@ -12,14 +17,7 @@ class NoteHelper {
    * @param content the content to be processed
    */
   List tagsFromContent(String content) {
-    def tags = []
-    content.eachMatch(~/#[^ \t\n\r\u0085\u2028\u2029]*/) {
-      def tag = it.substring(1).toLowerCase()
-      if (!tags.contains(tag)) {
-        tags << tag
-      }
-    }
-    tags
+    listFromContentAndPrefixedPattern(content,~/#\w+/ )
   }
 
   /**
@@ -28,14 +26,19 @@ class NoteHelper {
    * @param content the content to be processed
    */
   List mentionsFromContent(String content) {
-    def mentions = []
-    content.eachMatch(~/@[^ \t\n\r\u0085\u2028\u2029]*/) {
-      def mention = it.substring(1)
-      if (!mentions.contains(mention)) {
-        mentions << mention
+    listFromContentAndPrefixedPattern(content,~/@\w+/ )
+  }
+
+
+  private List listFromContentAndPrefixedPattern(String content, Pattern pattern) {
+    def res = []
+    content.eachMatch(pattern) { String it ->
+      def item = it.substring(1).toLowerCase()
+      if (!res.contains(item)) {
+        res << item
       }
     }
-    mentions
+    res
   }
 
 }

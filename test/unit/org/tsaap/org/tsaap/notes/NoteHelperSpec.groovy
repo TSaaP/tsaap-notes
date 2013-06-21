@@ -12,11 +12,8 @@ class NoteHelperSpec extends Specification {
 
   def "contents and corresponding tags"() {
 
-    setup:
-    NoteHelper noteHelper = new NoteHelper()
-
     expect:
-    noteHelper.tagsFromContent(content) == tags
+    NoteHelper.tagsFromContent(content) == tags
 
     where:
     content | tags
@@ -31,11 +28,8 @@ class NoteHelperSpec extends Specification {
 
   def "contents and corresponding mentions"() {
 
-      setup:
-      NoteHelper noteHelper = new NoteHelper()
-
       expect:
-      noteHelper.mentionsFromContent(content) == mentions
+      NoteHelper.mentionsFromContent(content) == mentions
 
       where:
       content | mentions

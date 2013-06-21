@@ -1,11 +1,10 @@
 package org.tsaap.notes
 
+import groovy.json.JsonBuilder
 import org.tsaap.directory.User
 import org.tsaap.resources.Resource
 
 class NoteService {
-
-  NoteHelper noteHelper
 
   /**
    * Add a new note
@@ -29,9 +28,9 @@ class NoteService {
 
     // manage tags
     def contentFromResource = rootResource?.descriptionAsNote
-    def tags = noteHelper.tagsFromContent(content)
+    def tags = NoteHelper.tagsFromContent(content)
     if (contentFromResource) {
-      tags += noteHelper.tagsFromContent(contentFromResource)
+      tags += NoteHelper.tagsFromContent(contentFromResource)
     }
     tags.each {
       Tag tag = Tag.findOrSaveWhere(name: it)
@@ -39,9 +38,9 @@ class NoteService {
     }
 
     // manage mentions
-    def mentions = noteHelper.mentionsFromContent(content)
+    def mentions = NoteHelper.mentionsFromContent(content)
     if (contentFromResource) {
-      mentions += noteHelper.mentionsFromContent(contentFromResource)
+      mentions += NoteHelper.mentionsFromContent(contentFromResource)
     }
     mentions.each {
       User user = User.findByUsername(it)
@@ -53,4 +52,8 @@ class NoteService {
     // return the note
     theNote
   }
+
+
+
+
 }

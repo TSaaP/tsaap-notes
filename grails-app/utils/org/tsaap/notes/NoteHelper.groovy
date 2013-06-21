@@ -1,6 +1,6 @@
 package org.tsaap.notes
 
-import groovy.transform.CompileStatic
+import groovy.json.JsonBuilder
 
 import java.util.regex.Pattern
 
@@ -8,7 +8,6 @@ import java.util.regex.Pattern
  *
  * @author franck Silvestre
  */
-@CompileStatic
 class NoteHelper {
 
   /**
@@ -16,8 +15,8 @@ class NoteHelper {
    * The extracted tags are transformed as lower case words.
    * @param content the content to be processed
    */
-  List tagsFromContent(String content) {
-    listFromContentAndPrefixedPattern(content,~/#\w+/ )
+  static List tagsFromContent(String content) {
+    listFromContentAndPrefixedPattern(content, ~/#\w+/)
   }
 
   /**
@@ -25,12 +24,47 @@ class NoteHelper {
    * by '@'.
    * @param content the content to be processed
    */
-  List mentionsFromContent(String content) {
-    listFromContentAndPrefixedPattern(content,~/@\w+/ )
+  static List mentionsFromContent(String content) {
+    listFromContentAndPrefixedPattern(content, ~/@\w+/)
+  }
+
+  /**
+   * Return a JSon representation of a note
+   * @param note
+   * @return
+   */
+  static String noteAsJson(Note note) {
+    assert note
+    def builder = new JsonBuilder()
+    builder.note {
+      globalId note.globalId
+      sourceId note.id
+      dateCreated note.dateCreated
+      lastUpdated note.lastUpdated
+      author {
+        globalId note.author.globalId
+        sourceId note.author.id
+        username note.author.username
+      }
+      content note.content
+      if (note.rootResource) {
+        rootResource {
+          url note.rootResource.url
+          sourceId note.rootResource.id
+        }
+      }
+      if (note.parentNote) {
+        parentNote {
+          globalId note.parentNote.globalId
+          sourceId note.parentNote.id
+        }
+      }
+    }
+    builder.toPrettyString()
   }
 
 
-  private List listFromContentAndPrefixedPattern(String content, Pattern pattern) {
+  private static List listFromContentAndPrefixedPattern(String content, Pattern pattern) {
     def res = []
     content.eachMatch(pattern) { String it ->
       def item = it.substring(1).toLowerCase()
@@ -40,5 +74,6 @@ class NoteHelper {
     }
     res
   }
+
 
 }

@@ -1,21 +1,21 @@
 package org.tsaap.notes
 
 import org.tsaap.directory.User
-import org.tsaap.resources.ResourceDescription
+import org.tsaap.resources.Resource
 
 class Note {
 
+  Date dateCreated
+  Date lastUpdated
   User author
-  ResourceDescription rootResource
+  Resource rootResource
   Note parentNote
-  Context context
 
   String content
 
   static constraints = {
     rootResource nullable: true
     parentNote nullable: true
-    context nullable: true
     content maxSize: 280
   }
 }

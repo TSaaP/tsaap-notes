@@ -1,7 +1,7 @@
 package org.tsaap.notes
 
 import org.tsaap.directory.User
-import org.tsaap.resources.ResourceDescription
+import org.tsaap.resources.Resource
 
 class NoteService {
 
@@ -17,20 +17,22 @@ class NoteService {
    */
   def addNote(User author,
               String content,
-              ResourceDescription rootResource = null,
-              Context context = null,
+              Resource rootResource = null,
               Note parentNote = null) {
     // create the note
     Note theNote = new Note(author: author,
                             content: content,
                             rootResource: rootResource,
-                            context: context,
                             parentNote: parentNote)
     // save the note
     theNote.save()
 
     // manage tags
+    def contentFromResource = rootResource?.descriptionAsNote
     def tags = noteHelper.tagsFromContent(content)
+    if (contentFromResource) {
+      tags += noteHelper.tagsFromContent(contentFromResource)
+    }
     tags.each {
       Tag tag = Tag.findOrSaveWhere(name: it)
       new NoteTag(note: theNote, tag: tag).save()
@@ -38,6 +40,9 @@ class NoteService {
 
     // manage mentions
     def mentions = noteHelper.mentionsFromContent(content)
+    if (contentFromResource) {
+      mentions += noteHelper.mentionsFromContent(contentFromResource)
+    }
     mentions.each {
       User user = User.findByUsername(it)
       if (user) {

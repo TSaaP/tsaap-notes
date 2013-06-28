@@ -10,38 +10,45 @@ class NoteService {
    * Add a new note
    * @param author the author
    * @param content the content
-   * @param rootResource the root resource
    * @param context the context
    * @param parentNote the parent note
+   * @return the added note
    */
-  def addNote(User author,
+  Note addNote(User author,
               String content,
-              Resource rootResource = null,
+              Context context = null,
               Note parentNote = null) {
+
     // create the note
     Note theNote = new Note(author: author,
                             content: content,
-                            rootResource: rootResource,
+                            context: context,
                             parentNote: parentNote)
     // save the note
     theNote.save()
 
-    // manage tags
-    def contentFromResource = rootResource?.descriptionAsNote
+    // manage tags & mentions
+
     def tags = NoteHelper.tagsFromContent(content)
+    def mentions = NoteHelper.mentionsFromContent(content)
+
+    def contentFromContext = context?.descriptionAsNote
+    if (contentFromContext) {
+      tags += NoteHelper.tagsFromContent(contentFromContext)
+      mentions += NoteHelper.mentionsFromContent(contentFromContext)
+    }
+
+    def contentFromResource = context?.resource?.descriptionAsNote
     if (contentFromResource) {
       tags += NoteHelper.tagsFromContent(contentFromResource)
+      mentions += NoteHelper.mentionsFromContent(contentFromResource)
     }
+
     tags.each {
       Tag tag = Tag.findOrSaveWhere(name: it)
       new NoteTag(note: theNote, tag: tag).save()
     }
 
-    // manage mentions
-    def mentions = NoteHelper.mentionsFromContent(content)
-    if (contentFromResource) {
-      mentions += NoteHelper.mentionsFromContent(contentFromResource)
-    }
     mentions.each {
       User user = User.findByUsername(it)
       if (user) {

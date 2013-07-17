@@ -21,6 +21,7 @@ class User {
   transient springSecurityService
 
   String username
+  String normalizedUsername
   String password
   boolean enabled
   boolean accountExpired
@@ -28,12 +29,14 @@ class User {
   boolean passwordExpired
 
   void setUsername(String val) {
-    this.@username = val.toLowerCase()
+    this.username = val
+    normalizedUsername = val.toLowerCase()
   }
 
   static constraints = {
-    username blank: false, unique: true, validator: {
-      val -> val.toLowerCase() =~ /\w+/ ? true : false
+    normalizedUsername blank: false, unique: true
+    username blank: false, unique: true, validator: { val ->
+      val =~/\w+/ ? true : false
     }
     password blank: false
   }

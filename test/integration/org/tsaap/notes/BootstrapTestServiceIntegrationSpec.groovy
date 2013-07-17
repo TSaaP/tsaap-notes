@@ -36,6 +36,10 @@ class BootstrapTestServiceIntegrationSpec extends IntegrationSpec {
     bootstrapTestService.learnerPaul != null
     bootstrapTestService.learnerPaul.username == "learner_paul"
     bootstrapTestService.teacherJeanne != null
+    bootstrapTestService.teacherJeanne.normalizedUsername == "teacher_jeanne"
+    bootstrapTestService.learnerMary != null
+    bootstrapTestService.learnerMary.username == "learner_Mary"
+    bootstrapTestService.learnerMary.normalizedUsername == "learner_mary"
 
   }
 

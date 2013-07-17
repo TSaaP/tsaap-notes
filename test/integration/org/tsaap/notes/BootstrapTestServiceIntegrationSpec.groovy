@@ -16,21 +16,29 @@
 
 package org.tsaap.notes
 
-import org.tsaap.directory.User
+import grails.plugin.spock.IntegrationSpec
 
-class Note {
-  Date dateCreated
-  Date lastUpdated
-  User author
-  Context context
-  Note parentNote
+/**
+ *
+ * @author franck Silvestre
+ */
 
-  String content
+class BootstrapTestServiceIntegrationSpec extends IntegrationSpec {
 
+  BootstrapTestService bootstrapTestService
 
-  static constraints = {
-    context nullable: true
-    parentNote nullable: true
-    content maxSize: 280
+  def "user initialization"() {
+
+    when:
+    bootstrapTestService.initializeUsers()
+
+    then:
+    bootstrapTestService.learnerPaul != null
+    bootstrapTestService.learnerPaul.username == "learner_paul"
+    bootstrapTestService.teacherJeanne != null
+
   }
+
+
+
 }

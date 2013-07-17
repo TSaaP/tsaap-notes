@@ -16,11 +16,6 @@
 
 package org.tsaap.notes
 
-/**
- *
- * @author franck Silvestre
- */
-import org.tsaap.notes.NoteHelper
 import spock.lang.Specification
 
 

@@ -22,7 +22,6 @@ class User {
 
   String username
   String password
-  String globalId
   boolean enabled
   boolean accountExpired
   boolean accountLocked
@@ -34,7 +33,7 @@ class User {
 
   static constraints = {
     username blank: false, unique: true, validator: {
-      val -> val.toLowerCase()=~/\w+/
+      val -> val.toLowerCase() =~ /\w+/ ? true : false
     }
     password blank: false
   }

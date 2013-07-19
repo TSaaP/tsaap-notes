@@ -17,6 +17,7 @@
 package org.tsaap.notes
 
 import grails.plugin.spock.IntegrationSpec
+import org.tsaap.BootstrapTestService
 
 /**
  *

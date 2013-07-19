@@ -1,4 +1,4 @@
-package org.tsaap.notes
+package org.tsaap
 
 import org.tsaap.directory.User
 

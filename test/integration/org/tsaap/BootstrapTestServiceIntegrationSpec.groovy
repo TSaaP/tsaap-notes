@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.tsaap.notes
+package org.tsaap
 
 import grails.plugin.spock.IntegrationSpec
 import org.tsaap.BootstrapTestService

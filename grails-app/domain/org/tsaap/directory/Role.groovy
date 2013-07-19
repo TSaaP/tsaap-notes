@@ -18,13 +18,29 @@ package org.tsaap.directory
 
 class Role {
 
-	String authority
+  String authority
 
-	static mapping = {
-		cache true
-	}
+  static mapping = {
+    cache true
+  }
 
-	static constraints = {
-		authority blank: false, unique: true
-	}
+  static constraints = {
+    authority blank: false, unique: true, inList: RoleEnum.values()*.name()
+  }
+}
+
+enum RoleEnum {
+  STUDENT_ROLE,
+  TEACHER_ROLE,
+  ADMIN_ROLE
+
+  private Long id
+
+  Role getRole() {
+    if (id == null) {
+      id = Role.findByAuthority(this.name()).id
+    }
+    Role.get(id)
+  }
+
 }

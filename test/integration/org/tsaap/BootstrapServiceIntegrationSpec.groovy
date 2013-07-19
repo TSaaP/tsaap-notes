@@ -35,6 +35,7 @@ class BootstrapServiceIntegrationSpec extends IntegrationSpec {
       bootstrapService.teacherRole == RoleEnum.TEACHER_ROLE.role
       bootstrapService.adminRole != null
       bootstrapService.adminRole == RoleEnum.ADMIN_ROLE.role
+      bootstrapService.adminRole.id == 1
 
   }
 

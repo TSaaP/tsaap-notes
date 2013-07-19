@@ -30,16 +30,17 @@ class Role {
 }
 
 enum RoleEnum {
-  STUDENT_ROLE,
-  TEACHER_ROLE,
-  ADMIN_ROLE
+  ADMIN_ROLE(1),
+  STUDENT_ROLE(2),
+  TEACHER_ROLE(3)
 
   private Long id
 
+  RoleEnum(Long id) {
+    this.id = id
+  }
+
   Role getRole() {
-    if (id == null) {
-      id = Role.findByAuthority(this.name()).id
-    }
     Role.get(id)
   }
 

@@ -22,6 +22,7 @@ class User {
 
   String username
   String normalizedUsername
+  String email
   String password
   boolean enabled
   boolean accountExpired
@@ -38,7 +39,8 @@ class User {
     username blank: false, unique: true, validator: { val ->
       val =~/\w+/ ? true : false
     }
-    password blank: false
+    password blank: false, minSize: 4
+    email email: true, unique: true
   }
 
   static mapping = {

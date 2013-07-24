@@ -37,7 +37,7 @@ class User {
   static constraints = {
     normalizedUsername blank: false, unique: true
     username blank: false, unique: true, validator: { val ->
-      val =~/\w+/ ? true : false
+      val ==~ /^[a-zA-Z0-9_]{1,15}$/
     }
     password blank: false, minSize: 4
     email email: true, unique: true

@@ -17,10 +17,22 @@
 modules = {
   application {
     resource url: 'js/application.js'
+  }
+
+  tsaap_ui {
+    dependsOn('jquery')
     resource url: 'js/bootstrap.min.js'
     resource url: 'css/bootstrap.min.css'
-    resource url: 'css/bootstrap-responsive.min.css'
-    resource url: 'img/glyphicons-halflings.png'
-    resource url: 'img/glyphicons-halflings-white.png'
+  }
+
+  tsaap_icons {
+    dependsOn('tsaap_ui')
+    resource url: 'css/bootstrap-glyphicons.css'
+    resource url: 'css/docs.css'
+  }
+
+  tsaap_ui_home {
+    dependsOn('tsaap_ui')
+    resource url: 'css/jumbotron.css'
   }
 }

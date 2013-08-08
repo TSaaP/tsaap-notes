@@ -23,7 +23,7 @@
   <meta name="description"
         content="Tsaap Notes - microblogging for learners and teachers">
   <meta name="author" content="Tsaap Development Group">
-  <g:layoutTitle/>
+  <title><g:layoutTitle default="TsaaP-Notes"/></title>
   <r:layoutResources/>
 </head>
 

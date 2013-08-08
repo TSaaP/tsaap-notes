@@ -18,10 +18,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<head>
-  <meta name="layout" content="main" />
+  <meta name="layout" content="main"/>
   <r:require module="tsaap_ui_home"/>
-
 </head>
 
 <body>
@@ -56,11 +54,11 @@
         </li>
       </ul>
 
-      <form class="navbar-form form-inline pull-right">
-        <input type="text" placeholder="Email">
-        <input type="password" placeholder="Password">
-        <button type="submit" class="btn">Sign in</button>
-      </form>
+      <div class="nav-collapse collapse pull-right">
+        <ul class="nav navbar-nav">
+        <li><g:link uri='/login/auth'>Already an account ? Sign in &raquo;</g:link></li>
+        </ul>
+      </div>
     </div><!--/.nav-collapse -->
   </div>
 </div>
@@ -69,11 +67,12 @@
 
   <!-- Main jumbotron for a primary marketing message or call to action -->
   <div class="jumbotron">
-    <h1>TsaaP-Notes</h1>
+    <h2>TsaaP-Notes</h2>
 
-    <p>Microblogging tool dedicated to learners and teachers. TsaaP-notes is born in the french research laboratory <a href="http://www.irit.fr">IRIT</a> to help designing intelligent functions in software of the technology-enhanced learning domain.</p>
+    <p>Microblogging tool dedicated to learners and teachers. TsaaP-notes is born in the french research laboratory <a
+            href="http://www.irit.fr" target="_blank">IRIT</a> to help designing intelligent functions in technology-enhanced learning software.
+    </p>
 
-    <p><a class="btn btn-primary btn-large">Learn more &raquo;</a></p>
   </div>
 
   <div class="body-content">
@@ -81,27 +80,73 @@
     <!-- Example row of columns -->
     <div class="row">
       <div class="col-lg-4">
-        <h2>Take your notes the collaborative way</h2>
+        <h3>Take your notes the collaborative way</h3>
 
         <p>Use TsaaP-Notes to take your notes on your current course, on your current work. Take a look at your friend notes and pick up your favorite to enrich your own notes.</p>
 
-        <p><a class="btn btn-default" href="#">View details &raquo;</a></p>
       </div>
 
       <div class="col-lg-4">
-        <h2>Discuss and exchange ideas</h2>
+        <h3>Discuss and exchange ideas</h3>
 
         <p>Use TsaaP-Notes to discuss on a particular topic of your last course, ask questions and listen to answers coming from peer learners or teachers.</p>
 
-        <p><a class="btn btn-default" href="#">View details &raquo;</a></p>
       </div>
 
+
       <div class="col-lg-4">
-        <h2>Take advantage of the tagging system</h2>
+        <form>
+          <fieldset>
+            <legend>New to TsaaP-Notes ? Sign up</legend>
 
-        <p>TsaaP-Notes comes out of the box with classic tagging features. In addition TsaaP-Notes allows a user to "pre-tag" a thread corresponding to a particular topic. Other users can follow and participate to the pre-tagged thread in an easy way.</p>
+            <div class="form-group">
+              <div class="row">
+                <div class="col-lg-5">
+                  <input type="text" class="form-control" id="first_name"
+                         placeholder="First name">
+                </div>
 
-        <p><a class="btn btn-default" href="#">View details &raquo;</a></p>
+                <div class="col-lg-5">
+                  <input type="text" class="form-control" id="last_name"
+                         placeholder="Last name">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <input type="text" class="form-control"
+                     id="username" placeholder="Choose your username">
+            </div>
+
+            <div class="form-group">
+              <input type="text" class="form-control" id="email"
+                     placeholder="Your email">
+            </div>
+
+            <div class="form-group">
+              <input type="password" class="form-control"
+                     id="password" placeholder="Password">
+            </div>
+
+            <div class="form-group">
+              <label class="radio-inline">
+                <input type="radio" name="role" id="roleLearner"
+                       value="learner"> Learner
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="role" id="roleTeacher"
+                       value="teacher"> Teacher
+              </label>
+
+            </div>
+
+            <p class="help-block">By clicking Sign up, you agree to our <a
+                    href="terms.html" target="_blank">Terms</a>.</p>
+            <button type="submit"
+                    class="btn btn-primary">Sign up &raquo;</button>
+          </fieldset>
+        </form>
+
       </div>
     </div>
 

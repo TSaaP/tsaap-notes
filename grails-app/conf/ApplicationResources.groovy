@@ -35,4 +35,9 @@ modules = {
     dependsOn('tsaap_ui')
     resource url: 'css/jumbotron.css'
   }
+
+  tsaap_ui_signin {
+    dependsOn('tsaap_ui')
+    resource url: 'css/signin.css'
+  }
 }

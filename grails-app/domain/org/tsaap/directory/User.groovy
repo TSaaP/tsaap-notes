@@ -20,6 +20,8 @@ class User {
 
   transient springSecurityService
 
+  String firstName
+  String lastName
   String username
   String normalizedUsername
   String email
@@ -35,6 +37,8 @@ class User {
   }
 
   static constraints = {
+    firstName blank: false
+    lastName blank: false
     normalizedUsername blank: false, unique: true
     username blank: false, unique: true, validator: { val ->
       val ==~ /^[a-zA-Z0-9_]{1,15}$/

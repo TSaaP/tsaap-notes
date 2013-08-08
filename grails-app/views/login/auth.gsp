@@ -32,7 +32,7 @@
       <div class='alert'>${flash.message}</div>
     </g:if>
     <div class="form-group">
-      <input type="text" class="input-block-level" placeholder="Email address"
+      <input type="text" class="input-block-level" placeholder="Username"
              autofocus name='j_username' id='username'>
     </div>
 

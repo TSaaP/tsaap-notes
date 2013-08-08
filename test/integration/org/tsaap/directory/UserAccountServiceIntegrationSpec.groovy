@@ -29,54 +29,56 @@ class UserAccountServiceIntegrationSpec extends IntegrationSpec {
   def "add user"() {
     bootstrapService.initializeRoles()
 
-    when:
-      userAccountService.addUser("Mary",
-                                 "mary@nomail.com",
-                                 "password",
-                                 RoleEnum.STUDENT_ROLE.role)
+    when: userAccountService.addUser(new User(firstName: "Mary", lastName: "S",
+                                              username: "Mary",
+                                              email: "mary@nomail.com",
+                                              password: "password"),
+                                     RoleEnum.STUDENT_ROLE.role)
 
     then:
-      User user = User.findByUsername("Mary")
-      user != null
-      !user.enabled
-      user.normalizedUsername == "mary"
-      user.email == "mary@nomail.com"
-      !user.authorities.empty
-      user.authorities.first().authority == RoleEnum.STUDENT_ROLE.name()
-      user.password == springSecurityService.encodePassword("password")
+    User user = User.findByUsername("Mary")
+    user != null
+    !user.enabled
+    user.normalizedUsername == "mary"
+    user.email == "mary@nomail.com"
+    !user.authorities.empty
+    user.authorities.first().authority == RoleEnum.STUDENT_ROLE.name()
+    user.password == springSecurityService.encodePassword("password")
   }
 
   def "enable user"() {
     bootstrapService.initializeRoles()
 
     when:
-      def mary = userAccountService.addUser("Mary",
-                                            "mary@nomail.com",
-                                            "password",
-                                            RoleEnum.STUDENT_ROLE.role)
-      userAccountService.enableUser(mary)
+    def mary = userAccountService.addUser(new User(firstName: "Mary", lastName: "S",
+                                                   username: "Mary",
+                                                   email: "mary@nomail.com",
+                                                   password: "password"),
+                                          RoleEnum.STUDENT_ROLE.role)
+    userAccountService.enableUser(mary)
 
     then:
-      User user = User.findByUsername("Mary")
-      user != null
-      user.enabled
+    User user = User.findByUsername("Mary")
+    user != null
+    user.enabled
   }
 
   def "disable user"() {
     bootstrapService.initializeRoles()
 
     when:
-      def mary = userAccountService.addUser("Mary",
-                                            "mary@nomail.com",
-                                            "password",
-                                            RoleEnum.STUDENT_ROLE.role)
-      userAccountService.enableUser(mary)
-      userAccountService.disableUser(mary)
+    def mary = userAccountService.addUser(new User(firstName: "Mary", lastName: "S",
+                                                   username: "Mary",
+                                                   email: "mary@nomail.com",
+                                                   password: "password"),
+                                          RoleEnum.STUDENT_ROLE.role)
+    userAccountService.enableUser(mary)
+    userAccountService.disableUser(mary)
 
     then:
-      User user = User.findByUsername("Mary")
-      user != null
-      !user.enabled
+    User user = User.findByUsername("Mary")
+    user != null
+    !user.enabled
   }
 
 }

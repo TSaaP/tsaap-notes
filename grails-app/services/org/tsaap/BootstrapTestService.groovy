@@ -15,15 +15,15 @@ class BootstrapTestService {
   def initializeUsers() {
     learnerPaul = User.findByUsername("learner_paul")
     if (!learnerPaul) {
-      learnerPaul = new User(username: "learner_paul", password: "password",email: "paul@nomail.com").save()
+      learnerPaul = new User(firstName: "Paul",lastName: "D", username: "learner_paul", password: "password",email: "paul@nomail.com").save()
     }
     teacherJeanne = User.findByUsername("teacher_jeanne")
     if (!teacherJeanne) {
-      teacherJeanne = new User(username: "teacher_jeanne", password: "password", email: "jeanne@nomail.com").save()
+      teacherJeanne = new User(firstName: "Jeanne",lastName: "L", username: "teacher_jeanne", password: "password", email: "jeanne@nomail.com").save()
     }
     learnerMary = User.findByUsername("learner_Mary")
     if (!learnerMary) {
-      learnerMary = new User(username: "learner_Mary", password: "password", email: "mary@nomail.com").save()
+      learnerMary = new User(firstName: "Mary",lastName: "S", username: "learner_Mary", password: "password", email: "mary@nomail.com").save()
     }
 
   }

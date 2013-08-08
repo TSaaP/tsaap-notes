@@ -4,15 +4,18 @@ class UserAccountService {
 
   /**
    * Add a new user, the user is not enabled
+   * @param firstName the first name
+   * @param  lastName the last name
    * @param username the username
    * @param email the email
    * @param password the password
    * @return the created user
    */
-  User addUser(String username, String email, String password, Role mainRole) {
-    User user = new User(username: username, email: email, password: password)
+  User addUser(User user, Role mainRole) {
     user.save()
-    UserRole.create(user, mainRole)
+    if (!user.hasErrors()) {
+      UserRole.create(user, mainRole)
+    }
     user
   }
 

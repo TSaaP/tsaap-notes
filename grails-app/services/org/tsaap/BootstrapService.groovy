@@ -44,7 +44,7 @@ class BootstrapService {
   def initializeUsers() {
     adminUser = User.findByUsername("adminUser")
     if (!adminUser) {
-      adminUser = new User(username: "admin", password: "admin",email: 'admin@admin.com').save()
+      adminUser = new User(firstName: "admin", lastName: "admin", username: "admin", password: "admin",email: 'admin@admin.com').save()
     }
   }
 }

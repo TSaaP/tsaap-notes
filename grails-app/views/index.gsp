@@ -56,7 +56,8 @@
 
       <div class="nav-collapse collapse pull-right">
         <ul class="nav navbar-nav">
-        <li><g:link uri='/login/auth'>Already an account ? Sign in &raquo;</g:link></li>
+          <li><g:link
+                  uri='/login/auth'>Already an account ? Sign in &raquo;</g:link></li>
         </ul>
       </div>
     </div><!--/.nav-collapse -->
@@ -65,49 +66,43 @@
 
 <div class="container">
 
-  <!-- Main jumbotron for a primary marketing message or call to action -->
-  <div class="jumbotron">
-    <h2>TsaaP-Notes</h2>
-
-    <p>Microblogging tool dedicated to learners and teachers. TsaaP-notes is born in the french research laboratory <a
-            href="http://www.irit.fr" target="_blank">IRIT</a> to help designing intelligent functions in technology-enhanced learning software.
-    </p>
-
-  </div>
-
   <div class="body-content">
 
     <!-- Example row of columns -->
     <div class="row">
-      <div class="col-lg-4">
-        <h3>Take your notes the collaborative way</h3>
+      <div class="col-lg-6">
+        <h2>TsaaP-Notes</h2>
 
-        <p>Use TsaaP-Notes to take your notes on your current course, on your current work. Take a look at your friend notes and pick up your favorite to enrich your own notes.</p>
-
-      </div>
-
-      <div class="col-lg-4">
-        <h3>Discuss and exchange ideas</h3>
-
-        <p>Use TsaaP-Notes to discuss on a particular topic of your last course, ask questions and listen to answers coming from peer learners or teachers.</p>
-
+        <p>Microblogging tool dedicated to learners and teachers. TsaaP-notes is born in the french research laboratory <a
+                href="http://www.irit.fr"
+                target="_blank">IRIT</a> to help designing intelligent functions in technology-enhanced learning software.
+        </p>
       </div>
 
 
-      <div class="col-lg-4">
-        <form>
+      <div class="col-lg-6">
+        <h2>New to TsaaP-Notes ? Sign up</h2>
+        <g:form controller="userAccount" action="doSubscribe">
           <fieldset>
-            <legend>New to TsaaP-Notes ? Sign up</legend>
 
+            <g:if test="${user?.hasErrors()}">
+              <div class="alert">
+                <g:eachError bean="${user}">
+                  <li><g:message code="${it.code}"/></li>
+                </g:eachError>
+              </div>
+            </g:if>
             <div class="form-group">
               <div class="row">
                 <div class="col-lg-5">
-                  <input type="text" class="form-control" id="first_name"
+                  <input type="text" class="form-control" id="firstName"
+                         name="firstName"
                          placeholder="First name">
                 </div>
 
                 <div class="col-lg-5">
-                  <input type="text" class="form-control" id="last_name"
+                  <input type="text" class="form-control" id="lastName"
+                         name="lastName"
                          placeholder="Last name">
                 </div>
               </div>
@@ -115,27 +110,28 @@
 
             <div class="form-group">
               <input type="text" class="form-control"
-                     id="username" placeholder="Choose your username">
+                     id="username" placeholder="Choose your username"
+                     name="username">
             </div>
 
             <div class="form-group">
-              <input type="text" class="form-control" id="email"
+              <input type="text" class="form-control" id="email" name="email"
                      placeholder="Your email">
             </div>
 
             <div class="form-group">
               <input type="password" class="form-control"
-                     id="password" placeholder="Password">
+                     id="password" placeholder="Password" name="password">
             </div>
 
             <div class="form-group">
               <label class="radio-inline">
-                <input type="radio" name="role" id="roleLearner"
-                       value="learner"> Learner
+                <input type="radio" name="role" id="STUDENT_ROLE"
+                       value="STUDENT_ROLE" checked="checked"> Learner
               </label>
               <label class="radio-inline">
-                <input type="radio" name="role" id="roleTeacher"
-                       value="teacher"> Teacher
+                <input type="radio" name="role" id="TEACHER_ROLE"
+                       value="TEACHER_ROLE"> Teacher
               </label>
 
             </div>
@@ -145,7 +141,7 @@
             <button type="submit"
                     class="btn btn-primary">Sign up &raquo;</button>
           </fieldset>
-        </form>
+        </g:form>
 
       </div>
     </div>

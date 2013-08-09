@@ -35,9 +35,15 @@ log4j = {
            'org.springframework',
            'org.hibernate',
            'net.sf.ehcache.hibernate'
+
+    debug 'org.springframework.security'
+
 }
 
 // Added by the Spring Security Core plugin:
 grails.plugins.springsecurity.userLookup.userDomainClassName = 'org.tsaap.directory.User'
 grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'org.tsaap.directory.UserRole'
 grails.plugins.springsecurity.authority.className = 'org.tsaap.directory.Role'
+
+// security config
+grails.plugins.springsecurity.password.algorithm = 'bcrypt'

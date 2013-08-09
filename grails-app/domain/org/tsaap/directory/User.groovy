@@ -33,7 +33,7 @@ class User {
 
   void setUsername(String val) {
     this.username = val
-    normalizedUsername = val.toLowerCase()
+    normalizedUsername = val?.toLowerCase()
   }
 
   static constraints = {

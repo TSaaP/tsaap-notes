@@ -88,7 +88,7 @@
             <g:if test="${user?.hasErrors()}">
               <div class="alert">
                 <g:eachError bean="${user}">
-                  <li><g:message code="${it.code}"/></li>
+                  <li><g:message error="${it}"/></li>
                 </g:eachError>
               </div>
             </g:if>
@@ -96,13 +96,13 @@
               <div class="row">
                 <div class="col-lg-5">
                   <input type="text" class="form-control" id="firstName"
-                         name="firstName"
+                         name="firstName" value="${fieldValue(bean:user,field:'firstName')}"
                          placeholder="First name">
                 </div>
 
                 <div class="col-lg-5">
                   <input type="text" class="form-control" id="lastName"
-                         name="lastName"
+                         name="lastName" value="${fieldValue(bean:user,field:'lastName')}"
                          placeholder="Last name">
                 </div>
               </div>
@@ -111,12 +111,12 @@
             <div class="form-group">
               <input type="text" class="form-control"
                      id="username" placeholder="Choose your username"
-                     name="username">
+                     name="username" value="${fieldValue(bean:user,field:'username')}">
             </div>
 
             <div class="form-group">
               <input type="text" class="form-control" id="email" name="email"
-                     placeholder="Your email">
+                     placeholder="Your email" value="${fieldValue(bean:user,field:'email')}">
             </div>
 
             <div class="form-group">

@@ -11,7 +11,8 @@ class UserAccountService {
    * @param password the password
    * @return the created user
    */
-  User addUser(User user, Role mainRole) {
+  User addUser(User user, Role mainRole, Boolean enabled = false) {
+    user.enabled = enabled
     user.save()
     if (!user.hasErrors()) {
       UserRole.create(user, mainRole)

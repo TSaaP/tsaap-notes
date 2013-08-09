@@ -32,7 +32,7 @@ class UserAccountController {
   def doSubscribe() {
     Role mainRole = RoleEnum.valueOf(RoleEnum,params.role).role
     User user = new User(params)
-    user = userAccountService.addUser(user,mainRole)
+    user = userAccountService.addUser(user,mainRole, true)
     if (user.hasErrors()) {
       render(view: '/index', model: [user:user])
     } else {

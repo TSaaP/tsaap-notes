@@ -18,7 +18,7 @@
 <html lang="en">
 <head>
   <title>TsaaP-Notes | Sign In</title>
-  <meta name='layout' content='main'/>
+  <meta name='layout' content='home'/>
   <r:require module="tsaap_ui_signin"/>
 </head>
 

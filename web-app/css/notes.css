@@ -14,35 +14,17 @@
  * limitations under the License.
  */
 
-modules = {
-  application {
-    resource url: 'js/application.js'
-  }
+.note-edition {
+    padding-top: 60px;
+    border-bottom: 1px solid #eeeeee;
+    margin-bottom: 10px;
+}
 
-  tsaap_ui {
-    dependsOn('jquery')
-    resource url: 'js/bootstrap.min.js'
-    resource url: 'css/bootstrap.min.css'
-  }
+.note-edition button {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
 
-  tsaap_icons {
-    dependsOn('tsaap_ui')
-    resource url: 'css/bootstrap-glyphicons.css'
-    resource url: 'css/docs.css'
-  }
-
-  tsaap_ui_home {
-    dependsOn('tsaap_ui')
-    resource url: 'css/jumbotron.css'
-  }
-
-  tsaap_ui_signin {
-    dependsOn('tsaap_ui')
-    resource url: 'css/signin.css'
-  }
-
-  tsaap_ui_notes {
-    dependsOn('tsaap_ui')
-    resource url: 'css/notes.css'
-  }
+.note-list form {
+    margin-bottom: 5px;
 }

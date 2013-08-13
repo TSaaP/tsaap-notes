@@ -26,6 +26,7 @@ class User {
   String normalizedUsername
   String email
   String password
+  String fullname
   boolean enabled
   boolean accountExpired
   boolean accountLocked
@@ -49,6 +50,12 @@ class User {
 
   static mapping = {
     password column: '`password`'
+  }
+
+  static transients = ['fullname']
+
+  String getFullname() {
+    "$firstName $lastName"
   }
 
   Set<Role> getAuthorities() {

@@ -61,18 +61,11 @@
 
       <div class="nav-collapse collapse pull-right">
         <ul class="nav navbar-nav">
+          <sec:ifNotLoggedIn>
+          <li><g:link controller="login" action="auth">Already an account ? Sign in &raquo;</g:link></li>
+          </sec:ifNotLoggedIn>
           <sec:ifLoggedIn>
-            <li class="dropdown">
-                      <a href="#" class="dropdown-toggle" data-toggle="dropdown">${user.fullname}
-                        <span class="glyphicon glyphicon-cog"></span> <b class="caret"></b></a>
-                      <ul class="dropdown-menu">
-                        <li><a href="#">My account</a></li>
-                        <li><a href="#">Another action</a></li>
-                        <li><a href="#">Something else here</a></li>
-                        <li class="divider"></li>
-                        <li><g:link controller="logout">disconnect</g:link></li>
-                      </ul>
-                    </li>
+            <li><g:link controller="notes">Welcome back @<sec:username/> !</g:link></li>
           </sec:ifLoggedIn>
         </ul>
       </div>

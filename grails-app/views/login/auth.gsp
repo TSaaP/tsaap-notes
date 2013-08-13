@@ -26,7 +26,6 @@
 <div class="container">
 
   <form class="form-signin" action='${postUrl}' id='loginForm' method="post">
-    <h1>Tsaap-Notes</h1>
     <h3>Sign in</h3>
     <g:if test='${flash.message}'>
       <div class='alert'>${flash.message}</div>

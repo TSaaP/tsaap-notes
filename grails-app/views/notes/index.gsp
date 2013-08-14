@@ -36,30 +36,57 @@
 <div class="divider"></div>
 
 <div class="container note-list">
-  <form>
-    <label class="checkbox-inline">
-      <input type="checkbox" id="displays_my_notes" value="displays_my_notes" checked="checked"> My notes
-    </label>
-    <label class="checkbox-inline">
-      <input type="checkbox" id="displays_my_favorite" value="displays_my_favorite"> My favorites
-    </label>
-    <label class="checkbox-inline">
-      <input type="checkbox" id="displays_other" value="displays_other"> Others
-    </label>
-  </form>
-  <ul class="list-group">
+  <div class="note-list-header">
+    <div class="note-list-context pull-left">
+      <button type="button" class="btn btn-default btn-xs" id="button_context">
+        <span class="badge pull-right">22</span>
+        &IVVQ_sd1&nbsp;
+      </button>
+    </div>
 
-    <li class="list-group-item">
-      <h5 class="list-group-item-heading"><strong>${user.fullname}</strong> @<sec:username/>
-      </h5>
+    <div class="note-list-selector pull-right">
+      <form>
+        <label class="checkbox-inline">
+          <input type="checkbox" id="displays_my_notes"
+                 value="displays_my_notes"
+                 checked="checked"> My notes
+        </label>
+        <label class="checkbox-inline">
+          <input type="checkbox" id="displays_my_favorite"
+                 value="displays_my_favorite"> My favorites
+        </label>
+        <label class="checkbox-inline">
+          <input type="checkbox" id="displays_other"
+                 value="displays_other"> Others
+        </label>
+      </form>
+    </div>
+  </div>
 
-      <p>Ceci est une prise de note avec des #tags, et des @mentions</p>
-    </li>
+  <div class="note-list-content">
+    <ul class="list-group">
 
-  </ul>
+      <li class="list-group-item">
+        <h5 class="list-group-item-heading"><strong>${user.fullname}</strong> @<sec:username/>
+        </h5>
+
+        <p>Ceci est une prise de note avec des #tags, et des @mentions</p>
+      </li>
+
+    </ul>
+  </div>
+
 </div>
+<r:script>
+$('#button_context').popover( {
+        title:'IVVQ_sd1',
+        content: "Toto is young"
+}
+)
 
-<script type="text/javascript">
+</r:script>
+
+<r:script>
   jQuery(document).ready(function ($) {
 
     // Get the textarea field
@@ -74,6 +101,6 @@
       // Trigger the counter on first load
             .keyup();
   });
-</script>
+</r:script>
 </body>
 </html>

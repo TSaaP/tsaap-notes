@@ -66,23 +66,39 @@
   <div class="note-list-content">
     <ul class="list-group">
 
-      <li class="list-group-item">
-        <h5 class="list-group-item-heading"><strong>${user.fullname}</strong> @<sec:username/>
-        </h5>
+      <li class="list-group-item" style="padding-bottom: 15px">
+        <h6 class="list-group-item-heading"><strong>${user.fullname}</strong> <small>@<sec:username/></small>
+          <small class="pull-right">12 août 2013</small></h6>
 
         <p>Ceci est une prise de note avec des #tags, et des @mentions</p>
-      </li>
 
+        <small class="pull-right">
+          <a href="#"><span
+                  class="glyphicon glyphicon-share"></span> Répondre</a>
+          <a href="#"><span
+                  class="glyphicon glyphicon-star"></span> Favorite</a>
+        </small>
+      </li>
     </ul>
   </div>
 
+  <div class="note-list-pagination">
+    <ul class="pagination pull-right">
+      <li><a href="#">&laquo;</a></li>
+      <li><a href="#">1</a></li>
+      <li><a href="#">2</a></li>
+      <li><a href="#">3</a></li>
+      <li><a href="#">4</a></li>
+      <li><a href="#">5</a></li>
+      <li><a href="#">&raquo;</a></li>
+    </ul>
+  </div>
 </div>
 <r:script>
-$('#button_context').popover( {
-        title:'IVVQ_sd1',
-        content: "Toto is young"
-}
-)
+  $('#button_context').popover({
+                                 title: 'IVVQ_sd1',
+                                 content: "Toto is young"
+                               })
 
 </r:script>
 

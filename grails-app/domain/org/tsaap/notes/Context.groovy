@@ -27,7 +27,11 @@ import org.tsaap.resources.Resource
 class Context {
 
   Date dateCreated
-  Resource resource
+  Date lastUpdated
+
+  String contextName
+  String url
+
   /**
    * The owner is most probably the teacher in a learning context
    **/
@@ -42,6 +46,10 @@ class Context {
   String descriptionAsNote
 
   static constraints = {
+    contextName blank: false, unique: true, validator: {
+      val -> val==~/^[a-zA-Z0-9_]{1,15}$/
+    }
+    url url: true, nullable: true
     descriptionAsNote nullable: true, maxSize: 280
   }
 }

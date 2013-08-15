@@ -18,14 +18,29 @@ package org.tsaap.notes
 
 import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
+import org.tsaap.directory.User
 
 class NotesController {
 
   SpringSecurityService springSecurityService
+  NoteService noteService
 
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])
   def index() {
+    User user = springSecurityService.currentUser
+    render(view: '/notes/index', model: [user: user, notes: Note.findAllByAuthor(user)])
+  }
+
+  @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+  def addNote() {
     def user = springSecurityService.currentUser
-    render(view: '/notes/index', model: [user: user])
+    def noteContent = params.noteContent
+    Note note = noteService.addNote(user, noteContent)
+    if (note.hasErrors()) {
+      render(view: '/notes/index', model: [user: user, note:note, notes: Note.findAllByAuthor(user)])
+    } else {
+      params.noteContent = null
+      redirect(action: index(), params: params)
+    }
   }
 }

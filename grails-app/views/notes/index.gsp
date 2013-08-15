@@ -24,26 +24,37 @@
 
 <body>
 <div class="container note-edition">
-  <form>
-    <textarea class="form-control" rows="3" id="note_field"
-              maxlength="280"></textarea>
+  <g:if test="${note?.hasErrors()}">
+    <div class="alert alert-danger">
+      <g:eachError bean="${note}">
+        <li><g:message error="${it}"/></li>
+      </g:eachError>
+    </div>
+  </g:if>
+  <g:form method="post" controller="notes" action="addNote">
+    <g:hiddenField name="contextId" value="${context?.id}"/>
+    <g:hiddenField name="displaysMyNotes" value="true"/>
+    <textarea class="form-control" rows="3" id="noteContent" name="noteContent"
+              maxlength="280"
+              value="${fieldValue(bean: note, field: 'content')}"></textarea>
     <span id="character_counter"></span><button type="submit"
                                                 class="btn btn-primary btn-xs pull-right"><span
             class="glyphicon glyphicon-plus"></span> Add note</button>
-  </form>
+  </g:form>
 </div>
 
 <div class="divider"></div>
 
 <div class="container note-list">
   <div class="note-list-header">
+    <g:if test="${context}">
     <div class="note-list-context pull-left">
       <button type="button" class="btn btn-default btn-xs" id="button_context">
         <span class="badge pull-right">22</span>
         &IVVQ_sd1&nbsp;
       </button>
     </div>
-
+    </g:if>
     <div class="note-list-selector pull-right">
       <form>
         <label class="checkbox-inline">
@@ -65,20 +76,21 @@
 
   <div class="note-list-content">
     <ul class="list-group">
-
-      <li class="list-group-item" style="padding-bottom: 15px">
+      <g:each in="${notes}" var="note">
+      <li class="list-group-item" style="padding-bottom: 20px">
         <h6 class="list-group-item-heading"><strong>${user.fullname}</strong> <small>@<sec:username/></small>
-          <small class="pull-right">12 août 2013</small></h6>
+          <small class="pull-right"><g:formatDate date="${note.lastUpdated}" type="datetime" style="LONG" timeStyle="SHORT"/></small></h6>
 
-        <p>Ceci est une prise de note avec des #tags, et des @mentions</p>
+        <p>${note.content}</p>
 
         <small class="pull-right">
           <a href="#"><span
-                  class="glyphicon glyphicon-share"></span> Répondre</a>
+                  class="glyphicon glyphicon-share"></span> Reply</a>
           <a href="#"><span
                   class="glyphicon glyphicon-star"></span> Favorite</a>
         </small>
       </li>
+      </g:each>
     </ul>
   </div>
 
@@ -94,19 +106,20 @@
     </ul>
   </div>
 </div>
+<g:if test="${context}">
 <r:script>
   $('#button_context').popover({
-                                 title: 'IVVQ_sd1',
-                                 content: "Toto is young"
+                                 title: "${context.id}",
+                                 content: "${context.description}"
                                })
 
 </r:script>
-
+</g:if>
 <r:script>
   jQuery(document).ready(function ($) {
 
     // Get the textarea field
-    $('#note_field')
+    $('#noteContent')
 
       // Bind the counter function on keyup and blur events
             .bind('keyup blur', function () {

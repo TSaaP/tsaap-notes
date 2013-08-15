@@ -40,9 +40,9 @@
     <a class="navbar-brand" href="#">TsaaP-Notes</a>
 
     <div class="nav-collapse collapse">
-      <ul class="nav navbar-nav">
+      %{--<ul class="nav navbar-nav">
         <li class="active"><a href="#" title="an action">an action</a></li>
-      </ul>
+      </ul>--}%
 
       <div class="nav-collapse collapse pull-right">
         <ul class="nav navbar-nav">
@@ -52,8 +52,6 @@
                         <span class="glyphicon glyphicon-cog"></span> <b class="caret"></b></a>
                       <ul class="dropdown-menu">
                         <li><a href="#">My account</a></li>
-                        <li><a href="#">Another action</a></li>
-                        <li><a href="#">Something else here</a></li>
                         <li class="divider"></li>
                         <li><g:link controller="logout">disconnect</g:link></li>
                       </ul>

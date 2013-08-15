@@ -24,22 +24,46 @@ class NotesController {
 
   SpringSecurityService springSecurityService
   NoteService noteService
+  ContextService contextService
 
+  /**
+   *
+   * @return
+   */
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])
   def index() {
     User user = springSecurityService.currentUser
-    render(view: '/notes/index', model: [user: user, notes: Note.findAllByAuthor(user)])
+    Context context = null
+    if (params.contextName) {
+      context = Context.findByContextName(params.contextName, [cache:true])
+      if (context == null && params.createContext == 'true') {
+        User contextOwner = params.contextOwner ? User.findByUsername(params.contextOwner) : user
+        context = contextService.addContext(new Context(contextName: params.contextName,
+                                                        owner: contextOwner,
+                                                        url: params.url,
+                                                        descriptionAsNote: params.desc))
+      }
+    }
+    render(view: '/notes/index', model: [user: user, notes: Note.findAllByAuthor(user), context:context])
   }
 
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])
   def addNote() {
     def user = springSecurityService.currentUser
     def noteContent = params.noteContent
-    Note note = noteService.addNote(user, noteContent)
+    Context context = null
+    if (params.contextId)  {
+      context = Context.get(params.contextId)
+    }
+    Note note = noteService.addNote(user, noteContent,context)
     if (note.hasErrors()) {
       render(view: '/notes/index', model: [user: user, note:note, notes: Note.findAllByAuthor(user)])
     } else {
-      params.noteContent = null
+      params.remove('noteContent')
+      params.remove('contextId')
+      if (context) {
+        params.contextName = context.contextName
+      }
       redirect(action: index(), params: params)
     }
   }

@@ -50,8 +50,7 @@
     <g:if test="${context}">
     <div class="note-list-context pull-left">
       <button type="button" class="btn btn-default btn-xs" id="button_context">
-        <span class="badge pull-right">22</span>
-        &IVVQ_sd1&nbsp;
+        &${context.contextName}
       </button>
     </div>
     </g:if>
@@ -109,8 +108,9 @@
 <g:if test="${context}">
 <r:script>
   $('#button_context').popover({
-                                 title: "${context.id}",
-                                 content: "${context.description}"
+                                 title: "${context.contextName}",
+                                 content: "<p><strong>url</strong>: <a href='${context.url}' target='blank'>${context.url}</a></p> <p>${context.descriptionAsNote}</p>",
+                                 html: true
                                })
 
 </r:script>

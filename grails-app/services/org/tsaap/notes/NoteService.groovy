@@ -52,12 +52,6 @@ class NoteService {
       mentions += NoteHelper.mentionsFromContent(contentFromContext)
     }
 
-    def contentFromResource = context?.resource?.descriptionAsNote
-    if (contentFromResource) {
-      tags += NoteHelper.tagsFromContent(contentFromResource)
-      mentions += NoteHelper.mentionsFromContent(contentFromResource)
-    }
-
     tags.each {
       Tag tag = Tag.findOrSaveWhere(name: it)
       new NoteTag(note: theNote, tag: tag).save()

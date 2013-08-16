@@ -32,10 +32,12 @@
     </div>
   </g:if>
   <g:form method="post" controller="notes" action="addNote">
-    <g:hiddenField name="contextId" value="${context?.id}" id="contextIdInAddForm" />
-    <g:hiddenField name="displaysMyNotes"  id="displaysMyNotesInAddForm"/>
-    <g:hiddenField name="displaysMyFavorites"  id="displaysMyFavoritesInAddForm"/>
-    <g:hiddenField name="displaysAll"  id="displaysAllInAddForm"/>
+    <g:hiddenField name="contextId" value="${context?.id}"
+                   id="contextIdInAddForm"/>
+    <g:hiddenField name="displaysMyNotes" id="displaysMyNotesInAddForm"/>
+    <g:hiddenField name="displaysMyFavorites"
+                   id="displaysMyFavoritesInAddForm"/>
+    <g:hiddenField name="displaysAll" id="displaysAllInAddForm"/>
     <textarea class="form-control" rows="3" id="noteContent" name="noteContent"
               maxlength="280"
               value="${fieldValue(bean: note, field: 'content')}"></textarea>
@@ -50,23 +52,33 @@
 <div class="container note-list">
   <div class="note-list-header">
     <g:if test="${context}">
-    <div class="note-list-context pull-left">
-      <button type="button" class="btn btn-default btn-xs" id="button_context">
-        ${context.contextName}
-      </button>
-    </div>
+      <div class="note-list-context pull-left">
+        <button type="button" class="btn btn-default btn-xs"
+                id="button_context">
+          ${context.contextName}
+        </button>
+      </div>
     </g:if>
     <div class="note-list-selector pull-right">
-      <g:form controller="notes" action="index">
-        <g:hiddenField name="contextId" value="${context?.id}" />
+      <g:form controller="notes" action="index" method="get">
+        <g:hiddenField name="contextId" value="${context?.id}"/>
         <label class="checkbox-inline">
-          <g:checkBox name="displaysMyNotes" checked="${displaysMyNotes}" onchange="submit();"/> My notes
+          <g:checkBox name="displaysMyNotes" checked="${displaysMyNotes}"
+                      onchange="submit();"/> My notes
         </label>
         <label class="checkbox-inline">
-          <g:checkBox name="displaysMyFavorites" checked="${displaysMyFavorites}" onchange="submit();"/> My favorites
+          <g:checkBox name="displaysMyFavorites"
+                      checked="${displaysMyFavorites}"
+                      onchange="submit();"/> My favorites
         </label>
         <label class="checkbox-inline">
-          <g:checkBox name="displaysAll" checked="${displaysAll}" onchange="submit();"/>  All
+          <g:if test="${context}">
+          <g:checkBox name="displaysAll" checked="${displaysAll}"
+                      onchange="submit();"/>  All
+          </g:if>
+          <g:else>
+            <input type="checkbox" name="displaysAll" disabled />  All
+          </g:else>
         </label>
       </g:form>
     </div>
@@ -75,20 +87,34 @@
   <div class="note-list-content">
     <ul class="list-group">
       <g:each in="${notes}" var="note">
-      <li class="list-group-item" style="padding-bottom: 20px">
-        <h6 class="list-group-item-heading"><strong>${user.fullname}</strong> <small>@<sec:username/></small>
-          <g:if test="${note.context}"><span class="badge"><g:link controller="notes" action="index" params='[contextName:"${note.context.contextName}"]'>${note.context.contextName}</span></g:link></g:if>
-          <small class="pull-right"><g:formatDate date="${note.lastUpdated}" type="datetime" style="LONG" timeStyle="SHORT"/></small></h6>
+        <li class="list-group-item" style="padding-bottom: 20px">
+          <h6 class="list-group-item-heading"><strong>${note.author.fullname}</strong> <small>@${note.author.username}</small>
+            <g:if test="${note.context}">
+              <span class="badge">
+                <g:if test="${context}">
+                  ${note.context.contextName}
+                </g:if>
+                <g:else>
+                  <g:link controller="notes" action="index"
+                          params='[contextName:"${note.context.contextName}",displaysMyNotes:"${displaysMyNotes ? 'on' : ''}",displaysMyFavorites:"${displaysMyFavorites ? 'on' : ''}", displaysAll:"${displaysAll ? 'on' : ''}"]'>${note.context.contextName}
+                  </g:link>
+                </g:else>
+              </span>
+            </g:if>
+            <small class="pull-right"><g:formatDate date="${note.lastUpdated}"
+                                                    type="datetime" style="LONG"
+                                                    timeStyle="SHORT"/></small>
+          </h6>
 
-        <p>${note.content}</p>
+          <p>${note.content}</p>
 
-        <small class="pull-right">
-          <a href="#"><span
-                  class="glyphicon glyphicon-share"></span> Reply</a>
-          <a href="#"><span
-                  class="glyphicon glyphicon-star"></span> Favorite</a>
-        </small>
-      </li>
+          <small class="pull-right">
+            <a href="#"><span
+                    class="glyphicon glyphicon-share"></span> Reply</a>
+            <a href="#"><span
+                    class="glyphicon glyphicon-star"></span> Favorite</a>
+          </small>
+        </li>
       </g:each>
     </ul>
   </div>
@@ -106,17 +132,20 @@
   </div>
 </div>
 <g:if test="${context}">
-<r:script>
+  <r:script>
   $('#button_context').popover({
                                  title: "${context.contextName}",
-                                 content: "<p><strong>url</strong>: <a href='${context.url}' target='blank'>${context.url}</a></p> <p>${context.descriptionAsNote}</p>",
+                                 content: "<p><strong>url</strong>: <a href='${context.url}' target='blank'>${context.url}</a></p><p>${context.descriptionAsNote}</p>",
                                  html: true
                                })
 
-</r:script>
+  </r:script>
 </g:if>
 <r:script>
   jQuery(document).ready(function ($) {
+
+    // set character counters
+    //-----------------------
 
     // Get the textarea field
     $('#noteContent')
@@ -131,14 +160,13 @@
             .keyup();
 
     // set hidden field value
-
-    $('#displaysMyNotesInAddForm').attr('checked',$("#displaysMyNotes").attr('checked'));
-    $('#displaysMyFavoritesInAddForm').attr('checked',$("#displaysMyFavorites").attr('checked'));
-    $('#displaysAllInAddForm').attr('checked',$("#displaysAll").attr('checked'));
+    //----------------------
+    $('#displaysMyNotesInAddForm').val($("#displaysMyNotes").attr('checked') ? 'on' : '');
+    $('#displaysMyFavoritesInAddForm').val($("#displaysMyFavorites").attr('checked') ? 'on' : '');
+    $('#displaysAllInAddForm').val($("#displaysAll").attr('checked') ? 'on' : '');
 
   });
 </r:script>
-
 
 </body>
 </html>

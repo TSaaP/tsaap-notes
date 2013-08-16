@@ -16,6 +16,7 @@
 
 package org.tsaap.notes
 
+import org.hibernate.criterion.CriteriaSpecification
 import org.tsaap.directory.User
 
 class NoteService {
@@ -92,6 +93,7 @@ class NoteService {
     }
     def criteria = Note.createCriteria()
     def results = criteria.list(paginationAndSorting) {
+      createAlias('bookmarks', 'bmks', CriteriaSpecification.LEFT_JOIN)
       if (inContext) { // if there is a context
         eq 'context', inContext
         if (!all) { // we know that one of the two filters is active
@@ -100,9 +102,7 @@ class NoteService {
               eq 'author', inUser
             }
             if (userFavorites) {
-              bookmarks {
-                eq 'user', inUser
-              }
+              eq 'bmks.user', inUser
             }
           }
         }
@@ -112,16 +112,14 @@ class NoteService {
             eq 'author', inUser
           }
           if (userFavorites) {
-            bookmarks {
-              eq 'user', inUser
-            }
+            eq 'bmks.user', inUser
           }
         }
-
       }
       order paginationAndSorting.sort, paginationAndSorting.order
     }
   }
-
-
 }
+
+
+

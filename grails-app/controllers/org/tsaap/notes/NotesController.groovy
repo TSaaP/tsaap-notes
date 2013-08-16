@@ -34,7 +34,9 @@ class NotesController {
   def index() {
     User user = springSecurityService.currentUser
     Context context = null
-    if (params.contextName) {
+    if (params.contextId) {
+      context = Context.get(params.contextId)
+    } else if (params.contextName) {
       context = Context.findByContextName(params.contextName, [cache: true])
       if (context == null && params.createContext == 'true') {
         User contextOwner = params.contextOwner ? User.findByUsername(params.contextOwner) : user
@@ -84,10 +86,6 @@ class NotesController {
       render(view: '/notes/index', model: [user: user, note: note, notes: notes])
     } else {
       params.remove('noteContent')
-      params.remove('contextId')
-      if (context) {
-        params.contextName = context.contextName
-      }
       redirect(action: index(), params: params)
     }
   }

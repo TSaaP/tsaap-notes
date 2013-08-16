@@ -36,7 +36,7 @@ log4j = {
            'org.hibernate',
            'net.sf.ehcache.hibernate'
 
-    debug 'org.springframework.security'
+    //debug 'org.springframework.security'
 
 }
 

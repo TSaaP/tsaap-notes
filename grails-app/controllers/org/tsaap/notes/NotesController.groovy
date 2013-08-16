@@ -44,7 +44,8 @@ class NotesController {
                                                         descriptionAsNote: params.desc))
       }
     }
-    render(view: '/notes/index', model: [user: user, notes: Note.findAllByAuthor(user), context:context])
+    def notes = noteService.findAllNotes(user,true,false, false,context)
+    render(view: '/notes/index', model: [user: user, notes: notes, context:context])
   }
 
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])
@@ -57,7 +58,8 @@ class NotesController {
     }
     Note note = noteService.addNote(user, noteContent,context)
     if (note.hasErrors()) {
-      render(view: '/notes/index', model: [user: user, note:note, notes: Note.findAllByAuthor(user)])
+      def notes = noteService.findAllNotes(user,true,false, false,context)
+      render(view: '/notes/index', model: [user: user, note:note, notes: notes])
     } else {
       params.remove('noteContent')
       params.remove('contextId')

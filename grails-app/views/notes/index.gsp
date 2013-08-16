@@ -50,7 +50,7 @@
     <g:if test="${context}">
     <div class="note-list-context pull-left">
       <button type="button" class="btn btn-default btn-xs" id="button_context">
-        &${context.contextName}
+        ${context.contextName}
       </button>
     </div>
     </g:if>
@@ -62,12 +62,12 @@
                  checked="checked"> My notes
         </label>
         <label class="checkbox-inline">
-          <input type="checkbox" id="displays_my_favorite"
+          <input type="checkbox" id="displays_my_favorites"
                  value="displays_my_favorite"> My favorites
         </label>
         <label class="checkbox-inline">
-          <input type="checkbox" id="displays_other"
-                 value="displays_other"> Others
+          <input type="checkbox" id="displays_all"
+                 value="displays_other"> All
         </label>
       </form>
     </div>
@@ -78,6 +78,7 @@
       <g:each in="${notes}" var="note">
       <li class="list-group-item" style="padding-bottom: 20px">
         <h6 class="list-group-item-heading"><strong>${user.fullname}</strong> <small>@<sec:username/></small>
+          <g:if test="${note.context}"><span class="badge"><g:link controller="notes" action="index" params='[contextName:"${note.context.contextName}"]'>${note.context.contextName}</span></g:link></g:if>
           <small class="pull-right"><g:formatDate date="${note.lastUpdated}" type="datetime" style="LONG" timeStyle="SHORT"/></small></h6>
 
         <p>${note.content}</p>

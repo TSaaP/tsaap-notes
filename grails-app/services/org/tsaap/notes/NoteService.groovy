@@ -29,9 +29,9 @@ class NoteService {
    * @return the added note
    */
   Note addNote(User author,
-              String content,
-              Context context = null,
-              Note parentNote = null) {
+               String content,
+               Context context = null,
+               Note parentNote = null) {
 
     // create the note
     Note theNote = new Note(author: author,
@@ -68,7 +68,60 @@ class NoteService {
     theNote
   }
 
+  /**
+   * Find all notes for the given search criteria
+   * @param inUser the user performing the search
+   * @param userNotes indicates if the search must find the notes the user is owner
+   * @param userFavorites indicates if the search must find the user favorite notes
+   * @param all indicates if the search must find all notes for a given context
+   * @param inContext the given context
+   * @param paginationAndSorting specification of pagination and sorting
+   * @return the notes corresponding to the search
+   */
+  List<Note> findAllNotes(User inUser,
+                          Boolean userNotes = true,
+                          Boolean userFavorites = false,
+                          Boolean all = false,
+                          Context inContext = null,
+                          Map paginationAndSorting = [sort: 'lastUpdated', order: 'desc']) {
+    if (!(userNotes || userFavorites || all)) {
+      return []
+    }
+    if (!inContext) { // all is not relevant when there is no context
+      all = false
+    }
+    def criteria = Note.createCriteria()
+    def results = criteria.list(paginationAndSorting) {
+      if (inContext) { // if there is a context
+        eq 'context', inContext
+        if (!all) { // we know that one of the two filters is active
+          or {
+            if (userNotes) {
+              eq 'author', inUser
+            }
+            if (userFavorites) {
+              bookmarks {
+                eq 'user', inUser
+              }
+            }
+          }
+        }
+      } else { // if there is no context
+        or { // we know that one of the two filters is active
+          if (userNotes) {
+            eq 'author', inUser
+          }
+          if (userFavorites) {
+            bookmarks {
+              eq 'user', inUser
+            }
+          }
+        }
 
+      }
+      order paginationAndSorting.sort, paginationAndSorting.order
+    }
+  }
 
 
 }

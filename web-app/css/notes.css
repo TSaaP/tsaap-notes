@@ -32,3 +32,17 @@
 .note-list-content {
     margin-top: 27px;
 }
+
+.note-list-content .badge {
+    font-size: 85%;
+    color: #000000;
+    background-color:#BBDDF0 ;
+    font-weight: normal;
+}
+
+.note-list-context button {
+    padding: 3px 5px;
+    border-radius: 10px;
+    background-color: #BBDDF0;
+    font-weight: normal;
+}

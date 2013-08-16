@@ -32,8 +32,10 @@
     </div>
   </g:if>
   <g:form method="post" controller="notes" action="addNote">
-    <g:hiddenField name="contextId" value="${context?.id}"/>
-    <g:hiddenField name="displaysMyNotes" value="true"/>
+    <g:hiddenField name="contextId" value="${context?.id}" id="contextIdInAddForm" />
+    <g:hiddenField name="displaysMyNotes"  id="displaysMyNotesInAddForm"/>
+    <g:hiddenField name="displaysMyFavorites"  id="displaysMyFavoritesInAddForm"/>
+    <g:hiddenField name="displaysAll"  id="displaysAllInAddForm"/>
     <textarea class="form-control" rows="3" id="noteContent" name="noteContent"
               maxlength="280"
               value="${fieldValue(bean: note, field: 'content')}"></textarea>
@@ -55,21 +57,18 @@
     </div>
     </g:if>
     <div class="note-list-selector pull-right">
-      <form>
+      <g:form controller="notes" action="index">
+        <g:hiddenField name="contextId" value="${context?.id}" />
         <label class="checkbox-inline">
-          <input type="checkbox" id="displays_my_notes"
-                 value="displays_my_notes"
-                 checked="checked"> My notes
+          <g:checkBox name="displaysMyNotes" checked="${displaysMyNotes}" onchange="submit();"/> My notes
         </label>
         <label class="checkbox-inline">
-          <input type="checkbox" id="displays_my_favorites"
-                 value="displays_my_favorite"> My favorites
+          <g:checkBox name="displaysMyFavorites" checked="${displaysMyFavorites}" onchange="submit();"/> My favorites
         </label>
         <label class="checkbox-inline">
-          <input type="checkbox" id="displays_all"
-                 value="displays_other"> All
+          <g:checkBox name="displaysAll" checked="${displaysAll}" onchange="submit();"/>  All
         </label>
-      </form>
+      </g:form>
     </div>
   </div>
 
@@ -130,7 +129,16 @@
 
       // Trigger the counter on first load
             .keyup();
+
+    // set hidden field value
+
+    $('#displaysMyNotesInAddForm').attr('checked',$("#displaysMyNotes").attr('checked'));
+    $('#displaysMyFavoritesInAddForm').attr('checked',$("#displaysMyFavorites").attr('checked'));
+    $('#displaysAllInAddForm').attr('checked',$("#displaysAll").attr('checked'));
+
   });
 </r:script>
+
+
 </body>
 </html>

@@ -47,7 +47,7 @@ grails.plugins.springsecurity.authority.className = 'org.tsaap.directory.Role'
 
 // security config
 grails.plugins.springsecurity.password.algorithm = 'bcrypt'
-grails.plugins.springsecurity.successHandler.defaultTargetUrl = '/notes'
+grails.plugins.springsecurity.successHandler.defaultTargetUrl = '/notes?displaysMyNotes=on'
 
 environments {
   test {

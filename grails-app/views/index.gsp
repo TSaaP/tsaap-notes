@@ -56,32 +56,24 @@
               <div class="row">
                 <div class="col-lg-5">
                   <input type="text" class="form-control" id="firstName"
-                         name="firstName" value="${fieldValue(bean:user,field:'firstName')}"
+                         name="firstName"
+                         value="${fieldValue(bean: user, field: 'firstName')}"
                          placeholder="First name">
                 </div>
 
                 <div class="col-lg-5">
                   <input type="text" class="form-control" id="lastName"
-                         name="lastName" value="${fieldValue(bean:user,field:'lastName')}"
+                         name="lastName"
+                         value="${fieldValue(bean: user, field: 'lastName')}"
                          placeholder="Last name">
                 </div>
               </div>
             </div>
 
             <div class="form-group">
-              <input type="text" class="form-control"
-                     id="username" placeholder="Choose your username"
-                     name="username" value="${fieldValue(bean:user,field:'username')}">
-            </div>
-
-            <div class="form-group">
               <input type="text" class="form-control" id="email" name="email"
-                     placeholder="Your email" value="${fieldValue(bean:user,field:'email')}">
-            </div>
-
-            <div class="form-group">
-              <input type="password" class="form-control"
-                     id="password" placeholder="Password" name="password">
+                     placeholder="Your email"
+                     value="${fieldValue(bean: user, field: 'email')}">
             </div>
 
             <div class="form-group">
@@ -94,6 +86,19 @@
                        value="TEACHER_ROLE"> Teacher
               </label>
 
+            </div>
+
+            <div class="form-group">
+              <input type="text" class="form-control"
+                     id="username" placeholder="Choose your username"
+                     name="username"
+                     value="${fieldValue(bean: user, field: 'username')}">
+            </div>
+
+
+            <div class="form-group">
+              <input type="password" class="form-control"
+                     id="password" placeholder="Password" name="password">
             </div>
 
             <p class="help-block">By clicking Sign up, you agree to our <a

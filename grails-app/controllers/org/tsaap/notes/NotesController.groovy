@@ -35,7 +35,7 @@ class NotesController {
     User user = springSecurityService.currentUser
     Context context = null
     if (params.contextName) {
-      context = Context.findByContextName(params.contextName, [cache:true])
+      context = Context.findByContextName(params.contextName, [cache: true])
       if (context == null && params.createContext == 'true') {
         User contextOwner = params.contextOwner ? User.findByUsername(params.contextOwner) : user
         context = contextService.addContext(new Context(contextName: params.contextName,
@@ -44,8 +44,30 @@ class NotesController {
                                                         descriptionAsNote: params.desc))
       }
     }
-    def notes = noteService.findAllNotes(user,true,false, false,context)
-    render(view: '/notes/index', model: [user: user, notes: notes, context:context])
+    def displaysMyNotes = true
+    def displaysMyFavorites = false
+    def displaysAll = false
+    if (!params.displaysMyNotes) {
+      displaysMyNotes = false
+    }
+    if (params.displaysMyFavorites) {
+      displaysMyFavorites = true
+    }
+    if (params.displaysAll) {
+      displaysAll = true
+    }
+
+    def notes = noteService.findAllNotes(user,
+                                         displaysMyNotes,
+                                         displaysMyFavorites,
+                                         displaysAll,
+                                         context)
+    render(view: '/notes/index', model: [user: user,
+            notes: notes,
+            displaysMyNotes: displaysMyNotes,
+            displaysMyFavorites: displaysMyFavorites,
+            displaysAll: displaysAll,
+            context: context])
   }
 
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])
@@ -53,13 +75,13 @@ class NotesController {
     def user = springSecurityService.currentUser
     def noteContent = params.noteContent
     Context context = null
-    if (params.contextId)  {
+    if (params.contextId) {
       context = Context.get(params.contextId)
     }
-    Note note = noteService.addNote(user, noteContent,context)
+    Note note = noteService.addNote(user, noteContent, context)
     if (note.hasErrors()) {
-      def notes = noteService.findAllNotes(user,true,false, false,context)
-      render(view: '/notes/index', model: [user: user, note:note, notes: notes])
+      def notes = noteService.findAllNotes(user, true, false, false, context)
+      render(view: '/notes/index', model: [user: user, note: note, notes: notes])
     } else {
       params.remove('noteContent')
       params.remove('contextId')

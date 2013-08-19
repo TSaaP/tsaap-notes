@@ -17,9 +17,12 @@
 package org.tsaap.notes
 
 import org.hibernate.criterion.CriteriaSpecification
+import org.springframework.transaction.annotation.Transactional
 import org.tsaap.directory.User
 
 class NoteService {
+
+  static transactional = false
 
   /**
    * Add a new note
@@ -29,6 +32,7 @@ class NoteService {
    * @param parentNote the parent note
    * @return the added note
    */
+  @Transactional
   Note addNote(User author,
                String content,
                Context context = null,
@@ -70,6 +74,30 @@ class NoteService {
   }
 
   /**
+   * Bookmark a note by a user
+   * @param theNote the note to bookmarked
+   * @param theUser the bookmarker
+   * @return the bookmark
+   */
+  Bookmark bookmarkNotebyUser(Note theNote, User theUser) {
+    Bookmark bookmark = new Bookmark(user: theUser, note: theNote)
+    bookmark.save(failOnError: true)
+  }
+
+  /**
+   * Unbookmark a note by a given user
+   * @param note the note
+   * @param user the user
+   */
+  def unbookmarkedNoteByUser(Note note, User user) {
+    Bookmark bookmark = Bookmark.findByNoteAndUser(note, user)
+    if (bookmark) {
+      note.removeFromBookmarks(bookmark)
+      bookmark.delete()
+    }
+  }
+
+  /**
    * Find all notes for the given search criteria
    * @param inUser the user performing the search
    * @param userNotes indicates if the search must find the notes the user is owner
@@ -84,7 +112,7 @@ class NoteService {
                           Boolean userFavorites = false,
                           Boolean all = false,
                           Context inContext = null,
-                          Map paginationAndSorting = [sort: 'lastUpdated', order: 'desc']) {
+                          Map paginationAndSorting = [sort: 'dateCreated', order: 'desc']) {
     if (!(userNotes || userFavorites || all)) {
       return []
     }
@@ -119,6 +147,9 @@ class NoteService {
       order paginationAndSorting.sort, paginationAndSorting.order
     }
   }
+
+
+
 }
 
 

@@ -20,7 +20,6 @@ import org.tsaap.directory.User
 
 class Note {
   Date dateCreated
-  Date lastUpdated
   User author
   Context context
   Note parentNote
@@ -34,5 +33,14 @@ class Note {
     parentNote nullable: true
     bookmarks nullable: true
     content maxSize: 280
+  }
+
+  /**
+   * Indicate if the current note is bookmarked by the given user
+   * @param user the user
+   * @return true if the note is bookmarked, false if not
+   */
+  boolean isBookmarkedByUser(User user) {
+    Bookmark.findByNoteAndUser(this,user)
   }
 }

@@ -89,4 +89,22 @@ class NotesController {
       redirect(action: index(), params: params)
     }
   }
+
+  @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+  def bookmarkNote() {
+    def user = springSecurityService.currentUser
+    Note note = Note.get(params.noteId)
+    noteService.bookmarkNotebyUser(note, user)
+    params.remove('noteId')
+    redirect(action: index(), params: params)
+  }
+
+  @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+  def unbookmarkNote() {
+    def user = springSecurityService.currentUser
+    Note note = Note.get(params.noteId)
+    noteService.unbookmarkedNoteByUser(note, user)
+    params.remove('noteId')
+    redirect(action: index(), params: params)
+  }
 }

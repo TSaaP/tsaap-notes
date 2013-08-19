@@ -16,7 +16,7 @@
 
 
 
-<html>
+<html xmlns="http://www.w3.org/1999/html">
 <head>
   <meta name="layout" content="main"/>
   <r:require modules="tsaap_ui_notes,tsaap_icons"/>
@@ -88,7 +88,9 @@
     <ul class="list-group">
       <g:each in="${notes}" var="note">
         <li class="list-group-item" style="padding-bottom: 20px">
+          <g:set var="noteIsBookmarked" value="${note.isBookmarkedByUser(user)}"/>
           <h6 class="list-group-item-heading"><strong>${note.author.fullname}</strong> <small>@${note.author.username}</small>
+
             <g:if test="${note.context}">
               <span class="badge">
                 <g:if test="${context}">
@@ -96,14 +98,16 @@
                 </g:if>
                 <g:else>
                   <g:link controller="notes" action="index"
-                          params='[contextName:"${note.context.contextName}",displaysMyNotes:"${displaysMyNotes ? 'on' : ''}",displaysMyFavorites:"${displaysMyFavorites ? 'on' : ''}", displaysAll:"${displaysAll ? 'on' : ''}"]'>${note.context.contextName}
+                          params='[contextId:"${note.contextId}",displaysMyNotes:"${displaysMyNotes ? 'on' : ''}",displaysMyFavorites:"${displaysMyFavorites ? 'on' : ''}", displaysAll:"${displaysAll ? 'on' : ''}"]'>${note.context.contextName}
                   </g:link>
                 </g:else>
               </span>
             </g:if>
-            <small class="pull-right"><g:formatDate date="${note.lastUpdated}"
+            <small class="pull-right"><g:formatDate date="${note.dateCreated}"
                                                     type="datetime" style="LONG"
                                                     timeStyle="SHORT"/></small>
+            <g:if test="${noteIsBookmarked}"><span class="pull-right glyphicon glyphicon-star" style="color: orange; padding-right: 5px;"></span> </g:if>
+
           </h6>
 
           <p>${note.content}</p>
@@ -111,8 +115,14 @@
           <small class="pull-right">
             <a href="#"><span
                     class="glyphicon glyphicon-share"></span> Reply</a>
-            <a href="#"><span
-                    class="glyphicon glyphicon-star"></span> Favorite</a>
+            <g:if test="${noteIsBookmarked}">
+              <g:link style="color: orange" controller="notes" action="unbookmarkNote" params='[noteId:"${note.id}",contextId:"${context ? context.id :''}",displaysMyNotes:"${displaysMyNotes ? 'on' : ''}",displaysMyFavorites:"${displaysMyFavorites ? 'on' : ''}", displaysAll:"${displaysAll ? 'on' : ''}"]'><span
+                                  class="glyphicon glyphicon-star"></span> Favorite</g:link>
+            </g:if>
+            <g:else>
+            <g:link controller="notes" action="bookmarkNote" params='[noteId:"${note.id}",contextId:"${context ? context.id :''}",displaysMyNotes:"${displaysMyNotes ? 'on' : ''}",displaysMyFavorites:"${displaysMyFavorites ? 'on' : ''}", displaysAll:"${displaysAll ? 'on' : ''}"]'><span
+                    class="glyphicon glyphicon-star"></span> Favorite</g:link>
+            </g:else>
           </small>
         </li>
       </g:each>

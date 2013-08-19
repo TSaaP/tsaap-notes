@@ -119,38 +119,30 @@ class NoteService {
     if (!inContext) { // all is not relevant when there is no context
       all = false
     }
+    if (all) { // we have a context and user want all notes on the context
+      return Note.findAllByContext(inContext, paginationAndSorting)
+    }
+    // if not all, we use a criteria
     def criteria = Note.createCriteria()
     def results = criteria.list(paginationAndSorting) {
       createAlias('bookmarks', 'bmks', CriteriaSpecification.LEFT_JOIN)
       if (inContext) { // if there is a context
         eq 'context', inContext
-        if (!all) { // we know that one of the two filters is active
-          or {
-            if (userNotes) {
-              eq 'author', inUser
-            }
-            if (userFavorites) {
-              eq 'bmks.user', inUser
-            }
-          }
+      }
+      // we know that one of the two filters is active
+      or {
+        if (userNotes) {
+          eq 'author', inUser
         }
-      } else { // if there is no context
-        or { // we know that one of the two filters is active
-          if (userNotes) {
-            eq 'author', inUser
-          }
-          if (userFavorites) {
-            eq 'bmks.user', inUser
-          }
+        if (userFavorites) {
+          eq 'bmks.user', inUser
         }
       }
       order paginationAndSorting.sort, paginationAndSorting.order
     }
   }
-
-
-
 }
+
 
 
 

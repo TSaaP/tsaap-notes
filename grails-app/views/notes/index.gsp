@@ -94,6 +94,9 @@
           <p>${note.content}</p>
 
           <small class="pull-right">
+            <g:if test="${note.hasParent()}">
+              <a href="#note${note.id}"><span class="glyphicon glyphicon-circle-arrow-left"></span> Show discussion</a>
+            </g:if>
             <a href="#note${note.id}" id="replyLink${note.id}" onclick="displaysReplyField(${note.id})"><span
                     class="glyphicon glyphicon-share"></span> Reply</a>
             <g:if test="${noteIsBookmarked}">

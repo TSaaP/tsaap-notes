@@ -43,4 +43,12 @@ class Note {
   boolean isBookmarkedByUser(User user) {
     Bookmark.findByNoteAndUser(this,user)
   }
+
+  /**
+   * Indicate if a note has a parent note
+   * @return true if the note has a parent, false if not
+   */
+  boolean hasParent() {
+    parentNote
+  }
 }

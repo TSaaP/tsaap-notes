@@ -17,15 +17,16 @@
 <html>
 <head>
   <title>
-
     <g:if env="development">Grails Runtime Exception</g:if><g:else>Error</g:else></title>
   <meta name="layout" content="home">
   <g:if env="development"><link rel="stylesheet"
                                 href="${resource(dir: 'css', file: 'errors.css')}"
                                 type="text/css"></g:if>
+  <r:require module="tsaap_ui"/>
 </head>
 
 <body>
+<div class="container">
 <g:if env="development">
   <g:renderException exception="${exception}"/>
 </g:if>
@@ -34,5 +35,6 @@
     <li>An error has occurred</li>
   </ul>
 </g:else>
+  </div>
 </body>
 </html>

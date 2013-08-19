@@ -129,10 +129,11 @@
 </g:if>
 <r:script>
   function displaysReplyField(noteId) {
-         $('#replyEdition'+noteId).toggle();
-         var content = $('#noteContent'+noteId);
-         content.focus().val('').val(content.val());
-     }
+    $('#replyEdition'+noteId).toggle();
+    var contentElement =  $('#noteContent'+noteId) ;
+    var content = contentElement.val() ;
+    contentElement.focus().val('').val(content) ;
+  }
 </r:script>
 </body>
 </html>

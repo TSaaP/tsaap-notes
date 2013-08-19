@@ -23,28 +23,9 @@
 </head>
 
 <body>
+
 <div class="container note-edition">
-  <g:if test="${note?.hasErrors()}">
-    <div class="alert alert-danger">
-      <g:eachError bean="${note}">
-        <li><g:message error="${it}"/></li>
-      </g:eachError>
-    </div>
-  </g:if>
-  <g:form method="post" controller="notes" action="addNote">
-    <g:hiddenField name="contextId" value="${context?.id}"
-                   id="contextIdInAddForm"/>
-    <g:hiddenField name="displaysMyNotes" id="displaysMyNotesInAddForm"/>
-    <g:hiddenField name="displaysMyFavorites"
-                   id="displaysMyFavoritesInAddForm"/>
-    <g:hiddenField name="displaysAll" id="displaysAllInAddForm"/>
-    <textarea class="form-control" rows="3" id="noteContent" name="noteContent"
-              maxlength="280"
-              value="${fieldValue(bean: note, field: 'content')}"></textarea>
-    <span id="character_counter"></span><button type="submit"
-                                                class="btn btn-primary btn-xs pull-right"><span
-            class="glyphicon glyphicon-plus"></span> Add note</button>
-  </g:form>
+<g:render template="edit" model='[editedNote:editedNote,context:context]'/>
 </div>
 
 <div class="divider"></div>
@@ -87,7 +68,7 @@
   <div class="note-list-content">
     <ul class="list-group">
       <g:each in="${notes.list}" var="note">
-        <li class="list-group-item" style="padding-bottom: 20px">
+        <li class="list-group-item" style="padding-bottom: 20px" id="note${note.id}">
           <g:set var="noteIsBookmarked" value="${note.isBookmarkedByUser(user)}"/>
           <h6 class="list-group-item-heading"><strong>${note.author.fullname}</strong> <small>@${note.author.username}</small>
 
@@ -113,17 +94,20 @@
           <p>${note.content}</p>
 
           <small class="pull-right">
-            <a href="#"><span
+            <a href="#note${note.id}" id="replyLink${note.id}" onclick="displaysReplyField(${note.id})"><span
                     class="glyphicon glyphicon-share"></span> Reply</a>
             <g:if test="${noteIsBookmarked}">
-              <g:link style="color: orange" controller="notes" action="unbookmarkNote" params='[noteId:"${note.id}",contextId:"${context ? context.id :''}",displaysMyNotes:"${displaysMyNotes ? 'on' : ''}",displaysMyFavorites:"${displaysMyFavorites ? 'on' : ''}", displaysAll:"${displaysAll ? 'on' : ''}"]'><span
+              <g:link style="color: orange" controller="notes" action="unbookmarkNote" params='[noteId:"${note.id}",contextId:"${context ? context.id :''}",displaysMyNotes:"${displaysMyNotes ? 'on' : ''}",displaysMyFavorites:"${displaysMyFavorites ? 'on' : ''}", displaysAll:"${displaysAll ? 'on' : ''}"]' fragment="note${note.id}"><span
                                   class="glyphicon glyphicon-star"></span> Favorite</g:link>
             </g:if>
             <g:else>
-            <g:link controller="notes" action="bookmarkNote" params='[noteId:"${note.id}",contextId:"${context ? context.id :''}",displaysMyNotes:"${displaysMyNotes ? 'on' : ''}",displaysMyFavorites:"${displaysMyFavorites ? 'on' : ''}", displaysAll:"${displaysAll ? 'on' : ''}"]'><span
+            <g:link controller="notes" action="bookmarkNote" params='[noteId:"${note.id}",contextId:"${context ? context.id :''}",displaysMyNotes:"${displaysMyNotes ? 'on' : ''}",displaysMyFavorites:"${displaysMyFavorites ? 'on' : ''}", displaysAll:"${displaysAll ? 'on' : ''}"]' fragment="note${note.id}"><span
                     class="glyphicon glyphicon-star"></span> Favorite</g:link>
             </g:else>
           </small>
+          <div id="replyEdition${note.id}" style="display:none">
+            <g:render template="edit" model="[editedNote:editedNote,context:context, parentNote:note]"/>
+          </div>
         </li>
       </g:each>
     </ul>
@@ -144,31 +128,11 @@
   </r:script>
 </g:if>
 <r:script>
-  jQuery(document).ready(function ($) {
-
-    // set character counters
-    //-----------------------
-
-    // Get the textarea field
-    $('#noteContent')
-
-      // Bind the counter function on keyup and blur events
-            .bind('keyup blur', function () {
-                    // Count the characters and set the counter text
-                    $('#character_counter').text($(this).val().length + '/280 characters');
-                  })
-
-      // Trigger the counter on first load
-            .keyup();
-
-    // set hidden field value
-    //----------------------
-    $('#displaysMyNotesInAddForm').val($("#displaysMyNotes").attr('checked') ? 'on' : '');
-    $('#displaysMyFavoritesInAddForm').val($("#displaysMyFavorites").attr('checked') ? 'on' : '');
-    $('#displaysAllInAddForm').val($("#displaysAll").attr('checked') ? 'on' : '');
-
-  });
+  function displaysReplyField(noteId) {
+         $('#replyEdition'+noteId).toggle();
+         var content = $('#noteContent'+noteId);
+         content.focus().val('').val(content.val());
+     }
 </r:script>
-
 </body>
 </html>

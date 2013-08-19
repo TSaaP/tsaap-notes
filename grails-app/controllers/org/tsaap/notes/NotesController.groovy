@@ -85,10 +85,14 @@ class NotesController {
     if (params.contextId) {
       context = Context.get(params.contextId)
     }
-    Note note = noteService.addNote(user, noteContent, context)
+    Note parentNote = null
+    if (params.parentNoteId) {
+     parentNote = Note.get(params.parentNoteId)
+    }
+    Note note = noteService.addNote(user, noteContent, context, parentNote)
     if (note.hasErrors()) {
       def notes = noteService.findAllNotes(user, true, false, false, context)
-      render(view: '/notes/index', model: [user: user, note: note, notes: notes])
+      render(view: '/notes/index', model: [user: user, editedNote: note, notes: notes])
     } else {
       params.remove('noteContent')
       redirect(action: index(), params: params)

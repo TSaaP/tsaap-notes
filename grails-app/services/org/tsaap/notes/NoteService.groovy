@@ -16,6 +16,7 @@
 
 package org.tsaap.notes
 
+import grails.orm.PagedResultList
 import org.hibernate.criterion.CriteriaSpecification
 import org.springframework.transaction.annotation.Transactional
 import org.tsaap.directory.User
@@ -107,24 +108,25 @@ class NoteService {
    * @param paginationAndSorting specification of pagination and sorting
    * @return the notes corresponding to the search
    */
-  List<Note> findAllNotes(User inUser,
+  def findAllNotes(User inUser,
                           Boolean userNotes = true,
                           Boolean userFavorites = false,
                           Boolean all = false,
                           Context inContext = null,
                           Map paginationAndSorting = [sort: 'dateCreated', order: 'desc']) {
     if (!(userNotes || userFavorites || all)) {
-      return []
+      return new DefaultPagedResultList(list: [],totalCount: 0)
     }
     if (!inContext) { // all is not relevant when there is no context
       all = false
     }
     if (all) { // we have a context and user want all notes on the context
-      return Note.findAllByContext(inContext, paginationAndSorting)
+      return new DefaultPagedResultList(list:Note.findAllByContext(inContext, paginationAndSorting),
+                                        totalCount: Note.countByContext(inContext,paginationAndSorting))
     }
     // if not all, we use a criteria
     def criteria = Note.createCriteria()
-    def results = criteria.list(paginationAndSorting) {
+    PagedResultList results = criteria.list(paginationAndSorting) {
       createAlias('bookmarks', 'bmks', CriteriaSpecification.LEFT_JOIN)
       if (inContext) { // if there is a context
         eq 'context', inContext
@@ -140,9 +142,18 @@ class NoteService {
       }
       order paginationAndSorting.sort, paginationAndSorting.order
     }
+    new DefaultPagedResultList(list: results.list, totalCount: results.totalCount)
   }
 }
 
+/**
+ * Custom paged result list
+ */
+class DefaultPagedResultList {
 
+  List list
+  Long totalCount
+
+}
 
 

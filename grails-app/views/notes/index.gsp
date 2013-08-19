@@ -77,7 +77,7 @@
                       onchange="submit();"/>  All
           </g:if>
           <g:else>
-            <input type="checkbox" name="displaysAll" disabled />  All
+            <input type="checkbox" name="displaysAll" disabled/> <span style="color: gainsboro">All</span>
           </g:else>
         </label>
       </g:form>
@@ -86,7 +86,7 @@
 
   <div class="note-list-content">
     <ul class="list-group">
-      <g:each in="${notes}" var="note">
+      <g:each in="${notes.list}" var="note">
         <li class="list-group-item" style="padding-bottom: 20px">
           <g:set var="noteIsBookmarked" value="${note.isBookmarkedByUser(user)}"/>
           <h6 class="list-group-item-heading"><strong>${note.author.fullname}</strong> <small>@${note.author.username}</small>
@@ -130,15 +130,7 @@
   </div>
 
   <div class="note-list-pagination">
-    <ul class="pagination pull-right">
-      <li><a href="#">&laquo;</a></li>
-      <li><a href="#">1</a></li>
-      <li><a href="#">2</a></li>
-      <li><a href="#">3</a></li>
-      <li><a href="#">4</a></li>
-      <li><a href="#">5</a></li>
-      <li><a href="#">&raquo;</a></li>
-    </ul>
+    <tsaap:paginate class="pull-right" prev="&laquo;" next="&raquo;" total="${notes.totalCount}" params='[contextId:"${context ? context.id :''}",displaysMyNotes:"${displaysMyNotes ? 'on' : ''}",displaysMyFavorites:"${displaysMyFavorites ? 'on' : ''}", displaysAll:"${displaysAll ? 'on' : ''}"]'/>
   </div>
 </div>
 <g:if test="${context}">

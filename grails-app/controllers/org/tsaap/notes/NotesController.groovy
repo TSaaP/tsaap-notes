@@ -58,12 +58,17 @@ class NotesController {
     if (params.displaysAll) {
       displaysAll = true
     }
-
+    params.max = Math.min(params.max as Long ?: 7, 20)
+    def paginationAndSorting = [sort:'dateCreated',order:'desc',max: params.max]
+    if (params.offset) {
+      paginationAndSorting.offset = params.offset
+    }
     def notes = noteService.findAllNotes(user,
                                          displaysMyNotes,
                                          displaysMyFavorites,
                                          displaysAll,
-                                         context)
+                                         context,
+                                         paginationAndSorting)
     render(view: '/notes/index', model: [user: user,
             notes: notes,
             displaysMyNotes: displaysMyNotes,

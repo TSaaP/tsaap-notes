@@ -1,12 +1,5 @@
 
 <g:set var="idControllSuffix" value="${parentNote ? parentNote.id : 0}"/>
-<g:if test="${editedNote?.hasErrors()}">
-    <div class="alert alert-danger" id="editedNoteErrors${idControllSuffix}">
-      <g:eachError bean="${editedNote}">
-        <g:message error="${it}"/><br/>
-      </g:eachError>
-    </div>
-</g:if>
 <g:form method="post" controller="notes" action="addNote">
     <g:hiddenField name="contextId" value="${context?.id}"
                    id="contextIdInAddForm${idControllSuffix}"/>

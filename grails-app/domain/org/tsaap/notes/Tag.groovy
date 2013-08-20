@@ -30,5 +30,6 @@ class Tag {
 
   static mapping = {
     cache 'read-write'
+    version(false)
   }
 }

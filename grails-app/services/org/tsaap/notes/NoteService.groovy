@@ -125,6 +125,11 @@ class NoteService {
       note == note
     }
     query.deleteAll()
+    // delete bookmarks if any
+    query = Bookmark.where {
+      note == note
+    }
+    query.deleteAll()
     note.delete()
   }
 

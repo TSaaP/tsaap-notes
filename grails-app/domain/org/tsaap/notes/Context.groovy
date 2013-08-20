@@ -52,4 +52,8 @@ class Context {
     url url: true, nullable: true
     descriptionAsNote nullable: true, maxSize: 280
   }
+
+  static mapping = {
+    version(false)
+  }
 }

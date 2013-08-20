@@ -28,6 +28,7 @@ class ContextFollower {
 
   static mapping = {
     cache 'read-write'
+    version(false)
   }
 
 }

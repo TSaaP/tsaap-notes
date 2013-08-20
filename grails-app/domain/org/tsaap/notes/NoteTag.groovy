@@ -25,5 +25,6 @@ class NoteTag {
 
   static mapping = {
     cache 'read-write'
+    version(false)
   }
 }

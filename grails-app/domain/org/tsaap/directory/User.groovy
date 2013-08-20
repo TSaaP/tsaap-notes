@@ -50,6 +50,7 @@ class User {
 
   static mapping = {
     password column: '`password`'
+    version(false)
   }
 
   static transients = ['fullname']

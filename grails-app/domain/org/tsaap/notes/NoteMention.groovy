@@ -27,5 +27,6 @@ class NoteMention {
 
   static mapping = {
     cache 'read-write'
+       version false
   }
 }

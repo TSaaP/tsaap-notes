@@ -25,4 +25,8 @@ class Bookmark {
   Note note
 
   static constraints = {}
+
+  static mapping = {
+    version(false)
+  }
 }

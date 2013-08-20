@@ -63,11 +63,38 @@ class NoteServiceIntegrationSpec extends IntegrationSpec {
 
   }
 
+  def "add bookmark"() {
+    Note note1 = noteService.addNote(bootstrapTestService.learnerMary, "a note 1 with #tag and @${bootstrapTestService.teacherJeanne.username}")
+
+    when: "a user bookmarks a note"
+    noteService.bookmarkNotebyUser(note1, bootstrapTestService.learnerPaul)
+
+    then: 'a bookmark object is persited in database'
+    Bookmark.countByNoteAndUser(note1, bootstrapTestService.learnerPaul) == 1
+
+    and: 'a note has no bookmarks when trying to get it by the to-many relation'
+    !note1.bookmarks
+  }
+
+  def "delete bookmark"() {
+    Note note1 = noteService.addNote(bootstrapTestService.learnerMary, "a note 1")
+    noteService.bookmarkNotebyUser(note1, bootstrapTestService.learnerPaul)
+
+    when: "a user unbookmarked a note"
+    noteService.unbookmarkedNoteByUser(note1, bootstrapTestService.learnerPaul)
+
+    then: "there is no more bookmark record in the database"
+    Bookmark.countByNoteAndUser(note1, bootstrapTestService.learnerPaul) == 0
+
+  }
+
+
   def "delete a note"() {
 
     Note note1 = noteService.addNote(bootstrapTestService.learnerMary, "a note 1 with #tag and @${bootstrapTestService.teacherJeanne.username}")
     Note note2 = noteService.addNote(bootstrapTestService.learnerMary, "a note 2", null, note1)
     Note note3 = noteService.addNote(bootstrapTestService.learnerPaul, 'a note 3', null, note1)
+    noteService.bookmarkNotebyUser(note1, bootstrapTestService.learnerPaul)
 
     when: "a note is removed"
     noteService.deleteNoteByAuthor(note1, bootstrapTestService.learnerMary)
@@ -79,9 +106,10 @@ class NoteServiceIntegrationSpec extends IntegrationSpec {
     Note.countByParentNote(note1) == 0
     // use a fetch because batch query doesn't invalidate first level cache
 
-    and: "note mentions and note tags are deleted too"
+    and: "note mentions, note tags and bookmarks are deleted too"
     NoteMention.countByNote(note1) == 0
     NoteTag.countByNote(note1) == 0
+    Bookmark.countByNote(note1) == 0
 
   }
 
@@ -94,31 +122,6 @@ class NoteServiceIntegrationSpec extends IntegrationSpec {
 
     then: "the deletion fails with an illegal argument exception"
     thrown(IllegalArgumentException)
-
-  }
-
-  def "add bookmark"() {
-    Note note1 = noteService.addNote(bootstrapTestService.learnerMary, "a note 1 with #tag and @${bootstrapTestService.teacherJeanne.username}")
-
-    when:"a user bookmarks a note"
-    noteService.bookmarkNotebyUser(note1, bootstrapTestService.learnerPaul)
-
-    then:'a bookmark object is persited in database'
-    Bookmark.countByNoteAndUser(note1,bootstrapTestService.learnerPaul) == 1
-
-    and:'a note has no bookmarks when trying to get it by the to-many relation'
-    !note1.bookmarks
-  }
-
-  def "delete bookmark"() {
-    Note note1 = noteService.addNote(bootstrapTestService.learnerMary, "a note 1")
-    noteService.bookmarkNotebyUser(note1, bootstrapTestService.learnerPaul)
-
-    when:"a user unbookmarked a note"
-    noteService.unbookmarkedNoteByUser(note1,bootstrapTestService.learnerPaul)
-
-    then:"there is no more bookmark record in the database"
-    Bookmark.countByNoteAndUser(note1,bootstrapTestService.learnerPaul) == 0
 
   }
 

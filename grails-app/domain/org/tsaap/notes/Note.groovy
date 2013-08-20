@@ -35,6 +35,10 @@ class Note {
     content maxSize: 280
   }
 
+  static mapping = {
+    version false
+  }
+
   /**
    * Indicate if the current note is bookmarked by the given user
    * @param user the user

@@ -22,11 +22,13 @@ class Role {
 
   static mapping = {
     cache true
+    version(false)
   }
 
   static constraints = {
     authority blank: false, unique: true, inList: RoleEnum.values()*.name()
   }
+
 }
 
 enum RoleEnum {

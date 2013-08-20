@@ -23,6 +23,7 @@ class BootStrap {
     bootstrapService.initializeRoles()
     if (Environment.DEVELOPMENT) {
       bootstrapService.inializeDevUsers()
+      bootstrapService.initializeDevContext()
     }
   }
 

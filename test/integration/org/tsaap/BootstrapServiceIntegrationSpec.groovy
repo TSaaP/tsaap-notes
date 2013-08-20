@@ -39,13 +39,6 @@ class BootstrapServiceIntegrationSpec extends IntegrationSpec {
 
   }
 
-  def "admin user"() {
-    when:
-      bootstrapService.initializeUsers()
-    then:
-      bootstrapService.adminUser != null
-      bootstrapService.adminUser.username == "admin"
-  }
 
 
 }

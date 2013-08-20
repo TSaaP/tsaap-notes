@@ -29,17 +29,19 @@ class UserAccountServiceIntegrationSpec extends IntegrationSpec {
   def "add user"() {
     bootstrapService.initializeRoles()
 
-    when: userAccountService.addUser(new User(firstName: "Mary", lastName: "S",
-                                              username: "Mary",
+    when: "adding a user"
+    def u = userAccountService.addUser(new User(firstName: "Mary", lastName: "S",
+                                              username: "Mary_test",
                                               email: "mary@nomail.com",
                                               password: "password"),
                                      RoleEnum.STUDENT_ROLE.role)
+    println "${u.errors}"
 
-    then:
-    User user = User.findByUsername("Mary")
+    then: "the user is persisted in the datastore"
+    User user = User.findByUsername("Mary_test")
     user != null
     !user.enabled
-    user.normalizedUsername == "mary"
+    user.normalizedUsername == "mary_test"
     user.email == "mary@nomail.com"
     !user.authorities.empty
     user.authorities.first().authority == RoleEnum.STUDENT_ROLE.name()
@@ -51,14 +53,14 @@ class UserAccountServiceIntegrationSpec extends IntegrationSpec {
 
     when:
     def mary = userAccountService.addUser(new User(firstName: "Mary", lastName: "S",
-                                                   username: "Mary",
+                                                   username: "Mary_test",
                                                    email: "mary@nomail.com",
                                                    password: "password"),
                                           RoleEnum.STUDENT_ROLE.role)
     userAccountService.enableUser(mary)
 
     then:
-    User user = User.findByUsername("Mary")
+    User user = User.findByUsername("Mary_test")
     user != null
     user.enabled
   }
@@ -68,7 +70,7 @@ class UserAccountServiceIntegrationSpec extends IntegrationSpec {
 
     when:
     def mary = userAccountService.addUser(new User(firstName: "Mary", lastName: "S",
-                                                   username: "Mary",
+                                                   username: "Mary_test",
                                                    email: "mary@nomail.com",
                                                    password: "password"),
                                           RoleEnum.STUDENT_ROLE.role)
@@ -76,7 +78,7 @@ class UserAccountServiceIntegrationSpec extends IntegrationSpec {
     userAccountService.disableUser(mary)
 
     then:
-    User user = User.findByUsername("Mary")
+    User user = User.findByUsername("Mary_test")
     user != null
     !user.enabled
   }

@@ -88,6 +88,9 @@ class NotesController {
     Note parentNote = null
     if (params.parentNoteId) {
       parentNote = Note.get(params.parentNoteId)
+      if (!context) {
+        context = parentNote.context
+      }
     }
     Note note = noteService.addNote(user, noteContent, context, parentNote)
     if (note.hasErrors()) {

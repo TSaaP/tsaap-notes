@@ -32,7 +32,7 @@ class ContextService {
    * @return
    */
   List<ContextFollower> contextsFollowedByUser(User user,
-                                       def paginationAndSorting = [sort: 'contextName',order:'asc']) {
+                                               def paginationAndSorting = [sort: 'contextName', order: 'asc']) {
     def criteria = ContextFollower.createCriteria()
     def results = criteria {
       follower = user
@@ -41,8 +41,9 @@ class ContextService {
         if (paginationAndSorting.max) {
           maxResults paginationAndSorting.max
         }
-        if (paginationAndSorting.offset)
+        if (paginationAndSorting.offset) {
           offset paginationAndSorting.offset
+        }
       }
       join 'context'
     }

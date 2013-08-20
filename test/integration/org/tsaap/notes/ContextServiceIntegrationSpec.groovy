@@ -34,18 +34,16 @@ class ContextServiceIntegrationSpec extends IntegrationSpec {
 
     when: Context context = contextService.addContext(new Context(owner: bootstrapTestService.learnerPaul, contextName: contextName, url: url, descriptionAsNote: descContent))
 
-    then:
-    context.hasErrors() == contextHasErrors
+    then: context.hasErrors() == contextHasErrors
     if (!context.hasErrors()) {
       context.contextName == contextName
       context.descriptionAsNote == descContent
       context.url == url
     }
 
-    where:
-    contextHasErrors |descContent | contextName | url
-    true | 'NR' | 'not a name' | 'http://www.irit.fr'
-    false | 'Un context avec des #tags et des @mentions' | 'ivvq_sd1' | 'http://www.irit.fr'
+    where: contextHasErrors | descContent                                  | contextName  | url
+    true                    | 'NR'                                         | 'not a name' | 'http://www.irit.fr'
+    false                   | 'Un context avec des #tags et des @mentions' | 'ivvq_sd1'   | 'http://www.irit.fr'
 
   }
 

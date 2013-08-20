@@ -25,20 +25,17 @@ class BootstrapServiceIntegrationSpec extends IntegrationSpec {
 
   def "role initialization"() {
 
-    when:
-      bootstrapService.initializeRoles()
+    when: bootstrapService.initializeRoles()
 
-    then:
-      bootstrapService.studentRole != null
-      bootstrapService.studentRole == RoleEnum.STUDENT_ROLE.role
-      bootstrapService.teacherRole != null
-      bootstrapService.teacherRole == RoleEnum.TEACHER_ROLE.role
-      bootstrapService.adminRole != null
-      bootstrapService.adminRole == RoleEnum.ADMIN_ROLE.role
-      bootstrapService.adminRole.id == 1
+    then: bootstrapService.studentRole != null
+    bootstrapService.studentRole == RoleEnum.STUDENT_ROLE.role
+    bootstrapService.teacherRole != null
+    bootstrapService.teacherRole == RoleEnum.TEACHER_ROLE.role
+    bootstrapService.adminRole != null
+    bootstrapService.adminRole == RoleEnum.ADMIN_ROLE.role
+    bootstrapService.adminRole.id == 1
 
   }
-
 
 
 }

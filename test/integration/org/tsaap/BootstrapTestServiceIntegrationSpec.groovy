@@ -30,11 +30,9 @@ class BootstrapTestServiceIntegrationSpec extends IntegrationSpec {
 
   def "user initialization"() {
 
-    when:
-    bootstrapTestService.initializeUsers()
+    when: bootstrapTestService.initializeUsers()
 
-    then:
-    bootstrapTestService.learnerPaul != null
+    then: bootstrapTestService.learnerPaul != null
     bootstrapTestService.learnerPaul.username == "learner_paul"
     bootstrapTestService.teacherJeanne != null
     bootstrapTestService.teacherJeanne.normalizedUsername == "teacher_jeanne"
@@ -43,7 +41,6 @@ class BootstrapTestServiceIntegrationSpec extends IntegrationSpec {
     bootstrapTestService.learnerMary.normalizedUsername == "learner_mary"
 
   }
-
 
 
 }

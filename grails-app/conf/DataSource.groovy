@@ -35,10 +35,16 @@ environments {
       dbCreate = "create-drop"
       // one of 'create', 'create-drop', 'update', 'validate', ''
       url = "jdbc:h2:mem:devDb;MVCC=TRUE;LOCK_TIMEOUT=10000"
-      logSql=true
+      logSql = true
     }
   }
   test {
+    dataSource {
+      dbCreate = "update"
+      url = "jdbc:h2:mem:testDb;MVCC=TRUE;LOCK_TIMEOUT=10000"
+    }
+  }
+  demo {
     dataSource {
       dbCreate = "update"
       url = "jdbc:h2:mem:testDb;MVCC=TRUE;LOCK_TIMEOUT=10000"

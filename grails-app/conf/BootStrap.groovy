@@ -21,9 +21,15 @@ class BootStrap {
 
   def init = { servletContext ->
     bootstrapService.initializeRoles()
-    if (Environment.DEVELOPMENT) {
-      bootstrapService.inializeDevUsers()
-      bootstrapService.initializeDevContext()
+    Environment.executeForCurrentEnvironment {
+      development {
+        bootstrapService.inializeDevUsers()
+        bootstrapService.initializeDevContext()
+      }
+      demo {
+        bootstrapService.inializeDevUsers()
+        bootstrapService.initializeDevContext()
+      }
     }
   }
 

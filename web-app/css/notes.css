@@ -46,3 +46,18 @@
     background-color: #BBDDF0;
     font-weight: normal;
 }
+
+.note-parent-note {
+    background-color: #ebebeb;
+}
+
+.note-actions & .note-parent-note {
+   display: none;
+}
+
+.note-discussion {
+    margin-top: 8px;
+    margin-bottom: 8px;
+    border-radius: 10px;
+    border: 1px solid #eeeeee;
+}

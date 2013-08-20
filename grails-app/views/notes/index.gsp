@@ -44,17 +44,17 @@
       <g:form controller="notes" action="index" method="get">
         <g:hiddenField name="contextId" value="${context?.id}"/>
         <label class="checkbox-inline">
-          <g:checkBox name="displaysMyNotes" checked="${displaysMyNotes}"
+          <g:checkBox name="displaysMyNotes" checked="${params.displaysMyNotes=='on'?true:false}"
                       onchange="submit();"/> My notes
         </label>
         <label class="checkbox-inline">
           <g:checkBox name="displaysMyFavorites"
-                      checked="${displaysMyFavorites}"
+                      checked="${params.displaysMyFavorites=='on'?true:false}"
                       onchange="submit();"/> My favorites
         </label>
         <label class="checkbox-inline">
           <g:if test="${context}">
-          <g:checkBox name="displaysAll" checked="${displaysAll}"
+          <g:checkBox name="displaysAll" checked="${params.displaysAll=='on'?true:false}"
                       onchange="submit();"/>  All
           </g:if>
           <g:else>
@@ -68,13 +68,16 @@
   <div class="note-list-content">
     <ul class="list-group">
       <g:each in="${notes.list}" var="note">
-        <g:render template="detail" model="[note:note,context:context,displaysMyNotes:displaysMyNotes, displaysMyFavorites:displaysMyFavorites, displaysAll:displaysAll]"/>
+        <g:set var="showDiscussionNote" value="${showDiscussion[note.id]}"/>
+        <div id="note${note.id}" class="${showDiscussionNote?'note-discussion':'note-only'}">
+          <g:render template="detail" model="[note:note,context:context,showDiscussionNote:showDiscussionNote]"/>
+        </div>
       </g:each>
     </ul>
   </div>
 
   <div class="note-list-pagination">
-    <tsaap:paginate class="pull-right" prev="&laquo;" next="&raquo;" total="${notes.totalCount}" params='[contextId:"${context ? context.id :''}",displaysMyNotes:"${displaysMyNotes ? 'on' : ''}",displaysMyFavorites:"${displaysMyFavorites ? 'on' : ''}", displaysAll:"${displaysAll ? 'on' : ''}"]'/>
+    <tsaap:paginate class="pull-right" prev="&laquo;" next="&raquo;" total="${notes.totalCount}" params='[contextId:"${params.contextId}",displaysMyNotes:"${params.displaysMyNotes}",displaysMyFavorites:"${params.displaysMyFavorites}", displaysAll:"${params.displaysAll}"]'/>
   </div>
 </div>
 <g:if test="${context}">
@@ -94,6 +97,10 @@
     var content = contentElement.val() ;
     contentElement.focus().val('').val(content) ;
   }
+
+  $(".note-content").linkify({
+                               target:"_blank"
+                             });
 </r:script>
 </body>
 </html>

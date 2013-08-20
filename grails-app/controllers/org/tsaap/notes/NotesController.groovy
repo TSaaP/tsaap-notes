@@ -33,48 +33,7 @@ class NotesController {
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])
   def index() {
     User user = springSecurityService.currentUser
-    Context context = null
-    if (params.contextId) {
-      context = Context.get(params.contextId)
-    } else if (params.contextName) {
-      context = Context.findByContextName(params.contextName, [cache: true])
-      if (context == null && params.createContext == 'true') {
-        User contextOwner = params.contextOwner ? User.findByUsername(params.contextOwner) : user
-        context = contextService.addContext(new Context(contextName: params.contextName,
-                                                        owner: contextOwner,
-                                                        url: params.url,
-                                                        descriptionAsNote: params.desc))
-      }
-    }
-    def displaysMyNotes = true
-    def displaysMyFavorites = false
-    def displaysAll = false
-    if (!params.displaysMyNotes) {
-      displaysMyNotes = false
-    }
-    if (params.displaysMyFavorites) {
-      displaysMyFavorites = true
-    }
-    if (params.displaysAll) {
-      displaysAll = true
-    }
-    params.max = Math.min(params.max as Long ?: 7, 20)
-    def paginationAndSorting = [sort: 'dateCreated', order: 'desc', max: params.max]
-    if (params.offset) {
-      paginationAndSorting.offset = params.offset
-    }
-    def notes = noteService.findAllNotes(user,
-                                         displaysMyNotes,
-                                         displaysMyFavorites,
-                                         displaysAll,
-                                         context,
-                                         paginationAndSorting)
-    render(view: '/notes/index', model: [user: user,
-            notes: notes,
-            displaysMyNotes: displaysMyNotes,
-            displaysMyFavorites: displaysMyFavorites,
-            displaysAll: displaysAll,
-            context: context])
+    renderMainPage(params,user)
   }
 
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])
@@ -92,14 +51,9 @@ class NotesController {
         context = parentNote.context
       }
     }
-    Note note = noteService.addNote(user, noteContent, context, parentNote)
-    if (note.hasErrors()) {
-      def notes = noteService.findAllNotes(user, true, false, false, context)
-      render(view: '/notes/index', model: [user: user, editedNote: note, notes: notes])
-    } else {
-      params.remove('noteContent')
-      redirect(action: index(), params: params)
-    }
+    noteService.addNote(user, noteContent, context, parentNote)
+    params.remove('noteContent')
+    redirect(action: index(), params: params)
   }
 
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])
@@ -127,6 +81,74 @@ class NotesController {
     noteService.deleteNoteByAuthor(note, user)
     params.remove('noteId')
     redirect(action: index(), params: params)
+  }
+
+  @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+  def showDiscussion() {
+    def user = springSecurityService.currentUser
+    Long noteId = params.noteId as Long
+    Map showDiscussion = [:]
+    showDiscussion[noteId] = true
+    params.remove('noteId')
+    renderMainPage(params,user,showDiscussion)
+  }
+
+  @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def hideDiscussion() {
+      def user = springSecurityService.currentUser
+      Map showDiscussion = [:]
+      renderMainPage(params,user,showDiscussion)
+    }
+
+  /**
+   * Render the main page given the params and the user
+   * @param params the params
+   * @param user the user
+   * @return the result of the render operation
+   */
+  private def renderMainPage(def params, User user, Map showDiscussion = [:]) {
+    Context context = null
+        if (params.contextId) {
+          context = Context.get(params.contextId)
+        } else if (params.contextName) {
+          context = Context.findByContextName(params.contextName, [cache: true])
+          if (context == null && params.createContext == 'true') {
+            User contextOwner = params.contextOwner ? User.findByUsername(params.contextOwner) : user
+            context = contextService.addContext(new Context(contextName: params.contextName,
+                                                            owner: contextOwner,
+                                                            url: params.url,
+                                                            descriptionAsNote: params.desc))
+          }
+        }
+        def displaysMyNotes = true
+        def displaysMyFavorites = false
+        def displaysAll = false
+        if (params.displaysMyNotes != 'on') {
+          displaysMyNotes = false
+        }
+        if (params.displaysMyFavorites == 'on') {
+          displaysMyFavorites = true
+        }
+        if (params.displaysAll == 'on') {
+          displaysAll = true
+        }
+        params.max = Math.min(params.max as Long ?: 7, 20)
+        def paginationAndSorting = [sort: 'dateCreated', order: 'desc', max: params.max]
+        if (params.offset) {
+          paginationAndSorting.offset = params.offset
+        }
+        def notes = noteService.findAllNotes(user,
+                                             displaysMyNotes,
+                                             displaysMyFavorites,
+                                             displaysAll,
+                                             context,
+                                             paginationAndSorting)
+        render(view: '/notes/index', model: [user: user,
+                notes: notes,
+                context: context,
+                showDiscussion:showDiscussion
+              ])
+
   }
 
 }

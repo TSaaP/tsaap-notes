@@ -22,6 +22,7 @@ modules = {
   tsaap_ui {
     dependsOn('jquery')
     resource url: 'js/bootstrap.min.js'
+    resource url: 'js/jquery.linkify.js'
     resource url: 'css/bootstrap.min.css'
   }
 

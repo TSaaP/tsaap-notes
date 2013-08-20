@@ -99,6 +99,10 @@
             </g:if>
             <a href="#note${note.id}" id="replyLink${note.id}" onclick="displaysReplyField(${note.id})"><span
                     class="glyphicon glyphicon-share"></span> Reply</a>
+            <g:if test="${user == note.author}">
+              <g:link controller="notes" action="deleteNote" params='[noteId:"${note.id}",contextId:"${context ? context.id :''}",displaysMyNotes:"${displaysMyNotes ? 'on' : ''}",displaysMyFavorites:"${displaysMyFavorites ? 'on' : ''}", displaysAll:"${displaysAll ? 'on' : ''}"]'><span
+                                  class="glyphicon glyphicon-trash"></span> Delete</g:link>
+            </g:if>
             <g:if test="${noteIsBookmarked}">
               <g:link style="color: orange" controller="notes" action="unbookmarkNote" params='[noteId:"${note.id}",contextId:"${context ? context.id :''}",displaysMyNotes:"${displaysMyNotes ? 'on' : ''}",displaysMyFavorites:"${displaysMyFavorites ? 'on' : ''}", displaysAll:"${displaysAll ? 'on' : ''}"]' fragment="note${note.id}"><span
                                   class="glyphicon glyphicon-star"></span> Favorite</g:link>

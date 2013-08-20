@@ -4,21 +4,24 @@ import groovy.sql.Sql
 import org.tsaap.directory.Role
 import org.tsaap.directory.RoleEnum
 import org.tsaap.directory.User
+import org.tsaap.directory.UserAccountService
 
 class BootstrapService {
 
   def dataSource
+  UserAccountService userAccountService
+
 
   Role studentRole
   Role teacherRole
   Role adminRole
 
-  User adminUser
+  User fsil
+  User mary
 
 
   def initializeReferenceData() {
     initializeRoles()
-    initializeUsers()
   }
 
   def initializeRoles() {
@@ -41,10 +44,18 @@ class BootstrapService {
 
   }
 
-  def initializeUsers() {
-    adminUser = User.findByUsername("adminUser")
-    if (!adminUser) {
-      adminUser = new User(firstName: "admin", lastName: "admin", username: "admin", password: "admin",email: 'admin@admin.com').save()
+  def inializeDevUsers() {
+    fsil = User.findByUsername("fsil")
+    if (!fsil) {
+      def user = new User(firstName: "Franck", lastName: "Sil", username: "fsil", password: "1234", email: 'fsil@fsil.com')
+      fsil =  userAccountService.addUser(user,studentRole, true)
+
+    }
+    mary = User.findByUsername("mary")
+    if (!mary) {
+      def user = new User(firstName: "Mary", lastName: "Sil", username: "mary", password: "1234", email: 'mary@mary.com')
+      mary = userAccountService.addUser(user, teacherRole,true)
     }
   }
+
 }

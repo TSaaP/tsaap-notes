@@ -24,40 +24,101 @@ class NoteServiceIntegrationSpec extends IntegrationSpec {
   BootstrapTestService bootstrapTestService
   NoteService noteService
 
+  def setup() {
+    bootstrapTestService.initializeTests()
+  }
+
   def "add notes"() {
 
-    bootstrapTestService.initializeTests()
+    when: "adding a note"
+    Note note = noteService.addNote(bootstrapTestService.learnerPaul, content)
 
-    when:
-      Note note = noteService.addNote(bootstrapTestService.learnerPaul, content)
-
-    then:
-      note != null
-      note.content == content
-      // tags
-      def noteTags = NoteTag.findAllByNote(note)
-      noteTags.size() == tags.size()
-      if (noteTags.size() > 0) {
-        def tagsFromNote = noteTags*.tag*.name
-        tagsFromNote == tags
-      }
-      // mentions
-      def noteMentions = NoteMention.findAllByNote(note)
-      noteMentions.size() == mentions.size()
-      if (noteMentions.size() > 0) {
-        def mentionsFromNote = noteMentions*.mention*.username
-        mentionsFromNote == mentions
-      }
+    then: "the note exists and mentions and tags are created when needed"
+    note != null
+    note.content == content
+    // tags
+    def noteTags = NoteTag.findAllByNote(note)
+    noteTags.size() == tags.size()
+    if (noteTags.size() > 0) {
+      def tagsFromNote = noteTags*.tag*.name
+      tagsFromNote == tags
+    }
+    // mentions
+    def noteMentions = NoteMention.findAllByNote(note)
+    noteMentions.size() == mentions.size()
+    if (noteMentions.size() > 0) {
+      def mentionsFromNote = noteMentions*.mention*.username
+      mentionsFromNote == mentions
+    }
 
 
-    where:
-      content                                                                     | tags                                     | mentions
-      "@teacher_jeanne : a simple #content, with no #spaces in the content"       | ["content", "spaces"]                    | ["teacher_jeanne"]
-      "a simple #content with no #spaces in the content but with #content a copy" | ["content", "spaces"]                    | []
-      "a simple #content\n #another\r #tag3\n with #spaces\t in the content"      | ["content", "another", "tag3", "spaces"] | []
-      "a simple with no tags @teacher_jeanne"                                     | []                                       | ["teacher_jeanne"]
-      "a simple with no @tags @teacher_jeanne"                                    | []                                       | ["teacher_jeanne"]
-      "Is it #LOWERCASE ?"                                                        | ["lowercase"]                            | []
+    where: "all these data are tested"
+    content                                                                     | tags                                     | mentions
+    "@teacher_jeanne : a simple #content, with no #spaces in the content"       | ["content", "spaces"]                    | ["teacher_jeanne"]
+    "a simple #content with no #spaces in the content but with #content a copy" | ["content", "spaces"]                    | []
+    "a simple #content\n #another\r #tag3\n with #spaces\t in the content"      | ["content", "another", "tag3", "spaces"] | []
+    "a simple with no tags @teacher_jeanne"                                     | []                                       | ["teacher_jeanne"]
+    "a simple with no @tags @teacher_jeanne"                                    | []                                       | ["teacher_jeanne"]
+    "Is it #LOWERCASE ?"                                                        | ["lowercase"]                            | []
+
+  }
+
+  def "delete a note"() {
+
+    Note note1 = noteService.addNote(bootstrapTestService.learnerMary, "a note 1 with #tag and @${bootstrapTestService.teacherJeanne.username}")
+    Note note2 = noteService.addNote(bootstrapTestService.learnerMary, "a note 2", null, note1)
+    Note note3 = noteService.addNote(bootstrapTestService.learnerPaul, 'a note 3', null, note1)
+
+    when: "a note is removed"
+    noteService.deleteNoteByAuthor(note1, bootstrapTestService.learnerMary)
+
+    then: "the note is deleted from database"
+    Note.get(note1.id) == null
+
+    and: "Child notes have their field parentNote set to null"
+    Note.countByParentNote(note1) == 0
+    // use a fetch because batch query doesn't invalidate first level cache
+
+    and: "note mentions and note tags are deleted too"
+    NoteMention.countByNote(note1) == 0
+    NoteTag.countByNote(note1) == 0
+
+  }
+
+  def "attempting to delete a note by a user that is not the author"() {
+
+    Note note1 = noteService.addNote(bootstrapTestService.learnerMary, "a note 1 with #tag and @${bootstrapTestService.teacherJeanne.username}")
+
+    when: "a user tries to delete a note he has not written"
+    noteService.deleteNoteByAuthor(note1, bootstrapTestService.learnerPaul)
+
+    then: "the deletion fails with an illegal argument exception"
+    thrown(IllegalArgumentException)
+
+  }
+
+  def "add bookmark"() {
+    Note note1 = noteService.addNote(bootstrapTestService.learnerMary, "a note 1 with #tag and @${bootstrapTestService.teacherJeanne.username}")
+
+    when:"a user bookmarks a note"
+    noteService.bookmarkNotebyUser(note1, bootstrapTestService.learnerPaul)
+
+    then:'a bookmark object is persited in database'
+    Bookmark.countByNoteAndUser(note1,bootstrapTestService.learnerPaul) == 1
+
+    and:'a note has no bookmarks when trying to get it by the to-many relation'
+    !note1.bookmarks
+  }
+
+  def "delete bookmark"() {
+    Note note1 = noteService.addNote(bootstrapTestService.learnerMary, "a note 1")
+    noteService.bookmarkNotebyUser(note1, bootstrapTestService.learnerPaul)
+
+    when:"a user unbookmarked a note"
+    noteService.unbookmarkedNoteByUser(note1,bootstrapTestService.learnerPaul)
+
+    then:"there is no more bookmark record in the database"
+    Bookmark.countByNoteAndUser(note1,bootstrapTestService.learnerPaul) == 0
 
   }
 

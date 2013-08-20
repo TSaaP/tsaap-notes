@@ -1,3 +1,4 @@
+import grails.util.Environment
 import org.tsaap.BootstrapService /*
  * Copyright 2013 Tsaap Development Group
  *
@@ -20,6 +21,9 @@ class BootStrap {
 
   def init = { servletContext ->
     bootstrapService.initializeRoles()
+    if (Environment.DEVELOPMENT) {
+      bootstrapService.inializeDevUsers()
+    }
   }
 
   def destroy = {}

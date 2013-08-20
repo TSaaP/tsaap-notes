@@ -59,7 +59,7 @@ class NotesController {
       displaysAll = true
     }
     params.max = Math.min(params.max as Long ?: 7, 20)
-    def paginationAndSorting = [sort:'dateCreated',order:'desc',max: params.max]
+    def paginationAndSorting = [sort: 'dateCreated', order: 'desc', max: params.max]
     if (params.offset) {
       paginationAndSorting.offset = params.offset
     }
@@ -87,7 +87,7 @@ class NotesController {
     }
     Note parentNote = null
     if (params.parentNoteId) {
-     parentNote = Note.get(params.parentNoteId)
+      parentNote = Note.get(params.parentNoteId)
     }
     Note note = noteService.addNote(user, noteContent, context, parentNote)
     if (note.hasErrors()) {
@@ -116,4 +116,14 @@ class NotesController {
     params.remove('noteId')
     redirect(action: index(), params: params)
   }
+
+  @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+  def deleteNote() {
+    def user = springSecurityService.currentUser
+    Note note = Note.get(params.noteId)
+    noteService.deleteNoteByAuthor(note, user)
+    params.remove('noteId')
+    redirect(action: index(), params: params)
+  }
+
 }

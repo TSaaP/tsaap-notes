@@ -82,6 +82,8 @@ class NoteService {
    */
   Bookmark bookmarkNotebyUser(Note theNote, User theUser) {
     Bookmark bookmark = new Bookmark(user: theUser, note: theNote)
+    // for performance issues the bookmarks bag coming from the to many relationship
+    // is not set
     bookmark.save(failOnError: true)
   }
 
@@ -99,6 +101,34 @@ class NoteService {
   }
 
   /**
+   * Delete a note
+   * @param note the note to delete
+   * @param user the author of the note
+   */
+  @Transactional
+  def deleteNoteByAuthor(Note note, User user) {
+    if (user != note.author) {
+      throw new IllegalArgumentException("user_is_not_author")
+    }
+    // set parentNote fields
+    def query = Note.where {
+      parentNote == note
+    }
+    query.updateAll(parentNote: null)
+    // delete tags if any
+    query = NoteTag.where {
+      note == note
+    }
+    query.deleteAll()
+    // delete mentions if any
+    query = NoteMention.where {
+      note == note
+    }
+    query.deleteAll()
+    note.delete()
+  }
+
+  /**
    * Find all notes for the given search criteria
    * @param inUser the user performing the search
    * @param userNotes indicates if the search must find the notes the user is owner
@@ -109,20 +139,20 @@ class NoteService {
    * @return the notes corresponding to the search
    */
   def findAllNotes(User inUser,
-                          Boolean userNotes = true,
-                          Boolean userFavorites = false,
-                          Boolean all = false,
-                          Context inContext = null,
-                          Map paginationAndSorting = [sort: 'dateCreated', order: 'desc']) {
+                   Boolean userNotes = true,
+                   Boolean userFavorites = false,
+                   Boolean all = false,
+                   Context inContext = null,
+                   Map paginationAndSorting = [sort: 'dateCreated', order: 'desc']) {
     if (!(userNotes || userFavorites || all)) {
-      return new DefaultPagedResultList(list: [],totalCount: 0)
+      return new DefaultPagedResultList(list: [], totalCount: 0)
     }
     if (!inContext) { // all is not relevant when there is no context
       all = false
     }
     if (all) { // we have a context and user want all notes on the context
-      return new DefaultPagedResultList(list:Note.findAllByContext(inContext, paginationAndSorting),
-                                        totalCount: Note.countByContext(inContext,paginationAndSorting))
+      return new DefaultPagedResultList(list: Note.findAllByContext(inContext, paginationAndSorting),
+                                        totalCount: Note.countByContext(inContext, paginationAndSorting))
     }
     // if not all, we use a criteria
     def criteria = Note.createCriteria()
@@ -147,8 +177,7 @@ class NoteService {
 }
 
 /**
- * Custom paged result list
- */
+ * Custom paged result list*/
 class DefaultPagedResultList {
 
   List list

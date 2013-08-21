@@ -16,10 +16,10 @@
 
 package org.tsaap.notes
 
-import grails.plugin.spock.IntegrationSpec
 import org.tsaap.BootstrapTestService
+import spock.lang.Specification
 
-class NoteServiceIntegrationSpec extends IntegrationSpec {
+class NoteServiceIntegrationSpec extends Specification {
 
   BootstrapTestService bootstrapTestService
   NoteService noteService

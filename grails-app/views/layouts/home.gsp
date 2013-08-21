@@ -61,12 +61,12 @@
 
       <div class="nav-collapse collapse pull-right">
         <ul class="nav navbar-nav">
-          <sec:ifNotLoggedIn>
+          <tsaap:ifNotLoggedIn>
           <li><g:link controller="login" action="auth">Already an account ? Sign in &raquo;</g:link></li>
-          </sec:ifNotLoggedIn>
-          <sec:ifLoggedIn>
+          </tsaap:ifNotLoggedIn>
+          <tsaap:ifLoggedIn>
             <li><g:link controller="notes">Welcome back @<sec:username/> !</g:link></li>
-          </sec:ifLoggedIn>
+          </tsaap:ifLoggedIn>
         </ul>
       </div>
     </div><!--/.nav-collapse -->

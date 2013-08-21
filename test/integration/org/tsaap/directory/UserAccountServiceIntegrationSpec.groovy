@@ -16,11 +16,11 @@
 
 package org.tsaap.directory
 
-import grails.plugin.spock.IntegrationSpec
 import grails.plugins.springsecurity.SpringSecurityService
 import org.tsaap.BootstrapService
+import spock.lang.Specification
 
-class UserAccountServiceIntegrationSpec extends IntegrationSpec {
+class UserAccountServiceIntegrationSpec extends Specification {
 
   BootstrapService bootstrapService
   UserAccountService userAccountService

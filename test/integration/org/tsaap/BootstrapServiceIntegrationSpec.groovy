@@ -16,18 +16,21 @@
 
 package org.tsaap
 
-import grails.plugin.spock.IntegrationSpec
-import org.tsaap.directory.RoleEnum
 
-class BootstrapServiceIntegrationSpec extends IntegrationSpec {
+import org.tsaap.directory.RoleEnum
+import spock.lang.Specification
+
+class BootstrapServiceIntegrationSpec extends Specification {
 
   BootstrapService bootstrapService
 
   def "role initialization"() {
 
-    when: bootstrapService.initializeRoles()
+    when: "roles are initialized"
+    bootstrapService.initializeRoles()
 
-    then: bootstrapService.studentRole != null
+    then: "we have 3 roles..."
+    bootstrapService.studentRole != null
     bootstrapService.studentRole == RoleEnum.STUDENT_ROLE.role
     bootstrapService.teacherRole != null
     bootstrapService.teacherRole == RoleEnum.TEACHER_ROLE.role

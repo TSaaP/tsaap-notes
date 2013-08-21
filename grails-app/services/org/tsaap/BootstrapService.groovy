@@ -46,7 +46,6 @@ class BootstrapService {
       sql.executeInsert("insert into role (id,authority) values (1,${RoleEnum.ADMIN_ROLE.name()})")
       adminRole = RoleEnum.ADMIN_ROLE.role
     }
-
   }
 
   def inializeDevUsers() {

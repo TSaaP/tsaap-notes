@@ -44,7 +44,7 @@ Brief summary/description of the plugin.
     def organization = [ name: "Irit", url: "http://www.irit.fr/" ]
 
     // Any additional developers beyond the author specified above.
-    def developers = [ [ name: "Franck Silvestre", email: "joe@bloggs.net" ]]
+    def developers = [ [ name: "Franck Silvestre", email: "franck.silvestre at irit.fr" ]]
 
     // Location of the plugin's issue tracker.
 //    def issueManagement = [ system: "JIRA", url: "http://jira.grails.org/browse/GPMYPLUGIN" ]

@@ -16,15 +16,15 @@
 
 package org.tsaap
 
-import grails.plugin.spock.IntegrationSpec
 import org.tsaap.BootstrapTestService
+import spock.lang.Specification
 
 /**
  *
  * @author franck Silvestre
  */
 
-class BootstrapTestServiceIntegrationSpec extends IntegrationSpec {
+class BootstrapTestServiceIntegrationSpec extends Specification {
 
   BootstrapTestService bootstrapTestService
 

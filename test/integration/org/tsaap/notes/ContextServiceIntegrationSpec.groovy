@@ -18,11 +18,11 @@
 
 package org.tsaap.notes
 
-import grails.plugin.spock.IntegrationSpec
 import org.tsaap.BootstrapTestService
+import spock.lang.Specification
 import spock.lang.Unroll
 
-class ContextServiceIntegrationSpec extends IntegrationSpec {
+class ContextServiceIntegrationSpec extends Specification {
 
   BootstrapTestService bootstrapTestService
   ContextService contextService

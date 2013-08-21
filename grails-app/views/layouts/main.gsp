@@ -46,7 +46,7 @@
 
       <div class="nav-collapse collapse pull-right">
         <ul class="nav navbar-nav">
-          <sec:ifLoggedIn>
+          <tsaap:ifLoggedIn>
             <li class="dropdown">
                       <a href="#" class="dropdown-toggle" data-toggle="dropdown">${user.fullname}
                         <span class="glyphicon glyphicon-cog"></span> <b class="caret"></b></a>
@@ -56,7 +56,7 @@
                         <li><g:link controller="logout">disconnect</g:link></li>
                       </ul>
                     </li>
-          </sec:ifLoggedIn>
+          </tsaap:ifLoggedIn>
         </ul>
       </div>
     </div><!--/.nav-collapse -->

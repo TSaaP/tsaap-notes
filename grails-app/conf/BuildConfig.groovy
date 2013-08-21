@@ -18,6 +18,7 @@ grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
 
+
 grails.project.dependency.resolver = "maven"  // or ivy
 grails.project.dependency.resolution = {
   // inherit Grails' default dependencies
@@ -41,31 +42,25 @@ grails.project.dependency.resolution = {
     // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
     // runtime 'mysql:mysql-connector-java:5.1.24'
 
-    // dependencies for tests
-    test "org.spockframework:spock-grails-support:0.7-groovy-2.0"
   }
 
   plugins {
     // plugins for the build system only
-    build(":release:3.0.0.BUILD-SNAPSHOT",
+    build(":release:3.0.0",
           ":rest-client-builder:1.0.3") {
       export = false
     }
 
-    build ":tomcat:7.0.39"
+    build ":tomcat:7.0.41"
 
     // plugins for the compile step
-    compile ":scaffolding:1.0.0"
-    compile ':cache:1.0.1'
+    //compile ":scaffolding:2.0.0.RC1"
+    compile ':cache:1.1.1'
     compile ":spring-security-core:1.2.7.3"
 
-    // plugins for test step
-    test(":spock:0.7") {
-      exclude "spock-grails-support"
-    }
 
     // plugins for the runtime only
-    runtime ":hibernate:3.6.10.M3"
+    runtime ":hibernate:3.6.10.M5"
 
     runtime ":jquery:1.10.2"
     runtime ":resources:1.2"

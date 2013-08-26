@@ -20,13 +20,12 @@ import grails.plugins.springsecurity.SpringSecurityService
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
 
-class SimpleSecurityTagLib implements ApplicationContextAware {
+class SimpleSecurityTagLib {
 
   //static defaultEncodeAs = 'html'
   //static encodeAsForTags = [tagName: 'raw']
   static namespace = "tsaap"
 
-  ApplicationContext applicationContext
   SpringSecurityService springSecurityService
 
   /**
@@ -43,13 +42,6 @@ class SimpleSecurityTagLib implements ApplicationContextAware {
     if (!springSecurityService.isLoggedIn()) {
       out << body()
     }
-  }
-
-  SpringSecurityService getSpringSecurityService() {
-    if (springSecurityService == null) {
-      springSecurityService = applicationContext.getBean('springSecurityService')
-    }
-    springSecurityService
   }
 
 }

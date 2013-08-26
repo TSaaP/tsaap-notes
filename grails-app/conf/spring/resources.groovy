@@ -17,5 +17,6 @@ import grails.plugins.springsecurity.SpringSecurityService /*
 beans = {
 
   //springSecurityService(SpringSecurityService)
+  springConfig.addAlias "springSecurityService", "springSecurityCoreSpringSecurityService"
 
 }

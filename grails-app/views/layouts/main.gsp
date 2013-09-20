@@ -41,7 +41,7 @@
 
     <div class="nav-collapse collapse">
       <ul class="nav navbar-nav">
-        <li id="mainLinkNotes"><g:link controller="notes">Notes</g:link></li></li>
+        <li id="mainLinkNotes"><g:link controller="notes" params="[displaysMyNotes:'on']">Notes</g:link></li></li>
         <li id="mainLinkContexts"><g:link controller="context">Contexts</g:link></li>
       </ul>
 

@@ -2,30 +2,28 @@
 <html>
 <head>
   <meta name="layout" content="main">
+  <r:require modules="tsaap_ui_notes,tsaap_icons"/>
   <g:set var="entityName"
          value="${message(code: 'context.label', default: 'Context')}"/>
-  <title><g:message code="default.create.label" args="[entityName]"/></title>
+  <title>Tsaap Notes - <g:message code="default.create.label" args="[entityName]"/></title>
 </head>
 
 <body>
-<a href="#create-context" class="skip" tabindex="-1"><g:message
-        code="default.link.skip.label" default="Skip to content&hellip;"/></a>
 
-<div class="nav" role="navigation">
-  <ul>
-    <li><a class="home" href="${createLink(uri: '/')}"><g:message
-            code="default.home.label"/></a></li>
+<div class="container context-nav" role="navigation">
+  <ol class="breadcrumb">
     <li><g:link class="list" action="index"><g:message code="default.list.label"
                                                        args="[entityName]"/></g:link></li>
-  </ul>
+    <li class="active">Create a new context</li>
+  </ol>
 </div>
 
-<div id="create-context" class="content scaffold-create" role="main">
-  <h1><g:message code="default.create.label" args="[entityName]"/></h1>
+<div id="create-context" class="container" role="main">
   <g:if test="${flash.message}">
     <div class="message" role="status">${flash.message}</div>
   </g:if>
   <g:hasErrors bean="${context}">
+    <div class="alert alert-danger">
     <ul class="errors" role="alert">
       <g:eachError bean="${context}" var="error">
         <li
@@ -33,16 +31,21 @@
                 error="${error}"/></li>
       </g:eachError>
     </ul>
+    </div>
   </g:hasErrors>
   <g:form url="[resource: context, action: 'save']">
     <fieldset class="form">
-      <g:render template="form"/>
+      <g:render template="form" model="[user:user]"/>
     </fieldset>
     <fieldset class="buttons">
-      <g:submitButton name="create" class="save"
+      <g:submitButton name="create" class="btn btn-default"
                       value="${message(code: 'default.button.create.label', default: 'Create')}"/>
     </fieldset>
   </g:form>
 </div>
+<r:script>
+  $(".nav li").removeClass('active');
+  $("#mainLinkContexts").addClass('active');
+</r:script>
 </body>
 </html>

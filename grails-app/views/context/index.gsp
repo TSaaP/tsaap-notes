@@ -6,17 +6,20 @@
   <r:require modules="tsaap_ui_notes,tsaap_icons"/>
   <g:set var="entityName"
          value="${message(code: 'context.label', default: 'Context')}"/>
-  <title><g:message code="default.list.label" args="[entityName]"/></title>
+  <title>Tsaap Notes - <g:message code="default.list.label" args="[entityName]"/></title>
 </head>
 
 <body>
 <div class="container context-nav">
-  <g:link class="btn btn-primary btn-sm pull-right" action="create"><g:message
-          code="default.new.label" args="[entityName]"/></g:link>
+  <ol class="breadcrumb">
+      <li class="active"><g:message code="default.list.label"
+                                                         args="[entityName]"/></li>
+    </ol>
+  <g:link class="btn btn-primary btn-sm pull-right" action="create"><span
+              class="glyphicon glyphicon-plus"></span> Add context</g:link>
 </div>
 
 <div id="list-context" class="container">
-
   <g:if test="${flash.message}">
     <div class="message" role="status">${flash.message}</div>
   </g:if>
@@ -39,7 +42,7 @@
     </thead>
     <tbody>
     <g:each in="${contextList}" status="i" var="context">
-      <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
+      <tr>
 
         <td><g:link action="show"
                     id="${context.id}">${fieldValue(bean: context, field: "contextName")}</g:link><br/>
@@ -50,7 +53,7 @@
         <td>${fieldValue(bean: context, field: "descriptionAsNote")}</td>
 
 
-        <td>${fieldValue(bean: context, field: "owner")}</td>
+        <td>@${fieldValue(bean: context, field: "owner")}</td>
 
       </tr>
     </g:each>

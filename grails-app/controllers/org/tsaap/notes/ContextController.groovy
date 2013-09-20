@@ -18,12 +18,13 @@ class ContextController {
   def index(Integer max) {
     params.max = Math.min(max ?: 10, 100)
     User user = springSecurityService.currentUser
-    respond Context.list(params), model: [contextCount: Context.count(), user:user]
+    def contextList = Context.list(params)
+    respond contextList, model: [contextList: contextList,contextCount: Context.count(), user:user]
   }
 
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])
   def show(Context context) {
-    respond context, model: [user:springSecurityService.currentUser]
+    respond context, model: [context:context,user:springSecurityService.currentUser]
   }
 
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])
@@ -34,14 +35,14 @@ class ContextController {
   @Transactional
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])
   def save(Context context) {
+    def user = springSecurityService.currentUser
     if (context == null) {
       notFound()
-      respond model: [user:springSecurityService.currentUser]
       return
     }
 
     if (context.hasErrors()) {
-      respond context.errors, view: 'create', model: [user:springSecurityService.currentUser]
+      respond context.errors, view: 'create', model: [user:user]
       return
     }
 
@@ -52,7 +53,7 @@ class ContextController {
         flash.message = message(code: 'default.created.message', args: [message(code: 'context.label', default: 'Context'), context.id])
         redirect context
       }
-      '*' { respond context, model: [user:springSecurityService.currentUser], [status: CREATED] }
+      '*' { respond context, [status: CREATED] }
     }
   }
 
@@ -66,7 +67,6 @@ class ContextController {
   def update(Context context) {
     if (context == null) {
       notFound()
-      respond model: [user:springSecurityService.currentUser]
       return
     }
 
@@ -92,7 +92,6 @@ class ContextController {
 
     if (context == null) {
       notFound()
-      respond model: [user:springSecurityService.currentUser]
       return
     }
 

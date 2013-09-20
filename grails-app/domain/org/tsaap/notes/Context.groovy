@@ -36,6 +36,7 @@ class Context {
    * The owner is most probably the teacher in a learning context
    **/
   User owner
+  Boolean ownerIsTeacher = true
 
   /**
    * The description note allows the description of the context with tags and

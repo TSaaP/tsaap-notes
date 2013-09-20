@@ -46,7 +46,7 @@
 
         <td><g:link action="show"
                     id="${context.id}">${fieldValue(bean: context, field: "contextName")}</g:link><br/>
-          ${fieldValue(bean: context, field: "url")}
+          ${fieldValue(bean: context, field: "url")} <a href="${context?.url}"><span class="glyphicon glyphicon-share"></span></a>
         </td>
 
 

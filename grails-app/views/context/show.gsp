@@ -73,13 +73,20 @@
         <td><g:formatDate
                 date="${context.lastUpdated}"/></td>
       </tr>
+      <tr>
+        <td>
+          Your notes on this context
+        </td>
+        <td><g:link controller="notes" params="[displaysMyNotes:'on',contextName:context?.contextName]"><g:createLink absolute="true" controller="notes" params="[displaysMyNotes:'on',contextName:context?.contextName]"/></g:link> </td>
+      </tr>
       </tbody>
     </table>
 
 
     <g:form url="[resource: context, action: 'delete']" method="DELETE">
       <fieldset class="buttons">
-        <g:link class="btn btn-primary" action="edit" resource="${context}"><g:message
+        <g:link class="btn btn-primary" action="edit"
+                resource="${context}"><g:message
                 code="default.button.edit.label" default="Edit"/></g:link>
         <g:actionSubmit class="btn btn-default" action="delete"
                         value="${message(code: 'default.button.delete.label', default: 'Delete')}"

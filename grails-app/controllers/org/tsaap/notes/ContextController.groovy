@@ -59,7 +59,7 @@ class ContextController {
 
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])
   def edit(Context context) {
-    respond context, model: [user:springSecurityService.currentUser]
+    respond context, model: [context: context, user:springSecurityService.currentUser]
   }
 
   @Transactional

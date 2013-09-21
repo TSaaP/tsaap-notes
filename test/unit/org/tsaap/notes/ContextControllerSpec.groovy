@@ -1,36 +1,51 @@
 package org.tsaap.notes
 
-
-
-import grails.test.mixin.*
-import spock.lang.*
+import grails.plugins.springsecurity.SpringSecurityService
+import grails.test.mixin.Mock
+import grails.test.mixin.TestFor
+import org.tsaap.directory.User
+import spock.lang.Specification
 
 @TestFor(ContextController)
-@Mock(Context)
+@Mock([Context, User, SpringSecurityService])
 class ContextControllerSpec extends Specification {
 
+  User user
+
   def populateValidParams(params) {
+    if (user == null) {
+      user = new User(firstName: "franck", lastName: "s", username: "fsil", email: "mail@mail.com", password: "password")
+      def springSecurityService = new Object()
+      springSecurityService.metaClass.encodePassword = { String password -> password }
+      user.springSecurityService = springSecurityService
+      user.save()
+    }
     assert params != null
-    // TODO: Populate valid properties like...
-    //params["name"] = 'someValidName'
+    params["contextName"] = 'science'
+    params["url"] = 'http://www.w3.org'
+    params["owner"] = user
+    params["descriptionAsNote"] = "a description"
+
   }
 
   void "Test the index action returns the correct model"() {
+
 
     when: "The index action is executed"
     controller.index()
 
     then: "The model is correct"
-    !model.contextList
+    model.contextList == []
     model.contextCount == 0
   }
 
   void "Test the create action returns the correct model"() {
+
     when: "The create action is executed"
     controller.create()
 
     then: "The model is correctly created"
-    model.context != null
+    model.contextInstance != null
   }
 
   void "Test the save action correctly persists an instance"() {
@@ -41,7 +56,7 @@ class ContextControllerSpec extends Specification {
     controller.save(context)
 
     then: "The create view is rendered again with the correct model"
-    model.context != null
+    model.contextInstance != null
     view == 'create'
 
     when: "The save action is executed with a valid instance"
@@ -50,6 +65,7 @@ class ContextControllerSpec extends Specification {
     context = new Context(params)
 
     controller.save(context)
+    println context.errors
 
     then: "A redirect is issued to the show action"
     response.redirectedUrl == '/context/show/1'
@@ -58,6 +74,7 @@ class ContextControllerSpec extends Specification {
   }
 
   void "Test that the show action returns the correct model"() {
+
     when: "The show action is executed with a null domain"
     controller.show(null)
 
@@ -93,8 +110,8 @@ class ContextControllerSpec extends Specification {
     when: "Update is called for a domain instance that doesn't exist"
     controller.update(null)
 
-    then: "A 404 error is returned"
-    status == 404
+    then: "A redirect error is returned"
+    status == 302
 
     when: "An invalid domain instance is passed to the update action"
     response.reset()
@@ -104,7 +121,7 @@ class ContextControllerSpec extends Specification {
 
     then: "The edit view is rendered again with the invalid instance"
     view == 'edit'
-    model.context == context
+    model.contextInstance == context
 
     when: "A valid domain instance is passed to the update action"
     response.reset()
@@ -121,8 +138,8 @@ class ContextControllerSpec extends Specification {
     when: "The delete action is called for a null instance"
     controller.delete(null)
 
-    then: "A 404 is returned"
-    status == 404
+    then: "A redirect is returned"
+    status == 302
 
     when: "A domain instance is created"
     response.reset()

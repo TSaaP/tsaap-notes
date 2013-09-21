@@ -24,8 +24,9 @@
                default="Description As Note"/>
 
   </label>
-  <g:textArea name="descriptionAsNote" cols="40" rows="5" maxlength="280"
+  <g:textArea id="descriptionAsNote" name="descriptionAsNote" cols="40" rows="3" maxlength="280"
               value="${context?.descriptionAsNote}" class="form-control"/>
+  <span class="character_counter" id="character_counter"></span>
 </div>
 
 
@@ -35,3 +36,24 @@
 </div>
 
 <g:hiddenField name="owner" value="${user.id}"/>
+
+<r:script>
+  $(document).ready(function () {
+
+    // set character counters
+    //-----------------------
+
+    // Get the textarea field
+    $("#descriptionAsNote")
+      // Bind the counter function on keyup and blur events
+            .bind('keyup blur', function () {
+                    // Count the characters and set the counter text
+                    var counter =  $("#character_counter${idControllSuffix}");
+                    counter.text($(this).val().length + '/280 characters');
+                  })
+
+      // Trigger the counter on first load
+            .keyup();
+
+  });
+</r:script>

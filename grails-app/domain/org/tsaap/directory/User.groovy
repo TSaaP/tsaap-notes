@@ -59,6 +59,10 @@ class User {
     "$firstName $lastName"
   }
 
+  String toString() {
+    username
+  }
+
   Set<Role> getAuthorities() {
     UserRole.findAllByUser(this).collect { it.role } as Set
   }

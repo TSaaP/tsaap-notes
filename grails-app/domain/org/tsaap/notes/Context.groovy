@@ -36,6 +36,7 @@ class Context {
    * The owner is most probably the teacher in a learning context
    **/
   User owner
+  Boolean ownerIsTeacher = true
 
   /**
    * The description note allows the description of the context with tags and
@@ -46,8 +47,8 @@ class Context {
   String descriptionAsNote
 
   static constraints = {
-    contextName blank: false, unique: true, validator: {
-      val -> val==~/^[a-zA-Z0-9_]{1,15}$/
+    contextName blank: false, unique: true, maxSize: 1024, validator: {
+      val -> val==~/^[a-zA-Z0-9_\/]{1,1024}$/
     }
     url url: true, nullable: true
     descriptionAsNote nullable: true, maxSize: 280

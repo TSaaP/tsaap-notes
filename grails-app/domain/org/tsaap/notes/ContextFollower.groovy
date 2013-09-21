@@ -23,6 +23,7 @@ class ContextFollower {
   Date dateCreated
   User follower
   Context context
+  Boolean followerIsTeacher = false
 
   static constraints = {}
 

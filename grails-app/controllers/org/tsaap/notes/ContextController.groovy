@@ -15,10 +15,16 @@ class ContextController {
   SpringSecurityService springSecurityService
 
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-  def index(Integer max) {
+  def index(Integer max, String filter) {
     params.max = Math.min(max ?: 10, 100)
     User user = springSecurityService.currentUser
-    def contextList = Context.list(params)
+    def contextList
+    if (!filter) {
+      contextList = Context.list(params)
+    } else {
+      contextList = Context.findAllByContextNameIlike("${filter}%", params)
+    }
+
     respond contextList, model: [contextList: contextList,contextCount: Context.count(), user:user]
   }
 

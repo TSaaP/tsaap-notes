@@ -17,6 +17,19 @@
     </ol>
   <g:link class="btn btn-primary btn-sm pull-right" action="create"><span
               class="glyphicon glyphicon-plus"></span> Add context</g:link>
+  <g:form controller="context" method="get" role="form">
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="Starting with" name="filter" value="${params.filter}">
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="submit">Filter</button>
+          </span>
+        </div><!-- /input-group -->
+      </div><!-- /.col-lg-6 -->
+    </div><!-- /.row -->
+
+  </g:form>
 </div>
 
 <div id="list-context" class="container">

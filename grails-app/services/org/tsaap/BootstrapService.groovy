@@ -66,7 +66,7 @@ class BootstrapService {
   def initializeDevContext() {
     science = Context.findByContextName('science')
     if (!science) {
-      science = contextService.addContext(new Context(owner: mary, contextName: 'science', descriptionAsNote: "everything about #science, but sur mainly on #computer", url: 'http://fr.wikipedia.org/wiki/Science'))
+      science = contextService.saveContext(new Context(owner: mary, contextName: 'science', descriptionAsNote: "everything about #science, but sur mainly on #computer", url: 'http://fr.wikipedia.org/wiki/Science'))
     }
   }
 

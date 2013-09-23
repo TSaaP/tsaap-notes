@@ -114,7 +114,7 @@ class NotesController {
           context = Context.findByContextName(params.contextName, [cache: true])
           if (context == null && params.createContext == 'true') {
             User contextOwner = params.contextOwner ? User.findByUsername(params.contextOwner) : user
-            context = contextService.addContext(new Context(contextName: params.contextName,
+            context = contextService.saveContext(new Context(contextName: params.contextName,
                                                             owner: contextOwner,
                                                             url: params.url,
                                                             descriptionAsNote: params.desc))

@@ -77,7 +77,10 @@
         <td>
           Your notes on this context
         </td>
-        <td><g:link controller="notes" params="[displaysMyNotes:'on',contextName:context?.contextName]"><g:createLink absolute="true" controller="notes" params="[displaysMyNotes:'on',contextName:context?.contextName]"/></g:link> </td>
+        <td><g:link controller="notes"
+                    params="[displaysMyNotes: 'on', contextName: context?.contextName]"><g:createLink
+                  absolute="true" controller="notes"
+                  params="[displaysMyNotes: 'on', contextName: context?.contextName]"/></g:link></td>
       </tr>
       </tbody>
     </table>
@@ -88,9 +91,11 @@
         <g:link class="btn btn-primary" action="edit"
                 resource="${context}"><g:message
                 code="default.button.edit.label" default="Edit"/></g:link>
-        <g:actionSubmit class="btn btn-default" action="delete"
-                        value="${message(code: 'default.button.delete.label', default: 'Delete')}"
-                        onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"/>
+        <g:if test="${!context.hasNotes()}">
+          <g:actionSubmit class="btn btn-default" action="delete"
+                          value="${message(code: 'default.button.delete.label', default: 'Delete')}"
+                          onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"/>
+        </g:if>
       </fieldset>
     </g:form>
   </g:if>

@@ -13,6 +13,7 @@ class ContextController {
   static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
   SpringSecurityService springSecurityService
+  ContextService contextService
 
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])
   def index(Integer max, String filter) {
@@ -52,7 +53,7 @@ class ContextController {
       return
     }
 
-    context.save flush: true
+    contextService.saveContext(context, true)
 
     request.withFormat {
       form {
@@ -81,7 +82,7 @@ class ContextController {
       return
     }
 
-    context.save flush: true
+    contextService.saveContext(context, true)
 
     request.withFormat {
       form {

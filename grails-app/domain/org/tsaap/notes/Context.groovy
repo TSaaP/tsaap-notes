@@ -26,6 +26,8 @@ import org.tsaap.resources.Resource
  * */
 class Context {
 
+  static transients = ['hasNotes']
+
   Date dateCreated
   Date lastUpdated
 
@@ -52,6 +54,14 @@ class Context {
     }
     url url: true, nullable: true
     descriptionAsNote nullable: true, maxSize: 280
+  }
+
+  /**
+   * Check if the current context has notes
+   * @return true if the current context has notes
+   */
+  Boolean hasNotes() {
+    Note.countByContext(this)
   }
 
   static mapping = {

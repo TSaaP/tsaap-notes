@@ -9,8 +9,11 @@ class ContextService {
    * @param context
    * @return
    */
-  Context addContext(Context context) {
-    context.save()
+  Context saveContext(Context context, Boolean flush = false) {
+    if (context == null) {
+      throw new IllegalArgumentException("context_not_found")
+    }
+    context.save(flush: flush)
     context
   }
 
@@ -49,4 +52,20 @@ class ContextService {
     }
     results
   }
+
+  /**
+   * Delete a given context
+   * @param context the context to delete
+   */
+  def deleteContext(Context context, Boolean flush = false) {
+    if (context == null) {
+      throw new IllegalArgumentException("context_not_found")
+    }
+    if (!context.hasNotes()) {
+      context.delete(flush: flush)
+    } else {
+      throw new Exception("notes_exist_for_this_context")
+    }
+  }
+
 }

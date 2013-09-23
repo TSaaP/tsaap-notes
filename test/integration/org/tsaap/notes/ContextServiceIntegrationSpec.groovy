@@ -26,13 +26,16 @@ class ContextServiceIntegrationSpec extends Specification {
 
   BootstrapTestService bootstrapTestService
   ContextService contextService
+  NoteService noteService
+
+  def setup() {
+    bootstrapTestService.initializeTests()
+  }
 
   @Unroll
   def "add context with name '#contextName' has errors: #contextHasErrors"() {
 
-    bootstrapTestService.initializeTests()
-
-    when: Context context = contextService.addContext(new Context(owner: bootstrapTestService.learnerPaul, contextName: contextName, url: url, descriptionAsNote: descContent))
+    when: Context context = contextService.saveContext(new Context(owner: bootstrapTestService.learnerPaul, contextName: contextName, url: url, descriptionAsNote: descContent))
 
     then: context.hasErrors() == contextHasErrors
     if (!context.hasErrors()) {
@@ -47,5 +50,23 @@ class ContextServiceIntegrationSpec extends Specification {
 
   }
 
+  def "delete contexte"() {
 
+    when: "a context has notes"
+    Context context = contextService.saveContext(new Context(owner: bootstrapTestService.learnerPaul, contextName: "aContext"))
+    Note note = noteService.addNote(bootstrapTestService.learnerMary, "a note...", context)
+    contextService.deleteContext(context)
+
+    then: "the delete fails with an exception"
+    thrown(Exception)
+
+    when: "a context has no notes"
+    noteService.deleteNoteByAuthor(note, bootstrapTestService.learnerMary)
+    contextService.deleteContext(context)
+
+    then: "the delete is OK"
+    Context.get(context.id) == null
+
+
+  }
 }

@@ -50,6 +50,7 @@
 
 
       <th><g:message code="context.owner.label" default="Owner"/></th>
+      <th>&nbsp;</th>
 
     </tr>
     </thead>
@@ -59,7 +60,7 @@
 
         <td><g:link action="show"
                     id="${context.id}">${fieldValue(bean: context, field: "contextName")}</g:link><br/>
-          ${fieldValue(bean: context, field: "url")} <a href="${context?.url}"><span class="glyphicon glyphicon-share"></span></a>
+          ${fieldValue(bean: context, field: "url")}&nbsp<a href="${context?.url}"><span class="glyphicon glyphicon-share"></span></a>
         </td>
 
 
@@ -67,7 +68,7 @@
 
 
         <td>@${fieldValue(bean: context, field: "owner")}</td>
-
+        <td><g:link controller="context" class="btn btn-default btn-sm">Follow</g:link></td>
       </tr>
     </g:each>
     </tbody>

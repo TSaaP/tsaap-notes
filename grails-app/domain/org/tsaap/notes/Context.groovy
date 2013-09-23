@@ -16,6 +16,7 @@
 
 package org.tsaap.notes
 
+import org.gcontracts.annotations.Requires
 import org.tsaap.directory.User
 import org.tsaap.resources.Resource
 
@@ -62,6 +63,20 @@ class Context {
    */
   Boolean hasNotes() {
     Note.countByContext(this)
+  }
+
+  /**
+   * Check if a context is followed by a user
+   * @param user
+   * @return
+   */
+  @Requires({ user })
+  Boolean isFollowedByUser(User user) {
+    if (owner == user) {
+      return true
+    }
+    ContextFollower contextFollower = ContextFollower.findByFollowerAndContext(user, this)
+    contextFollower && !contextFollower.isNoMoreSubscribed
   }
 
   static mapping = {

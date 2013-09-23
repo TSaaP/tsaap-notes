@@ -16,6 +16,7 @@
 
 package org.tsaap.notes
 
+import org.gcontracts.PreconditionViolation
 import org.tsaap.BootstrapTestService
 import spock.lang.Specification
 
@@ -121,7 +122,7 @@ class NoteServiceIntegrationSpec extends Specification {
     noteService.deleteNoteByAuthor(note1, bootstrapTestService.learnerPaul)
 
     then: "the deletion fails with an illegal argument exception"
-    thrown(IllegalArgumentException)
+    thrown(PreconditionViolation)
 
   }
 

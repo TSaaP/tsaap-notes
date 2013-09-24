@@ -17,6 +17,12 @@ class ContextService {
     context
   }
 
+  @Requires({user && context?.owner == user})
+  Context updateContext(Context context, User user, Boolean flush = false) {
+    saveContext(context, flush)
+  }
+
+
   /**
    * Find all contexts for an owner
    * @param user the owner

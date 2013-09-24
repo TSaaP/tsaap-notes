@@ -15,16 +15,14 @@ class ContextControllerSpec extends Specification {
 
   def setup() {
     controller.springSecurityService = springSecurityService
+    user = new User(firstName: "franck", lastName: "s", username: "fsil", email: "mail@mail.com", password: "password")
+    user.springSecurityService = springSecurityService
+    springSecurityService.encodePassword(user.password) >> user.password
+    user.save()
   }
 
 
   def populateValidParams(params) {
-    if (user == null) {
-      user = new User(firstName: "franck", lastName: "s", username: "fsil", email: "mail@mail.com", password: "password")
-      user.springSecurityService = springSecurityService
-      springSecurityService.encodePassword(user.password) >> user.password
-      user.save()
-    }
     assert params != null
     params["contextName"] = 'science'
     params["url"] = 'http://www.w3.org'
@@ -47,6 +45,7 @@ class ContextControllerSpec extends Specification {
   void "Test the create action returns the correct model"() {
 
     when: "The create action is executed"
+    springSecurityService.currentUser >> user
     controller.create()
 
     then: "The model is correctly created"
@@ -68,7 +67,7 @@ class ContextControllerSpec extends Specification {
     response.reset()
     populateValidParams(params)
     context = new Context(params)
-    if(context.hasErrors()) {
+    if (context.hasErrors()) {
       println context.errors
     }
 
@@ -134,6 +133,7 @@ class ContextControllerSpec extends Specification {
     response.reset()
     populateValidParams(params)
     context = new Context(params).save(flush: true)
+    springSecurityService.currentUser >> user
     controller.update(context)
 
     then: "A redirect is issues to the show action"

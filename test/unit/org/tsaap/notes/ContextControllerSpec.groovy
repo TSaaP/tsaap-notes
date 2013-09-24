@@ -7,17 +7,22 @@ import org.tsaap.directory.User
 import spock.lang.Specification
 
 @TestFor(ContextController)
-@Mock([Context, User, SpringSecurityService, ContextService])
+@Mock([Context, User, Note, ContextService])
 class ContextControllerSpec extends Specification {
 
   User user
+  SpringSecurityService springSecurityService = Mock(SpringSecurityService)
+
+  def setup() {
+    controller.springSecurityService = springSecurityService
+  }
+
 
   def populateValidParams(params) {
     if (user == null) {
       user = new User(firstName: "franck", lastName: "s", username: "fsil", email: "mail@mail.com", password: "password")
-      def springSecurityService = new Object()
-      springSecurityService.metaClass.encodePassword = { String password -> password }
       user.springSecurityService = springSecurityService
+      springSecurityService.encodePassword(user.password) >> user.password
       user.save()
     }
     assert params != null
@@ -63,9 +68,11 @@ class ContextControllerSpec extends Specification {
     response.reset()
     populateValidParams(params)
     context = new Context(params)
+    if(context.hasErrors()) {
+      println context.errors
+    }
 
     controller.save(context)
-    println context.errors
 
     then: "A redirect is issued to the show action"
     response.redirectedUrl == '/context/show/1'
@@ -150,6 +157,7 @@ class ContextControllerSpec extends Specification {
     Context.count() == 1
 
     when: "The domain instance is passed to the delete action"
+    springSecurityService.currentUser >> context.owner
     controller.delete(context)
 
     then: "The instance is deleted"

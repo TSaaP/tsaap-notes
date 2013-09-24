@@ -53,20 +53,29 @@ class ContextServiceIntegrationSpec extends Specification {
 
   def "delete contexte"() {
 
-    when: "a context has notes"
+    given: "a context with notes"
     Context context = contextService.saveContext(new Context(owner: bootstrapTestService.learnerPaul, contextName: "aContext"))
     Note note = noteService.addNote(bootstrapTestService.learnerMary, "a note...", context)
-    contextService.deleteContext(context)
 
-    then: "the delete fails with an exception"
+    when: "trying to delete the context"
+    contextService.deleteContext(context, context.owner)
+
+    then: "the delete fails due to precondition on attached notes"
     thrown(PreconditionViolation)
 
-    when: "a context has no notes"
+    when: "a context has no notes and trying to delete the context"
     noteService.deleteNoteByAuthor(note, bootstrapTestService.learnerMary)
-    contextService.deleteContext(context)
+    contextService.deleteContext(context, context.owner)
 
     then: "the delete is OK"
     Context.get(context.id) == null
+
+    when: "the user trying to delete the context is not the owner"
+    context = contextService.saveContext(new Context(owner: bootstrapTestService.learnerPaul, contextName: "aContext"))
+    contextService.deleteContext(context, bootstrapTestService.learnerMary)
+
+    then: "the delete fails"
+    thrown(PreconditionViolation)
 
   }
 
@@ -102,7 +111,7 @@ class ContextServiceIntegrationSpec extends Specification {
 
   def "unsubscribe a user on a context"() {
 
-    given:"a user following a context"
+    given: "a user following a context"
     Context context = contextService.saveContext(new Context(owner: bootstrapTestService.learnerPaul, contextName: "aContext"))
     contextService.subscribeUserOnContext(bootstrapTestService.learnerMary, context)
 

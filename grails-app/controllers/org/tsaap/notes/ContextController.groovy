@@ -102,7 +102,7 @@ class ContextController {
       return
     }
 
-    context.delete flush: true
+    contextService.deleteContext(context, springSecurityService.currentUser, true)
 
     request.withFormat {
       form {

@@ -1,6 +1,7 @@
 package org.tsaap.notes
 
 import org.gcontracts.annotations.Requires
+import org.gcontracts.annotations.Ensures
 import org.tsaap.directory.User
 
 class ContextService {
@@ -59,9 +60,9 @@ class ContextService {
    * @param context the context to delete
    */
   @Requires({
-    context && !context.hasNotes()
+    context && context.owner == user && !context.hasNotes()
   })
-  def deleteContext(Context context, Boolean flush = false) {
+  def deleteContext(Context context, User user, Boolean flush = false) {
     context.delete(flush: flush)
   }
 
@@ -74,6 +75,7 @@ class ContextService {
    * @return the context follower object if exists
    */
   @Requires({ context && user && context.owner != user })
+  @Ensures({!contextFollower.isNoMoreSubscribed})
   ContextFollower subscribeUserOnContext(User user, Context context,
                                          Boolean followerIsTeacher = false) {
     ContextFollower contextFollower = ContextFollower.findByFollowerAndContext(user, context)
@@ -97,6 +99,8 @@ class ContextService {
    * @param context the context
    * @return  the Context follower objet updated
    */
+  @Requires({context && user})
+  @Ensures({contextFollower?.isNoMoreSubscribed })
   ContextFollower unsuscribeUserOnContext(User user, Context context) {
     ContextFollower contextFollower = ContextFollower.findByFollowerAndContext(user, context)
     if (contextFollower) {

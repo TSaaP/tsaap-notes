@@ -42,16 +42,9 @@
     <thead>
     <tr>
 
-      <g:sortableColumn property="contextName"
-                        title="${message(code: 'context.contextName.label', default: 'Context Name')}"/>
+      <th>&nbsp;</th>
 
 
-      <g:sortableColumn property="descriptionAsNote"
-                        title="${message(code: 'context.descriptionAsNote.label', default: 'Description As Note')}"/>
-
-
-
-      <th><g:message code="context.owner.label" default="Owner"/></th>
       <th>&nbsp;</th>
       <th>&nbsp;</th>
 
@@ -61,18 +54,20 @@
     <g:each in="${contextList}" status="i" var="context">
       <tr>
 
-        <td><g:link action="show"
-                    id="${context.id}">${fieldValue(bean: context, field: "contextName")}</g:link><br/>
-          ${fieldValue(bean: context, field: "url")}&nbsp<a
+        <td><strong><g:link action="show"
+                    id="${context.id}">${fieldValue(bean: context, field: "contextName")}</g:link></strong> <small>@${context.owner}</small>
+          <g:if test="${context.url}">
+          <br/>
+          <small>${fieldValue(bean: context, field: "url")}&nbsp<a
                 href="${context?.url}"><span
-                  class="glyphicon glyphicon-share"></span></a>
+                  class="glyphicon glyphicon-share"></span></a></small>
+          </g:if>
+          <p>${fieldValue(bean: context, field: "descriptionAsNote")}</p>
         </td>
 
 
-        <td>${fieldValue(bean: context, field: "descriptionAsNote")}</td>
+        %{--<td>${fieldValue(bean: context, field: "descriptionAsNote")}</td>--}%
 
-
-        <td>@${fieldValue(bean: context, field: "owner")}</td>
         <g:if test="${context.owner != user}">
           <g:if test="${context.isFollowedByUser(user)}">
           <td><g:link controller="context" action="unfollowContext" id="${context.id}" style="width: 90px;"

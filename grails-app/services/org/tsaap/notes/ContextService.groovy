@@ -1,5 +1,7 @@
 package org.tsaap.notes
 
+import org.gcontracts.annotations.Requires
+import org.gcontracts.annotations.Ensures
 import org.tsaap.directory.User
 
 class ContextService {
@@ -9,13 +11,17 @@ class ContextService {
    * @param context
    * @return
    */
+  @Requires({ context })
   Context saveContext(Context context, Boolean flush = false) {
-    if (context == null) {
-      throw new IllegalArgumentException("context_not_found")
-    }
     context.save(flush: flush)
     context
   }
+
+  @Requires({user && context?.owner == user})
+  Context updateContext(Context context, User user, Boolean flush = false) {
+    saveContext(context, flush)
+  }
+
 
   /**
    * Find all contexts for an owner
@@ -23,6 +29,7 @@ class ContextService {
    * @param paginationAndSorting the params specifying the pagination an sorting
    * @return
    */
+  @Requires({ user })
   List<Context> contextsForOwner(User user,
                                  def paginationAndSorting = [sort: 'contextName']) {
     Context.findAllByOwner(user, paginationAndSorting)
@@ -34,6 +41,7 @@ class ContextService {
    * @param paginationAndSorting pagination an sorting params
    * @return
    */
+  @Requires({ user })
   List<ContextFollower> contextsFollowedByUser(User user,
                                                def paginationAndSorting = [sort: 'contextName', order: 'asc']) {
     def criteria = ContextFollower.createCriteria()
@@ -57,15 +65,57 @@ class ContextService {
    * Delete a given context
    * @param context the context to delete
    */
-  def deleteContext(Context context, Boolean flush = false) {
-    if (context == null) {
-      throw new IllegalArgumentException("context_not_found")
-    }
-    if (!context.hasNotes()) {
-      context.delete(flush: flush)
-    } else {
-      throw new Exception("notes_exist_for_this_context")
-    }
+  @Requires({
+    context && context.owner == user && !context.hasNotes()
+  })
+  def deleteContext(Context context, User user, Boolean flush = false) {
+    context.delete(flush: flush)
   }
+
+  /**
+   * Subscribe as follower a user on a context
+   * @param user the user to subscribe
+   * @param context the context
+   * @param followerIsTeacher the flag to indicate if the follower is a teacher
+   * on the context
+   * @return the context follower object if exists
+   */
+  @Requires({ context && user && context.owner != user })
+  @Ensures({!contextFollower.isNoMoreSubscribed})
+  ContextFollower subscribeUserOnContext(User user, Context context,
+                                         Boolean followerIsTeacher = false) {
+    ContextFollower contextFollower = ContextFollower.findByFollowerAndContext(user, context)
+    if (contextFollower) {
+      contextFollower.unsusbscriptionDate = null
+      contextFollower.isNoMoreSubscribed = false
+      contextFollower.followerIsTeacher = followerIsTeacher
+    } else {
+      contextFollower = new ContextFollower(follower: user,
+                                            context: context,
+                                            followerIsTeacher: followerIsTeacher)
+    }
+    contextFollower.save()
+    contextFollower
+  }
+
+  /**
+   * Unsubscribe a user from a context ; the context follower object is not deleted.
+   * It is marked as unsubscription
+   * @param user  the user to unsubscribe
+   * @param context the context
+   * @return  the Context follower objet updated
+   */
+  @Requires({context && user})
+  @Ensures({contextFollower?.isNoMoreSubscribed })
+  ContextFollower unsuscribeUserOnContext(User user, Context context) {
+    ContextFollower contextFollower = ContextFollower.findByFollowerAndContext(user, context)
+    if (contextFollower) {
+      contextFollower.unsusbscriptionDate = new Date()
+      contextFollower.isNoMoreSubscribed = true
+      contextFollower.save()
+    }
+    contextFollower
+  }
+
 
 }

@@ -7,19 +7,22 @@ import org.tsaap.directory.User
 import spock.lang.Specification
 
 @TestFor(ContextController)
-@Mock([Context, User, SpringSecurityService, ContextService])
+@Mock([Context, User, Note, ContextService])
 class ContextControllerSpec extends Specification {
 
   User user
+  SpringSecurityService springSecurityService = Mock(SpringSecurityService)
+
+  def setup() {
+    controller.springSecurityService = springSecurityService
+    user = new User(firstName: "franck", lastName: "s", username: "fsil", email: "mail@mail.com", password: "password")
+    user.springSecurityService = springSecurityService
+    springSecurityService.encodePassword(user.password) >> user.password
+    user.save()
+  }
+
 
   def populateValidParams(params) {
-    if (user == null) {
-      user = new User(firstName: "franck", lastName: "s", username: "fsil", email: "mail@mail.com", password: "password")
-      def springSecurityService = new Object()
-      springSecurityService.metaClass.encodePassword = { String password -> password }
-      user.springSecurityService = springSecurityService
-      user.save()
-    }
     assert params != null
     params["contextName"] = 'science'
     params["url"] = 'http://www.w3.org'
@@ -42,6 +45,7 @@ class ContextControllerSpec extends Specification {
   void "Test the create action returns the correct model"() {
 
     when: "The create action is executed"
+    springSecurityService.currentUser >> user
     controller.create()
 
     then: "The model is correctly created"
@@ -63,9 +67,11 @@ class ContextControllerSpec extends Specification {
     response.reset()
     populateValidParams(params)
     context = new Context(params)
+    if (context.hasErrors()) {
+      println context.errors
+    }
 
     controller.save(context)
-    println context.errors
 
     then: "A redirect is issued to the show action"
     response.redirectedUrl == '/context/show/1'
@@ -127,6 +133,7 @@ class ContextControllerSpec extends Specification {
     response.reset()
     populateValidParams(params)
     context = new Context(params).save(flush: true)
+    springSecurityService.currentUser >> user
     controller.update(context)
 
     then: "A redirect is issues to the show action"
@@ -150,6 +157,7 @@ class ContextControllerSpec extends Specification {
     Context.count() == 1
 
     when: "The domain instance is passed to the delete action"
+    springSecurityService.currentUser >> context.owner
     controller.delete(context)
 
     then: "The instance is deleted"

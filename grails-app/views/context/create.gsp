@@ -1,3 +1,4 @@
+<%@ page import="org.tsaap.notes.Context" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -35,7 +36,7 @@
   </g:hasErrors>
   <g:form url="[resource: context, action: 'save']">
     <fieldset class="form">
-      <g:render template="form" model="[user:user]"/>
+      <g:render template="form" model="[context: new Context(owner: user)]"/>
     </fieldset>
     <fieldset class="buttons">
       <g:submitButton name="create" class="btn btn-default"

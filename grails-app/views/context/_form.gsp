@@ -35,7 +35,7 @@
   <g:message code="context.ownerIsTeacher.label" default="You teach on this context"/>
 </div>
 
-<g:hiddenField name="owner" value="${user.id}"/>
+<g:hiddenField name="owner" value="${context?.owner?.id}"/>
 
 <r:script>
   $(document).ready(function () {

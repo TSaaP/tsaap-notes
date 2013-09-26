@@ -78,9 +78,9 @@
           The notes on this context
         </td>
         <td><g:link controller="notes"
-                    params="[displaysAll: 'on', contextName: context?.contextName]"><g:createLink
+                    params="[displaysAll: 'on', contextName: context?.contextName, contextId: context.id]"><g:createLink
                   absolute="true" controller="notes"
-                  params="[displaysAll: 'on', contextName: context?.contextName]"/></g:link></td>
+                  params="[displaysAll: 'on', contextName: context?.contextName, contextId: context.id]"/></g:link></td>
       </tr>
       </tbody>
     </table>

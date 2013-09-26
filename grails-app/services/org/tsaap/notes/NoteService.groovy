@@ -100,7 +100,7 @@ class NoteService {
     Bookmark bookmark = Bookmark.findByNoteAndUser(note, user)
     if (bookmark) {
       note.removeFromBookmarks(bookmark)
-      bookmark.delete()
+      bookmark.delete(flush:true)
     }
   }
 

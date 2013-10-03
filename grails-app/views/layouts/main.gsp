@@ -37,7 +37,7 @@
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
     </button>
-    <a class="navbar-brand" href="#">TsaaP-Notes</a>
+    <a class="navbar-brand" href="${grailsApplication.config.grails.serverURL}">TsaaP-Notes</a>
 
     <div class="nav-collapse collapse">
       <ul class="nav navbar-nav">

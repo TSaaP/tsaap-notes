@@ -32,7 +32,12 @@ class UserAccountController {
   def doSubscribe() {
     Role mainRole = RoleEnum.valueOf(RoleEnum,params.role).role
     User user = new User(params)
-    user = userAccountService.addUser(user,mainRole, true)
+    if (params.password == params.password2) {
+      user = userAccountService.addUser(user,mainRole, true)
+    } else {
+      user.errors.rejectValue('password','user.password.confirm.fail','The two passwords must be the same.')
+    }
+
     if (user.hasErrors()) {
       render(view: '/index', model: [user:user])
     } else {

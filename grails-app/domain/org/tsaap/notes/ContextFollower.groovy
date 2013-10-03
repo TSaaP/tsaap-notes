@@ -23,8 +23,15 @@ class ContextFollower {
   Date dateCreated
   User follower
   Context context
+  Boolean followerIsTeacher = false
+  Boolean isNoMoreSubscribed = false
+  Date unsusbscriptionDate
 
-  static constraints = {}
+  static constraints = {
+    unsusbscriptionDate nullable: true, validator: { value, object ->
+      (object.isNoMoreSubscribed && value) || (!object.isNoMoreSubscribed && !value)
+    }
+  }
 
   static mapping = {
     cache 'read-write'

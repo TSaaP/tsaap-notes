@@ -37,12 +37,13 @@
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
     </button>
-    <a class="navbar-brand" href="#">TsaaP-Notes</a>
+    <a class="navbar-brand" href="${grailsApplication.config.grails.serverURL}">TsaaP-Notes</a>
 
     <div class="nav-collapse collapse">
-      %{--<ul class="nav navbar-nav">
-        <li class="active"><a href="#" title="an action">an action</a></li>
-      </ul>--}%
+      <ul class="nav navbar-nav">
+        <li id="mainLinkNotes"><g:link controller="notes" params="[displaysMyNotes:'on']">Notes</g:link></li></li>
+        <li id="mainLinkContexts"><g:link controller="context">Contexts</g:link></li>
+      </ul>
 
       <div class="nav-collapse collapse pull-right">
         <ul class="nav navbar-nav">

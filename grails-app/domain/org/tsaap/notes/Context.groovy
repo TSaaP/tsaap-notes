@@ -16,6 +16,7 @@
 
 package org.tsaap.notes
 
+import org.gcontracts.annotations.Requires
 import org.tsaap.directory.User
 import org.tsaap.resources.Resource
 
@@ -25,6 +26,8 @@ import org.tsaap.resources.Resource
  * the capture of tags and mentions for all notes taken in the context
  * */
 class Context {
+
+  static transients = ['hasNotes']
 
   Date dateCreated
   Date lastUpdated
@@ -36,6 +39,7 @@ class Context {
    * The owner is most probably the teacher in a learning context
    **/
   User owner
+  Boolean ownerIsTeacher = true
 
   /**
    * The description note allows the description of the context with tags and
@@ -46,11 +50,33 @@ class Context {
   String descriptionAsNote
 
   static constraints = {
-    contextName blank: false, unique: true, validator: {
-      val -> val==~/^[a-zA-Z0-9_]{1,15}$/
+    contextName blank: false, unique: true, maxSize: 1024, validator: {
+      val -> val==~/^[a-zA-Z0-9_\/]{1,1024}$/
     }
     url url: true, nullable: true
     descriptionAsNote nullable: true, maxSize: 280
+  }
+
+  /**
+   * Check if the current context has notes
+   * @return true if the current context has notes
+   */
+  Boolean hasNotes() {
+    Note.countByContext(this)
+  }
+
+  /**
+   * Check if a context is followed by a user
+   * @param user
+   * @return
+   */
+  @Requires({ user })
+  Boolean isFollowedByUser(User user) {
+    if (owner == user) {
+      return true
+    }
+    ContextFollower contextFollower = ContextFollower.findByFollowerAndContext(user, this)
+    contextFollower && !contextFollower.isNoMoreSubscribed
   }
 
   static mapping = {

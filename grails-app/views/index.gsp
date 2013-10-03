@@ -39,76 +39,83 @@
         </p>
       </div>
 
+      <tsaap:ifNotLoggedIn>
+        <div class="col-lg-6">
+          <h2>New to TsaaP-Notes ? Sign up</h2>
+          <g:form controller="userAccount" action="doSubscribe">
+            <fieldset>
 
-      <div class="col-lg-6">
-        <h2>New to TsaaP-Notes ? Sign up</h2>
-        <g:form controller="userAccount" action="doSubscribe">
-          <fieldset>
-
-            <g:if test="${user?.hasErrors()}">
-              <div class="alert">
-                <g:eachError bean="${user}">
-                  <li><g:message error="${it}"/></li>
-                </g:eachError>
-              </div>
-            </g:if>
-            <div class="form-group">
-              <div class="row">
-                <div class="col-lg-5">
-                  <input type="text" class="form-control" id="firstName"
-                         name="firstName"
-                         value="${fieldValue(bean: user, field: 'firstName')}"
-                         placeholder="First name">
+              <g:if test="${user?.hasErrors()}">
+                <div class="alert">
+                  <g:eachError bean="${user}">
+                    <li><g:message error="${it}"/></li>
+                  </g:eachError>
                 </div>
+              </g:if>
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-lg-5">
+                    <input type="text" class="form-control" id="firstName"
+                           name="firstName"
+                           value="${fieldValue(bean: user, field: 'firstName')}"
+                           placeholder="First name">
+                  </div>
 
-                <div class="col-lg-5">
-                  <input type="text" class="form-control" id="lastName"
-                         name="lastName"
-                         value="${fieldValue(bean: user, field: 'lastName')}"
-                         placeholder="Last name">
+                  <div class="col-lg-5">
+                    <input type="text" class="form-control" id="lastName"
+                           name="lastName"
+                           value="${fieldValue(bean: user, field: 'lastName')}"
+                           placeholder="Last name">
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div class="form-group">
-              <input type="text" class="form-control" id="email" name="email"
-                     placeholder="Your email"
-                     value="${fieldValue(bean: user, field: 'email')}">
-            </div>
+              <div class="form-group">
+                <input type="text" class="form-control" id="email" name="email"
+                       placeholder="Your email"
+                       value="${fieldValue(bean: user, field: 'email')}">
+              </div>
 
-            <div class="form-group">
-              <label class="radio-inline">
-                <input type="radio" name="role" id="STUDENT_ROLE"
-                       value="STUDENT_ROLE" checked="checked"> Learner
-              </label>
-              <label class="radio-inline">
-                <input type="radio" name="role" id="TEACHER_ROLE"
-                       value="TEACHER_ROLE"> Teacher
-              </label>
+              <div class="form-group">
+                <label class="radio-inline">
+                  <input type="radio" name="role" id="STUDENT_ROLE"
+                         value="STUDENT_ROLE" checked="checked"> Learner
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="role" id="TEACHER_ROLE"
+                         value="TEACHER_ROLE"> Teacher
+                </label>
 
-            </div>
+              </div>
 
-            <div class="form-group">
-              <input type="text" class="form-control"
-                     id="username" placeholder="Choose your username"
-                     name="username"
-                     value="${fieldValue(bean: user, field: 'username')}">
-            </div>
+              <div class="form-group">
+                <input type="text" class="form-control"
+                       id="username" placeholder="Choose your username"
+                       name="username"
+                       value="${fieldValue(bean: user, field: 'username')}">
+              </div>
 
 
-            <div class="form-group">
-              <input type="password" class="form-control"
-                     id="password" placeholder="Password" name="password">
-            </div>
+              <div class="form-group">
+                <input type="password" class="form-control"
+                       id="password" placeholder="Password" name="password">
+              </div>
 
-            <p class="help-block">By clicking Sign up, you agree to our <a
-                    href="terms.html" target="_blank">Terms</a>.</p>
-            <button type="submit"
-                    class="btn btn-primary">Sign up &raquo;</button>
-          </fieldset>
-        </g:form>
+              <div class="form-group">
+                <input type="password" class="form-control"
+                       id="password2" placeholder="Confirm password"
+                       name="password2">
+              </div>
 
-      </div>
+              <p class="help-block">By clicking Sign up, you agree to our <a
+                      href="terms.html" target="_blank">Terms</a>.</p>
+              <button type="submit"
+                      class="btn btn-primary">Sign up &raquo;</button>
+            </fieldset>
+          </g:form>
+
+        </div>
+      </tsaap:ifNotLoggedIn>
     </div>
 
     <hr>

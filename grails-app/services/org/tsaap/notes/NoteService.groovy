@@ -17,6 +17,7 @@
 package org.tsaap.notes
 
 import grails.orm.PagedResultList
+import org.gcontracts.annotations.Requires
 import org.hibernate.criterion.CriteriaSpecification
 import org.springframework.transaction.annotation.Transactional
 import org.tsaap.directory.User
@@ -34,6 +35,7 @@ class NoteService {
    * @return the added note
    */
   @Transactional
+  @Requires({author && content})
   Note addNote(User author,
                String content,
                Context context = null,
@@ -80,6 +82,7 @@ class NoteService {
    * @param theUser the bookmarker
    * @return the bookmark
    */
+  @Requires({theNote && theUser})
   Bookmark bookmarkNotebyUser(Note theNote, User theUser) {
     Bookmark bookmark = new Bookmark(user: theUser, note: theNote)
     // for performance issues the bookmarks bag coming from the to many relationship
@@ -92,11 +95,12 @@ class NoteService {
    * @param note the note
    * @param user the user
    */
+  @Requires({note && user})
   def unbookmarkedNoteByUser(Note note, User user) {
     Bookmark bookmark = Bookmark.findByNoteAndUser(note, user)
     if (bookmark) {
       note.removeFromBookmarks(bookmark)
-      bookmark.delete()
+      bookmark.delete(flush:true)
     }
   }
 
@@ -106,10 +110,8 @@ class NoteService {
    * @param user the author of the note
    */
   @Transactional
+  @Requires({note && note.author == user })
   def deleteNoteByAuthor(Note note, User user) {
-    if (user != note.author) {
-      throw new IllegalArgumentException("user_is_not_author")
-    }
     // set parentNote fields
     def query = Note.where {
       parentNote == note

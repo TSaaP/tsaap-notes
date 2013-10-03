@@ -108,13 +108,13 @@ class NotesController {
    */
   private def renderMainPage(def params, User user, Map showDiscussion = [:]) {
     Context context = null
-        if (params.contextId) {
+        if (params.contextId && params.contextId != 'null') {
           context = Context.get(params.contextId)
         } else if (params.contextName) {
           context = Context.findByContextName(params.contextName, [cache: true])
           if (context == null && params.createContext == 'true') {
             User contextOwner = params.contextOwner ? User.findByUsername(params.contextOwner) : user
-            context = contextService.addContext(new Context(contextName: params.contextName,
+            context = contextService.saveContext(new Context(contextName: params.contextName,
                                                             owner: contextOwner,
                                                             url: params.url,
                                                             descriptionAsNote: params.desc))

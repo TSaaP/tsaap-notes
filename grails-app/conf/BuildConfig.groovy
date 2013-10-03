@@ -40,27 +40,22 @@ grails.project.dependency.resolution = {
   }
   dependencies {
     // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
-    // runtime 'mysql:mysql-connector-java:5.1.24'
+    runtime 'mysql:mysql-connector-java:5.1.24'
+    compile 'org.gcontracts:gcontracts-grails:1.2.12'
 
   }
 
   plugins {
-    // plugins for the build system only
-    build(":release:3.0.0",
-          ":rest-client-builder:1.0.3") {
-      export = false
-    }
 
-    build ":tomcat:7.0.41"
+    build ":tomcat:7.0.42"
 
     // plugins for the compile step
-    //compile ":scaffolding:2.0.0.RC1"
+    compile ":scaffolding:2.0.0"
     compile ':cache:1.1.1'
     compile ":spring-security-core:1.2.7.3"
 
-
     // plugins for the runtime only
-    runtime ":hibernate:3.6.10.M5"
+    runtime ":hibernate4:4.1.11.1" // or ":hibernate:3.6.10.1"
 
     runtime ":jquery:1.10.2"
     runtime ":resources:1.2"

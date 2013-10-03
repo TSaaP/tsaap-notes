@@ -23,6 +23,7 @@
   <meta name="description"
         content="Tsaap Notes - microblogging for learners and teachers">
   <meta name="author" content="Tsaap Development Group">
+  <link rel="shortcut icon" href="${resource(dir: 'images', file: 'favicon.ico')}" type="image/x-icon">
   <title><g:layoutTitle default="TsaaP-Notes"/></title>
   <r:layoutResources/>
 </head>

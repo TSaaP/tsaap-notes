@@ -31,9 +31,11 @@
     <!-- Example row of columns -->
     <div class="row">
       <div class="col-lg-6">
-        <h2>TsaaP-Notes</h2>
 
-        <p>Microblogging tool dedicated to learners and teachers. TsaaP-notes is born in the french research laboratory <a
+        <h2><img src="images/LogoTsaapNotes.png"></h2>
+        
+
+        <p>Tsaap-Notes is born in the french research laboratory <a
                 href="http://www.irit.fr"
                 target="_blank">IRIT</a> to help designing intelligent functions in technology-enhanced learning software.
         </p>
@@ -41,7 +43,7 @@
 
       <tsaap:ifNotLoggedIn>
         <div class="col-lg-6">
-          <h2>New to TsaaP-Notes ? Sign up</h2>
+          <h2>New to Tsaap-Notes ? Sign up</h2>
           <g:form controller="userAccount" action="doSubscribe">
             <fieldset>
 

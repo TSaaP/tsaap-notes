@@ -51,8 +51,9 @@ class ContextController {
       return
     }
 
+    context.validate()
     if (context.hasErrors()) {
-      respond context.errors, view: 'create', model: [user: user]
+      respond context.errors, view: 'create', model: [context:context, user: user]
       return
     }
 
@@ -81,8 +82,9 @@ class ContextController {
     }
 
     User user = springSecurityService.currentUser
+    context.validate()
     if (context.hasErrors()) {
-      respond context.errors, model: [user: user], view: 'edit'
+      respond context.errors, model: [context: context, user: user], view: 'edit'
       return
     }
 

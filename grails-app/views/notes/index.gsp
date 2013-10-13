@@ -83,8 +83,7 @@
 <g:if test="${context}">
   <r:script>
   $('#button_context').popover({
-                                 title: "${context.contextName}",
-                                 content: "<p><strong>url</strong>: <a href='${context.url}' target='blank'>${context.url}</a></p><p>${context.descriptionAsNote}</p>",
+                                 content: "<p><strong>url</strong>: <a href='${context.url}' target='blank'>${context.url}</a></p><p>${context.descriptionAsNote.replaceAll('[\n\r]',' ')}</p>",
                                  html: true
                                })
 

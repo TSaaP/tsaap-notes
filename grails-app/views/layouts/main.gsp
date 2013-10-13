@@ -53,7 +53,7 @@
                       <a href="#" class="dropdown-toggle" data-toggle="dropdown">${user.fullname}
                         <span class="glyphicon glyphicon-cog"></span> <b class="caret"></b></a>
                       <ul class="dropdown-menu">
-                        <li><a href="#">My account</a></li>
+                        %{--<li><a href="#">My account</a></li>--}%
                         <li class="divider"></li>
                         <li><g:link controller="logout">disconnect</g:link></li>
                       </ul>

@@ -65,6 +65,7 @@ class ContextServiceIntegrationSpec extends Specification {
 
     when: "a context has no notes and trying to delete the context"
     noteService.deleteNoteByAuthor(note, bootstrapTestService.learnerMary)
+    contextService.subscribeUserOnContext(bootstrapTestService.learnerMary,context)
     contextService.deleteContext(context, context.owner)
 
     then: "the delete is OK"
@@ -76,6 +77,7 @@ class ContextServiceIntegrationSpec extends Specification {
 
     then: "the delete fails"
     thrown(PreconditionViolation)
+
 
   }
 

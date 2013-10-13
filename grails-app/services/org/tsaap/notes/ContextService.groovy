@@ -69,6 +69,8 @@ class ContextService {
     context && context.owner == user && !context.hasNotes()
   })
   def deleteContext(Context context, User user, Boolean flush = false) {
+    def contextFollowers = ContextFollower.where { context == context }
+    contextFollowers.deleteAll()
     context.delete(flush: flush)
   }
 

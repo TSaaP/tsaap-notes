@@ -7,7 +7,7 @@ import org.tsaap.directory.User
 import spock.lang.Specification
 
 @TestFor(ContextController)
-@Mock([Context, User, Note, ContextService])
+@Mock([Context, User, Note, ContextService, ContextFollower])
 class ContextControllerSpec extends Specification {
 
   User user

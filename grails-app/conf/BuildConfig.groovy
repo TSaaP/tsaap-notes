@@ -53,6 +53,7 @@ grails.project.dependency.resolution = {
     compile ":scaffolding:2.0.0"
     compile ':cache:1.1.1'
     compile ":spring-security-core:1.2.7.3"
+    compile ":codenarc:0.19"
 
     // plugins for the runtime only
     runtime ":hibernate4:4.1.11.1" // or ":hibernate:3.6.10.1"
@@ -61,5 +62,11 @@ grails.project.dependency.resolution = {
     runtime ":resources:1.2"
 
     test ":code-coverage:1.2.6"
+
   }
+}
+
+codenarc.properties = {
+  // Each property definition is of the form:  RULE.PROPERTY-NAME = PROPERTY-VALUE
+  GrailsPublicControllerMethod.enabled = false
 }

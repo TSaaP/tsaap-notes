@@ -63,6 +63,9 @@ grails.project.dependency.resolution = {
 
     test ":code-coverage:1.2.6"
 
+    compile ":mail:1.0.1"
+    compile ":quartz:1.0"
+
   }
 }
 

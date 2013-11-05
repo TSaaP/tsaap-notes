@@ -17,7 +17,7 @@
 // Fichier de configuration externe propre à l'application
 def appConfigLocation = System.properties["${appName}.config.location"]
 if (appConfigLocation) {
-  grails.config.locations = ["file:" + appConfigLocation]
+  grails.config.locations = ["file:$appConfigLocation"]
 }
 
 

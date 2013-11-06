@@ -1,0 +1,6 @@
+user_id,first_name,email,context_id,context_name,count(tnote.id)
+1,Franck,franck.silvestre@ticetime.com,2,master/info/dl/1/dcll,5
+1,Franck,franck.silvestre@ticetime.com,1,science,4
+2,Mary,mary@mary.com,1,science,4
+4,paul,franck.silvestre@irit.fr,2,master/info/dl/1/dcll,5
+4,paul,franck.silvestre@irit.fr,1,science,4

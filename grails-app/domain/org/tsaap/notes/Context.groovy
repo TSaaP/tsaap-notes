@@ -18,8 +18,6 @@ package org.tsaap.notes
 
 import org.gcontracts.annotations.Requires
 import org.tsaap.directory.User
-import org.tsaap.resources.Resource
-
 /**
  * The context describes the context which the learner take notes in.
  * Typically the context references a resource and a description that allows
@@ -50,8 +48,7 @@ class Context {
   String descriptionAsNote
 
   static constraints = {
-    contextName blank: false, unique: true, maxSize: 1024, validator: {
-      val -> val==~/^[a-zA-Z0-9_\/]{1,1024}$/
+    contextName blank: false, unique: true, maxSize: 1024, validator: { val -> val==~/^[a-zA-Z0-9_\/]{1,1024}$/
     }
     url url: true, nullable: true
     descriptionAsNote nullable: true, maxSize: 280
@@ -63,6 +60,15 @@ class Context {
    */
   Boolean hasNotes() {
     Note.countByContext(this)
+  }
+
+  /**
+   * Check if the current context has new notes since yesterday
+   * @return true if the current context has notes
+   */
+  Integer newNotesCountSinceYesterday() {
+    def today = new Date()
+    Note.countByContextAndDateCreatedBetween(this, today - 1, today)
   }
 
   /**

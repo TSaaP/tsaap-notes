@@ -46,7 +46,7 @@ class ContextService {
                                                def paginationAndSorting = [sort: 'contextName', order: 'asc']) {
     def criteria = ContextFollower.createCriteria()
     def results = criteria {
-      follower = user
+      eq 'follower',user
       context {
         order paginationAndSorting.sort, paginationAndSorting.order
         if (paginationAndSorting.max) {

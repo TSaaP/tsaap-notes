@@ -38,9 +38,9 @@
   </g:if>
   <g:elseif test="${noteCount == 1}">
     <p>
-      There is one new note on context ${context.context_name} since yesterday. <br>
+      There is one new note on context <strong>${context.context_name}<strong> since yesterday. <br>
       Come and see : <g:createLink absolute="true"
-                                   params="[displaysAll: 'on', contextName: context.contextName, contextId: context.id]"
+                                   params="[displaysAll: 'on', contextName: context.context_name, contextId: context.context_id]"
                                    controller="notes"/>
     </p>
   </g:elseif>

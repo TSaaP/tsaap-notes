@@ -9,3 +9,5 @@ target
 bin
 .class
 out
+
+cobertura.ser

@@ -77,7 +77,7 @@ class NotesController {
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])
   def deleteNote() {
     def user = springSecurityService.currentUser
-    Note note = Note.get(params.noteId)
+    Note note = Note.load(params.noteId)
     noteService.deleteNoteByAuthor(note, user)
     params.remove('noteId')
     redirect(action: index(), params: params)

@@ -36,7 +36,7 @@ enum RoleEnum {
   STUDENT_ROLE(2),
   TEACHER_ROLE(3)
 
-  private Long id
+  Long id
 
   RoleEnum(Long id) {
     this.id = id

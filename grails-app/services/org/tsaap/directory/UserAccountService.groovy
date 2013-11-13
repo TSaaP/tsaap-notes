@@ -4,17 +4,30 @@ class UserAccountService {
 
   /**
    * Add a new user, the user is not enabled
-   * @param firstName the first name
-   * @param  lastName the last name
-   * @param username the username
-   * @param email the email
-   * @param password the password
+   * @param enabled flag that indicate if the account is enabled
+   * @param mainRole the main role for the user
+   * @param user the user to be added
    * @return the created user
    */
   User addUser(User user, Role mainRole, Boolean enabled = false) {
     user.enabled = enabled
     user.save()
     if (!user.hasErrors()) {
+      UserRole.create(user, mainRole)
+    }
+    user
+  }
+
+  /**
+   * Update the user
+   * @param user the user
+   * @param mainRole the main role
+   * @return the updated user
+   */
+  User updateUser(User user, Role mainRole) {
+    user.save()
+    if (!user.hasErrors() && !UserRole.get(user.id, mainRole.id)) {
+      UserRole.removeAll(user)
       UserRole.create(user, mainRole)
     }
     user
@@ -44,7 +57,7 @@ class UserAccountService {
 
   /**
    *
-   * @param newPassword  the new password
+   * @param newPassword the new password
    * @param user the user
    * @return the processed user
    */

@@ -48,6 +48,19 @@ class UserAccountServiceIntegrationSpec extends Specification {
     !user.authorities.empty
     user.authorities.first().authority == RoleEnum.STUDENT_ROLE.name()
     user.password == springSecurityService.encodePassword("password")
+
+    when: "adding a user with email checking activated"
+    def user2 = userAccountService.addUser(new User(firstName: "Mary", lastName: "G",
+                                                    username: "Mary_test_g",
+                                                    email: "mary@mary.com",
+                                                    password: "password"),
+                                           RoleEnum.STUDENT_ROLE.role, false, true)
+
+    then: "the activation key is generated"
+    !user2.hasErrors()
+    def actKey = ActivationKey.findByUser(user2)
+    actKey != null
+
   }
 
   def "enable user"() {

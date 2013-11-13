@@ -1,5 +1,7 @@
 package org.tsaap.directory
 
+import org.gcontracts.annotations.Requires
+
 class UserAccountService {
 
   /**
@@ -9,11 +11,16 @@ class UserAccountService {
    * @param user the user to be added
    * @return the created user
    */
-  User addUser(User user, Role mainRole, Boolean enabled = false) {
+  User addUser(User user, Role mainRole, Boolean enabled = false, boolean checkEmailAccount = false) {
     user.enabled = enabled
     user.save()
     if (!user.hasErrors()) {
       UserRole.create(user, mainRole)
+      if (checkEmailAccount) {
+        ActivationKey actKey = new ActivationKey(activationKey: UUID.randomUUID().toString() ,user:user)
+        actKey.save()
+        println ">>>>>>> ${actKey.errors}"
+      }
     }
     user
   }
@@ -39,6 +46,24 @@ class UserAccountService {
    * @return the processed user
    */
   User enableUser(User user) {
+    user.enabled = true
+    user.save()
+    user
+  }
+
+  /**
+   * Enable a user with an activation key
+   * @param user
+   * @param activationKey
+   * @return
+   */
+  @Requires({
+    user &&
+    !user.enabled  &&
+    user == activationKey?.user
+  })
+  User enableUserWithActivationKey(User user, ActivationKey activationKey) {
+    activationKey.delete()
     user.enabled = true
     user.save()
     user

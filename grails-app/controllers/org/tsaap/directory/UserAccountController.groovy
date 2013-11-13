@@ -18,6 +18,7 @@ package org.tsaap.directory
 
 import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
+import org.gcontracts.PreconditionViolation
 
 class UserAccountController {
 
@@ -98,6 +99,26 @@ class UserAccountController {
     User user = springSecurityService.currentUser
     userAccountService.disableUser(user)
     redirect(uri: '/logout')
+  }
+
+  /**
+   * Enable a user
+   * @param actKey the activation key
+   * @param id the user id
+   */
+  def doEnableUser() {
+    def strKey = params.actKey
+    def id = params.id
+    User user = User.get(params.id)
+    ActivationKey actKey = ActivationKey.findByUserAndActivationKey(user,strKey)
+    try {
+      userAccountService.enableUserWithActivationKey(user,actKey)
+    } catch (PreconditionViolation e) {
+      flash.message = message(code:'useraccount.activation.failure' )
+      throw e
+    }
+    flash.message = message(code: 'useraccount.update.success')
+    redirect (uri:'/login/auth')
   }
 
 }

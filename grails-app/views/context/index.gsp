@@ -11,7 +11,7 @@
 </head>
 
 <body>
-<div class="container context-nav">
+<div class="container">
   <ol class="breadcrumb">
     <li class="active"><g:message code="default.list.label"
                                   args="[entityName]"/></li>

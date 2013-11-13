@@ -16,25 +16,46 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>
-    <g:if env="development">Grails Runtime Exception</g:if><g:else>Error</g:else></title>
+  <title>Tsaap-Notes</title>
   <meta name="layout" content="home">
-  <g:if env="development"><link rel="stylesheet"
-                                href="${resource(dir: 'css', file: 'errors.css')}"
-                                type="text/css"></g:if>
-  <r:require module="tsaap_ui"/>
+  <r:require module="tsaap_ui_home"/>
 </head>
 
 <body>
 <div class="container">
-<g:if env="development">
-  <g:renderException exception="${exception}"/>
-</g:if>
-<g:else>
-  <ul class="errors">
-    <li>An error has occurred</li>
-  </ul>
-</g:else>
+
+  <div class="alert">
+
+    <g:if test="${flash.message}">
+      <p>${flash.message}</p>
+    </g:if>
+    <g:else>
+      <p>
+        Sorry, something went wrong.
+      </p>
+    </g:else>
+    <p>
+      You can continue on Tsaap-Notes following <g:link uri="/login/auth">this link</g:link>.
+    </p>
+
   </div>
+
+  <g:if env="development">
+    <p>
+      <a href="#"
+         onclick="showException()">Click to see detail of the error.</a>
+    </p>
+
+    <div id="exception" style="display:none">
+      <g:renderException exception="${exception}"/>
+    </div>
+  </g:if>
+</div>
+<r:script>
+  function showException() {
+    $('#exception').show()
+  }
+
+</r:script>
 </body>
 </html>

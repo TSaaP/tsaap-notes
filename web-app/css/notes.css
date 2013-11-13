@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
+body {
+  padding-top: 60px;
+}
+
 .note-edition {
-    padding-top: 60px;
     border-bottom: 1px solid #eeeeee;
     margin-bottom: 10px;
 }
@@ -36,7 +39,7 @@
 .note-list-content .badge {
     font-size: 85%;
     color: #000000;
-    background-color:#BBDDF0 ;
+    background-color: #BBDDF0;
     font-weight: normal;
 }
 
@@ -52,7 +55,7 @@
 }
 
 .note-actions & .note-parent-note {
-   display: none;
+    display: none;
 }
 
 .note-discussion {
@@ -62,6 +65,3 @@
     border: 1px solid #eeeeee;
 }
 
-.context-nav {
-    padding-top: 60px;
-}

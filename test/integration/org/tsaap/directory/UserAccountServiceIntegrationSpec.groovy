@@ -19,6 +19,7 @@ package org.tsaap.directory
 import grails.plugins.springsecurity.SpringSecurityService
 import org.tsaap.BootstrapService
 import spock.lang.Specification
+import spock.lang.Unroll
 
 class UserAccountServiceIntegrationSpec extends Specification {
 
@@ -27,14 +28,15 @@ class UserAccountServiceIntegrationSpec extends Specification {
   SpringSecurityService springSecurityService
 
   def "add user"() {
+    given: 'the initialised referential for roles'
     bootstrapService.initializeRoles()
 
     when: "adding a user"
     def u = userAccountService.addUser(new User(firstName: "Mary", lastName: "S",
-                                              username: "Mary_test",
-                                              email: "mary@nomail.com",
-                                              password: "password"),
-                                     RoleEnum.STUDENT_ROLE.role)
+                                                username: "Mary_test",
+                                                email: "mary@nomail.com",
+                                                password: "password"),
+                                       RoleEnum.STUDENT_ROLE.role)
     println "${u.errors}"
 
     then: "the user is persisted in the datastore"
@@ -59,28 +61,62 @@ class UserAccountServiceIntegrationSpec extends Specification {
                                           RoleEnum.STUDENT_ROLE.role)
     userAccountService.enableUser(mary)
 
-    then:
-    User user = User.findByUsername("Mary_test")
+    then: User user = User.findByUsername("Mary_test")
     user != null
     user.enabled
   }
 
   def "disable user"() {
-    bootstrapService.initializeRoles()
 
-    when:
+    given: 'a user with account enabled'
+    bootstrapService.initializeRoles()
     def mary = userAccountService.addUser(new User(firstName: "Mary", lastName: "S",
                                                    username: "Mary_test",
                                                    email: "mary@nomail.com",
                                                    password: "password"),
                                           RoleEnum.STUDENT_ROLE.role)
     userAccountService.enableUser(mary)
+
+    when: 'the user account is asking to be disabled'
     userAccountService.disableUser(mary)
 
-    then:
+    then: 'the user is disabled '
     User user = User.findByUsername("Mary_test")
     user != null
     !user.enabled
+  }
+
+  @Unroll
+  def "update user"() {
+
+    given: ' an existing user'
+    bootstrapService.initializeRoles()
+    def mary = userAccountService.addUser(new User(firstName: "Mary", lastName: "S",
+                                                   username: "Mary_test",
+                                                   email: "mary@nomail.com",
+                                                   password: "password"),
+                                          RoleEnum.STUDENT_ROLE.role)
+
+    when: 'modifying properties of the  user and ask for an update'
+    mary.firstName = newFirstName
+    mary.email = newEmail
+    Role mainRole = RoleEnum.valueOf(newRoleName).role
+    userAccountService.updateUser(mary, mainRole)
+
+    then: 'the user is modified or has errors'
+    User user = User.findByUsername("Mary_test")
+    user != null
+    println user.errors
+    (user.version != 0) == userHasChanged
+    user.hasErrors() == userHasErrors
+    if(userHasChanged) {
+      UserRole.get(user.id, mainRole.id) != null
+    }
+
+    where: newFirstName | newEmail          | newRoleName                  | userHasChanged | userHasErrors
+    "Franck"            | "fsil@fsil.com"   | RoleEnum.TEACHER_ROLE.name() | true           | false
+    "Mary"              | "mary@nomail.com" | RoleEnum.TEACHER_ROLE.name() | false          | false
+    "Mary"              | "mary@"           | RoleEnum.TEACHER_ROLE.name() | false          | true
   }
 
 }

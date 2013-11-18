@@ -144,4 +144,16 @@ environments {
   }
 }
 
+// email checking on subscription
 
+environments {
+  development {
+    tsaap.auth.check_user_email = true
+  }
+  test {
+    tsaap.auth.check_user_email = false
+  }
+  prod {
+    tsaap.auth.check_user_email = true
+  }
+}

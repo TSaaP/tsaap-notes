@@ -19,7 +19,7 @@ class UserAccountService {
       if (checkEmailAccount) {
         ActivationKey actKey = new ActivationKey(activationKey: UUID.randomUUID().toString() ,user:user)
         actKey.save()
-        println ">>>>>>> ${actKey.errors}"
+        user.actKey = actKey.activationKey
       }
     }
     user

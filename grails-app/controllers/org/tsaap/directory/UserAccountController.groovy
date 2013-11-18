@@ -37,8 +37,9 @@ class UserAccountController {
   def doSubscribe() {
     Role mainRole = RoleEnum.valueOf(RoleEnum, params.role).role
     User user = new User(params)
+    def checkEmail = grailsApplication.config.tsaap.auth.check_user_email ?: true
     if (params.password == params.password2) {
-      user = userAccountService.addUser(user, mainRole, true)
+      user = userAccountService.addUser(user, mainRole, !checkEmail, checkEmail)
     } else {
       user.errors.rejectValue('password', 'user.password.confirm.fail', 'The two passwords must be the same.')
     }
@@ -46,7 +47,7 @@ class UserAccountController {
     if (user.hasErrors()) {
       render(view: '/index', model: [user: user])
     } else {
-      flash.message = message(code: 'subscription.success')
+      flash.message = message(code: checkEmail ? 'subscription.success.email_to_be_checked' : 'subscription.success')
       redirect(uri: '/login/auth')
     }
   }

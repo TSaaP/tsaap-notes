@@ -70,6 +70,7 @@ class NotificationService {
       }
       notifications[key] << [context_id: it.context_id, context_name: it.context_name, count_notes: it.count_notes]
     }
+    sql.close()
     notifications
   }
 

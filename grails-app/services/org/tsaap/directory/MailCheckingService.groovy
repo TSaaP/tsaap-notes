@@ -1,7 +1,6 @@
 package org.tsaap.directory
 
 import grails.plugin.mail.MailService
-import grails.transaction.Transactional
 import groovy.sql.Sql
 
 import javax.sql.DataSource

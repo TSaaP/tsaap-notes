@@ -33,8 +33,7 @@
 <p>
   You have successfully subscribed to Tsaap-Notes. To activate your account you need click on the link below or copy-paste it in you favorite browser.<br>
   <g:createLink absolute="true"
-                params='[actKey: "${actKey}"]' action="doEnableUser"
-                id="${user.id}"
+                params='[actKey: "${actKey}", id:"${user.user_id}"]' action="doEnableUser"
                 controller="userAccount"/>
 </p>
 </body>

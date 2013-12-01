@@ -23,7 +23,8 @@ class MailCheckingJob {
   MailCheckingService mailCheckingService
 
   static triggers = {
-    cron name: 'cronTrigger', startDelay: 10000, cronExpression: '0/30 * * * * ?'
+    // every 30 seconds
+    cron name: 'mailCheckingCronTrigger', startDelay: 10000, cronExpression: '0/30 * * * * ?'
   }
 
   def execute() {

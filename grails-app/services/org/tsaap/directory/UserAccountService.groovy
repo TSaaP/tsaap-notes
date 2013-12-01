@@ -19,7 +19,6 @@ class UserAccountService {
       if (checkEmailAccount) {
         ActivationKey actKey = new ActivationKey(activationKey: UUID.randomUUID().toString() ,user:user)
         actKey.save()
-        user.actKey = actKey.activationKey
       }
     }
     user

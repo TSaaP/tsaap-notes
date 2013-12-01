@@ -125,6 +125,8 @@ log4j = {
         'net.sf.ehcache.hibernate'
 
   //debug 'org.springframework.security'
+  debug 'grails.app.jobs'
+  debug 'grails.app.services.org.tsaap.directory'
 
 }
 

@@ -22,6 +22,7 @@ class Note {
   Date dateCreated
   User author
   Context context
+  Tag fragmentTag
   Note parentNote
 
   String content
@@ -30,6 +31,7 @@ class Note {
 
   static constraints = {
     context nullable: true
+    fragmentTag nullable: true
     parentNote nullable: true
     bookmarks nullable: true
     content maxSize: 280

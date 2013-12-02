@@ -18,7 +18,12 @@
 
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-  <meta name="layout" content="main"/>
+  <g:if test="${params.inline}">
+    <meta name="layout" content="inline"/>
+  </g:if>
+  <g:else>
+    <meta name="layout" content="main"/>
+  </g:else>
   <r:require modules="tsaap_ui_notes,tsaap_icons"/>
 </head>
 
@@ -83,7 +88,7 @@
 <g:if test="${context}">
   <r:script>
   $('#button_context').popover({
-                                 content: "<p><strong>url</strong>: <a href='${context.url}' target='blank'>${context.url}</a></p><p>${context.descriptionAsNote.replaceAll('[\n\r]',' ')}</p>",
+                                 content: "<p><strong>url</strong>: <a href='${context.url}' target='blank'>${context.url}</a></p><p>${context.descriptionAsNote?.replaceAll('[\n\r]',' ')}</p>",
                                  html: true
                                })
 

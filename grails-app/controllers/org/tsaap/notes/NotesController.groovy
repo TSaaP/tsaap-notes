@@ -33,7 +33,7 @@ class NotesController {
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])
   def index() {
     User user = springSecurityService.currentUser
-    renderMainPage(params,user)
+    renderMainPage(params, user)
   }
 
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])
@@ -90,15 +90,15 @@ class NotesController {
     Map showDiscussion = [:]
     showDiscussion[noteId] = true
     params.remove('noteId')
-    renderMainPage(params,user,showDiscussion)
+    renderMainPage(params, user, showDiscussion)
   }
 
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def hideDiscussion() {
-      def user = springSecurityService.currentUser
-      Map showDiscussion = [:]
-      renderMainPage(params,user,showDiscussion)
-    }
+  def hideDiscussion() {
+    def user = springSecurityService.currentUser
+    Map showDiscussion = [:]
+    renderMainPage(params, user, showDiscussion)
+  }
 
   /**
    * Render the main page given the params and the user
@@ -108,46 +108,36 @@ class NotesController {
    */
   private def renderMainPage(def params, User user, Map showDiscussion = [:]) {
     Context context = null
-        if (params.contextId && params.contextId != 'null') {
-          context = Context.get(params.contextId)
-        } else if (params.contextName) {
-          context = Context.findByContextName(params.contextName, [cache: true])
-          if (context == null && params.createContext == 'true') {
-            User contextOwner = params.contextOwner ? User.findByUsername(params.contextOwner) : user
-            context = contextService.saveContext(new Context(contextName: params.contextName,
-                                                            owner: contextOwner,
-                                                            url: params.url,
-                                                            descriptionAsNote: params.desc))
-          }
-        }
-        def displaysMyNotes = true
-        def displaysMyFavorites = false
-        def displaysAll = false
-        if (params.displaysMyNotes != 'on') {
-          displaysMyNotes = false
-        }
-        if (params.displaysMyFavorites == 'on') {
-          displaysMyFavorites = true
-        }
-        if (params.displaysAll == 'on') {
-          displaysAll = true
-        }
-        params.max = Math.min(params.max as Long ?: 7, 20)
-        def paginationAndSorting = [sort: 'dateCreated', order: 'desc', max: params.max]
-        if (params.offset) {
-          paginationAndSorting.offset = params.offset
-        }
-        def notes = noteService.findAllNotes(user,
-                                             displaysMyNotes,
-                                             displaysMyFavorites,
-                                             displaysAll,
-                                             context,
-                                             paginationAndSorting)
-        render(view: '/notes/index', model: [user: user,
-                notes: notes,
-                context: context,
-                showDiscussion:showDiscussion
-              ])
+    if (params.contextId && params.contextId != 'null') {
+      context = Context.get(params.contextId)
+    }
+    def displaysMyNotes = true
+    def displaysMyFavorites = false
+    def displaysAll = false
+    if (params.displaysMyNotes != 'on') {
+      displaysMyNotes = false
+    }
+    if (params.displaysMyFavorites == 'on') {
+      displaysMyFavorites = true
+    }
+    if (params.displaysAll == 'on') {
+      displaysAll = true
+    }
+    params.max = Math.min(params.max as Long ?: 7, 20)
+    def paginationAndSorting = [sort: 'dateCreated', order: 'desc', max: params.max]
+    if (params.offset) {
+      paginationAndSorting.offset = params.offset
+    }
+    def notes = noteService.findAllNotes(user,
+                                         displaysMyNotes,
+                                         displaysMyFavorites,
+                                         displaysAll,
+                                         context,
+                                         paginationAndSorting)
+    render(view: '/notes/index', model: [user: user,
+            notes: notes,
+            context: context,
+            showDiscussion: showDiscussion])
 
   }
 

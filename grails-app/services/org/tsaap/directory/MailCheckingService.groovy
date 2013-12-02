@@ -33,7 +33,10 @@ class MailCheckingService {
         log.error("Error with ${it.email} : ${e.message}")
       }
     }
-    updateEmailSentStatusForAllNotifications(actKeysWithEmailSent)
+    log.debug("Nb email sending try : ${actKeysWithEmailSent.size()}")
+    if (actKeysWithEmailSent) {
+      updateEmailSentStatusForAllNotifications(actKeysWithEmailSent)
+    }
   }
 
   /**
@@ -52,12 +55,15 @@ class MailCheckingService {
               INNER JOIN  `tsaap-notes`.activation_key as tact_key ON tact_key.user_id = tuser.id
               where tact_key.activation_email_sent = false"""
     def rows = sql.rows(req)
+    log.debug("Select request : $req")
+    log.debug("Nb rows selected : ${rows.size()}")
     def notifications = [:]
     rows.each {
       def key = it.activation_key
       notifications[key] = [user_id: it.user_id, first_name: it.first_name, email: it.email]
     }
     sql.close()
+    log.debug("Notifications to process : $notifications")
     notifications
   }
 
@@ -66,20 +72,14 @@ class MailCheckingService {
    * @param actKeys list of activation keys which email was sent for
    */
   private updateEmailSentStatusForAllNotifications(List<String> actKeys) {
-    try {
-    def keys = actKeys.collect { "'$it'" }.join( ',' )
+
+    def placeholderKeys = actKeys.collect { '?' }.join( ',' )
     def sql = new Sql(dataSource)
-    def req = """
-                update `tsaap-notes`.activation_key as tact_key
-                set tact_key.activation_email_sent = 1
-                where tact_key.activation_key in ($keys)
-              """
-    def nbUpdates = sql.executeUpdate(req)
+    def req = "update `tsaap-notes`.activation_key as tact_key set tact_key.activation_email_sent = true where tact_key.activation_key in ($placeholderKeys)"
+    def nbUpdates = sql.executeUpdate(req, actKeys)
     log.debug("the update request : $req")
     log.debug("Nb of rows updated : $nbUpdates")
     sql.close()
-    } catch (Exception e) {
-      log.error(e.message,e)
-    }
+
   }
 }

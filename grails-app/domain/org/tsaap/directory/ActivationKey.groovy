@@ -5,7 +5,7 @@ class ActivationKey {
   String activationKey
   Date dateCreated
   User user
-  Boolean activationEmailSent = false
+  boolean activationEmailSent = false
 
   static belongsTo = [user:User]
 

@@ -127,6 +127,7 @@ log4j = {
   //debug 'org.springframework.security'
   debug 'grails.app.jobs'
   debug 'grails.app.services.org.tsaap.directory'
+  debug 'groovy.sql.Sql'
 
 }
 

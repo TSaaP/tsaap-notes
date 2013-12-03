@@ -18,7 +18,7 @@
 
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-  <g:if test="${params.inline}">
+  <g:if test="${params.inline && params.inline == 'on'}">
     <meta name="layout" content="inline"/>
   </g:if>
   <g:else>
@@ -86,7 +86,7 @@
   </div>
 
   <div class="note-list-pagination">
-    <tsaap:paginate class="pull-right" prev="&laquo;" next="&raquo;" total="${notes.totalCount}" params='[contextId:"${params.contextId}",fragmentTagId:"${params.fragmentTagId}",displaysMyNotes:"${params.displaysMyNotes}",displaysMyFavorites:"${params.displaysMyFavorites}", displaysAll:"${params.displaysAll}"]'/>
+    <tsaap:paginate class="pull-right" prev="&laquo;" next="&raquo;" total="${notes.totalCount}" params='[contextId:"${params.contextId}",fragmentTagId:"${params.fragmentTagId}",displaysMyNotes:"${params.displaysMyNotes}",displaysMyFavorites:"${params.displaysMyFavorites}", displaysAll:"${params.displaysAll}", inline:"${params.inline}"]'/>
   </div>
 </div>
 <g:if test="${context}">

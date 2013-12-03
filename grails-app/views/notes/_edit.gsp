@@ -1,6 +1,7 @@
 
 <g:set var="idControllSuffix" value="${parentNote ? parentNote.id : 0}"/>
 <g:form method="post" controller="notes" action="addNote">
+    <g:hiddenField name="inline" value="${params.inline}"/>
     <g:hiddenField name="contextId" value="${context?.id}"
                    id="contextIdInAddForm${idControllSuffix}"/>
     <g:hiddenField name="fragmentTagId" value="${fragmentTag?.id}"/>

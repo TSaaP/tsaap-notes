@@ -39,12 +39,14 @@ class NoteService {
   Note addNote(User author,
                String content,
                Context context = null,
+               Tag fragmentTag = null,
                Note parentNote = null) {
 
     // create the note
     Note theNote = new Note(author: author,
                             content: content,
                             context: context,
+                            fragmentTag: fragmentTag,
                             parentNote: parentNote)
     // save the note
     theNote.save()
@@ -150,6 +152,7 @@ class NoteService {
                    Boolean userFavorites = false,
                    Boolean all = false,
                    Context inContext = null,
+                   Tag inFragmentTag = null,
                    Map paginationAndSorting = [sort: 'dateCreated', order: 'desc']) {
     if (!(userNotes || userFavorites || all)) {
       return new DefaultPagedResultList(list: [], totalCount: 0)
@@ -167,6 +170,9 @@ class NoteService {
       createAlias('bookmarks', 'bmks', CriteriaSpecification.LEFT_JOIN)
       if (inContext) { // if there is a context
         eq 'context', inContext
+        if (inFragmentTag) { // if there is a context and a fragmentTag
+          eq 'fragmentTag',inFragmentTag
+        }
       }
       // we know that one of the two filters is active
       or {

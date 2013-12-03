@@ -125,6 +125,9 @@ log4j = {
         'net.sf.ehcache.hibernate'
 
   //debug 'org.springframework.security'
+  //debug 'grails.app.jobs'
+  //debug 'grails.app.services.org.tsaap.directory'
+  //debug 'groovy.sql.Sql'
 
 }
 
@@ -144,4 +147,16 @@ environments {
   }
 }
 
+// email checking on subscription
 
+environments {
+  development {
+    tsaap.auth.check_user_email = true
+  }
+  test {
+    tsaap.auth.check_user_email = false
+  }
+  prod {
+    tsaap.auth.check_user_email = true
+  }
+}

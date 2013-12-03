@@ -48,7 +48,7 @@ class Context {
   String descriptionAsNote
 
   static constraints = {
-    contextName blank: false, unique: true, maxSize: 1024, validator: { val -> val==~/^[a-zA-Z0-9_\/]{1,1024}$/
+    contextName blank: false, unique: true, maxSize: 1024, validator: { val -> val==~/^[a-zA-Z0-9_\/\-]{1,1024}$/
     }
     url url: true, nullable: true
     descriptionAsNote nullable: true, maxSize: 280

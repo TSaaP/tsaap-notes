@@ -18,14 +18,19 @@
 
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-  <meta name="layout" content="main"/>
+  <g:if test="${params.inline}">
+    <meta name="layout" content="inline"/>
+  </g:if>
+  <g:else>
+    <meta name="layout" content="main"/>
+  </g:else>
   <r:require modules="tsaap_ui_notes,tsaap_icons"/>
 </head>
 
 <body>
 
 <div class="container note-edition">
-<g:render template="edit" model='[context:context]'/>
+<g:render template="edit" model='[context:context, fragmentTag:fragmentTag]'/>
 </div>
 
 <div class="divider"></div>
@@ -38,6 +43,10 @@
                 id="button_context">
           ${context.contextName}
         </button>
+        <g:if test="${fragmentTag}">
+          <span class="badge"
+                          id="button_fragment_tag">#${fragmentTag.name} <g:link controller="notes" params='[contextId:"${params.contextId}",displaysMyNotes:"${params.displaysMyNotes}",displaysMyFavorites:"${params.displaysMyFavorites}", displaysAll:"${params.displaysAll}"]'><span class="glyphicon glyphicon-remove-sign"></span></g:link></span>
+        </g:if>
       </div>
     </g:if>
     <div class="note-list-selector pull-right">
@@ -77,13 +86,13 @@
   </div>
 
   <div class="note-list-pagination">
-    <tsaap:paginate class="pull-right" prev="&laquo;" next="&raquo;" total="${notes.totalCount}" params='[contextId:"${params.contextId}",displaysMyNotes:"${params.displaysMyNotes}",displaysMyFavorites:"${params.displaysMyFavorites}", displaysAll:"${params.displaysAll}"]'/>
+    <tsaap:paginate class="pull-right" prev="&laquo;" next="&raquo;" total="${notes.totalCount}" params='[contextId:"${params.contextId}",fragmentTagId:"${params.fragmentTagId}",displaysMyNotes:"${params.displaysMyNotes}",displaysMyFavorites:"${params.displaysMyFavorites}", displaysAll:"${params.displaysAll}"]'/>
   </div>
 </div>
 <g:if test="${context}">
   <r:script>
   $('#button_context').popover({
-                                 content: "<p><strong>url</strong>: <a href='${context.url}' target='blank'>${context.url}</a></p><p>${context.descriptionAsNote.replaceAll('[\n\r]',' ')}</p>",
+                                 content: "<p><strong>url</strong>: <a href='${context.url}' target='blank'>${context.url}</a></p><p>${context.descriptionAsNote?.replaceAll('[\n\r]',' ')}</p>",
                                  html: true
                                })
 

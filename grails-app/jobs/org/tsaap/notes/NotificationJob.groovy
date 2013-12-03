@@ -5,7 +5,7 @@ class NotificationJob {
   NotificationService notificationService
 
   static triggers = {
-    cron name: 'cronTrigger', startDelay: 10000, cronExpression: '0 0 5 * * ?'
+    cron name: 'notificationCronTrigger', startDelay: 10000, cronExpression: '0 0 5 * * ?'
   }
 
   def execute() {

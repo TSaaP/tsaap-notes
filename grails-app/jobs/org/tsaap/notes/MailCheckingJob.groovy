@@ -14,36 +14,22 @@
  * limitations under the License.
  */
 
-package org.tsaap.directory
+package org.tsaap.notes
 
-class Role {
+import org.tsaap.directory.MailCheckingService
 
-  String authority
+class MailCheckingJob {
 
-  static mapping = {
-    cache true
-    version(false)
+  MailCheckingService mailCheckingService
+
+  static triggers = {
+    // every 30 seconds
+    cron name: 'mailCheckingCronTrigger', startDelay: 10000, cronExpression: '0 0/2 * * * ?'
   }
 
-  static constraints = {
-    authority blank: false, unique: true, inList: RoleEnum.values()*.name()
+  def execute() {
+    log.info("Start email checking job...")
+    mailCheckingService.sendCheckingEmailMessages()
+    log.info("End email checking  job.")
   }
-
-}
-
-enum RoleEnum {
-  ADMIN_ROLE(1),
-  STUDENT_ROLE(2),
-  TEACHER_ROLE(3)
-
-  Long id
-
-  RoleEnum(Long id) {
-    this.id = id
-  }
-
-  Role getRole() {
-    Role.get(id)
-  }
-
 }

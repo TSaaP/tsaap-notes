@@ -22,6 +22,7 @@ class Note {
   Date dateCreated
   User author
   Context context
+  Tag fragmentTag
   Note parentNote
 
   String content
@@ -30,6 +31,7 @@ class Note {
 
   static constraints = {
     context nullable: true
+    fragmentTag nullable: true
     parentNote nullable: true
     bookmarks nullable: true
     content maxSize: 280
@@ -38,6 +40,8 @@ class Note {
   static mapping = {
     version false
   }
+
+  static transients = ['noteUrl']
 
   /**
    * Indicate if the current note is bookmarked by the given user
@@ -54,5 +58,21 @@ class Note {
    */
   boolean hasParent() {
     parentNote
+  }
+
+  /**
+   *
+   * @return the url the note is linked to
+   */
+  String getNoteUrl() {
+    def rootUrl = context?.url
+    if (!rootUrl) {
+      return null
+    }
+    def hash=""
+    if (fragmentTag) {
+       hash = "#$fragmentTag.name"
+    }
+    "${rootUrl}${hash}"
   }
 }

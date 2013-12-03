@@ -50,10 +50,10 @@ class User {
 
   static mapping = {
     password column: '`password`'
-    version(false)
+    version(true)
   }
 
-  static transients = ['fullname']
+  static transients = ['fullname','isTeacher','isLearner']
 
   String getFullname() {
     "$firstName $lastName"
@@ -62,6 +62,22 @@ class User {
   String toString() {
     username
   }
+
+  /**
+   *
+   * @return true if the user is a learner
+   */
+  boolean isLearner() {
+    UserRole.get(this.id, RoleEnum.STUDENT_ROLE.id)
+  }
+
+  /**
+   *
+   * @return true if the user is teacher
+   */
+  boolean isTeacher() {
+      UserRole.get(this.id, RoleEnum.TEACHER_ROLE.id)
+    }
 
   Set<Role> getAuthorities() {
     UserRole.findAllByUser(this).collect { it.role } as Set

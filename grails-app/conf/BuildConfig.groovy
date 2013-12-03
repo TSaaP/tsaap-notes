@@ -72,4 +72,22 @@ grails.project.dependency.resolution = {
 codenarc.properties = {
   // Each property definition is of the form:  RULE.PROPERTY-NAME = PROPERTY-VALUE
   GrailsPublicControllerMethod.enabled = false
+
+}
+
+codenarc.reports = {
+    // Each report definition is of the form:
+    //    REPORT-NAME(REPORT-TYPE) {
+    //        PROPERTY-NAME = PROPERTY-VALUE
+    //        PROPERTY-NAME = PROPERTY-VALUE
+    //    }
+
+    XmlReport('xml') {                    // The report name "MyXmlReport" is user-defined; Report type is 'xml'
+        outputFile = 'target/CodeNarc-Report.xml'  // Set the 'outputFile' property of the (XML) Report
+        title = 'XML Report'             // Set the 'title' property of the (XML) Report
+    }
+    HtmlReport('html') {                  // Report type is 'html'
+        outputFile = 'target/CodeNarc-Report.html'
+        title = 'HTML Report'
+    }
 }

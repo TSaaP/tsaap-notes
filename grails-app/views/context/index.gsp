@@ -11,7 +11,7 @@
 </head>
 
 <body>
-<div class="container context-nav">
+<div class="container">
   <ol class="breadcrumb">
     <li class="active"><g:message code="default.list.label"
                                   args="[entityName]"/></li>
@@ -90,13 +90,13 @@
     </g:each>
     </tbody>
   </table>
-</div>
-
-<div class="container">
-  <div class="pagination">
-    <g:paginate total="${contextCount ?: 0}"/>
+  <div class="note-list-pagination">
+      <tsaap:paginate class="pull-right" prev="&laquo;" next="&raquo;" total="${contextCount ?: 0}" params="${[filter:params.filter?:'']}"/>
   </div>
 </div>
+
+
+
 
 <r:script>
   $(".nav li").removeClass('active');

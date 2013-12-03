@@ -32,6 +32,7 @@ environments {
       url = "jdbc:mysql://localhost/tsaap-notes"
       username = "tsaap"
       password = "tsaap"
+      logSql = true
     }
   }
   test {

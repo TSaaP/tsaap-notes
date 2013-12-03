@@ -39,12 +39,14 @@ class NoteService {
   Note addNote(User author,
                String content,
                Context context = null,
+               Tag fragmentTag = null,
                Note parentNote = null) {
 
     // create the note
     Note theNote = new Note(author: author,
                             content: content,
                             context: context,
+                            fragmentTag: fragmentTag,
                             parentNote: parentNote)
     // save the note
     theNote.save()

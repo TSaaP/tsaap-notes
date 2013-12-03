@@ -44,14 +44,22 @@ class NotesController {
     if (params.contextId) {
       context = Context.get(params.contextId)
     }
+    Tag fragmentTag = null
+    if (params.fragmentTagId) {
+      fragmentTag = Tag.get(params.fragmentTagId)
+    }
     Note parentNote = null
     if (params.parentNoteId) {
       parentNote = Note.get(params.parentNoteId)
       if (!context) {
         context = parentNote.context
       }
+      if (!fragmentTag) {
+        fragmentTag = parentNote.fragmentTag
+      }
     }
-    noteService.addNote(user, noteContent, context, parentNote)
+
+    noteService.addNote(user, noteContent, context,fragmentTag, parentNote)
     params.remove('noteContent')
     redirect(action: index(), params: params)
   }
@@ -111,6 +119,12 @@ class NotesController {
     if (params.contextId && params.contextId != 'null') {
       context = Context.get(params.contextId)
     }
+    Tag fragmentTag = null
+    if (params.fragmentTagId && params.fragmentTagId != 'null') {
+      fragmentTag = Tag.get(params.fragmentTagId)
+    } else if (params.fragmentTagName && params.fragmentTagName != 'null') {
+      fragmentTag = Tag.findOrSaveWhere(name: params.fragmentTagName.toLowerCase())
+    }
     def displaysMyNotes = true
     def displaysMyFavorites = false
     def displaysAll = false
@@ -133,10 +147,12 @@ class NotesController {
                                          displaysMyFavorites,
                                          displaysAll,
                                          context,
+                                         fragmentTag,
                                          paginationAndSorting)
     render(view: '/notes/index', model: [user: user,
             notes: notes,
             context: context,
+            fragmentTag: fragmentTag,
             showDiscussion: showDiscussion])
 
   }

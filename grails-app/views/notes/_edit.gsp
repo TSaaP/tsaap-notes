@@ -3,6 +3,7 @@
 <g:form method="post" controller="notes" action="addNote">
     <g:hiddenField name="contextId" value="${context?.id}"
                    id="contextIdInAddForm${idControllSuffix}"/>
+    <g:hiddenField name="fragmentTagId" value="${fragmentTag?.id}"/>
     <g:hiddenField name="parentNoteId" value="${parentNote?.id}"/>
     <g:hiddenField name="displaysMyNotes" id="displaysMyNotesInAddForm${idControllSuffix}"/>
     <g:hiddenField name="displaysMyFavorites"

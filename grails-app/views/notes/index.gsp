@@ -30,7 +30,7 @@
 <body>
 
 <div class="container note-edition">
-<g:render template="edit" model='[context:context]'/>
+<g:render template="edit" model='[context:context, fragmentTag:fragmentTag]'/>
 </div>
 
 <div class="divider"></div>
@@ -41,7 +41,7 @@
       <div class="note-list-context pull-left">
         <button type="button" class="btn btn-default btn-xs"
                 id="button_context">
-          ${context.contextName}
+          ${context.contextName} <g:if test="${fragmentTag}">#${fragmentTag.name}</g:if>
         </button>
       </div>
     </g:if>
@@ -82,7 +82,7 @@
   </div>
 
   <div class="note-list-pagination">
-    <tsaap:paginate class="pull-right" prev="&laquo;" next="&raquo;" total="${notes.totalCount}" params='[contextId:"${params.contextId}",displaysMyNotes:"${params.displaysMyNotes}",displaysMyFavorites:"${params.displaysMyFavorites}", displaysAll:"${params.displaysAll}"]'/>
+    <tsaap:paginate class="pull-right" prev="&laquo;" next="&raquo;" total="${notes.totalCount}" params='[contextId:"${params.contextId}",fragmentTagId:"${params.fragmentTagId}",displaysMyNotes:"${params.displaysMyNotes}",displaysMyFavorites:"${params.displaysMyFavorites}", displaysAll:"${params.displaysAll}"]'/>
   </div>
 </div>
 <g:if test="${context}">

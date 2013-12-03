@@ -41,6 +41,8 @@ class Note {
     version false
   }
 
+  static transients = ['noteUrl']
+
   /**
    * Indicate if the current note is bookmarked by the given user
    * @param user the user
@@ -56,5 +58,21 @@ class Note {
    */
   boolean hasParent() {
     parentNote
+  }
+
+  /**
+   *
+   * @return the url the note is linked to
+   */
+  String getNoteUrl() {
+    def rootUrl = context?.url
+    if (!rootUrl) {
+      return null
+    }
+    def hash=""
+    if (fragmentTag) {
+       hash = "#$fragmentTag.name"
+    }
+    "${rootUrl}${hash}"
   }
 }

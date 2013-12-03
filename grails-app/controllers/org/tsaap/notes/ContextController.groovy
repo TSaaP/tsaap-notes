@@ -22,13 +22,16 @@ class ContextController {
     params.order = params.order ?: 'asc'
     User user = springSecurityService.currentUser
     def contextList
+    def contextCount = 0
     if (!filter) {
       contextList = Context.list(params)
+      contextCount = Context.count()
     } else {
       contextList = Context.findAllByContextNameIlike("${filter}%", params)
+      contextCount = Context.countByContextNameIlike("${filter}")
     }
 
-    respond contextList, model: [contextList: contextList, contextCount: Context.count(), user: user]
+    respond contextList, model: [contextList: contextList, contextCount: contextCount, user: user]
   }
 
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])

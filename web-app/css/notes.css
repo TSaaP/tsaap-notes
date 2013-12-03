@@ -43,6 +43,13 @@ body {
     font-weight: normal;
 }
 
+.note-list-header .badge {
+    font-size: 85%;
+    color: #000000;
+    background-color: #BBDDF0;
+    font-weight: normal;
+}
+
 .note-list-context button {
     padding: 3px 5px;
     border-radius: 10px;

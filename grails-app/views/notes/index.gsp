@@ -41,8 +41,12 @@
       <div class="note-list-context pull-left">
         <button type="button" class="btn btn-default btn-xs"
                 id="button_context">
-          ${context.contextName} <g:if test="${fragmentTag}">#${fragmentTag.name}</g:if>
+          ${context.contextName}
         </button>
+        <g:if test="${fragmentTag}">
+          <button type="button" class="btn btn-default btn-xs disabled"
+                          id="button_fragment_tag">#${fragmentTag.name}</button>
+        </g:if>
       </div>
     </g:if>
     <div class="note-list-selector pull-right">

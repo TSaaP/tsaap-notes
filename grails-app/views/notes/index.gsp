@@ -18,7 +18,7 @@
 
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-  <g:if test="${params.inline}">
+  <g:if test="${params.inline && params.inline == 'on'}">
     <meta name="layout" content="inline"/>
   </g:if>
   <g:else>
@@ -45,13 +45,15 @@
         </button>
         <g:if test="${fragmentTag}">
           <span class="badge"
-                          id="button_fragment_tag">#${fragmentTag.name} <g:link controller="notes" params='[contextId:"${params.contextId}",displaysMyNotes:"${params.displaysMyNotes}",displaysMyFavorites:"${params.displaysMyFavorites}", displaysAll:"${params.displaysAll}"]'><span class="glyphicon glyphicon-remove-sign"></span></g:link></span>
+                          id="button_fragment_tag">#${fragmentTag.name} <g:link controller="notes" params='[contextId:"${params.contextId}",displaysMyNotes:"${params.displaysMyNotes}",displaysMyFavorites:"${params.displaysMyFavorites}", displaysAll:"${params.displaysAll}",inline:"${params.inline}"]'><span class="glyphicon glyphicon-remove-sign"></span></g:link></span>
         </g:if>
       </div>
     </g:if>
     <div class="note-list-selector pull-right">
       <g:form controller="notes" action="index" method="get">
         <g:hiddenField name="contextId" value="${context?.id}"/>
+        <g:hiddenField name="fragmentTagId" value="${fragmentTag?.id}"/>
+        <g:hiddenField name="inline" value="${params.inline}"/>
         <label class="checkbox-inline">
           <g:checkBox name="displaysMyNotes" checked="${params.displaysMyNotes=='on'?true:false}"
                       onchange="submit();"/> My notes
@@ -86,7 +88,7 @@
   </div>
 
   <div class="note-list-pagination">
-    <tsaap:paginate class="pull-right" prev="&laquo;" next="&raquo;" total="${notes.totalCount}" params='[contextId:"${params.contextId}",fragmentTagId:"${params.fragmentTagId}",displaysMyNotes:"${params.displaysMyNotes}",displaysMyFavorites:"${params.displaysMyFavorites}", displaysAll:"${params.displaysAll}"]'/>
+    <tsaap:paginate class="pull-right" prev="&laquo;" next="&raquo;" total="${notes.totalCount}" params='[contextId:"${params.contextId}",fragmentTagId:"${params.fragmentTagId}",displaysMyNotes:"${params.displaysMyNotes}",displaysMyFavorites:"${params.displaysMyFavorites}", displaysAll:"${params.displaysAll}", inline:"${params.inline}"]'/>
   </div>
 </div>
 <g:if test="${context}">

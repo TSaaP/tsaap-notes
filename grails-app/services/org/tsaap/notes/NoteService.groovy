@@ -160,9 +160,13 @@ class NoteService {
     if (!inContext) { // all is not relevant when there is no context
       all = false
     }
-    if (all) { // we have a context and user want all notes on the context
+    if (all && !inFragmentTag) { // we have a context and user want all notes on the context
       return new DefaultPagedResultList(list: Note.findAllByContext(inContext, paginationAndSorting),
                                         totalCount: Note.countByContext(inContext, paginationAndSorting))
+    }
+    if (all && inFragmentTag) {
+      return new DefaultPagedResultList(list: Note.findAllByContextAndFragmentTag(inContext,inFragmentTag, paginationAndSorting),
+                                              totalCount: Note.countByContextAndFragmentTag(inContext,inFragmentTag, paginationAndSorting))
     }
     // if not all, we use a criteria
     def criteria = Note.createCriteria()

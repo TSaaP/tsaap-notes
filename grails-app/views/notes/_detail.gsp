@@ -5,7 +5,7 @@
 <li class="list-group-item ${noteClassParent}" style="padding-bottom: 20px">
   <g:set var="noteIsBookmarked" value="${note.isBookmarkedByUser(user)}"/>
   <g:set var="displayListParams"
-         value="${[displaysMyNotes: params.displaysMyNotes, displaysMyFavorites: params.displaysMyFavorites, displaysAll: params.displaysAll]}"/>
+         value="${[displaysMyNotes: params.displaysMyNotes, displaysMyFavorites: params.displaysMyFavorites, displaysAll: params.displaysAll, inline:params.inline]}"/>
   <h6 class="list-group-item-heading"><strong>${note.author.fullname}</strong> <small>@${note.author.username}</small>
 
     <g:if test="${note.context}">

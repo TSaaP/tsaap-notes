@@ -44,8 +44,8 @@
           ${context.contextName}
         </button>
         <g:if test="${fragmentTag}">
-          <button type="button" class="btn btn-default btn-xs disabled"
-                          id="button_fragment_tag">#${fragmentTag.name}</button>
+          <span class="badge"
+                          id="button_fragment_tag">#${fragmentTag.name} <g:link controller="notes" params='[contextId:"${params.contextId}",displaysMyNotes:"${params.displaysMyNotes}",displaysMyFavorites:"${params.displaysMyFavorites}", displaysAll:"${params.displaysAll}"]'><span class="glyphicon glyphicon-remove-sign"></span></g:link></span>
         </g:if>
       </div>
     </g:if>

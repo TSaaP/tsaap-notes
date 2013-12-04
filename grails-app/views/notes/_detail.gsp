@@ -44,18 +44,18 @@
 
   <div id="noteActions" class="pull-right note-actions">
     <g:set var="displayListParamsWithPagination"
-           value="${[max: params.max ?: 7, offset: params.offset ?: 0] + displayListParams}"/>
+           value="${[contextId: params.contextId, fragmentTagId: params.fragmentTagId,fragmentTagName: params.fragmentTagName,max: params.max ?: 7, offset: params.offset ?: 0] + displayListParams}"/>
     <small>
       <g:if test="${note.hasParent() && !noteClassParent && !showDiscussionNote}">
         <g:link controller="notes" action="showDiscussion"
-                params="${[noteId: note.id, contextId: params.contextId, fragmentTagId: params.fragmentTagId] + displayListParamsWithPagination}"
+                params="${[noteId: note.id] + displayListParamsWithPagination}"
                 fragment="note${note.id}">
           <span class="glyphicon glyphicon-circle-arrow-left"></span> Show discussion
         </g:link>
       </g:if>
       <g:if test="${note.hasParent() && !noteClassParent && showDiscussionNote}">
         <g:link controller="notes" action="hideDiscussion"
-                params="${[contextId: params.contextId, fragmentTagId: params.fragmentTagId] + displayListParamsWithPagination}"
+                params="${displayListParamsWithPagination}"
                 fragment="note${note.id}">
           <span class="glyphicon glyphicon-circle-arrow-right"></span> Hide discussion
         </g:link>
@@ -65,18 +65,18 @@
               class="glyphicon glyphicon-share"></span> Reply</a>
       <g:if test="${user == note.author}">
         <g:link controller="notes" action="deleteNote"
-                params="${[noteId: note.id, contextId: params.contextId, fragmentTagId: params.fragmentTagId] + displayListParamsWithPagination}"><span
+                params="${[noteId: note.id] + displayListParamsWithPagination}"><span
                 class="glyphicon glyphicon-trash"></span> Delete</g:link>
       </g:if>
       <g:if test="${noteIsBookmarked}">
         <g:link style="color: orange" controller="notes" action="unbookmarkNote"
-                params="${[noteId: note.id, contextId: params.contextId, fragmentTagId: params.fragmentTagId] + displayListParamsWithPagination}"
+                params="${[noteId: note.id] + displayListParamsWithPagination}"
                 fragment="note${note.id}"><span
                 class="glyphicon glyphicon-star"></span> Favorite</g:link>
       </g:if>
       <g:else>
         <g:link controller="notes" action="bookmarkNote"
-                params="${[noteId: note.id, contextId: params.contextId, fragmentTagId: params.fragmentTagId] + displayListParamsWithPagination}"
+                params="${[noteId: note.id] + displayListParamsWithPagination}"
                 fragment="note${note.id}"><span
                 class="glyphicon glyphicon-star"></span> Favorite</g:link>
       </g:else>

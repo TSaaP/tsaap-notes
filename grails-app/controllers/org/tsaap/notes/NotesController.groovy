@@ -47,6 +47,8 @@ class NotesController {
     Tag fragmentTag = null
     if (params.fragmentTagId) {
       fragmentTag = Tag.get(params.fragmentTagId)
+    } else if (params.fragmentTagName) {
+      fragmentTag = Tag.findOrSaveWhere(name: params.fragmentTagName.toLowerCase())
     }
     Note parentNote = null
     if (params.parentNoteId) {

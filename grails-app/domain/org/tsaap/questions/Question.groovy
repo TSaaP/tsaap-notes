@@ -3,17 +3,21 @@ package org.tsaap.questions
 class Question {
 
   int questionType = 1
-  String title
-  String text
-  List<AnswerSet> responseSets
+  String inText
 
-  static hasMany = [responseSets:AnswerSet]
+  String title
+  String resolvedText
+
+  List<AnswerSet> answerSetList
+
+  static hasMany = [answerSetList:AnswerSet]
 
   static constraints = {
     questionType inList: QuestionTypeEnum.values()*.code
     title nullable: true
-    text blank: false
+    inText blank: false
   }
+
 }
 
 
@@ -30,3 +34,4 @@ enum QuestionTypeEnum {
   }
 
 }
+

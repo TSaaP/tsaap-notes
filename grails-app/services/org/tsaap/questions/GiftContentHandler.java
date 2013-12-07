@@ -5,9 +5,15 @@ package org.tsaap.questions;
  */
 public interface GiftContentHandler {
 
+    public void onStartQuestion();
+
+    public void onEndQuestion();
+
     public void onString(String str);
 
-    public void onTitle(String title);
+    public void onStartTitle();
+
+    public void onEndTitle();
 
     public void onStartAnswerSet();
 
@@ -18,5 +24,7 @@ public interface GiftContentHandler {
     public void onEndAnswer();
 
     public void onEscapeCharacter(int escapeCharacter);
+
+
 
 }

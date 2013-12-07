@@ -16,6 +16,8 @@
 
 package org.tsaap.questions
 
+import org.codehaus.groovy.util.StringUtil
+
 import java.util.regex.Matcher
 
 /**
@@ -25,28 +27,46 @@ import java.util.regex.Matcher
 
 class QuestionHelper {
 
+  private static final String ESC_SHARP = '@x23;'
+  private static final String ESC_COLON = '@x3A;'
+  private static final String ESC_LEFT_BRACKET = '@x7B;'
+  private static final String ESC_RIGHT_BRACKET = '@x7D;'
+  private static final String ESC_TILDE = '@x7E;'
+  private static final String ESC_EQUAL = '@x3D;'
+
+  /**
+   * Get String to parse with placeholders for escape characters
+   * @param inText the original text with  escaped characters
+   * (\: \# \{ \} \~ \= )
+   * @return
+   */
+  String getParsableStringForString(String inText) {
+      inText.
+  }
+
   /**
    * Get answer set list from a gift formated question
    * @param inText the gift text
    * @return the list of answer set in gift format
    */
-   List<String> getAnswerSetListForGiftText(String inText) {
-     List<String> res = []
-     Matcher matcher = inText.trim() =~ /(?<!\\)\{.*?(?<!\\)\}/ ;
-     matcher.each {
-        res << it.substring(1,it.size()-1)
-     }
-     res
-   }
+  List<String> getAnswerSetListForGiftText(String inText) {
+    List<String> res = []
+    Matcher matcher = inText.trim() =~ /(?<!\\)\{.*?(?<!\\)\}/;
+    matcher.each {
+      res << it.substring(1, it.size() - 1)
+    }
+    res
+  }
 
   /**
    * Get tittle from a gift formated question
    * @param inText
    * @return the title
    */
-   String getTitleForGiftText(String inText) {
-     Matcher matcher = inText.trim() =~ /^::.*::/ ;
-     matcher ? matcher[0].substring(2,matcher[0].size()-2) : null
-   }
+  String getTitleForGiftText(String inText) {
+    Matcher matcher = inText.trim() =~ /^::.*::/;
+    matcher ? matcher[0].substring(2, matcher[0].size() - 2) : null
+  }
 
 }
+

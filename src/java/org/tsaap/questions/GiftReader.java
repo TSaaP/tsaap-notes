@@ -72,7 +72,9 @@ public class GiftReader {
         }
         answerSetHasStarted = true;
         answerSetHasEnded = false;
+        flushAccumulator();
         giftContentHandler.onStartAnswerSet();
+
     }
 
     private void processRightBracketCharacter() throws GiftReaderException {
@@ -85,7 +87,9 @@ public class GiftReader {
         }
         answerSetHasEnded = true;
         answerSetHasStarted = false;
-        giftContentHandler.onStartAnswerSet();
+        flushAccumulator();
+        giftContentHandler.onEndAnswerSet();
+
     }
 
     private void processAnyCharacter(int currentChar) {

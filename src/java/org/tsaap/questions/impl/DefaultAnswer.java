@@ -14,23 +14,49 @@
  * limitations under the License.
  */
 
-package org.tsaap.questions;
+package org.tsaap.questions.impl;
+
+import org.tsaap.questions.Answer;
 
 /**
  * @author franck Silvestre
  */
-public interface Answer {
+public class DefaultAnswer implements Answer {
+
+    private String textValue;
+    private Float percentCredit;
+
     /**
      * Get the text value of the answer
      *
      * @return the text value of the answer
      */
-    public String getTextValue();
+    public String getTextValue() {
+        return textValue;
+    }
+
+    /**
+     * Set te text value of the answer
+     * @param textValue the new text value
+     */
+    public void setTextValue(String textValue) {
+        this.textValue = textValue;
+    }
 
     /**
      * Get the percent credit the answer represents in the answer set
      *
      * @return the percent credit
      */
-    public Float getPercentCredit();
+    public Float getPercentCredit() {
+        return percentCredit;
+    }
+
+    /**
+     * Set the percent credit of the answer
+     * @param percentCredit the percent credit
+     */
+    public void setPercentCredit(Float percentCredit) {
+        this.percentCredit = percentCredit;
+    }
 }

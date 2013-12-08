@@ -16,14 +16,40 @@
 
 package org.tsaap.questions.gift
 
+import org.tsaap.questions.impl.gift.GiftQuizContentHandler
+import org.tsaap.questions.impl.gift.GiftReader
 import spock.lang.Shared
 import spock.lang.Specification
-import spock.lang.Unroll
 
 /**
  * See the API for {@link grails.test.mixin.domain.DomainClassUnitTestMixin} for usage instructions*/
 
 class GiftReaderSpec extends Specification {
 
+  @Shared
+  def wellFormatedECQuestions = [q1: '::Question 1:: What\'s between orange and green in the spectrum ? \n { =yellow ~red  ~blue }']
+
+  def "test the parsing of well formed exclusive choice question"() {
+
+    given: "a text containing well formated gift question corresponding to exclusive choice question"
+    def questionText = currentQuestionText
+
+    when: "parsing the text with the GiftReader and the default gift content handler"
+    GiftQuizContentHandler handler = new GiftQuizContentHandler()
+    def quizReader = new GiftReader(quizContentHandler: handler)
+    def reader = new StringReader(currentQuestionText)
+    quizReader.parse(reader)
+
+    then: "the obtained quiz is OK"
+    def quiz = handler.quiz
+    quiz.questionList.size() == 1
+    def question = quiz.questionList[0]
+    question.fragmentList.size() == 2
+
+    where: "the given texts are representative of relevant use cases"
+    currentQuestionText        | numberOfFragments | numberOfAnswerFragments | numberOfAnswers
+    wellFormatedECQuestions.q1 | 2                 | 1                       | 3
+
+  }
 
 }

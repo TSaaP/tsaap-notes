@@ -98,7 +98,7 @@ public class GiftQuizContentHandler implements QuizContentHandler {
      * Receive notification of the end of an answer fragment
      */
     public void onEndAnswerFragment() {
-        currentQuestion.addFragment(currentAnswerFragment);
+        currentQuestion.addAnswerFragment(currentAnswerFragment);
         currentAnswerFragment = null;
     }
 
@@ -134,7 +134,7 @@ public class GiftQuizContentHandler implements QuizContentHandler {
               currentAnswer.setPercentCredit(0f);
           }
       } else if (currentQuestion != null) {
-          currentQuestion.addFragment(new TextFragment() {
+          currentQuestion.addTextFragment(new TextFragment() {
               public String getText() {
                   return str;
               }

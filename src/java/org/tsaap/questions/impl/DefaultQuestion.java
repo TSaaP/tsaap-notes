@@ -16,8 +16,10 @@
 
 package org.tsaap.questions.impl;
 
+import org.tsaap.questions.AnswerFragment;
 import org.tsaap.questions.Question;
 import org.tsaap.questions.QuestionFragment;
+import org.tsaap.questions.TextFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +31,10 @@ public class DefaultQuestion implements Question {
 
     private String title;
     private List<QuestionFragment> fragmentList = new ArrayList<QuestionFragment>();
+    private List<AnswerFragment> answerFragmentList = new ArrayList<AnswerFragment>();
+
+
+    private List<TextFragment> textFragmentList = new ArrayList<TextFragment>();
 
     /**
      * Get the title of the question
@@ -53,10 +59,42 @@ public class DefaultQuestion implements Question {
     }
 
     /**
-     * Add a fragment of the question to the question
+     * Add an answer fragment of the question to the question
+     *
      * @param fragment the fragment to add
      */
-    public void addFragment(QuestionFragment fragment) {
+    public void addAnswerFragment(AnswerFragment fragment) {
         fragmentList.add(fragment);
+        answerFragmentList.add(fragment);
     }
+
+    /**
+     * Add an answer fragment of the question to the question
+     *
+     * @param fragment the fragment to add
+     */
+    public void addTextFragment(TextFragment fragment) {
+        fragmentList.add(fragment);
+        textFragmentList.add(fragment);
+    }
+
+    /**
+     * Get answer fragment list
+     *
+     * @return the answer fragment list
+     */
+    public List<AnswerFragment> getAnswerFragmentList() {
+        return answerFragmentList;
+    }
+
+    /**
+     * Get the text fragment list
+     *
+     * @return the text fragment list
+     */
+    public List<TextFragment> getTextFragmentList() {
+        return textFragmentList;
+    }
+
+
 }

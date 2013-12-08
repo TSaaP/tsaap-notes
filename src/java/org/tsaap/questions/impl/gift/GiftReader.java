@@ -28,7 +28,7 @@ public class GiftReader implements QuizReader {
                 processAnyCharacter(currentChar);
             }
         }
-        checkQuestionHasEnded();
+        endQuiz();
         quizContentHandler.onEndQuiz();
 
     }
@@ -40,11 +40,16 @@ public class GiftReader implements QuizReader {
         }
     }
 
-    private void checkQuestionHasEnded() throws GiftReaderException {
-            if (!questionHasEnded) {
-                throw new GiftReaderException("End of file but question is not ended.");
-            }
+    private void endQuiz() throws GiftReaderException {
+        if (!questionHasEnded && !answerFragmentHasEnded) {
+            throw new GiftReaderException("End of file but question is not ended.");
         }
+        if (!questionHasEnded) {
+           flushAccumulator();
+           questionHasEnded = true;
+        }
+
+    }
 
     private void processColonCharacter() throws GiftReaderException {
         if (escapeMode) {
@@ -85,11 +90,11 @@ public class GiftReader implements QuizReader {
             processAnyCharacter('{');
             return;
         }
-        if (answerSetHasStarted) {
+        if (answerFragmentHasStarted) {
             throw new GiftReaderException("You must escape the '{' putting an '\\' before.");
         }
-        answerSetHasStarted = true;
-        answerSetHasEnded = false;
+        answerFragmentHasStarted = true;
+        answerFragmentHasEnded = false;
         flushAccumulator();
         quizContentHandler.onStartAnswerFragment();
 
@@ -100,11 +105,11 @@ public class GiftReader implements QuizReader {
             processAnyCharacter('}');
             return;
         }
-        if (!answerSetHasStarted) {
+        if (!answerFragmentHasStarted) {
             throw new GiftReaderException("You must escape the '}' putting an '\\' before.");
         }
-        answerSetHasEnded = true;
-        answerSetHasStarted = false;
+        answerFragmentHasEnded = true;
+        answerFragmentHasStarted = false;
         flushAccumulator();
         quizContentHandler.onEndAnswerFragment();
 
@@ -139,8 +144,8 @@ public class GiftReader implements QuizReader {
 
     private boolean titleHasStarted;
     private boolean titleHasEnded;
-    private boolean answerSetHasStarted;
-    private boolean answerSetHasEnded;
+    private boolean answerFragmentHasStarted;
+    private boolean answerFragmentHasEnded;
     private boolean questionHasStarted;
     private boolean questionHasEnded;
 }

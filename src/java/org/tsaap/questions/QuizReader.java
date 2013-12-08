@@ -24,6 +24,18 @@ import java.io.Reader;
  */
 public interface QuizReader {
 
+    /**
+     * Parse an input source describing a quiz
+     * @param reader the input source
+     * @throws IOException
+     * @throws QuizReaderException
+     */
     public void parse(Reader reader) throws IOException, QuizReaderException;
+
+    /**
+     * Get the quiz content handler that is notified during the parsing.
+     * Design inspired from SAX API.
+     * @return the quiz content handler
+     */
     public QuizContentHandler getQuizContentHandler();
 }

@@ -5,10 +5,10 @@ import org.tsaap.directory.User
 class UserResult {
 
   User user
-  Question question
+  PackedQuestion question
   Float percentCredit = 0
 
-  static belongsTo = [question: Question]
+  static belongsTo = [question: PackedQuestion]
 
   static constraints = {}
 }

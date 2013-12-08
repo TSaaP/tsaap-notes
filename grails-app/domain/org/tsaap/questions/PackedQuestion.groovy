@@ -1,6 +1,6 @@
 package org.tsaap.questions
 
-class Question {
+class PackedQuestion {
 
   int questionType = 1
   String inText

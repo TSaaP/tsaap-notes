@@ -1,4 +1,8 @@
-package org.tsaap.questions;
+package org.tsaap.questions.gift;
+
+import org.tsaap.questions.QuizContentHandler;
+import org.tsaap.questions.QuizReader;
+import org.tsaap.questions.QuizReaderException;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -6,12 +10,13 @@ import java.io.Reader;
 /**
  * @author franck Silvestre
  */
-public class GiftReader {
+public class GiftReader implements QuizReader {
 
     public void parse(Reader reader) throws IOException, GiftReaderException {
         int currentChar;
-        giftContentHandler.onStartQuestion();
+        quizContentHandler.onStartQuiz();
         while ((currentChar = reader.read()) != 1) {
+            checkQuestionHasStarted();
             if (currentChar == ':') {
                 processColonCharacter();
             } else if (currentChar == '\\') {
@@ -24,9 +29,23 @@ public class GiftReader {
                 processAnyCharacter(currentChar);
             }
         }
-        giftContentHandler.onEndQuestion();
+        checkQuestionHasEnded();
+        quizContentHandler.onEndQuiz();
 
     }
+
+    private void checkQuestionHasStarted() {
+        if (!questionHasStarted) {
+            questionHasStarted = true;
+            quizContentHandler.onStartQuestion();
+        }
+    }
+
+    private void checkQuestionHasEnded() throws GiftReaderException {
+            if (!questionHasEnded) {
+                throw new GiftReaderException("End of file but question is not ended.");
+            }
+        }
 
     private void processColonCharacter() throws GiftReaderException {
         if (escapeMode) {
@@ -43,10 +62,10 @@ public class GiftReader {
         if (controlCharAccumulator == ':') {
             if (titleHasStarted) {
                 titleHasEnded = true;
-                giftContentHandler.onEndTitle();
+                quizContentHandler.onEndTitle();
             } else {
                 titleHasStarted = true;
-                giftContentHandler.onStartTitle();
+                quizContentHandler.onStartTitle();
             }
             controlCharAccumulator = -1;
             flushAccumulator();
@@ -73,7 +92,7 @@ public class GiftReader {
         answerSetHasStarted = true;
         answerSetHasEnded = false;
         flushAccumulator();
-        giftContentHandler.onStartAnswerSet();
+        quizContentHandler.onStartAnswerSet();
 
     }
 
@@ -88,7 +107,7 @@ public class GiftReader {
         answerSetHasEnded = true;
         answerSetHasStarted = false;
         flushAccumulator();
-        giftContentHandler.onEndAnswerSet();
+        quizContentHandler.onEndAnswerSet();
 
     }
 
@@ -102,19 +121,19 @@ public class GiftReader {
     }
 
     private void flushAccumulator() {
-        giftContentHandler.onString(accumulator.toString());
+        quizContentHandler.onString(accumulator.toString());
         accumulator = null;
     }
 
-    public GiftContentHandler getGiftContentHandler() {
-        return giftContentHandler;
+    public QuizContentHandler getQuizContentHandler() {
+        return quizContentHandler;
     }
 
-    public void setGiftContentHandler(GiftContentHandler giftContentHandler) {
-        this.giftContentHandler = giftContentHandler;
+    public void setQuizContentHandler(QuizContentHandler quizContentHandler) {
+        this.quizContentHandler = quizContentHandler;
     }
 
-    private GiftContentHandler giftContentHandler;
+    private QuizContentHandler quizContentHandler;
     private StringBuffer accumulator;
     private int controlCharAccumulator;
     private boolean escapeMode;
@@ -123,4 +142,6 @@ public class GiftReader {
     private boolean titleHasEnded;
     private boolean answerSetHasStarted;
     private boolean answerSetHasEnded;
+    private boolean questionHasStarted;
+    private boolean questionHasEnded;
 }

@@ -16,13 +16,14 @@
 
 package org.tsaap.questions;
 
+import java.io.IOException;
+import java.io.Reader;
+
 /**
  * @author franck Silvestre
  */
-public class GiftReaderException extends Exception {
+public interface QuizReader {
 
-    public GiftReaderException(String message) {
-        super(message);
-    }
-
+    public void parse(Reader reader) throws IOException, QuizReaderException;
+    public QuizContentHandler getQuizContentHandler();
 }

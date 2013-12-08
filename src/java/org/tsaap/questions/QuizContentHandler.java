@@ -3,7 +3,11 @@ package org.tsaap.questions;
 /**
  * @author franck Silvestre
  */
-public interface GiftContentHandler {
+public interface QuizContentHandler {
+
+    public void onStartQuiz();
+
+    public void onEndQuiz();
 
     public void onStartQuestion();
 
@@ -24,7 +28,6 @@ public interface GiftContentHandler {
     public void onEndAnswer();
 
     public void onEscapeCharacter(int escapeCharacter);
-
 
 
 }

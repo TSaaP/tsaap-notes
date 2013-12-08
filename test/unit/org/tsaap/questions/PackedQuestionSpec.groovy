@@ -7,8 +7,8 @@ import spock.lang.Unroll
 
 /**
  * See the API for {@link grails.test.mixin.domain.DomainClassUnitTestMixin} for usage instructions*/
-@TestFor(Question)
-class QuestionSpec extends Specification {
+@TestFor(PackedQuestion)
+class PackedQuestionSpec extends Specification {
 
   @Shared
   QuestionHelper questionHelper = new QuestionHelper()

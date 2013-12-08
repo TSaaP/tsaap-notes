@@ -17,6 +17,8 @@
 package org.tsaap.questions.impl.gift;
 
 import org.tsaap.questions.QuizContentHandler;
+import org.tsaap.questions.TextFragment;
+import org.tsaap.questions.impl.DefaultAnswer;
 import org.tsaap.questions.impl.DefaultAnswerFragment;
 import org.tsaap.questions.impl.DefaultQuestion;
 import org.tsaap.questions.impl.DefaultQuiz;
@@ -29,9 +31,12 @@ public class GiftQuizContentHandler implements QuizContentHandler {
     private DefaultQuiz quiz;
     private DefaultQuestion currentQuestion;
     private DefaultAnswerFragment currentAnswerFragment;
+    private DefaultAnswer currentAnswer;
+    private StringBuffer currentTitle;
 
     /**
      * Get the quiz
+     *
      * @return the quiz
      */
     public DefaultQuiz getQuiz() {
@@ -39,12 +44,11 @@ public class GiftQuizContentHandler implements QuizContentHandler {
     }
 
 
-
     /**
      * Receive notification of the beginning of a quiz
      */
     public void onStartQuiz() {
-       quiz = new DefaultQuiz();
+        quiz = new DefaultQuiz();
     }
 
     /**
@@ -56,7 +60,7 @@ public class GiftQuizContentHandler implements QuizContentHandler {
      * Receive notification of the beginning of a question
      */
     public void onStartQuestion() {
-       currentQuestion = new DefaultQuestion();
+        currentQuestion = new DefaultQuestion();
     }
 
     /**
@@ -67,54 +71,74 @@ public class GiftQuizContentHandler implements QuizContentHandler {
         currentQuestion = null;
     }
 
-    /**
-     * Receive notification of a new string
-     *
-     * @param str the received string
-     */
-    public void onString(String str) {
-
-    }
 
     /**
      * Receive notification of the beginning of a title
      */
     public void onStartTitle() {
-
+       currentTitle = new StringBuffer();
     }
 
     /**
      * Receive notification of the end of a title
      */
     public void onEndTitle() {
-
+      currentQuestion.setTitle(currentTitle.toString());
+        currentTitle = null;
     }
 
     /**
      * Receive notification of the beginning of an answer fragment
      */
     public void onStartAnswerFragment() {
-
+        currentAnswerFragment = new DefaultAnswerFragment();
     }
 
     /**
      * Receive notification of the end of an answer fragment
      */
     public void onEndAnswerFragment() {
-
+        currentQuestion.addFragment(currentAnswerFragment);
+        currentAnswerFragment = null;
     }
 
     /**
      * Receive notification of the beginning of an answer
      */
     public void onStartAnswer() {
-
+        currentAnswer = new DefaultAnswer();
     }
 
     /**
      * Receive notification of the end of an answer
      */
     public void onEndAnswer() {
+        currentAnswerFragment.addAnswer(currentAnswer);
+        currentAnswer = null;
+    }
 
+    /**
+     * Receive notification of a new string
+     *
+     * @param str the received string
+     */
+    public void onString(final String str) {
+      String trimedStr = str.trim();
+      if (currentTitle != null) {
+        currentTitle.append(trimedStr);
+      } else if (currentAnswer != null) {
+          currentAnswer.setTextValue(trimedStr.substring(1));
+          if (trimedStr.startsWith("=")) {
+              currentAnswer.setPercentCredit(100f);
+          } else {
+              currentAnswer.setPercentCredit(0f);
+          }
+      } else if (currentQuestion != null) {
+          currentQuestion.addFragment(new TextFragment() {
+              public String getText() {
+                  return str;
+              }
+          });
+      }
     }
 }

@@ -14,7 +14,7 @@ public class GiftReader implements QuizReader {
     public void parse(Reader reader) throws IOException, GiftReaderException {
         int currentChar;
         quizContentHandler.onStartQuiz();
-        while ((currentChar = reader.read()) != 1) {
+        while ((currentChar = reader.read()) != -1) {
             checkQuestionHasStarted();
             if (currentChar == ':') {
                 processColonCharacter();
@@ -45,8 +45,9 @@ public class GiftReader implements QuizReader {
             throw new GiftReaderException("End of file but question is not ended.");
         }
         if (!questionHasEnded) {
-           flushAccumulator();
-           questionHasEnded = true;
+            flushAccumulator();
+            questionHasEnded = true;
+            quizContentHandler.onEndQuestion();
         }
 
     }
@@ -61,6 +62,7 @@ public class GiftReader implements QuizReader {
         }
         if (controlCharAccumulator == -1) {
             controlCharAccumulator = ':';
+            flushAccumulator();
             return;
         }
         if (controlCharAccumulator == ':') {
@@ -72,7 +74,6 @@ public class GiftReader implements QuizReader {
                 quizContentHandler.onStartTitle();
             }
             controlCharAccumulator = -1;
-            flushAccumulator();
         }
 
     }
@@ -93,9 +94,9 @@ public class GiftReader implements QuizReader {
         if (answerFragmentHasStarted) {
             throw new GiftReaderException("You must escape the '{' putting an '\\' before.");
         }
+        flushAccumulator();
         answerFragmentHasStarted = true;
         answerFragmentHasEnded = false;
-        flushAccumulator();
         quizContentHandler.onStartAnswerFragment();
 
     }
@@ -108,9 +109,9 @@ public class GiftReader implements QuizReader {
         if (!answerFragmentHasStarted) {
             throw new GiftReaderException("You must escape the '}' putting an '\\' before.");
         }
+        flushAccumulator();
         answerFragmentHasEnded = true;
         answerFragmentHasStarted = false;
-        flushAccumulator();
         quizContentHandler.onEndAnswerFragment();
 
     }
@@ -125,8 +126,10 @@ public class GiftReader implements QuizReader {
     }
 
     private void flushAccumulator() {
-        quizContentHandler.onString(accumulator.toString());
-        accumulator = null;
+        if (accumulator != null) {
+            quizContentHandler.onString(accumulator.toString());
+            accumulator = null;
+        }
     }
 
     public QuizContentHandler getQuizContentHandler() {

@@ -16,6 +16,7 @@
 
 package org.tsaap.questions.gift
 
+import org.tsaap.questions.impl.DefaultQuestion
 import org.tsaap.questions.impl.gift.GiftQuizContentHandler
 import org.tsaap.questions.impl.gift.GiftReader
 import spock.lang.Shared
@@ -43,12 +44,15 @@ class GiftReaderSpec extends Specification {
     then: "the obtained quiz is OK"
     def quiz = handler.quiz
     quiz.questionList.size() == 1
-    def question = quiz.questionList[0]
-    question.fragmentList.size() == 2
+    DefaultQuestion question = quiz.questionList[0]
+    question.title == title
+    question.answerFragmentList.size() == numberOfAnswerFragments
+    question.textFragmentList.size() == numberOfTextFragments
+    question.fragmentList.size() == numberOfFragments
 
     where: "the given texts are representative of relevant use cases"
-    currentQuestionText        | numberOfFragments | numberOfAnswerFragments | numberOfAnswers
-    wellFormatedECQuestions.q1 | 2                 | 1                       | 3
+    currentQuestionText        | title        | numberOfFragments | numberOfAnswerFragments | numberOfTextFragments | numberOfAnswers
+    wellFormatedECQuestions.q1 | 'Question 1' | 2                 | 1                       | 1                     | 3
 
   }
 

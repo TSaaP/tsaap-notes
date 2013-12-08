@@ -34,15 +34,15 @@ class QuestionHelper {
   private static final String ESC_TILDE = '@x7E;'
   private static final String ESC_EQUAL = '@x3D;'
 
-  /**
-   * Get String to parse with placeholders for escape characters
-   * @param inText the original text with  escaped characters
-   * (\: \# \{ \} \~ \= )
-   * @return
-   */
-  String getParsableStringForString(String inText) {
-      inText.
-  }
+//  /**
+//   * Get String to parse with placeholders for escape characters
+//   * @param inText the original text with  escaped characters
+//   * (\: \# \{ \} \~ \= )
+//   * @return
+//   */
+//  String getParsableStringForString(String inText) {
+//     null
+//  }
 
   /**
    * Get answer set list from a gift formated question

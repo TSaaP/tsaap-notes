@@ -1,5 +1,6 @@
 package org.tsaap.questions.impl.gift;
 
+import org.apache.log4j.Logger;
 import org.tsaap.questions.QuizContentHandler;
 import org.tsaap.questions.QuizReader;
 
@@ -10,6 +11,8 @@ import java.io.Reader;
  * @author franck Silvestre
  */
 public class GiftReader implements QuizReader {
+
+    private static Logger logger = Logger.getLogger(GiftReader.class);
 
     public void parse(Reader reader) throws IOException, GiftReaderException {
         int currentChar;
@@ -27,6 +30,11 @@ public class GiftReader implements QuizReader {
             } else {
                 processAnyCharacter(currentChar);
             }
+            logger.debug("Current char  | "+(char)currentChar);
+            if (accumulator != null) {
+                logger.debug("Accumulator | " +accumulator.toString() );
+            }
+            logger.debug("control caracter accumulator | " + (char) controlCharAccumulator);
         }
         endQuiz();
         quizContentHandler.onEndQuiz();
@@ -61,8 +69,8 @@ public class GiftReader implements QuizReader {
             throw new GiftReaderException("You must escape the ':' putting an '\\' before.");
         }
         if (controlCharAccumulator == -1) {
-            controlCharAccumulator = ':';
             flushAccumulator();
+            controlCharAccumulator = ':';
             return;
         }
         if (controlCharAccumulator == ':') {
@@ -120,7 +128,7 @@ public class GiftReader implements QuizReader {
         if (accumulator == null) {
             accumulator = new StringBuffer();
         }
-        accumulator.append(currentChar);
+        accumulator.append((char)currentChar);
         controlCharAccumulator = -1;
         escapeMode = false;
     }
@@ -142,7 +150,7 @@ public class GiftReader implements QuizReader {
 
     private QuizContentHandler quizContentHandler;
     private StringBuffer accumulator;
-    private int controlCharAccumulator;
+    private int controlCharAccumulator = -1;
     private boolean escapeMode;
 
     private boolean titleHasStarted;

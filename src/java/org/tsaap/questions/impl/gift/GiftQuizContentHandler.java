@@ -16,6 +16,7 @@
 
 package org.tsaap.questions.impl.gift;
 
+import org.apache.log4j.Logger;
 import org.tsaap.questions.QuizContentHandler;
 import org.tsaap.questions.TextFragment;
 import org.tsaap.questions.impl.DefaultAnswer;
@@ -27,6 +28,8 @@ import org.tsaap.questions.impl.DefaultQuiz;
  * @author franck Silvestre
  */
 public class GiftQuizContentHandler implements QuizContentHandler {
+
+    private static Logger logger = Logger.getLogger(GiftQuizContentHandler.class);
 
     private DefaultQuiz quiz;
     private DefaultQuestion currentQuestion;
@@ -54,7 +57,8 @@ public class GiftQuizContentHandler implements QuizContentHandler {
     /**
      * Receive notification of the end of a quiz
      */
-    public void onEndQuiz() {}
+    public void onEndQuiz() {
+    }
 
     /**
      * Receive notification of the beginning of a question
@@ -76,14 +80,14 @@ public class GiftQuizContentHandler implements QuizContentHandler {
      * Receive notification of the beginning of a title
      */
     public void onStartTitle() {
-       currentTitle = new StringBuffer();
+        currentTitle = new StringBuffer();
     }
 
     /**
      * Receive notification of the end of a title
      */
     public void onEndTitle() {
-      currentQuestion.setTitle(currentTitle.toString());
+        currentQuestion.setTitle(currentTitle.toString());
         currentTitle = null;
     }
 
@@ -123,22 +127,24 @@ public class GiftQuizContentHandler implements QuizContentHandler {
      * @param str the received string
      */
     public void onString(final String str) {
-      String trimedStr = str.trim();
-      if (currentTitle != null) {
-        currentTitle.append(trimedStr);
-      } else if (currentAnswer != null) {
-          currentAnswer.setTextValue(trimedStr.substring(1));
-          if (trimedStr.startsWith("=")) {
-              currentAnswer.setPercentCredit(100f);
-          } else {
-              currentAnswer.setPercentCredit(0f);
-          }
-      } else if (currentQuestion != null) {
-          currentQuestion.addTextFragment(new TextFragment() {
-              public String getText() {
-                  return str;
-              }
-          });
-      }
+        String trimedStr = str.trim();
+        if (currentTitle != null) {
+            currentTitle.append(trimedStr);
+            logger.debug("currentTitle | "+currentTitle.toString());
+        } else if (currentAnswer != null) {
+            currentAnswer.setTextValue(trimedStr.substring(1));
+            if (trimedStr.startsWith("=")) {
+                currentAnswer.setPercentCredit(100f);
+            } else {
+                currentAnswer.setPercentCredit(0f);
+            }
+        } else if (currentQuestion != null && currentAnswerFragment == null) {
+            logger.debug("Text fragment | "+str);
+            currentQuestion.addTextFragment(new TextFragment() {
+                public String getText() {
+                    return str;
+                }
+            });
+        }
     }
 }

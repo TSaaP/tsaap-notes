@@ -1,8 +1,7 @@
-package org.tsaap.questions.gift;
+package org.tsaap.questions.impl.gift;
 
 import org.tsaap.questions.QuizContentHandler;
 import org.tsaap.questions.QuizReader;
-import org.tsaap.questions.QuizReaderException;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -92,7 +91,7 @@ public class GiftReader implements QuizReader {
         answerSetHasStarted = true;
         answerSetHasEnded = false;
         flushAccumulator();
-        quizContentHandler.onStartAnswerSet();
+        quizContentHandler.onStartAnswerFragment();
 
     }
 
@@ -107,7 +106,7 @@ public class GiftReader implements QuizReader {
         answerSetHasEnded = true;
         answerSetHasStarted = false;
         flushAccumulator();
-        quizContentHandler.onEndAnswerSet();
+        quizContentHandler.onEndAnswerFragment();
 
     }
 

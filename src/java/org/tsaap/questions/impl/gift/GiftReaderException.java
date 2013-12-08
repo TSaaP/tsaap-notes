@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.tsaap.questions.gift;
+package org.tsaap.questions.impl.gift;
 
 import org.tsaap.questions.QuizReaderException;
 

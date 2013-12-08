@@ -14,18 +14,35 @@
  * limitations under the License.
  */
 
-package org.tsaap.questions;
+package org.tsaap.questions.impl;
 
+import org.tsaap.questions.Answer;
+import org.tsaap.questions.AnswerFragment;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author franck Silvestre
  */
-public interface AnswerFragment extends QuestionFragment {
+public class DefaultAnswerFragment implements AnswerFragment {
+
+    private List<Answer> answerList = new ArrayList<Answer>();
 
     /**
      * Get the answer list that compose the answer fragment
+     *
      * @return the answer list of the fragment
      */
-    public List<Answer> getAnswerList();
+    public List<Answer> getAnswerList() {
+        return answerList;
+    }
+
+    /**
+     * Add answer to the answer fragment
+     * @param answer the answer to add
+     */
+    public void addAnswer(Answer answer) {
+        answerList.add(answer);
+    }
 }

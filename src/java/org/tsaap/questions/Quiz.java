@@ -21,18 +21,11 @@ import java.util.List;
 /**
  * @author franck Silvestre
  */
-public interface Question {
+public interface Quiz {
 
     /**
-     * Get the title of the question
-     * @return  the title of the question
+     * Get the question list of the quiz
+     * @return  the question list
      */
-    public String getTitle();
-
-    /**
-     * Get the question fragment list
-     * @return  the question fragment list
-     */
-    public List<QuestionFragment> getFragmentList();
-
+    public List<Question> getQuestionList();
 }

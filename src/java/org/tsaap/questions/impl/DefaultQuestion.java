@@ -14,25 +14,45 @@
  * limitations under the License.
  */
 
-package org.tsaap.questions;
+package org.tsaap.questions.impl;
 
+import org.tsaap.questions.Question;
+import org.tsaap.questions.QuestionFragment;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author franck Silvestre
  */
-public interface Question {
+public class DefaultQuestion implements Question {
+
+    private String title;
+    private List<QuestionFragment> fragmentList = new ArrayList<QuestionFragment>();
 
     /**
      * Get the title of the question
-     * @return  the title of the question
+     *
+     * @return the title of the question
      */
-    public String getTitle();
+    public String getTitle() {
+        return null;
+    }
 
     /**
      * Get the question fragment list
-     * @return  the question fragment list
+     *
+     * @return the question fragment list
      */
-    public List<QuestionFragment> getFragmentList();
+    public List<QuestionFragment> getFragmentList() {
+        return fragmentList;
+    }
 
+    /**
+     * Add a fragment of the question to the question
+     * @param fragment the fragment to add
+     */
+    public void addFragment(QuestionFragment fragment) {
+        fragmentList.add(fragment);
+    }
 }

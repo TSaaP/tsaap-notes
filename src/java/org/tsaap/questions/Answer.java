@@ -21,5 +21,5 @@ package org.tsaap.questions;
  */
 public interface Answer {
     public String getText();
-    public Integer getPercentCredit();
+    public Float getPercentCredit();
 }

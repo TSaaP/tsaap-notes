@@ -14,25 +14,36 @@
  * limitations under the License.
  */
 
-package org.tsaap.questions;
+package org.tsaap.questions.impl;
 
+import org.tsaap.questions.Question;
+import org.tsaap.questions.Quiz;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author franck Silvestre
  */
-public interface Question {
+public class DefaultQuiz implements Quiz {
+
+    private List<Question> questionList = new ArrayList<Question>();
+
 
     /**
-     * Get the title of the question
-     * @return  the title of the question
+     * Add a question to the quiz
+     * @param question the question to add
      */
-    public String getTitle();
+    public void addQuestion(Question question) {
+        questionList.add(question);
+    }
 
     /**
-     * Get the question fragment list
-     * @return  the question fragment list
+     * Get the question list of the quiz
+     *
+     * @return the question list
      */
-    public List<QuestionFragment> getFragmentList();
-
+    public List<Question> getQuestionList() {
+        return questionList;
+    }
 }

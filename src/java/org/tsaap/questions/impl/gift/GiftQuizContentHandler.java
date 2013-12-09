@@ -18,6 +18,7 @@ package org.tsaap.questions.impl.gift;
 
 import org.apache.log4j.Logger;
 import org.tsaap.questions.Question;
+import org.tsaap.questions.QuestionType;
 import org.tsaap.questions.QuizContentHandler;
 import org.tsaap.questions.TextFragment;
 import org.tsaap.questions.impl.DefaultAnswer;
@@ -59,6 +60,7 @@ public class GiftQuizContentHandler implements QuizContentHandler {
      */
     public void onStartQuestion() {
         currentQuestion = new DefaultQuestion();
+        currentQuestion.setQuestionType(QuestionType.ExclusiveChoice);
     }
 
     /**
@@ -91,6 +93,7 @@ public class GiftQuizContentHandler implements QuizContentHandler {
      */
     public void onStartAnswerFragment() {
         currentAnswerFragment = new DefaultAnswerFragment();
+        answerCounter = 1;
     }
 
     /**
@@ -106,6 +109,7 @@ public class GiftQuizContentHandler implements QuizContentHandler {
      */
     public void onStartAnswer(String prefix) {
         currentAnswer = new DefaultAnswer();
+        currentAnswer.setIdentifier(String.valueOf(answerCounter++));
         if ("=".equals(prefix)) {
             currentAnswer.setPercentCredit(100f);
         } else {
@@ -159,9 +163,9 @@ public class GiftQuizContentHandler implements QuizContentHandler {
         if (currentTitle != null) {
             currentTitle.append(trimedStr);
             logger.debug("currentTitle | " + currentTitle.toString());
-        } else if (currentAnswer != null && answerCreditIsBeenBuilt) {
+        } else if (answerCreditIsBeenBuilt) {
             currentAnswer.setPercentCredit(new Float(trimedStr));
-        } else if (currentAnswer != null && feedbackIsBeenBuilt) {
+        } else if (feedbackIsBeenBuilt) {
             currentAnswer.setFeedback(trimedStr);
         } else if (currentAnswer != null) {
             currentAnswer.setTextValue(trimedStr);
@@ -189,4 +193,5 @@ public class GiftQuizContentHandler implements QuizContentHandler {
     private StringBuffer currentTitle;
     private boolean answerCreditIsBeenBuilt;
     private boolean feedbackIsBeenBuilt;
+    private int answerCounter ;
 }

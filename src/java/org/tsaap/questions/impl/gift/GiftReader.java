@@ -27,12 +27,16 @@ public class GiftReader implements QuizReader {
                 processLeftBracketCharacter();
             } else if (currentChar == '}') {
                 processRightBracketCharacter();
+            } else if (currentChar == '=') {
+                processEqualCharacter();
+            } else if (currentChar == '~') {
+                processTildeCharacter();
             } else {
                 processAnyCharacter(currentChar);
             }
-            logger.debug("Current char  | "+(char)currentChar);
+            logger.debug("Current char  | " + (char) currentChar);
             if (accumulator != null) {
-                logger.debug("Accumulator | " +accumulator.toString() );
+                logger.debug("Accumulator | " + accumulator.toString());
             }
             logger.debug("control caracter accumulator | " + (char) controlCharAccumulator);
         }
@@ -120,15 +124,44 @@ public class GiftReader implements QuizReader {
         flushAccumulator();
         answerFragmentHasEnded = true;
         answerFragmentHasStarted = false;
+        if (answerHasStarted) {
+            answerHasStarted = false;
+            quizContentHandler.onEndAnswer();
+        }
         quizContentHandler.onEndAnswerFragment();
 
+    }
+
+    private void processEqualCharacter() throws GiftReaderException {
+        processAnswerPrefix('=');
+    }
+
+    private void processTildeCharacter() throws GiftReaderException {
+        processAnswerPrefix('~');
+    }
+
+    private void processAnswerPrefix(char prefix) throws GiftReaderException {
+        if (escapeMode) {
+            processAnyCharacter(prefix);
+            return;
+        }
+        if (!answerFragmentHasStarted) {
+            throw new GiftReaderException("You must escape the '" + prefix + "' putting an '\\' before.");
+        }
+        flushAccumulator();
+        if (answerHasStarted) { // the '=' or '~' char marks the end of the current answer
+            getQuizContentHandler().onEndAnswer();
+        } else {
+            answerHasStarted = true;
+        }
+        getQuizContentHandler().onStartAnswer(String.valueOf(prefix)); // it marks the beginning of a new one too
     }
 
     private void processAnyCharacter(int currentChar) {
         if (accumulator == null) {
             accumulator = new StringBuffer();
         }
-        accumulator.append((char)currentChar);
+        accumulator.append((char) currentChar);
         controlCharAccumulator = -1;
         escapeMode = false;
     }
@@ -153,10 +186,13 @@ public class GiftReader implements QuizReader {
     private int controlCharAccumulator = -1;
     private boolean escapeMode;
 
+    private boolean questionHasStarted;
+    private boolean questionHasEnded;
     private boolean titleHasStarted;
     private boolean titleHasEnded;
     private boolean answerFragmentHasStarted;
     private boolean answerFragmentHasEnded;
-    private boolean questionHasStarted;
-    private boolean questionHasEnded;
+    private boolean answerHasStarted;
+
+
 }

@@ -16,37 +16,31 @@
 
 package org.tsaap.questions;
 
-import java.util.List;
-
 /**
  * @author franck Silvestre
  */
-public interface Question {
+public enum QuestionType {
+
+    Undefined(0),
+    ExclusiveChoice(1),
+    MultipleChoice(2),
+    TrueFalse(3),
+    FillInTheBlank(4);
+
+    private int code;
+
+    QuestionType(int code) {
+        this.code = code;
+    }
 
     /**
-     * Get the title of the question
+     * Get the code of que question type
      *
-     * @return the title of the question
+     * @return the code
      */
-    public String getTitle();
-
-    /**
-     * Get the question fragment list
-     *
-     * @return the question fragment list
-     */
-    public List<QuestionFragment> getFragmentList();
-
-    /**
-     * Get the question type
-     *
-     * @return the question type
-     */
-    public QuestionType getQuestionType();
-
-    /**
-     * Get the global Id of the question
-     * @return the global Id
-     */
-    public String getGlobalId();
+    public int getCode() {
+        return code;
+    }
 }
+
+

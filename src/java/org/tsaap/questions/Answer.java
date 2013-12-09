@@ -20,6 +20,14 @@ package org.tsaap.questions;
  * @author franck Silvestre
  */
 public interface Answer {
+
+
+    /**
+     * Get the identifier of the answer relative to the question
+     * @return the identifier
+     */
+    public String getIdentifier();
+
     /**
      * Get the text value of the answer
      *
@@ -33,4 +41,10 @@ public interface Answer {
      * @return the percent credit
      */
     public Float getPercentCredit();
+
+    /**
+     * Get the feedback to present to a student for this answer
+     * @return
+     */
+    public String getFeedBack();
 }

@@ -25,6 +25,8 @@ public class DefaultAnswer implements Answer {
 
     private String textValue;
     private Float percentCredit;
+    private String identifier;
+    private String feedback;
 
     /**
      * Get the text value of the answer
@@ -58,5 +60,39 @@ public class DefaultAnswer implements Answer {
      */
     public void setPercentCredit(Float percentCredit) {
         this.percentCredit = percentCredit;
+    }
+
+    /**
+     * Get the identifier of the answer relative to the question
+     *
+     * @return the identifier
+     */
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    /**
+     * Set the identifier
+     * @param identifier  the new identifier
+     */
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
+
+    /**
+     * Set the feedback
+     * @param feedback
+     */
+    public void setFeedback(String feedback) {
+        this.feedback = feedback;
+    }
+
+    /**
+     * Get the feedback to present to a student for this answer
+     *
+     * @return
+     */
+    public String getFeedBack() {
+        return feedback;
     }
 }

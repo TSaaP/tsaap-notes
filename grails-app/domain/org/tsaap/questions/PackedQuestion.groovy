@@ -6,11 +6,7 @@ class PackedQuestion {
   String inText
 
   String title
-  String resolvedText
 
-  List<AnswerSet> answerSetList
-
-  static hasMany = [answerSetList:AnswerSet]
 
   static constraints = {
     questionType inList: QuestionTypeEnum.values()*.code
@@ -21,17 +17,4 @@ class PackedQuestion {
 }
 
 
-enum QuestionTypeEnum {
-  ExclusiveChoice(1),
-  MultipleChoice(2),
-  TrueFalse(3),
-  FillInTheBlank(4)
-
-  int code
-
-  QuestionTypeEnum(int code) {
-    this.code = code
-  }
-
-}
 

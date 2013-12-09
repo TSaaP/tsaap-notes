@@ -16,13 +16,11 @@
 
 package org.tsaap.questions.impl;
 
-import org.tsaap.questions.AnswerFragment;
-import org.tsaap.questions.Question;
-import org.tsaap.questions.QuestionFragment;
-import org.tsaap.questions.TextFragment;
+import org.tsaap.questions.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author franck Silvestre
@@ -32,9 +30,9 @@ public class DefaultQuestion implements Question {
     private String title;
     private List<QuestionFragment> fragmentList = new ArrayList<QuestionFragment>();
     private List<AnswerFragment> answerFragmentList = new ArrayList<AnswerFragment>();
-
-
     private List<TextFragment> textFragmentList = new ArrayList<TextFragment>();
+    private QuestionType questionType = QuestionType.Undefined;
+    private String globalId = UUID.randomUUID().toString();
 
     /**
      * Get the title of the question
@@ -43,6 +41,32 @@ public class DefaultQuestion implements Question {
      */
     public String getTitle() {
         return title;
+    }
+
+    /**
+     * Get the question type
+     *
+     * @return the question type
+     */
+    public QuestionType getQuestionType() {
+        return questionType;
+    }
+
+    /**
+     * Set the question type
+     * @param questionType the question type
+     */
+    public void setQuestionType(QuestionType questionType) {
+        this.questionType = questionType;
+    }
+
+    /**
+     * Get the global Id of the question
+     *
+     * @return the global Id
+     */
+    public String getGlobalId() {
+        return globalId;
     }
 
     public void setTitle(String title) {

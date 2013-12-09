@@ -17,6 +17,7 @@
 package org.tsaap.questions.impl.gift;
 
 import org.apache.log4j.Logger;
+import org.tsaap.questions.Question;
 import org.tsaap.questions.QuizContentHandler;
 import org.tsaap.questions.TextFragment;
 import org.tsaap.questions.impl.DefaultAnswer;
@@ -29,13 +30,6 @@ import org.tsaap.questions.impl.DefaultQuiz;
  */
 public class GiftQuizContentHandler implements QuizContentHandler {
 
-    private static Logger logger = Logger.getLogger(GiftQuizContentHandler.class);
-
-    private DefaultQuiz quiz;
-    private DefaultQuestion currentQuestion;
-    private DefaultAnswerFragment currentAnswerFragment;
-    private DefaultAnswer currentAnswer;
-    private StringBuffer currentTitle;
 
     /**
      * Get the quiz
@@ -71,6 +65,7 @@ public class GiftQuizContentHandler implements QuizContentHandler {
      * Receive notification of the end of a question
      */
     public void onEndQuestion() {
+        postProcess(currentQuestion);
         quiz.addQuestion(currentQuestion);
         currentQuestion = null;
     }
@@ -109,8 +104,13 @@ public class GiftQuizContentHandler implements QuizContentHandler {
     /**
      * Receive notification of the beginning of an answer
      */
-    public void onStartAnswer() {
+    public void onStartAnswer(String prefix) {
         currentAnswer = new DefaultAnswer();
+        if ("=".equals(prefix)) {
+            currentAnswer.setPercentCredit(100f);
+        } else {
+            currentAnswer.setPercentCredit(0f);
+        }
     }
 
     /**
@@ -122,6 +122,34 @@ public class GiftQuizContentHandler implements QuizContentHandler {
     }
 
     /**
+     * Notification of the beginning of a credit specification
+     */
+    public void onStartAnswerCredit() {
+        answerCreditIsBeenBuilt = true;
+    }
+
+    /**
+     * Notification of the end of a credit specification
+     */
+    public void onEndAnswerCredit() {
+        answerCreditIsBeenBuilt = false;
+    }
+
+    /**
+     * Receive notification of the beginning feedback
+     */
+    public void onStartAnswerFeedBack() {
+        feedbackIsBeenBuilt = true;
+    }
+
+    /**
+     * Receive notification of the end of a feedback
+     */
+    public void onEndAnswerFeedBack() {
+        feedbackIsBeenBuilt = false;
+    }
+
+    /**
      * Receive notification of a new string
      *
      * @param str the received string
@@ -130,16 +158,15 @@ public class GiftQuizContentHandler implements QuizContentHandler {
         String trimedStr = str.trim();
         if (currentTitle != null) {
             currentTitle.append(trimedStr);
-            logger.debug("currentTitle | "+currentTitle.toString());
+            logger.debug("currentTitle | " + currentTitle.toString());
+        } else if (currentAnswer != null && answerCreditIsBeenBuilt) {
+            currentAnswer.setPercentCredit(new Float(trimedStr));
+        } else if (currentAnswer != null && feedbackIsBeenBuilt) {
+            currentAnswer.setFeedback(trimedStr);
         } else if (currentAnswer != null) {
-            currentAnswer.setTextValue(trimedStr.substring(1));
-            if (trimedStr.startsWith("=")) {
-                currentAnswer.setPercentCredit(100f);
-            } else {
-                currentAnswer.setPercentCredit(0f);
-            }
+            currentAnswer.setTextValue(trimedStr);
         } else if (currentQuestion != null && currentAnswerFragment == null) {
-            logger.debug("Text fragment | "+str);
+            logger.debug("Text fragment | " + str);
             currentQuestion.addTextFragment(new TextFragment() {
                 public String getText() {
                     return str;
@@ -147,4 +174,19 @@ public class GiftQuizContentHandler implements QuizContentHandler {
             });
         }
     }
+
+
+    private void postProcess(Question question) {
+       logger.error("Post processing of the current question");
+    }
+
+    private static Logger logger = Logger.getLogger(GiftQuizContentHandler.class);
+
+    private DefaultQuiz quiz;
+    private DefaultQuestion currentQuestion;
+    private DefaultAnswerFragment currentAnswerFragment;
+    private DefaultAnswer currentAnswer;
+    private StringBuffer currentTitle;
+    private boolean answerCreditIsBeenBuilt;
+    private boolean feedbackIsBeenBuilt;
 }

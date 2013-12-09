@@ -25,6 +25,7 @@ public interface QuizContentHandler {
      */
     public void onEndQuestion();
 
+
     /**
      * Receive notification of a new string
      */
@@ -53,12 +54,35 @@ public interface QuizContentHandler {
     /**
      * Receive notification of the beginning of an answer
      */
-    public void onStartAnswer();
+    public void onStartAnswer(String prefix);
 
 
     /**
      * Receive notification of the end of an answer
      */
     public void onEndAnswer();
+
+    /**
+     * Notification of the beginning of a credit specification
+     */
+    public void onStartAnswerCredit();
+
+
+    /**
+     * Notification of the end of a credit specification
+     */
+    public void onEndAnswerCredit();
+
+
+    /**
+     * Receive notification of the beginning feedback
+     */
+    public void onStartAnswerFeedBack();
+
+
+    /**
+     * Receive notification of the end of a feedback
+     */
+    public void onEndAnswerFeedBack();
 
 }

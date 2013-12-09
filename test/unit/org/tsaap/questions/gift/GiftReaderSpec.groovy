@@ -80,7 +80,7 @@ class GiftReaderSpec extends Specification {
     where: "the given texts are representative of relevant use cases"
     currentQText | title        | nbFragments | nbTextFragments | nbAnswers | answerText1 | answerCredit1 | answerFeedback1 | answerText2 | answerCredit2 | answerFeedback2
     ec_q1_ok     | 'Question 1' | 2           | 1               | 3         | 'yellow'    | 100f          | null            | 'red'       | 0f            | null
-    //ec_q2_ok     | 'Question 2' | 2           | 1               | 3         | 'yellow'    | 100f          | 'congrats !'    | 'red'       | 0f            | 'try again'
+    ec_q2_ok     | 'Question 2' | 2           | 1               | 3         | 'yellow'    | 100f          | 'congrats !'    | 'red'       | 0f            | 'try again'
 
   }
 

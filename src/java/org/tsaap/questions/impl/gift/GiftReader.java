@@ -31,6 +31,8 @@ public class GiftReader implements QuizReader {
                 processEqualCharacter();
             } else if (currentChar == '~') {
                 processTildeCharacter();
+            } else if (currentChar == '#') {
+                processSharpCharacter();
             } else {
                 processAnyCharacter(currentChar);
             }
@@ -149,12 +151,29 @@ public class GiftReader implements QuizReader {
             throw new GiftReaderException("You must escape the '" + prefix + "' putting an '\\' before.");
         }
         flushAccumulator();
+        if (answerFeedbackHasStarted) {
+            getQuizContentHandler().onEndAnswerFeedBack();
+            answerFeedbackHasStarted = false;
+        }
         if (answerHasStarted) { // the '=' or '~' char marks the end of the current answer
             getQuizContentHandler().onEndAnswer();
         } else {
             answerHasStarted = true;
         }
         getQuizContentHandler().onStartAnswer(String.valueOf(prefix)); // it marks the beginning of a new one too
+    }
+
+    private void processSharpCharacter() throws GiftReaderException {
+        if (escapeMode) {
+            processAnyCharacter('#');
+            return;
+        }
+        if (!answerHasStarted || answerFeedbackHasStarted) {
+            throw new GiftReaderException("You must escape the '' putting an '\\' before.");
+        }
+        flushAccumulator();
+        answerFeedbackHasStarted = true;
+        getQuizContentHandler().onStartAnswerFeedBack(); // it marks the beginning of a new one too
     }
 
     private void processAnyCharacter(int currentChar) {
@@ -193,6 +212,7 @@ public class GiftReader implements QuizReader {
     private boolean answerFragmentHasStarted;
     private boolean answerFragmentHasEnded;
     private boolean answerHasStarted;
+    private boolean answerFeedbackHasStarted;
 
 
 }

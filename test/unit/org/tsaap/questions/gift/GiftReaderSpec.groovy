@@ -19,10 +19,11 @@ package org.tsaap.questions.gift
 import org.tsaap.questions.Answer
 import org.tsaap.questions.AnswerFragment
 import org.tsaap.questions.QuestionType
-import org.tsaap.questions.QuizReaderException
 import org.tsaap.questions.impl.DefaultQuestion
 import org.tsaap.questions.impl.gift.GiftQuizContentHandler
 import org.tsaap.questions.impl.gift.GiftReader
+import org.tsaap.questions.impl.gift.GiftReaderNotEscapedCharacterException
+import org.tsaap.questions.impl.gift.GiftReaderQuestionWithInvalidFormatException
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -85,7 +86,7 @@ class GiftReaderSpec extends Specification {
 
 
   @Unroll
-  def "test the parsing of mal formed Exclusive Choice question"() {
+  def "test the parsing of malformed Exclusive Choice question"() {
 
     given: "a text containing one mal formated gift question"
     def questionText = currentQText
@@ -99,10 +100,14 @@ class GiftReaderSpec extends Specification {
     quizReader.parse(reader)
 
     then: "the parsing fail with a QuizReaderException"
-    thrown(QuizReaderException)
+    thrown(anExecptionType)
 
     where: "the given texts are representative of relevant use cases"
-    currentQText << [ec_q1_ko]
+    currentQText | anExecptionType
+    ec_q1_ko     | GiftReaderNotEscapedCharacterException.class
+    ec_q2_ko     | GiftReaderQuestionWithInvalidFormatException.class
+    ec_q3_ko     | GiftReaderNotEscapedCharacterException.class
+
 
   }
 
@@ -122,6 +127,6 @@ class GiftReaderSpec extends Specification {
   @Shared // EC question with feedback  but without right bracket
   def ec_q2_ko = '::Question 2:: What\'s between orange and green in the spectrum ? \n { =yellow # congrats ! ~red # try again  ~blue #not yet '
 
-  @Shared // EC Question with one controlled character not escaped
+  @Shared // EC Question with one  character not escaped  in the title
   def ec_q3_ko = '::Question : 3:: What\'s between orange and green in the \\#spectrum ? \n { =yellow # congrats ! ~red #not \\= ~blue # try again }'
 }

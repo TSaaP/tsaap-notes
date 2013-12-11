@@ -3,6 +3,7 @@ package org.tsaap.questions.impl.gift;
 import org.apache.log4j.Logger;
 import org.tsaap.questions.QuizContentHandler;
 import org.tsaap.questions.QuizReader;
+import org.tsaap.questions.QuizReaderException;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -54,9 +55,9 @@ public class GiftReader implements QuizReader {
         }
     }
 
-    private void endQuiz() throws GiftReaderException {
+    private void endQuiz() throws GiftReaderQuestionWithInvalidFormatException {
         if (!questionHasEnded && !answerFragmentHasEnded) {
-            throw new GiftReaderException("End of file but question is not ended.");
+            throw new GiftReaderQuestionWithInvalidFormatException();
         }
         if (!questionHasEnded) {
             flushAccumulator();
@@ -66,13 +67,13 @@ public class GiftReader implements QuizReader {
 
     }
 
-    private void processColonCharacter() throws GiftReaderException {
+    private void processColonCharacter() throws GiftReaderNotEscapedCharacterException {
         if (escapeMode) {
             processAnyCharacter(':');
             return;
         }
         if (titleHasEnded) {
-            throw new GiftReaderException("You must escape the ':' putting an '\\' before.");
+            throw new GiftReaderNotEscapedCharacterException();
         }
         if (controlCharAccumulator == -1) {
             flushAccumulator();
@@ -92,7 +93,7 @@ public class GiftReader implements QuizReader {
 
     }
 
-    private void processAntiSlashCharacter() {
+    private void processAntiSlashCharacter() throws GiftReaderNotEscapedCharacterException {
         if (escapeMode) {
             processAnyCharacter('\\');
             return;
@@ -100,13 +101,13 @@ public class GiftReader implements QuizReader {
         escapeMode = true;
     }
 
-    private void processLeftBracketCharacter() throws GiftReaderException {
+    private void processLeftBracketCharacter() throws GiftReaderNotEscapedCharacterException {
         if (escapeMode) {
             processAnyCharacter('{');
             return;
         }
         if (answerFragmentHasStarted) {
-            throw new GiftReaderException("You must escape the '{' putting an '\\' before.");
+            throw new GiftReaderNotEscapedCharacterException();
         }
         flushAccumulator();
         answerFragmentHasStarted = true;
@@ -115,13 +116,13 @@ public class GiftReader implements QuizReader {
 
     }
 
-    private void processRightBracketCharacter() throws GiftReaderException {
+    private void processRightBracketCharacter() throws GiftReaderNotEscapedCharacterException {
         if (escapeMode) {
             processAnyCharacter('}');
             return;
         }
         if (!answerFragmentHasStarted) {
-            throw new GiftReaderException("You must escape the '}' putting an '\\' before.");
+            throw  new GiftReaderNotEscapedCharacterException();
         }
         flushAccumulator();
         answerFragmentHasEnded = true;
@@ -142,13 +143,13 @@ public class GiftReader implements QuizReader {
         processAnswerPrefix('~');
     }
 
-    private void processAnswerPrefix(char prefix) throws GiftReaderException {
+    private void processAnswerPrefix(char prefix) throws GiftReaderNotEscapedCharacterException {
         if (escapeMode) {
             processAnyCharacter(prefix);
             return;
         }
         if (!answerFragmentHasStarted) {
-            throw new GiftReaderException("You must escape the '" + prefix + "' putting an '\\' before.");
+            throw new GiftReaderNotEscapedCharacterException();
         }
         flushAccumulator();
         if (answerFeedbackHasStarted) {
@@ -163,25 +164,30 @@ public class GiftReader implements QuizReader {
         getQuizContentHandler().onStartAnswer(String.valueOf(prefix)); // it marks the beginning of a new one too
     }
 
-    private void processSharpCharacter() throws GiftReaderException {
+    private void processSharpCharacter() throws GiftReaderNotEscapedCharacterException {
         if (escapeMode) {
             processAnyCharacter('#');
             return;
         }
         if (!answerHasStarted || answerFeedbackHasStarted) {
-            throw new GiftReaderException("You must escape the '' putting an '\\' before.");
+            throw new GiftReaderNotEscapedCharacterException();
         }
         flushAccumulator();
         answerFeedbackHasStarted = true;
         getQuizContentHandler().onStartAnswerFeedBack(); // it marks the beginning of a new one too
     }
 
-    private void processAnyCharacter(int currentChar) {
+    private void processAnyCharacter(int currentChar) throws GiftReaderNotEscapedCharacterException {
         if (accumulator == null) {
             accumulator = new StringBuffer();
         }
         accumulator.append((char) currentChar);
-        controlCharAccumulator = -1;
+        if (controlCharAccumulator != -1) { // if a control caracter is present,
+            if (controlCharAccumulator != '\\') {  // it must be a \
+                throw new GiftReaderNotEscapedCharacterException();
+            }
+            controlCharAccumulator = -1;
+        }
         escapeMode = false;
     }
 

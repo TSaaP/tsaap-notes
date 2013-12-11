@@ -61,7 +61,7 @@ grails.project.dependency.resolution = {
     runtime ":jquery:1.10.2"
     runtime ":resources:1.2"
 
-    //test ":code-coverage:1.2.6"
+    test ":code-coverage:1.2.7"
 
     compile ":mail:1.0.1"
     compile ":quartz:1.0"

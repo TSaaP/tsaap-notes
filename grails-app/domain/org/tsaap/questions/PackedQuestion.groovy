@@ -9,7 +9,7 @@ class PackedQuestion {
 
 
   static constraints = {
-    questionType inList: QuestionTypeEnum.values()*.code
+    questionType inList: QuestionType.values()*.code
     title nullable: true
     inText blank: false
   }

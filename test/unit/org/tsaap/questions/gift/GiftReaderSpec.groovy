@@ -19,28 +19,21 @@ package org.tsaap.questions.gift
 import org.tsaap.questions.Answer
 import org.tsaap.questions.AnswerFragment
 import org.tsaap.questions.QuestionType
+import org.tsaap.questions.QuizReaderException
 import org.tsaap.questions.impl.DefaultQuestion
 import org.tsaap.questions.impl.gift.GiftQuizContentHandler
 import org.tsaap.questions.impl.gift.GiftReader
 import spock.lang.Shared
 import spock.lang.Specification
+import spock.lang.Unroll
 
 /**
  * See the API for {@link grails.test.mixin.domain.DomainClassUnitTestMixin} for usage instructions*/
 
 class GiftReaderSpec extends Specification {
 
-  @Shared // basic EC question without feedback
-  def ec_q1_ok = '::Question 1:: What\'s between orange and green in the spectrum ? \n { =yellow ~red  ~blue }'
 
-  @Shared // EC question with feedback
-  def ec_q2_ok = '::Question 2:: What\'s between orange and green in the spectrum ? \n { =yellow # congrats ! ~red # try again  ~blue #not yet }'
-
-
-  @Shared // EC Question with escape characters
-  def ec_q3_ok = '::Question \\: 3:: What\'s between orange and green in the \\#spectrum ? \n { =yellow # congrats ! ~red #not \\= ~blue # try again }'
-
-
+  @Unroll
   def "test the parsing of well formed Exclusive Choice question"() {
 
     given: "a text containing one well formated gift question"
@@ -90,4 +83,45 @@ class GiftReaderSpec extends Specification {
 
   }
 
+
+  @Unroll
+  def "test the parsing of mal formed Exclusive Choice question"() {
+
+    given: "a text containing one mal formated gift question"
+    def questionText = currentQText
+
+    and: "a default gift reader on this question"
+    GiftQuizContentHandler handler = new GiftQuizContentHandler()
+    def quizReader = new GiftReader(quizContentHandler: handler)
+    def reader = new StringReader(currentQText)
+
+    when: "parsing the text with the GiftReader"
+    quizReader.parse(reader)
+
+    then: "the parsing fail with a QuizReaderException"
+    thrown(QuizReaderException)
+
+    where: "the given texts are representative of relevant use cases"
+    currentQText << [ec_q1_ko]
+
+  }
+
+
+  @Shared // basic EC question without feedback
+  def ec_q1_ok = '::Question 1:: What\'s between orange and green in the spectrum ? \n { =yellow ~red  ~blue }'
+
+  @Shared // EC question with feedback
+  def ec_q2_ok = '::Question 2:: What\'s between orange and green in the spectrum ? \n { =yellow # congrats ! ~red # try again  ~blue #not yet }'
+
+  @Shared // EC Question with escape characters
+  def ec_q3_ok = '::Question \\: 3:: What\'s between orange and green in the \\#spectrum ? \n { =yellow # congrats ! ~red #not \\= ~blue # try again }'
+
+  @Shared // basic EC question without no left bracket
+  def ec_q1_ko = '::Question 1:: What\'s between orange and green in the spectrum ? \n  =yellow ~red  ~blue }'
+
+  @Shared // EC question with feedback  but without right bracket
+  def ec_q2_ko = '::Question 2:: What\'s between orange and green in the spectrum ? \n { =yellow # congrats ! ~red # try again  ~blue #not yet '
+
+  @Shared // EC Question with one controlled character not escaped
+  def ec_q3_ko = '::Question : 3:: What\'s between orange and green in the \\#spectrum ? \n { =yellow # congrats ! ~red #not \\= ~blue # try again }'
 }

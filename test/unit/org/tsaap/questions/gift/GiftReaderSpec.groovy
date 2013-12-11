@@ -30,21 +30,28 @@ import spock.lang.Specification
 
 class GiftReaderSpec extends Specification {
 
-  @Shared
+  @Shared // basic EC question without feedback
   def ec_q1_ok = '::Question 1:: What\'s between orange and green in the spectrum ? \n { =yellow ~red  ~blue }'
-  @Shared
+
+  @Shared // EC question with feedback
   def ec_q2_ok = '::Question 2:: What\'s between orange and green in the spectrum ? \n { =yellow # congrats ! ~red # try again  ~blue #not yet }'
+
+
+  @Shared // EC Question with escape characters
+  def ec_q3_ok = '::Question \\: 3:: What\'s between orange and green in the \\#spectrum ? \n { =yellow # congrats ! ~red #not \\= ~blue # try again }'
 
 
   def "test the parsing of well formed Exclusive Choice question"() {
 
-    given: "a text containing one well formated gift EC question"
+    given: "a text containing one well formated gift question"
     def questionText = currentQText
 
-    when: "parsing the text with the GiftReader and the default gift content handler"
+    and: "a default gift reader on this question"
     GiftQuizContentHandler handler = new GiftQuizContentHandler()
     def quizReader = new GiftReader(quizContentHandler: handler)
     def reader = new StringReader(currentQText)
+
+    when: "parsing the text with the GiftReader"
     quizReader.parse(reader)
 
     then: "the obtained quiz has one question with the title and type correctly set"
@@ -75,12 +82,11 @@ class GiftReaderSpec extends Specification {
     ans2.feedBack == answerFeedback2
     ans2.percentCredit == answerCredit2
 
-
-
     where: "the given texts are representative of relevant use cases"
-    currentQText | title        | nbFragments | nbTextFragments | nbAnswers | answerText1 | answerCredit1 | answerFeedback1 | answerText2 | answerCredit2 | answerFeedback2
-    ec_q1_ok     | 'Question 1' | 2           | 1               | 3         | 'yellow'    | 100f          | null            | 'red'       | 0f            | null
-    ec_q2_ok     | 'Question 2' | 2           | 1               | 3         | 'yellow'    | 100f          | 'congrats !'    | 'red'       | 0f            | 'try again'
+    currentQText | title          | nbFragments | nbTextFragments | nbAnswers | answerText1 | answerCredit1 | answerFeedback1 | answerText2 | answerCredit2 | answerFeedback2
+    ec_q1_ok     | 'Question 1'   | 2           | 1               | 3         | 'yellow'    | 100f          | null            | 'red'       | 0f            | null
+    ec_q2_ok     | 'Question 2'   | 2           | 1               | 3         | 'yellow'    | 100f          | 'congrats !'    | 'red'       | 0f            | 'try again'
+    ec_q3_ok     | 'Question : 3' | 2           | 1               | 3         | 'yellow'    | 100f          | 'congrats !'    | 'red'       | 0f            | 'not ='
 
   }
 

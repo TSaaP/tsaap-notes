@@ -14,32 +14,56 @@
  * limitations under the License.
  */
 
-package org.tsaap.questions;
+package org.tsaap.questions.impl;
+
+import org.tsaap.questions.Answer;
+import org.tsaap.questions.AnswerBlock;
+import org.tsaap.questions.UserAnswerBlock;
 
 import java.util.List;
 
 /**
  * @author franck Silvestre
  */
-public interface UserAnswerBlock {
+public class DefaultUserAnswerBlock implements UserAnswerBlock {
+
+    private AnswerBlock answerBlock;
+    private List<Answer> answerList;
 
     /**
      * Get the current answer block
+     *
      * @return the current answer block
      */
-    public AnswerBlock getAnswerBlock();
+    public AnswerBlock getAnswerBlock() {
+        return answerBlock;
+    }
 
     /**
      * Get the list of answers given y the user for the current answer block
+     *
      * @return
      */
-    public List<Answer> getAnswerList();
+    public List<Answer> getAnswerList() {
+        return answerList;
+    }
+
+
+
+    public void setAnswerBlock(AnswerBlock answerBlock) {
+        this.answerBlock = answerBlock;
+    }
 
     /**
      * Get the percent credit the user receive for his answers on the current block
-     * @return the percent credit
+     *
+     * @return
      */
-    public Float evaluatePercentCredit();
-
-
+    public Float evaluatePercentCredit() {
+        Float res = 0f;
+        for (Answer answer : answerList) {
+            res += answer.getPercentCredit();
+        }
+        return res;
+    }
 }

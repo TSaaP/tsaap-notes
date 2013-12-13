@@ -47,9 +47,9 @@ public interface UserResponse {
     /**
      * Get the percent credit the user receive for his answers on the question
      *
-     * @return
+     * @return the percent credit
      */
-    public Float getPercentCredit();
+    public Float evaluatePercentCredit();
 
 
 }

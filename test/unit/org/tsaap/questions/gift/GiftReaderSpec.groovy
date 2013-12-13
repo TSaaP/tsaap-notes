@@ -55,6 +55,7 @@ class GiftReaderSpec extends Specification {
     Question question = quiz.questionList[0]
     question.title == title
     question.questionType == QuestionType.ExclusiveChoice
+    question.questionType.code == 1
 
     and: "the question is composed with one answer fragment and at least one text fragment"
     question.answerBlockList.size() == 1

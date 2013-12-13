@@ -32,7 +32,6 @@ public class DefaultQuestion implements Question {
     private List<AnswerBlock> answerBlockList = new ArrayList<AnswerBlock>();
     private List<TextBlock> textBlockList = new ArrayList<TextBlock>();
     private QuestionType questionType = QuestionType.Undefined;
-    private String globalId = UUID.randomUUID().toString();
 
     /**
      * Get the title of the question
@@ -60,14 +59,6 @@ public class DefaultQuestion implements Question {
         this.questionType = questionType;
     }
 
-    /**
-     * Get the global Id of the question
-     *
-     * @return the global Id
-     */
-    public String getGlobalId() {
-        return globalId;
-    }
 
     public void setTitle(String title) {
         this.title = title;

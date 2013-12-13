@@ -58,10 +58,5 @@ public interface Question {
      */
     public QuestionType getQuestionType();
 
-    /**
-     * Get the global Id of the question
-     *
-     * @return the global Id
-     */
-    public String getGlobalId();
+
 }

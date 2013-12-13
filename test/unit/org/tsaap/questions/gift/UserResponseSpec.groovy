@@ -21,7 +21,8 @@ package org.tsaap.questions.gift
 import org.tsaap.questions.Question
 import org.tsaap.questions.UserResponse
 import org.tsaap.questions.impl.gift.GiftQuestionService
-
+import org.tsaap.questions.impl.gift.GiftUserResponseAnswerBlockListSizeIsNotValidInResponse
+import org.tsaap.questions.impl.gift.GiftUserResponseAnswerNotFoundInChoiceList
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -63,14 +64,24 @@ class UserResponseSpec extends Specification {
 
   }
 
-//  @Unroll
-//  def "test the validation of an EC question response"() {
-//    given: "a question corresponding to an EC question written in gift format"
-//
-//    when: "a response given by a user contains more than one answer"
-//
-//    then:"the response is not valid"
-//  }
+  @Unroll
+  def "test the validation of an EC question response"() {
+    given: "a question corresponding to a question written in gift format"
+    Question question = giftQuestionService.getQuestionFromGiftText(ec_q3_ok)
+
+    when: "a response given by a user contains a different count of answer blocks"
+    giftQuestionService.createUserResponseForQuestionAndAnswersAsString("u1",question,[["yellow"],["blue"]])
+
+    then:"the response is not valid"
+    thrown(GiftUserResponseAnswerBlockListSizeIsNotValidInResponse)
+
+    when: "a response given by a user doesn't mach with any choice"
+    giftQuestionService.createUserResponseForQuestionAndAnswersAsString("u1",question,[["orange"]])
+
+    then: "the response is not valid"
+    thrown(GiftUserResponseAnswerNotFoundInChoiceList)
+
+  }
 
 
   @Shared // EC Question with escape characters

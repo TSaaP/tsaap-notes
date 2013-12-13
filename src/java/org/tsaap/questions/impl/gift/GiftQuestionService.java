@@ -16,11 +16,17 @@
 
 package org.tsaap.questions.impl.gift;
 
+import org.tsaap.questions.Answer;
 import org.tsaap.questions.Question;
 import org.tsaap.questions.Quiz;
+import org.tsaap.questions.UserResponse;
+import org.tsaap.questions.impl.DefaultAnswerBlock;
+import org.tsaap.questions.impl.DefaultUserAnswerBlock;
+import org.tsaap.questions.impl.DefaultUserResponse;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.List;
 
 /**
  * @author franck Silvestre
@@ -52,5 +58,44 @@ public class GiftQuestionService {
         quizReader.parse(reader);
         return handler.getQuiz();
     }
+
+    /**
+     * Create a user response for a question. The user response is specified by a text
+     * representation of the response.
+     *
+     * @param userId              the user identifier
+     * @param question            the question
+     * @param answerBlockTextList the text specification of the response
+     * @return the created user response
+     */
+    public UserResponse createUserResponseForQuestionAndAnswersAsString(String userId, Question question, List<List<String>> answerBlockTextList) throws GiftUserResponseAnswerNotFoundInChoiceList, GiftUserResponseAnswerBlockListSizeIsNotValidInResponse {
+        if (question.getAnswerBlockList().size() != answerBlockTextList.size()) {
+            throw new GiftUserResponseAnswerBlockListSizeIsNotValidInResponse();
+        }
+        DefaultUserResponse userResponse = new DefaultUserResponse();
+        userResponse.setUserIdentifier(userId);
+        userResponse.setQuestion(question);
+        for (int i = 0; i < question.getAnswerBlockList().size(); i++) {
+            DefaultAnswerBlock currentAnsBlock = (DefaultAnswerBlock) question.getAnswerBlockList().get(i);
+            DefaultUserAnswerBlock currentUserAnsBlock = new DefaultUserAnswerBlock();
+            userResponse.getUserAnswerBlockList().add(currentUserAnsBlock);
+            for (String userAnsString : answerBlockTextList.get(i)) {
+                boolean answerHasBeenFound = false;
+                for (Answer answer : currentAnsBlock.getAnswerList()) {
+                    if (answer.getTextValue().equals(userAnsString)) {
+                        currentUserAnsBlock.getAnswerList().add(answer);
+                        answerHasBeenFound = true;
+                        break;
+                    }
+                }
+                if (!answerHasBeenFound) {
+                    throw new GiftUserResponseAnswerNotFoundInChoiceList();
+                }
+            }
+        }
+
+        return userResponse;
+    }
+
 
 }

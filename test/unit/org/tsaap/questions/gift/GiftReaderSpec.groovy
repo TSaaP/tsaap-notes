@@ -18,7 +18,9 @@ package org.tsaap.questions.gift
 
 import org.tsaap.questions.Answer
 import org.tsaap.questions.AnswerBlock
+import org.tsaap.questions.Question
 import org.tsaap.questions.QuestionType
+import org.tsaap.questions.impl.DefaultExclusiveChoiceQuestion
 import org.tsaap.questions.impl.DefaultQuestion
 import org.tsaap.questions.impl.gift.GiftQuizContentHandler
 import org.tsaap.questions.impl.gift.GiftReader
@@ -51,9 +53,10 @@ class GiftReaderSpec extends Specification {
     then: "the obtained quiz has one question with the title and type correctly set"
     def quiz = handler.quiz
     quiz.questionList.size() == 1
-    DefaultQuestion question = quiz.questionList[0]
+    Question question = quiz.questionList[0]
     question.title == title
     question.questionType == QuestionType.ExclusiveChoice
+    question instanceof DefaultExclusiveChoiceQuestion
 
     and: "the question is composed with one answer fragment and at least one text fragment"
     question.answerBlockList.size() == 1

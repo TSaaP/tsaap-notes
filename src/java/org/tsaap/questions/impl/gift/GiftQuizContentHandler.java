@@ -21,10 +21,7 @@ import org.tsaap.questions.Question;
 import org.tsaap.questions.QuestionType;
 import org.tsaap.questions.QuizContentHandler;
 import org.tsaap.questions.TextBlock;
-import org.tsaap.questions.impl.DefaultAnswer;
-import org.tsaap.questions.impl.DefaultAnswerBlock;
-import org.tsaap.questions.impl.DefaultQuestion;
-import org.tsaap.questions.impl.DefaultQuiz;
+import org.tsaap.questions.impl.*;
 
 /**
  * @author franck Silvestre
@@ -182,6 +179,9 @@ public class GiftQuizContentHandler implements QuizContentHandler {
 
     private void postProcess(Question question) {
        logger.error("Post processing of the current question");
+       if (currentQuestion.getQuestionType() == QuestionType.ExclusiveChoice) {
+           currentQuestion = new DefaultExclusiveChoiceQuestion(currentQuestion);
+       }
     }
 
     private static Logger logger = Logger.getLogger(GiftQuizContentHandler.class);

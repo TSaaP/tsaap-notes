@@ -42,14 +42,14 @@ public interface QuizContentHandler {
     public void onEndTitle();
 
     /**
-     * Receive notification of the beginning of an answer fragment
+     * Receive notification of the beginning of an answer block
      */
-    public void onStartAnswerFragment();
+    public void onStartAnswerBlock();
 
     /**
-     * Receive notification of the end of an answer fragment
+     * Receive notification of the end of an answer block
      */
-    public void onEndAnswerFragment();
+    public void onEndAnswerBlock();
 
     /**
      * Receive notification of the beginning of an answer

@@ -20,9 +20,9 @@ import org.apache.log4j.Logger;
 import org.tsaap.questions.Question;
 import org.tsaap.questions.QuestionType;
 import org.tsaap.questions.QuizContentHandler;
-import org.tsaap.questions.TextFragment;
+import org.tsaap.questions.TextBlock;
 import org.tsaap.questions.impl.DefaultAnswer;
-import org.tsaap.questions.impl.DefaultAnswerFragment;
+import org.tsaap.questions.impl.DefaultAnswerBlock;
 import org.tsaap.questions.impl.DefaultQuestion;
 import org.tsaap.questions.impl.DefaultQuiz;
 
@@ -91,15 +91,15 @@ public class GiftQuizContentHandler implements QuizContentHandler {
     /**
      * Receive notification of the beginning of an answer fragment
      */
-    public void onStartAnswerFragment() {
-        currentAnswerFragment = new DefaultAnswerFragment();
+    public void onStartAnswerBlock() {
+        currentAnswerFragment = new DefaultAnswerBlock();
         answerCounter = 1;
     }
 
     /**
      * Receive notification of the end of an answer fragment
      */
-    public void onEndAnswerFragment() {
+    public void onEndAnswerBlock() {
         currentQuestion.addAnswerFragment(currentAnswerFragment);
         currentAnswerFragment = null;
     }
@@ -171,7 +171,7 @@ public class GiftQuizContentHandler implements QuizContentHandler {
             currentAnswer.setTextValue(trimedStr);
         } else if (currentQuestion != null && currentAnswerFragment == null) {
             logger.debug("Text fragment | " + str);
-            currentQuestion.addTextFragment(new TextFragment() {
+            currentQuestion.addTextFragment(new TextBlock() {
                 public String getText() {
                     return str;
                 }
@@ -188,7 +188,7 @@ public class GiftQuizContentHandler implements QuizContentHandler {
 
     private DefaultQuiz quiz;
     private DefaultQuestion currentQuestion;
-    private DefaultAnswerFragment currentAnswerFragment;
+    private DefaultAnswerBlock currentAnswerFragment;
     private DefaultAnswer currentAnswer;
     private StringBuffer currentTitle;
     private boolean answerCreditIsBeenBuilt;

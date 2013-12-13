@@ -31,11 +31,25 @@ public interface Question {
     public String getTitle();
 
     /**
-     * Get the question fragment list
+     * Get the question block list
      *
-     * @return the question fragment list
+     * @return the question block list
      */
-    public List<QuestionFragment> getFragmentList();
+    public List<QuestionBlock> getBlockList();
+
+    /**
+     * Get the question text block list
+     *
+     * @return the text question block list
+     */
+    public List<TextBlock> getTextBlockList();
+
+    /**
+     * Get the question text block list
+     *
+     * @return the text question block list
+     */
+    public List<AnswerBlock> getAnswerBlockList();
 
     /**
      * Get the question type
@@ -46,6 +60,7 @@ public interface Question {
 
     /**
      * Get the global Id of the question
+     *
      * @return the global Id
      */
     public String getGlobalId();

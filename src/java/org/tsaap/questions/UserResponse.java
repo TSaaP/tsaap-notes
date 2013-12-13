@@ -21,11 +21,35 @@ import java.util.List;
 /**
  * @author franck Silvestre
  */
-public interface AnswerFragment extends QuestionFragment {
+public interface UserResponse {
 
     /**
-     * Get the answer list that compose the answer fragment
-     * @return the answer list of the fragment
+     * Get the user identifier
+     *
+     * @return the user identifier
      */
-    public List<Answer> getAnswerList();
+    public String getUserIdentifier();
+
+    /**
+     * Get the question
+     *
+     * @return the question the response is for
+     */
+    public Question getQuestion();
+
+    /**
+     * Get the user answer block list
+     *
+     * @return the user answer block list
+     */
+    public List<UserAnswerBlock> getUserAnswerBlockList();
+
+    /**
+     * Get the percent credit the user receive for his answers on the question
+     *
+     * @return
+     */
+    public Float getPercentCredit();
+
+
 }

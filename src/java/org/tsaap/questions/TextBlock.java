@@ -19,5 +19,7 @@ package org.tsaap.questions;
 /**
  * @author franck Silvestre
  */
-public interface QuestionFragment {
+public interface TextBlock extends QuestionBlock {
+
+    public String getText();
 }

@@ -28,9 +28,9 @@ import java.util.UUID;
 public class DefaultQuestion implements Question {
 
     private String title;
-    private List<QuestionFragment> fragmentList = new ArrayList<QuestionFragment>();
-    private List<AnswerFragment> answerFragmentList = new ArrayList<AnswerFragment>();
-    private List<TextFragment> textFragmentList = new ArrayList<TextFragment>();
+    private List<QuestionBlock> blockList = new ArrayList<QuestionBlock>();
+    private List<AnswerBlock> answerBlockList = new ArrayList<AnswerBlock>();
+    private List<TextBlock> textBlockList = new ArrayList<TextBlock>();
     private QuestionType questionType = QuestionType.Undefined;
     private String globalId = UUID.randomUUID().toString();
 
@@ -78,8 +78,8 @@ public class DefaultQuestion implements Question {
      *
      * @return the question fragment list
      */
-    public List<QuestionFragment> getFragmentList() {
-        return fragmentList;
+    public List<QuestionBlock> getBlockList() {
+        return blockList;
     }
 
     /**
@@ -87,9 +87,9 @@ public class DefaultQuestion implements Question {
      *
      * @param fragment the fragment to add
      */
-    public void addAnswerFragment(AnswerFragment fragment) {
-        fragmentList.add(fragment);
-        answerFragmentList.add(fragment);
+    public void addAnswerFragment(AnswerBlock fragment) {
+        blockList.add(fragment);
+        answerBlockList.add(fragment);
     }
 
     /**
@@ -97,9 +97,9 @@ public class DefaultQuestion implements Question {
      *
      * @param fragment the fragment to add
      */
-    public void addTextFragment(TextFragment fragment) {
-        fragmentList.add(fragment);
-        textFragmentList.add(fragment);
+    public void addTextFragment(TextBlock fragment) {
+        blockList.add(fragment);
+        textBlockList.add(fragment);
     }
 
     /**
@@ -107,8 +107,8 @@ public class DefaultQuestion implements Question {
      *
      * @return the answer fragment list
      */
-    public List<AnswerFragment> getAnswerFragmentList() {
-        return answerFragmentList;
+    public List<AnswerBlock> getAnswerBlockList() {
+        return answerBlockList;
     }
 
     /**
@@ -116,8 +116,8 @@ public class DefaultQuestion implements Question {
      *
      * @return the text fragment list
      */
-    public List<TextFragment> getTextFragmentList() {
-        return textFragmentList;
+    public List<TextBlock> getTextBlockList() {
+        return textBlockList;
     }
 
 

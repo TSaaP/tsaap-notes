@@ -14,35 +14,32 @@
  * limitations under the License.
  */
 
-package org.tsaap.questions.impl;
+package org.tsaap.questions;
 
-import org.tsaap.questions.Answer;
-import org.tsaap.questions.AnswerFragment;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author franck Silvestre
  */
-public class DefaultAnswerFragment implements AnswerFragment {
-
-    private List<Answer> answerList = new ArrayList<Answer>();
+public interface UserAnswerBlock {
 
     /**
-     * Get the answer list that compose the answer fragment
-     *
-     * @return the answer list of the fragment
+     * Get the current answer block
+     * @return the current answer block
      */
-    public List<Answer> getAnswerList() {
-        return answerList;
-    }
+    public AnswerBlock getAnswerBlock();
 
     /**
-     * Add answer to the answer fragment
-     * @param answer the answer to add
+     * Get the list of answers given y the user for the current answer block
+     * @return
      */
-    public void addAnswer(Answer answer) {
-        answerList.add(answer);
-    }
+    public List<Answer> getAnswerList();
+
+    /**
+     * Get the percent credit the user receive for his answers on the current block
+     * @return
+     */
+    public Float getPercentCredit();
+
+
 }

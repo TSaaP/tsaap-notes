@@ -16,10 +16,16 @@
 
 package org.tsaap.questions;
 
+import java.util.List;
+
 /**
  * @author franck Silvestre
  */
-public interface TextFragment extends QuestionFragment{
+public interface AnswerBlock extends QuestionBlock {
 
-    public String getText();
+    /**
+     * Get the answer list that compose the answer block
+     * @return the answer list of the block
+     */
+    public List<Answer> getAnswerList();
 }

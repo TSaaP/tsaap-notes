@@ -17,7 +17,7 @@
 package org.tsaap.questions.gift
 
 import org.tsaap.questions.Answer
-import org.tsaap.questions.AnswerFragment
+import org.tsaap.questions.AnswerBlock
 import org.tsaap.questions.QuestionType
 import org.tsaap.questions.impl.DefaultQuestion
 import org.tsaap.questions.impl.gift.GiftQuizContentHandler
@@ -56,12 +56,12 @@ class GiftReaderSpec extends Specification {
     question.questionType == QuestionType.ExclusiveChoice
 
     and: "the question is composed with one answer fragment and at least one text fragment"
-    question.answerFragmentList.size() == 1
-    question.textFragmentList.size() == nbTextFragments
-    question.fragmentList.size() == nbFragments
+    question.answerBlockList.size() == 1
+    question.textBlockList.size() == nbTextFragments
+    question.blockList.size() == nbFragments
 
     and: "the answer fragment has at least two answers"
-    AnswerFragment answerFragment = question.answerFragmentList[0]
+    AnswerBlock answerFragment = question.answerBlockList[0]
     answerFragment.answerList.size() == nbAnswers
     Answer ans1 = answerFragment.answerList[0]
     Answer ans2 = answerFragment.answerList[1]

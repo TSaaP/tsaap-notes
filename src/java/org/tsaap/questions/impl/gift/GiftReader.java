@@ -3,7 +3,6 @@ package org.tsaap.questions.impl.gift;
 import org.apache.log4j.Logger;
 import org.tsaap.questions.QuizContentHandler;
 import org.tsaap.questions.QuizReader;
-import org.tsaap.questions.QuizReaderException;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -112,7 +111,7 @@ public class GiftReader implements QuizReader {
         flushAccumulator();
         answerFragmentHasStarted = true;
         answerFragmentHasEnded = false;
-        quizContentHandler.onStartAnswerFragment();
+        quizContentHandler.onStartAnswerBlock();
 
     }
 
@@ -131,7 +130,7 @@ public class GiftReader implements QuizReader {
             answerHasStarted = false;
             quizContentHandler.onEndAnswer();
         }
-        quizContentHandler.onEndAnswerFragment();
+        quizContentHandler.onEndAnswerBlock();
 
     }
 

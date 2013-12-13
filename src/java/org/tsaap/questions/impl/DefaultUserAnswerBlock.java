@@ -20,6 +20,7 @@ import org.tsaap.questions.Answer;
 import org.tsaap.questions.AnswerBlock;
 import org.tsaap.questions.UserAnswerBlock;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,7 +29,7 @@ import java.util.List;
 public class DefaultUserAnswerBlock implements UserAnswerBlock {
 
     private AnswerBlock answerBlock;
-    private List<Answer> answerList;
+    private List<Answer> answerList = new ArrayList<Answer>();
 
     /**
      * Get the current answer block

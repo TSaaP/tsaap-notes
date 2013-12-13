@@ -20,6 +20,7 @@ import org.tsaap.questions.Question;
 import org.tsaap.questions.UserAnswerBlock;
 import org.tsaap.questions.UserResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,7 +30,7 @@ public class DefaultUserResponse implements UserResponse {
 
     private String userIdentifier;
     private Question question;
-    private List<UserAnswerBlock> userAnswerBlockList;
+    private List<UserAnswerBlock> userAnswerBlockList = new ArrayList<UserAnswerBlock>();
 
 
     /**

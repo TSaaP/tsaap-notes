@@ -18,7 +18,9 @@
 
 package org.tsaap.questions
 
+import org.tsaap.questions.impl.DefaultExclusiveChoiceQuestion
 import org.tsaap.questions.impl.DefaultQuestion
+import org.tsaap.questions.impl.DefaultUserAnswerBlock
 import org.tsaap.questions.impl.DefaultUserResponse
 import org.tsaap.questions.impl.gift.GiftQuizContentHandler
 import org.tsaap.questions.impl.gift.GiftReader
@@ -36,41 +38,46 @@ class UserResponseSpec extends Specification {
   def "test the evaluation of the valid response given on an Exclusive Choice question"() {
 
     given: "a question corresponding to an EC question written in gift format"
-    def question = getQuestionFromQuestionText(currentQText)
+    DefaultExclusiveChoiceQuestion question = getQuestionFromQuestionText(ec_q3_ok)
 
     when:"the user choose the good answer"
     UserResponse userResponse = new DefaultUserResponse();
-
-    userResponse.userAnswerBlockList.add()
+    UserAnswerBlock userAnswerBlock = new DefaultUserAnswerBlock();
+    userAnswerBlock.answerBlock = question.answerBlock
+    userAnswerBlock.answerList = new ArrayList<Answer>();
+    userAnswerBlock.answerList.add(question.goodAnswer)
+    userResponse.userAnswerBlockList.add(userAnswerBlock)
 
 
     then:"the user has 100% of credit"
+    userResponse.evaluatePercentCredit() == 100f
 
     when:"the user choose the bad answer"
+    userAnswerBlock.answerList.clear()
+    def badAnswer = question.answerBlock.answerList.find { it != question.goodAnswer}
+    userAnswerBlock.answerList.add(badAnswer)
 
     then:"the user has 0% credit"
+    userResponse.evaluatePercentCredit() == 0f
 
     when: "the user choose no answers"
+    userAnswerBlock.answerList.clear()
 
     then: "the user has 0% credit"
+    userResponse.evaluatePercentCredit() == 0f
+
 
   }
 
-  @Unroll
-  def "test the validation of an EC question response"() {
-    given: "a question corresponding to an EC question written in gift format"
+//  @Unroll
+//  def "test the validation of an EC question response"() {
+//    given: "a question corresponding to an EC question written in gift format"
+//
+//    when: "a response given by a user contains more than one answer"
+//
+//    then:"the response is not valid"
+//  }
 
-    when: "a response given by a user contains more than one answer"
-
-    then:"the response is not valid"
-  }
-
-
-  @Shared // basic EC question without feedback
-  def ec_q1_ok = '::Question 1:: What\'s between orange and green in the spectrum ? \n { =yellow ~red  ~blue }'
-
-  @Shared // EC question with feedback
-  def ec_q2_ok = '::Question 2:: What\'s between orange and green in the spectrum ? \n { =yellow # congrats ! ~red # try again  ~blue #not yet }'
 
   @Shared // EC Question with escape characters
   def ec_q3_ok = '::Question \\: 3:: What\'s between orange and green in the \\#spectrum ? \n { =yellow # congrats ! ~red #not \\= ~blue # try again }'

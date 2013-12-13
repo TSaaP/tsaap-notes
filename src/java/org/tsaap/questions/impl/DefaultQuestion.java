@@ -87,7 +87,7 @@ public class DefaultQuestion implements Question {
      *
      * @param fragment the fragment to add
      */
-    public void addAnswerFragment(AnswerBlock fragment) {
+    public void addAnswerBlock(AnswerBlock fragment) {
         blockList.add(fragment);
         answerBlockList.add(fragment);
     }
@@ -97,7 +97,7 @@ public class DefaultQuestion implements Question {
      *
      * @param fragment the fragment to add
      */
-    public void addTextFragment(TextBlock fragment) {
+    public void addTextBlock(TextBlock fragment) {
         blockList.add(fragment);
         textBlockList.add(fragment);
     }

@@ -89,7 +89,7 @@ public class GiftQuizContentHandler implements QuizContentHandler {
      * Receive notification of the beginning of an answer fragment
      */
     public void onStartAnswerBlock() {
-        currentAnswerFragment = new DefaultAnswerBlock();
+        currentAnswerBlock = new DefaultAnswerBlock();
         answerCounter = 1;
     }
 
@@ -97,8 +97,8 @@ public class GiftQuizContentHandler implements QuizContentHandler {
      * Receive notification of the end of an answer fragment
      */
     public void onEndAnswerBlock() {
-        currentQuestion.addAnswerFragment(currentAnswerFragment);
-        currentAnswerFragment = null;
+        currentQuestion.addAnswerBlock(currentAnswerBlock);
+        currentAnswerBlock = null;
     }
 
     /**
@@ -118,7 +118,7 @@ public class GiftQuizContentHandler implements QuizContentHandler {
      * Receive notification of the end of an answer
      */
     public void onEndAnswer() {
-        currentAnswerFragment.addAnswer(currentAnswer);
+        currentAnswerBlock.addAnswer(currentAnswer);
         currentAnswer = null;
     }
 
@@ -166,9 +166,9 @@ public class GiftQuizContentHandler implements QuizContentHandler {
             currentAnswer.setFeedback(trimedStr);
         } else if (currentAnswer != null) {
             currentAnswer.setTextValue(trimedStr);
-        } else if (currentQuestion != null && currentAnswerFragment == null) {
+        } else if (currentQuestion != null && currentAnswerBlock == null) {
             logger.debug("Text fragment | " + str);
-            currentQuestion.addTextFragment(new TextBlock() {
+            currentQuestion.addTextBlock(new TextBlock() {
                 public String getText() {
                     return str;
                 }
@@ -188,7 +188,7 @@ public class GiftQuizContentHandler implements QuizContentHandler {
 
     private DefaultQuiz quiz;
     private DefaultQuestion currentQuestion;
-    private DefaultAnswerBlock currentAnswerFragment;
+    private DefaultAnswerBlock currentAnswerBlock;
     private DefaultAnswer currentAnswer;
     private StringBuffer currentTitle;
     private boolean answerCreditIsBeenBuilt;

@@ -112,8 +112,8 @@ public class DefaultExclusiveChoiceQuestion extends DefaultQuestion {
      * @param fragment the fragment to add
      */
     @Override
-    public void addAnswerFragment(AnswerBlock fragment) {
-        defaultQuestion.addAnswerFragment(fragment);
+    public void addAnswerBlock(AnswerBlock fragment) {
+        defaultQuestion.addAnswerBlock(fragment);
     }
 
     /**
@@ -122,8 +122,8 @@ public class DefaultExclusiveChoiceQuestion extends DefaultQuestion {
      * @param fragment the fragment to add
      */
     @Override
-    public void addTextFragment(TextBlock fragment) {
-        defaultQuestion.addTextFragment(fragment);
+    public void addTextBlock(TextBlock fragment) {
+        defaultQuestion.addTextBlock(fragment);
     }
 
     /**

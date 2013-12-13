@@ -42,27 +42,21 @@ class UserResponseSpec extends Specification {
     DefaultExclusiveChoiceQuestion question = giftQuestionService.getQuestionFromGiftText(ec_q3_ok)
 
     when:"the user choose the good answer"
-    UserResponse userResponse = new DefaultUserResponse();
-    UserAnswerBlock userAnswerBlock = new DefaultUserAnswerBlock();
-    userAnswerBlock.answerBlock = question.answerBlock
-    userAnswerBlock.answerList = new ArrayList<Answer>();
-    userAnswerBlock.answerList.add(question.goodAnswer)
-    userResponse.userAnswerBlockList.add(userAnswerBlock)
+    UserResponse userResponse = giftQuestionService.createUserResponseForQuestionAndAnswersAsString("u1",question,[["yellow"]])
 
 
     then:"the user has 100% of credit"
     userResponse.evaluatePercentCredit() == 100f
 
     when:"the user choose the bad answer"
-    userAnswerBlock.answerList.clear()
-    def badAnswer = question.answerBlock.answerList.find { it != question.goodAnswer}
-    userAnswerBlock.answerList.add(badAnswer)
+    userResponse = giftQuestionService.createUserResponseForQuestionAndAnswersAsString("u1",question,[["blue"]])
 
     then:"the user has 0% credit"
     userResponse.evaluatePercentCredit() == 0f
 
     when: "the user choose no answers"
-    userAnswerBlock.answerList.clear()
+    userResponse = giftQuestionService.createUserResponseForQuestionAndAnswersAsString("u1",question,[[]])
+
 
     then: "the user has 0% credit"
     userResponse.evaluatePercentCredit() == 0f

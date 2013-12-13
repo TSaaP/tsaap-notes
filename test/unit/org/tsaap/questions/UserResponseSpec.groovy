@@ -22,6 +22,7 @@ import org.tsaap.questions.impl.DefaultExclusiveChoiceQuestion
 import org.tsaap.questions.impl.DefaultQuestion
 import org.tsaap.questions.impl.DefaultUserAnswerBlock
 import org.tsaap.questions.impl.DefaultUserResponse
+import org.tsaap.questions.impl.gift.GiftQuestionService
 import org.tsaap.questions.impl.gift.GiftQuizContentHandler
 import org.tsaap.questions.impl.gift.GiftReader
 import spock.lang.Shared
@@ -38,7 +39,7 @@ class UserResponseSpec extends Specification {
   def "test the evaluation of the valid response given on an Exclusive Choice question"() {
 
     given: "a question corresponding to an EC question written in gift format"
-    DefaultExclusiveChoiceQuestion question = getQuestionFromQuestionText(ec_q3_ok)
+    DefaultExclusiveChoiceQuestion question = giftQuestionService.getQuestionFromGiftText(ec_q3_ok)
 
     when:"the user choose the good answer"
     UserResponse userResponse = new DefaultUserResponse();
@@ -82,16 +83,7 @@ class UserResponseSpec extends Specification {
   @Shared // EC Question with escape characters
   def ec_q3_ok = '::Question \\: 3:: What\'s between orange and green in the \\#spectrum ? \n { =yellow # congrats ! ~red #not \\= ~blue # try again }'
 
-
-
-  static private Question getQuestionFromQuestionText(String questionText) {
-    GiftQuizContentHandler handler = new GiftQuizContentHandler()
-    def quizReader = new GiftReader(quizContentHandler: handler)
-    def reader = new StringReader(questionText)
-    quizReader.parse(reader)
-    def quiz = handler.quiz
-    quiz.questionList.size() == 1
-    return quiz.questionList[0]
-  }
+  @Shared
+  GiftQuestionService giftQuestionService = new GiftQuestionService();
 
 }

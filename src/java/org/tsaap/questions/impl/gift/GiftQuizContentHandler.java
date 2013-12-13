@@ -178,10 +178,7 @@ public class GiftQuizContentHandler implements QuizContentHandler {
 
 
     private void postProcess(Question question) {
-       logger.error("Post processing of the current question");
-       if (currentQuestion.getQuestionType() == QuestionType.ExclusiveChoice) {
-           currentQuestion = new DefaultExclusiveChoiceQuestion(currentQuestion);
-       }
+       logger.debug("Post processing of the current question");
     }
 
     private static Logger logger = Logger.getLogger(GiftQuizContentHandler.class);

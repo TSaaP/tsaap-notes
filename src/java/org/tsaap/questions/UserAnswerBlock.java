@@ -24,12 +24,6 @@ import java.util.List;
 public interface UserAnswerBlock {
 
     /**
-     * Get the current answer block
-     * @return the current answer block
-     */
-    public AnswerBlock getAnswerBlock();
-
-    /**
      * Get the list of answers given y the user for the current answer block
      * @return
      */

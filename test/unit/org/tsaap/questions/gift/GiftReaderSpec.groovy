@@ -20,7 +20,6 @@ import org.tsaap.questions.Answer
 import org.tsaap.questions.AnswerBlock
 import org.tsaap.questions.Question
 import org.tsaap.questions.QuestionType
-import org.tsaap.questions.impl.DefaultExclusiveChoiceQuestion
 import org.tsaap.questions.impl.DefaultQuestion
 import org.tsaap.questions.impl.gift.GiftQuizContentHandler
 import org.tsaap.questions.impl.gift.GiftReader
@@ -56,7 +55,6 @@ class GiftReaderSpec extends Specification {
     Question question = quiz.questionList[0]
     question.title == title
     question.questionType == QuestionType.ExclusiveChoice
-    question instanceof DefaultExclusiveChoiceQuestion
 
     and: "the question is composed with one answer fragment and at least one text fragment"
     question.answerBlockList.size() == 1

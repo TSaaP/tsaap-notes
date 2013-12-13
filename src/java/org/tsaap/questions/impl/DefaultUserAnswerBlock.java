@@ -28,17 +28,8 @@ import java.util.List;
  */
 public class DefaultUserAnswerBlock implements UserAnswerBlock {
 
-    private AnswerBlock answerBlock;
     private List<Answer> answerList = new ArrayList<Answer>();
 
-    /**
-     * Get the current answer block
-     *
-     * @return the current answer block
-     */
-    public AnswerBlock getAnswerBlock() {
-        return answerBlock;
-    }
 
     /**
      * Get the list of answers given y the user for the current answer block
@@ -47,12 +38,6 @@ public class DefaultUserAnswerBlock implements UserAnswerBlock {
      */
     public List<Answer> getAnswerList() {
         return answerList;
-    }
-
-
-
-    public void setAnswerBlock(AnswerBlock answerBlock) {
-        this.answerBlock = answerBlock;
     }
 
     /**

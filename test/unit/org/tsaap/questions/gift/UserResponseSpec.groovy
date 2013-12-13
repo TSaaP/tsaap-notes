@@ -16,15 +16,12 @@
 
 
 
-package org.tsaap.questions
+package org.tsaap.questions.gift
 
-import org.tsaap.questions.impl.DefaultExclusiveChoiceQuestion
-import org.tsaap.questions.impl.DefaultQuestion
-import org.tsaap.questions.impl.DefaultUserAnswerBlock
-import org.tsaap.questions.impl.DefaultUserResponse
+import org.tsaap.questions.Question
+import org.tsaap.questions.UserResponse
 import org.tsaap.questions.impl.gift.GiftQuestionService
-import org.tsaap.questions.impl.gift.GiftQuizContentHandler
-import org.tsaap.questions.impl.gift.GiftReader
+
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -39,10 +36,12 @@ class UserResponseSpec extends Specification {
   def "test the evaluation of the valid response given on an Exclusive Choice question"() {
 
     given: "a question corresponding to an EC question written in gift format"
-    DefaultExclusiveChoiceQuestion question = giftQuestionService.getQuestionFromGiftText(ec_q3_ok)
+    Question question = giftQuestionService.getQuestionFromGiftText(ec_q3_ok)
 
     when:"the user choose the good answer"
     UserResponse userResponse = giftQuestionService.createUserResponseForQuestionAndAnswersAsString("u1",question,[["yellow"]])
+    userResponse.question == question
+    userResponse.userIdentifier == "u1"
 
 
     then:"the user has 100% of credit"

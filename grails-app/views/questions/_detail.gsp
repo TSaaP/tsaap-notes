@@ -2,8 +2,8 @@
 
 <div class="question">
     <g:form>
-        <h3>${question.title}</h3>
-        <g:each var="block" in="${question.questionBlockList}">
+        <p><strong>${question.title}</strong></p>
+        <g:each var="block" in="${question.blockList}">
             <p>
                 <g:if test="${block instanceof TextBlock}">
                     ${block.text}
@@ -12,8 +12,8 @@
                     <g:render template="/questions/${question.questionType.name()}AnswerBlock" model="[block: block]"/>
                 </g:else>
             </p>
-            <button type="submit"
-                    class="btn btn-primary btn-xs">Submit</button>
         </g:each>
+        <button type="submit"
+                class="btn btn-primary btn-xs">Submit</button>
     </g:form>
 </div>

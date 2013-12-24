@@ -82,7 +82,9 @@ class Note {
         if (content?.startsWith("::") && !question) {
             try {
                 question = giftQuestionService.getQuestionFromGiftText(content)
-            } catch (Exception e) {}
+            } catch (Exception e) {
+                log.error(e.message)
+            }
         }
         question
     }

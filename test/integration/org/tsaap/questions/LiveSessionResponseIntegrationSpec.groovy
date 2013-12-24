@@ -65,7 +65,7 @@ class LiveSessionResponseIntegrationSpec extends Specification {
         then: "the user response is not set"
         userResponse == null
 
-        and:"the percent credit is set to 0"
+        and:"the percent credit of the live session response is set to 0"
         liveSessionResponse.percentCredit == 0
 
 

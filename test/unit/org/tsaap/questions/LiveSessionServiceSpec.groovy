@@ -61,6 +61,7 @@ class LiveSessionServiceSpec extends Specification {
 
         then:"an precondition violation occurs"
         thrown(PreconditionViolation)
-
     }
+
+
 }

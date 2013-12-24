@@ -14,7 +14,7 @@ import spock.lang.Specification
 @Mock([Note])
 class LiveSessionSpec extends Specification {
 
-    void "test the start of a live session"() {
+    void "test the start and stop of a live session"() {
         given:" a newly created live session "
         LiveSession liveSession = new LiveSession(note:mockDomain(Note))
         liveSession.isNotStarted()

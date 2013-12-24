@@ -65,10 +65,10 @@ public class GiftQuestionService {
      *
      * @param userId              the user identifier
      * @param question            the question
-     * @param answerBlockTextList the text specification of the response
+     * @param answerBlockTextList the list of answer text block  of the response
      * @return the created user response
      */
-    public UserResponse createUserResponseForQuestionAndAnswersAsString(String userId, Question question, List<List<String>> answerBlockTextList) throws GiftUserResponseAnswerNotFoundInChoiceList, GiftUserResponseAnswerBlockListSizeIsNotValidInResponse {
+    public UserResponse createUserResponseForQuestionAndAnswerBlockList(String userId, Question question, List<List<String>> answerBlockTextList) throws GiftUserResponseAnswerNotFoundInChoiceList, GiftUserResponseAnswerBlockListSizeIsNotValidInResponse {
         if (question.getAnswerBlockList().size() != answerBlockTextList.size()) {
             throw new GiftUserResponseAnswerBlockListSizeIsNotValidInResponse();
         }

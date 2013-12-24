@@ -40,7 +40,7 @@ class UserResponseSpec extends Specification {
     Question question = giftQuestionService.getQuestionFromGiftText(ec_q3_ok)
 
     when:"the user choose the good answer"
-    UserResponse userResponse = giftQuestionService.createUserResponseForQuestionAndAnswersAsString("u1",question,[["yellow"]])
+    UserResponse userResponse = giftQuestionService.createUserResponseForQuestionAndAnswerBlockList("u1",question,[["yellow"]])
     userResponse.question == question
     userResponse.userIdentifier == "u1"
 
@@ -49,13 +49,13 @@ class UserResponseSpec extends Specification {
     userResponse.evaluatePercentCredit() == 100f
 
     when:"the user choose the bad answer"
-    userResponse = giftQuestionService.createUserResponseForQuestionAndAnswersAsString("u1",question,[["blue"]])
+    userResponse = giftQuestionService.createUserResponseForQuestionAndAnswerBlockList("u1",question,[["blue"]])
 
     then:"the user has 0% credit"
     userResponse.evaluatePercentCredit() == 0f
 
     when: "the user choose no answers"
-    userResponse = giftQuestionService.createUserResponseForQuestionAndAnswersAsString("u1",question,[[]])
+    userResponse = giftQuestionService.createUserResponseForQuestionAndAnswerBlockList("u1",question,[[]])
 
 
     then: "the user has 0% credit"
@@ -70,13 +70,13 @@ class UserResponseSpec extends Specification {
     Question question = giftQuestionService.getQuestionFromGiftText(ec_q3_ok)
 
     when: "a response given by a user contains a different count of answer blocks"
-    giftQuestionService.createUserResponseForQuestionAndAnswersAsString("u1",question,[["yellow"],["blue"]])
+    giftQuestionService.createUserResponseForQuestionAndAnswerBlockList("u1",question,[["yellow"],["blue"]])
 
     then:"the response is not valid"
     thrown(GiftUserResponseAnswerBlockListSizeIsNotValidInResponse)
 
     when: "a response given by a user doesn't mach with any choice"
-    giftQuestionService.createUserResponseForQuestionAndAnswersAsString("u1",question,[["orange"]])
+    giftQuestionService.createUserResponseForQuestionAndAnswerBlockList("u1",question,[["orange"]])
 
     then: "the response is not valid"
     thrown(GiftUserResponseAnswerNotFoundInChoiceList)

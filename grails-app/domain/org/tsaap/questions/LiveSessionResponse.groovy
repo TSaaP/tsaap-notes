@@ -11,7 +11,7 @@ class LiveSessionResponse {
     Float percentCredit = null
 
     static constraints = {
-        answerListAsString nullable: true
+        answerListAsString nullable: true, blank: false, matches: '\\[,*(,?\\[".*"(,".*")*\\]|,?\\[\\])*,*\\]'
         percentCredit nullable: true
     }
 

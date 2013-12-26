@@ -19,7 +19,6 @@ package org.tsaap.questions
 import org.tsaap.BootstrapTestService
 import org.tsaap.notes.Note
 import org.tsaap.notes.NoteService
-import org.tsaap.questions.impl.gift.GiftQuestionService
 import spock.lang.Specification
 
 class LiveSessionResponseIntegrationSpec extends Specification {

@@ -123,9 +123,7 @@ class NotesController {
         } catch (Exception e) {
             liveSession = liveSessionService.createAndStartLiveSessionForNote(currentUser, note)
         }
-        params.remove('noteId')
-        params.remove('liveSessId')
-        redirect(action: index(), params: params)
+        render(template: '/questions/author/Started/detail', model: [note:note,liveSession:liveSession])
     }
 
     /**

@@ -1,5 +1,5 @@
 <%@ page import="org.tsaap.questions.TextBlock" %>
-
+<g:set var="question" value="${note.question}"/>
 <div class="question">
     <g:form>
         <p><strong>${question.title}</strong></p>

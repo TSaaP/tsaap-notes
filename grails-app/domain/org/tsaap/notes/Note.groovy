@@ -44,7 +44,7 @@ class Note {
         version false
     }
 
-    static transients = ['noteUrl', 'question', 'giftQuestionService']
+    static transients = ['noteUrl', 'question', 'giftQuestionService','liveSession','activeLiveSession']
 
     /**
      * Indicate if the current note is bookmarked by the given user
@@ -90,17 +90,33 @@ class Note {
         question
     }
 
+    LiveSession liveSession
+
     /**
-     * Find the last live session for the current note if it is a question
+     * Get the last live session for the current note if it is a question
      * @return the last live session if it exists
      */
-    LiveSession findLiveSession() {
-        LiveSession liveSession = null
+    LiveSession getLiveSession() {
+        if (liveSession && !liveSession.stopped) {
+            return liveSession
+        }
         if (isAQuestion()) {
            liveSession = LiveSession.findByNote(this,[sort: "dateCreated", order: "desc"])
         }
         liveSession
     }
+
+    /**
+     * Get the current active live session if it exists
+     * @return the current active live session or null
+     */
+    LiveSession getActiveLiveSession() {
+        if (liveSession && !liveSession.stopped) {
+           liveSession
+        }
+        null
+    }
+
 
     /**
      *

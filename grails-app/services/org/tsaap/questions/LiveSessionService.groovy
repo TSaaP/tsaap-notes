@@ -14,7 +14,7 @@ class LiveSessionService {
      * @param note the note the live session is associated with
      * @return the live session
      */
-    @Requires({user == note.author && note.isAQuestion()})
+    @Requires({user == note.author && note.isAQuestion() && !note.activeLiveSession})
     LiveSession createLiveSessionForNote(User user, Note note) {
         LiveSession liveSession = new LiveSession(note:note)
         liveSession.save()

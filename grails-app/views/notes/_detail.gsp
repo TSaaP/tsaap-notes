@@ -41,12 +41,10 @@
     </h6>
 
     <g:if test="${note.isAQuestion()}">
-        <g:if test="${user == note.author}">
-            <g:render template="/questions/author/NotStarted/detail" model="[question: note.question]"/>
-        </g:if>
-        <g:else>
-            <g:render template="/questions/user/NotStarted/detail" model="[question: note.question]"/>
-        </g:else>
+        <g:set var="liveSession" value="${note.getLiveSession()}"/>
+        <g:set var="sessionStatus" value="${liveSession ? liveSession.status.name() : 'NotStarted'}"/>
+        <g:set var="userType" value="${user == note.author ? 'author' : 'user'}"/>
+        <g:render template="/questions/${userType}/${sessionStatus}/detail" model="[question: note.question]"/>
     </g:if>
     <g:else>
         <p id="content${note.id}" class="note-content">${note.content}</p>

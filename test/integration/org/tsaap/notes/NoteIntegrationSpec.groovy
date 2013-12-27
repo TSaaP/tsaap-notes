@@ -39,25 +39,27 @@ class NoteIntegrationSpec extends Specification {
         Note note = noteService.addNote(bootstrapTestService.learnerMary,"not a question")
 
         then: "no live session found"
-        !note.findLiveSession()
+        !note.liveSession
 
         when:"a note is a question but that has no live session"
         note = noteService.addNote(bootstrapTestService.learnerMary,"::a question:: what ? {=this ~that}")
 
         then:"no live session found"
-        !note.findLiveSession()
+        !note.liveSession
 
         and:"the note has one live session"
         LiveSession liveSession = liveSessionService.createLiveSessionForNote(bootstrapTestService.learnerMary,note)
 
         then:"a live session is found"
-        note.findLiveSession() == liveSession
+        note.liveSession == liveSession
 
         when:"the note is a question and has more than one live session"
+        liveSession.start()
+        liveSession.stop()
         LiveSession lastLiveSession = liveSessionService.createLiveSessionForNote(bootstrapTestService.learnerMary, note)
 
         then:"the last live session is returned"
-        note.findLiveSession() == lastLiveSession
+        note.liveSession == lastLiveSession
 
     }
 

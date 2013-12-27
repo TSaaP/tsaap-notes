@@ -15,5 +15,7 @@
         </g:each>
     <g:remoteLink action="stopLiveSession" controller="question" params="[liveSessId:liveSession.id,noteId:note.id]"
                   class="btn btn-warning btn-xs" update="question_${note.id}"><span class="glyphicon glyphicon-stop"></span> Stop</g:remoteLink>
+    (response count : ${liveSession.responseCount()} <g:remoteLink action="refresh" controller="question" params="[noteId:note.id]" title="Refresh" update="question_${note.id}"><span class="glyphicon glyphicon-refresh">&nbsp;</span></g:remoteLink>
+    )
 
 </div>

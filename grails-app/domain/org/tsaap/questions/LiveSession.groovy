@@ -50,7 +50,7 @@ class LiveSession {
     def start() {
         status = LiveSessionStatus.Started.name()
         startDate = new Date()
-        save()
+        save(flush: true)
     }
 
     /**
@@ -60,7 +60,7 @@ class LiveSession {
     def stop() {
         status = LiveSessionStatus.Ended.name()
         endDate = new Date()
-        save()
+        save(flush: true)
     }
 
     /**
@@ -70,6 +70,14 @@ class LiveSession {
      */
     LiveSessionResponse getResponseForUser(User user) {
         LiveSessionResponse.findByLiveSessionAndUser(this,user)
+    }
+
+    /**
+     * get the count of responses for the current live session
+     * @return the count of responses
+     */
+    Integer responseCount() {
+        LiveSessionResponse.countByLiveSession(this)
     }
 }
 

@@ -30,7 +30,10 @@ class QuestionController {
         def note = Note.get(params.noteId)
         def liveSession = LiveSession.get(params.liveSessId)
         liveSession.stop()
-        render(template: '/questions/author/Ended/detail', model: [note: note, liveSession: liveSession,user:currentUser])
+        if (liveSession.hasErrors()) {
+            log.error(liveSession.errors.allErrors.toString())
+        }
+        render(template: "/questions/author/${liveSession.status}/detail", model: [note: note, liveSession: liveSession,user:currentUser])
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])

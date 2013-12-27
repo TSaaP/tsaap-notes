@@ -6,6 +6,7 @@
         <div class="alert alert-success">
             Waiting for results for the question &quot;<strong>${question.title}</strong>&quot;...
             <g:remoteLink action="refresh" controller="question" params="[noteId:note.id]" title="Refresh" update="question_${note.id}"><span class="glyphicon glyphicon-refresh">&nbsp;</span></g:remoteLink>
+            (response count :${liveSession.responseCount()})
         </div>
     </g:if>
     <g:else>

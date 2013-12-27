@@ -41,7 +41,7 @@ class LiveSessionResponseIntegrationSpec extends Specification {
         liveSession.isNotStarted()
 
         and:"trying to create a response for a user"
-        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learnerMary,'[]')
+        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learnerMary,'[[]]')
 
         then:"a violation of a precondition occurs"
         thrown(PreconditionViolation)
@@ -50,13 +50,13 @@ class LiveSessionResponseIntegrationSpec extends Specification {
         liveSession.start()
 
         and:"trying to create a response for a user"
-        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learnerMary,'[]')
+        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learnerMary,'[[]]')
 
         then:"the response is created"
         liveSession.getResponseForUser(bootstrapTestService.learnerMary)
 
         when:"a trying to create a response for the same user and same session"
-        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learnerMary,'[]')
+        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learnerMary,'[[]]')
 
         then:"a violation of a precondition occurs"
         thrown(PreconditionViolation)
@@ -78,8 +78,9 @@ class LiveSessionResponseIntegrationSpec extends Specification {
         when: "getting the user response"
         UserResponse userResponse = liveSessionResponse.userResponse
 
-        then: "the user response is set"
+        then: "the user response is set correctly"
         userResponse != null
+        userResponse.userAnswerBlockList[0].answerList[0].textValue == "this"
 
         and:"the user response percent credit is reported on the percent credit of the live session response"
         userResponse.evaluatePercentCredit() == liveSessionResponse.percentCredit
@@ -98,6 +99,59 @@ class LiveSessionResponseIntegrationSpec extends Specification {
 
         and:"the percent credit of the live session response is set to 0"
         liveSessionResponse.percentCredit == 0
+
+        when:"the live session response content correspond to a empty response"
+        liveSessionResponse = new LiveSessionResponse(
+                liveSession: liveSession,answerListAsString: '[[]]',
+                user: bootstrapTestService.learnerMary)
+
+        and: "trying to get the user response"
+        userResponse = liveSessionResponse.userResponse
+
+        then: "the user response is set with the no response answer"
+        userResponse.userAnswerBlockList[0].answerList[0] == note.giftQuestionService.noResponseAnswer
+
+        and:"the percent credit of the live session response is set to 0"
+        liveSessionResponse.percentCredit == 0
+
+
+    }
+
+    void "test the construction of the result matrix"() {
+        given:"a started live session for a note"
+        def note2 = noteService.addNote(bootstrapTestService.teacherJeanne,"::a question:: What ? {~bad1 =good1 ~bad2 ~bad3}")
+        LiveSession liveSession = liveSessionService.createLiveSessionForNote(bootstrapTestService.teacherJeanne,note2)
+        liveSession.start()
+
+        and:"several live session responses"
+        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learnerMary,'[["good1"]]')
+        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learnerPaul,'[["good1"]]')
+        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learners[0],'[["good1"]]')
+        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learners[1],'[["good1"]]')
+        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learners[2],'[["good1"]]')
+        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learners[3],'[["good1"]]')
+        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learners[4],'[["bad3"]]')
+        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learners[5],'[["bad3"]]')
+        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learners[6],'[["bad3"]]')
+        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learners[7],'[["bad1"]]')
+        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learners[8],'[[]]')
+        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learners[9],'[[]]')
+
+
+        when:"calculating the matrix "
+        def matrix = liveSession.resultMatrix()
+
+        then:"the given matrix is correctly set"
+        matrix.size() == 1
+        def currentMap = matrix[0]
+        currentMap["good1"] == 50
+        currentMap["bad2"] == 0
+        currentMap["bad3"] == (3/12)*100
+        currentMap["bad1"] == (1/12)*100
+        currentMap["_no_response_"] == (2/12)*100
+
+
+
 
 
     }

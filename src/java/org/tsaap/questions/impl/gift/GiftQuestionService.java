@@ -20,6 +20,7 @@ import org.tsaap.questions.Answer;
 import org.tsaap.questions.Question;
 import org.tsaap.questions.Quiz;
 import org.tsaap.questions.UserResponse;
+import org.tsaap.questions.impl.DefaultAnswer;
 import org.tsaap.questions.impl.DefaultAnswerBlock;
 import org.tsaap.questions.impl.DefaultUserAnswerBlock;
 import org.tsaap.questions.impl.DefaultUserResponse;
@@ -79,23 +80,42 @@ public class GiftQuestionService {
             DefaultAnswerBlock currentAnsBlock = (DefaultAnswerBlock) question.getAnswerBlockList().get(i);
             DefaultUserAnswerBlock currentUserAnsBlock = new DefaultUserAnswerBlock();
             userResponse.getUserAnswerBlockList().add(currentUserAnsBlock);
-            for (String userAnsString : answerBlockTextList.get(i)) {
-                boolean answerHasBeenFound = false;
-                for (Answer answer : currentAnsBlock.getAnswerList()) {
-                    if (answer.getTextValue().equals(userAnsString)) {
-                        currentUserAnsBlock.getAnswerList().add(answer);
-                        answerHasBeenFound = true;
-                        break;
+            boolean answerHasBeenFound = false;
+            if (answerBlockTextList.get(i).isEmpty()) {
+                currentUserAnsBlock.getAnswerList().add(getNoResponseAnswer());
+                answerHasBeenFound = true;
+            } else {
+                for (String userAnsString : answerBlockTextList.get(i)) {
+                    for (Answer answer : currentAnsBlock.getAnswerList()) {
+                        if (answer.getTextValue().equals(userAnsString)) {
+                            currentUserAnsBlock.getAnswerList().add(answer);
+                            answerHasBeenFound = true;
+                            break;
+                        }
                     }
                 }
-                if (!answerHasBeenFound) {
-                    throw new GiftUserResponseAnswerNotFoundInChoiceList();
-                }
+            }
+            if (!answerHasBeenFound) {
+                throw new GiftUserResponseAnswerNotFoundInChoiceList();
             }
         }
 
         return userResponse;
     }
 
+    private DefaultAnswer noResponseAnswer;
+
+    /**
+     * @return the no response answer
+     */
+    public DefaultAnswer getNoResponseAnswer() {
+        if (noResponseAnswer == null) {
+            noResponseAnswer = new DefaultAnswer();
+            noResponseAnswer.setPercentCredit(0f);
+            noResponseAnswer.setIdentifier("_NO_RESPONSE_");
+            noResponseAnswer.setTextValue("_NO_RESPONSE_");
+        }
+        return noResponseAnswer;
+    }
 
 }

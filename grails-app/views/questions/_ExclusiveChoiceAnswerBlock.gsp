@@ -1,3 +1,3 @@
 <g:each var="answer" in="${block.answerList}">
-    <g:radio name="answers" value="answer.identifier"/> ${answer.textValue}<br/>
+    <g:radio name="answer" value="${answer.textValue}"/> ${answer.textValue}<br/>
 </g:each>

@@ -1,8 +1,17 @@
 <%@ page import="org.tsaap.questions.TextBlock" %>
 <g:set var="question" value="${note.question}"/>
 
-<div class="question">
-    <g:form>
+<div class="question" id="question_${note.id}">
+    <g:if test="${liveSession.getResponseForUser(user)}">
+        <div class="alert alert-success">
+            Waiting for results for the question &quot;<strong>${question.title}</strong>&quot;...
+            <g:remoteLink action="refresh" controller="question" params="[noteId:note.id]" title="Refresh" update="question_${note.id}"><span class="glyphicon glyphicon-refresh">&nbsp;</span></g:remoteLink>
+        </div>
+    </g:if>
+    <g:else>
+    <g:form >
+        <g:hiddenField name="liveSessId" value="${liveSession.id}"/>
+        <g:hiddenField name="noteId" value="${note.id}"/>
         <p><strong>${question.title}</strong></p>
         <g:each var="block" in="${question.blockList}">
             <p>
@@ -14,7 +23,8 @@
                 </g:else>
             </p>
         </g:each>
-        <button type="submit"
-                class="btn btn-primary btn-xs">Submit</button>
+        <g:submitToRemote action="submitResponse" controller="question" update="question_${note.id}"
+                class="btn btn-primary btn-xs" value="Submit"/>
     </g:form>
+    </g:else>
 </div>

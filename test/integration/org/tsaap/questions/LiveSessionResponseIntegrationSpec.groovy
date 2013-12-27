@@ -20,6 +20,7 @@ import org.gcontracts.PreconditionViolation
 import org.tsaap.BootstrapTestService
 import org.tsaap.notes.Note
 import org.tsaap.notes.NoteService
+import org.tsaap.questions.impl.gift.GiftQuestionService
 import spock.lang.Specification
 
 class LiveSessionResponseIntegrationSpec extends Specification {
@@ -148,7 +149,7 @@ class LiveSessionResponseIntegrationSpec extends Specification {
         currentMap["bad2"] == 0
         currentMap["bad3"] == (3/12)*100
         currentMap["bad1"] == (1/12)*100
-        currentMap["_no_response_"] == (2/12)*100
+        currentMap[GiftQuestionService.NO_RESPONSE] == (2/12)*100
 
 
 

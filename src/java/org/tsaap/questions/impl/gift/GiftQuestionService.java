@@ -34,6 +34,8 @@ import java.util.List;
  */
 public class GiftQuestionService {
 
+    public static final String NO_RESPONSE = "_NO_RESPONSE_";
+
     /**
      * Get question from its gift text specification
      *
@@ -112,8 +114,8 @@ public class GiftQuestionService {
         if (noResponseAnswer == null) {
             noResponseAnswer = new DefaultAnswer();
             noResponseAnswer.setPercentCredit(0f);
-            noResponseAnswer.setIdentifier("_NO_RESPONSE_");
-            noResponseAnswer.setTextValue("_NO_RESPONSE_");
+            noResponseAnswer.setIdentifier(NO_RESPONSE);
+            noResponseAnswer.setTextValue(NO_RESPONSE);
         }
         return noResponseAnswer;
     }

@@ -1,6 +1,6 @@
 <%@ page import="org.tsaap.questions.TextBlock" %>
 <g:set var="question" value="${note.question}"/>
-<div class="question">
+<div class="question" id="question_${note.id}">
 
         <p><strong>${question.title}</strong></p>
         <g:each var="block" in="${question.blockList}">
@@ -13,7 +13,7 @@
                 </g:else>
             </p>
         </g:each>
-        <button type="submit"
-                class="btn btn-warning btn-xs">Stop</button>
+    <g:remoteLink action="stopLiveSession" controller="question" params="[liveSessId:liveSession.id,noteId:note.id]"
+                  class="btn btn-warning btn-xs" update="question_${note.id}"><span class="glyphicon glyphicon-stop"></span> Stop</g:remoteLink>
 
 </div>

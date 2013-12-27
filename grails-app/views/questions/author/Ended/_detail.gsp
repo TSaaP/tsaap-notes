@@ -13,6 +13,7 @@
                 </g:else>
             </p>
         </g:each>
-    <g:remoteLink action="startLiveSession" controller="question" params="[liveSessId:liveSession?.id,noteId:note.id]"
-            class="btn btn-success btn-xs" update="question_${note.id}"><span class="glyphicon glyphicon-play"></span> Start</g:remoteLink>
+    <g:remoteLink action="startLiveSession" controller="question" params="[liveSessId:liveSession.id,noteId:note.id]"
+                  class="btn btn-warning btn-xs" update="question_${note.id}">Temporary Replay</g:remoteLink>
+
 </div>

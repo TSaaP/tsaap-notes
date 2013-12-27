@@ -19,14 +19,12 @@ package org.tsaap.notes
 import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
 import org.tsaap.directory.User
-import org.tsaap.questions.LiveSession
-import org.tsaap.questions.LiveSessionService
+
 
 class NotesController {
 
     SpringSecurityService springSecurityService
     NoteService noteService
-    LiveSessionService liveSessionService
 
     /**
      *
@@ -112,19 +110,7 @@ class NotesController {
         renderMainPage(params, user, showDiscussion)
     }
 
-    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def startLiveSession() {
-        def currentUser = springSecurityService.currentUser
-        def note = Note.get(params.noteId)
-        def liveSession
-        try {
-            liveSession = LiveSession.get(params.liveSessId)
-            liveSession.start()
-        } catch (Exception e) {
-            liveSession = liveSessionService.createAndStartLiveSessionForNote(currentUser, note)
-        }
-        render(template: '/questions/author/Started/detail', model: [note:note,liveSession:liveSession])
-    }
+
 
     /**
      * Render the main page given the params and the user

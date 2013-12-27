@@ -1,3 +1,4 @@
+<%@ page import="org.tsaap.questions.LiveSessionStatus" %>
 <g:if test="${note.parentNote && showDiscussionNote}">
     <g:render template="detail"
               model="[note: note.parentNote, context: context, displaysMyNotes: displaysMyNotes, displaysMyFavorites: displaysMyFavorites, displaysAll: displaysAll, noteClassParent: 'note-parent-note', showDiscussionNote: showDiscussionNote]"/>
@@ -42,7 +43,7 @@
 
     <g:if test="${note.isAQuestion()}">
         <g:set var="liveSession" value="${note.getLiveSession()}"/>
-        <g:set var="sessionStatus" value="${liveSession ? liveSession.status : 'NotStarted'}"/>
+        <g:set var="sessionStatus" value="${liveSession ? liveSession.status : LiveSessionStatus.NotStarted.name()}"/>
         <g:set var="userType" value="${user == note.author ? 'author' : 'user'}"/>
         <g:render template="/questions/${userType}/${sessionStatus}/detail" model="[note: note,liveSession:liveSession]"/>
     </g:if>

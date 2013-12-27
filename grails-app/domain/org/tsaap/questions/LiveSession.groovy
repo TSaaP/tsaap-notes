@@ -1,6 +1,7 @@
 package org.tsaap.questions
 
 import org.gcontracts.annotations.Requires
+import org.tsaap.directory.User
 import org.tsaap.notes.Note
 
 class LiveSession {
@@ -60,6 +61,15 @@ class LiveSession {
         status = LiveSessionStatus.Ended.name()
         endDate = new Date()
         save()
+    }
+
+    /**
+     * Get the response of the current live session for a given user
+     * @param user the given user
+     * @return the live session response if it exists
+     */
+    LiveSessionResponse getResponseForUser(User user) {
+        LiveSessionResponse.findByLiveSessionAndUser(this,user)
     }
 }
 

@@ -16,6 +16,7 @@
 
 package org.tsaap.questions
 
+import org.gcontracts.PreconditionViolation
 import org.tsaap.BootstrapTestService
 import org.tsaap.notes.Note
 import org.tsaap.notes.NoteService
@@ -25,16 +26,47 @@ class LiveSessionResponseIntegrationSpec extends Specification {
     BootstrapTestService bootstrapTestService
     NoteService noteService
     LiveSessionService liveSessionService
+    Note note
 
     def setup() {
         bootstrapTestService.initializeTests()
+        note = noteService.addNote(bootstrapTestService.learnerPaul,"::a question:: What ? {=this ~that}")
     }
 
+    void "test the creation of a new live session response"() {
+        given:"a live session and a user"
+        LiveSession liveSession = liveSessionService.createLiveSessionForNote(note.author, note)
+
+        when:"the live session is not started"
+        liveSession.isNotStarted()
+
+        and:"trying to create a response for a user"
+        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learnerMary,'[]')
+
+        then:"a violation of a precondition occurs"
+        thrown(PreconditionViolation)
+
+        when:"the session is started"
+        liveSession.start()
+
+        and:"trying to create a response for a user"
+        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learnerMary,'[]')
+
+        then:"the response is created"
+        liveSession.getResponseForUser(bootstrapTestService.learnerMary)
+
+        when:"a trying to create a response for the same user and same session"
+        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learnerMary,'[]')
+
+        then:"a violation of a precondition occurs"
+        thrown(PreconditionViolation)
+
+
+    }
 
     void "test the construction of UserResponse from a live session response"() {
 
         given:"a started live session for a note"
-        Note note = noteService.addNote(bootstrapTestService.learnerPaul,"::a question:: What ? {=this ~that}")
         LiveSession liveSession = liveSessionService.createLiveSessionForNote(bootstrapTestService.learnerPaul,note)
         liveSession.start()
 

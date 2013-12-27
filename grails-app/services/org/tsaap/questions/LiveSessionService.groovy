@@ -30,4 +30,20 @@ class LiveSessionService {
     LiveSession createAndStartLiveSessionForNote(User user, Note note) {
         createLiveSessionForNote(user,note).start()
     }
+
+    /**
+     * Create a live session response for a given live session and  a given user
+     * @param liveSession the given live session
+     * @param user the given user
+     * @param value the text value of the response
+     * @return the live session response
+     */
+    @Requires({ liveSession.isStarted() && !liveSession.isStopped() && !liveSession.getResponseForUser(user) })
+    LiveSessionResponse createResponseForLiveSessionAndUser(LiveSession liveSession,User user, String value) {
+        LiveSessionResponse liveSessionResponse = new LiveSessionResponse(liveSession:liveSession,user: user,answerListAsString: value)
+        liveSessionResponse.save()
+        liveSessionResponse
+    }
+
+
 }

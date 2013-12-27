@@ -14,6 +14,6 @@
             </p>
         </g:each>
         <button type="submit"
-                class="btn btn-primary btn-xs">Submit</button>
+                class="btn btn-primary btn-xs">Start</button>
     </g:form>
 </div>

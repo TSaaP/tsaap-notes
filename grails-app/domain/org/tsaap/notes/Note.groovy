@@ -17,6 +17,7 @@
 package org.tsaap.notes
 
 import org.tsaap.directory.User
+import org.tsaap.questions.LiveSession
 import org.tsaap.questions.Question
 import org.tsaap.questions.impl.gift.GiftQuestionService
 
@@ -87,6 +88,18 @@ class Note {
             }
         }
         question
+    }
+
+    /**
+     * Find the last live session for the current note if it is a question
+     * @return the last live session if it exists
+     */
+    LiveSession findLiveSession() {
+        LiveSession liveSession = null
+        if (isAQuestion()) {
+           liveSession = LiveSession.findByNote(this,[sort: "dateCreated", order: "desc"])
+        }
+        liveSession
     }
 
     /**

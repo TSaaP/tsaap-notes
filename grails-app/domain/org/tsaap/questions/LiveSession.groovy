@@ -79,6 +79,43 @@ class LiveSession {
     Integer responseCount() {
         LiveSessionResponse.countByLiveSession(this)
     }
+
+    /**
+     * Construct the result matrix of the current live session
+     * @return the result matrix
+     */
+    List<Map<String,Float>> resultMatrix() {
+        def responses = LiveSessionResponse.findAllByLiveSession(this)
+        if (!responses) {
+            return []
+        }
+        def matrix = []
+        LiveSessionResponse firstResponse = responses[0]
+        def matrixSize = firstResponse.userResponse.userAnswerBlockList.size()
+        for(int i=0; i < matrixSize  ; i++) {
+            matrix.add([:])
+        }
+        for(LiveSessionResponse response : responses) {
+            for(int i=0; i < matrixSize ; i++) {
+                def currentMap = matrix[i]
+                def currentAnswerBlock = response.userResponse.userAnswerBlockList[i]
+                for(Answer currentAnswer : currentAnswerBlock.answerList) {
+                    if (currentMap[currentAnswer.textValue] == null) {
+                        currentMap[currentAnswer.textValue] = 0
+                    }
+                    currentMap[currentAnswer.textValue] += 1
+                }
+            }
+        }
+        def responseCount = responses.size()
+        for(int i=0; i < matrixSize ; i++) { // conversion in percent
+            Map<String,Float> currentMap = matrix[i]
+            for(String currentKey : currentMap.keySet()) {
+               currentMap[currentKey] = (currentMap[currentKey] / responseCount ) * 100
+            }
+        }
+        matrix
+    }
 }
 
 enum LiveSessionStatus {

@@ -13,6 +13,7 @@
                 </g:else>
             </p>
         </g:each>
-    <g:link action="startLiveSession" controller="notes" params="[liveSessId:liveSession?.id,noteId:note.id]"
-            class="btn btn-primary btn-xs">Start</g:link>
+        <button type="submit"
+                class="btn btn-warning btn-xs">Stop</button>
+
 </div>

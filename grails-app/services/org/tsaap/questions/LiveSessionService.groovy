@@ -20,4 +20,14 @@ class LiveSessionService {
         liveSession.save()
         liveSession
     }
+
+    /**
+     * Create and start a live session for a corresponding note
+     * @param user the user of the session
+     * @param note the note the live session is associated with
+     * @return the started live session
+     */
+    LiveSession createAndStartLiveSessionForNote(User user, Note note) {
+        createLiveSessionForNote(user,note).start()
+    }
 }

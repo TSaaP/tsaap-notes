@@ -14,5 +14,5 @@
             </p>
         </g:each>
     <g:remoteLink action="startLiveSession" controller="question" params="[liveSessId:liveSession?.id,noteId:note.id]"
-            class="btn btn-success btn-xs" update="question_${note.id}"><span class="glyphicon glyphicon-play"></span> Start</g:remoteLink>
+            class="btn btn-success btn-xs" update="question_${note.id}" onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"><span class="glyphicon glyphicon-play"></span> Start</g:remoteLink>
 </div>

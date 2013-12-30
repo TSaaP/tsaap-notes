@@ -95,8 +95,9 @@ class LiveSessionResponseIntegrationSpec extends Specification {
         and: "trying to get the user response"
         userResponse = liveSessionResponse.userResponse
 
-        then: "the user response is not set"
-        userResponse == null
+        then: "the user response is  set as empty response"
+        userResponse.userAnswerBlockList.size() == 1
+        userResponse.userAnswerBlockList[0].answerList[0].textValue == GiftQuestionService.NO_RESPONSE
 
         and:"the percent credit of the live session response is set to 0"
         liveSessionResponse.percentCredit == 0

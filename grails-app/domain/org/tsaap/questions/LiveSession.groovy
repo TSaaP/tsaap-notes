@@ -101,13 +101,13 @@ class LiveSession {
         def responseCount = responses.size()
         if (responseCount > 0) {
             for (LiveSessionResponse response : responses) {
-                for (int i = 0; i < matrixSize; i++) {
-                    def currentMap = matrix[i]
-                    def currentAnswerBlock = response.userResponse.userAnswerBlockList[i]
-                    for (Answer currentAnswer : currentAnswerBlock.answerList) {
-                        currentMap[currentAnswer.textValue] += 1
+                    for (int i = 0; i < matrixSize; i++) {
+                        def currentMap = matrix[i]
+                        def currentAnswerBlock = response.userResponse.userAnswerBlockList[i]
+                        for (Answer currentAnswer : currentAnswerBlock.answerList) {
+                            currentMap[currentAnswer.textValue] += 1
+                        }
                     }
-                }
             }
 
             for (int i = 0; i < matrixSize; i++) { // conversion in percent

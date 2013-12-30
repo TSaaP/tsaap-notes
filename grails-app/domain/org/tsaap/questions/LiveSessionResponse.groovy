@@ -28,17 +28,22 @@ class LiveSessionResponse {
     UserResponse getUserResponse() {
         if (percentCredit == null) {
             def answerBlockTextList
+            def question = liveSession.note.question
             try {
                 // convert the answer list as string in list of list of string
                 GroovyShell gs = new GroovyShell()
                 answerBlockTextList = gs.evaluate(answerListAsString)
-                def question = liveSession.note.question
-                userResponse = giftQuestionService.createUserResponseForQuestionAndAnswerBlockList(user.username, question, answerBlockTextList)
-                percentCredit = userResponse.evaluatePercentCredit()
             } catch (Exception e) {
                 log.error(e.message)
-                percentCredit = 0
+                answerBlockTextList = []
+                for(int i = 0 ; i < question.answerBlockList.size(); i++) {
+                    answerBlockTextList << []
+                }
             }
+
+            userResponse = giftQuestionService.createUserResponseForQuestionAndAnswerBlockList(user.username, question, answerBlockTextList)
+            percentCredit = userResponse.evaluatePercentCredit()
+
         }
         userResponse
     }

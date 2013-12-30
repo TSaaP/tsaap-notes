@@ -10,7 +10,7 @@
                 <p>${block.text}</p>
             </g:if>
             <g:else>
-                <g:render template="/questions/${question.questionType.name()}AnswerBlockResult" model="[block: block,resultMap:resultMatrix[indexAnsBlock],userAnswerBlock:sessionResponse?.userResponse?.userAnswerBlockList[indexAnsBlock++]]"/>
+                <g:render template="/questions/${question.questionType.name()}AnswerBlockResult" model="[block: block,resultMap:resultMatrix[indexAnsBlock],userAnswerBlock:sessionResponse?.userResponse?.userAnswerBlockList?.get(indexAnsBlock++)]"/>
             </g:else>
     </g:each>
 </div>

@@ -28,6 +28,23 @@ public class DefaultAnswer implements Answer {
     private String identifier;
     private String feedback;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DefaultAnswer that = (DefaultAnswer) o;
+
+        if (!textValue.equals(that.textValue)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return textValue.hashCode();
+    }
+
     /**
      * Get the text value of the answer
      *

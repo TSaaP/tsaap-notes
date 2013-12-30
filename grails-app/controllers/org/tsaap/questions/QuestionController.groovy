@@ -52,7 +52,8 @@ class QuestionController {
         def note = Note.get(params.noteId)
         def liveSession = LiveSession.get(params.liveSessId)
         def answer = params.answer
-        def response = liveSessionService.createResponseForLiveSessionAndUser(liveSession,currentUser,"[[\"${answer}\"]]")
+        def answerAsString = answer ? "[[\"${answer}\"]]" : "[[]]"
+        def response = liveSessionService.createResponseForLiveSessionAndUser(liveSession,currentUser,answerAsString)
         if (response.hasErrors()) {
             log.error(response.errors.allErrors.toString())
         }

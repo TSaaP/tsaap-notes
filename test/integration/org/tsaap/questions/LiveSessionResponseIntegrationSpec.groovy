@@ -151,10 +151,6 @@ class LiveSessionResponseIntegrationSpec extends Specification {
         currentMap["bad1"] == (1/12)*100
         currentMap[GiftQuestionService.NO_RESPONSE] == (2/12)*100
 
-
-
-
-
     }
 
 

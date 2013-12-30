@@ -87,9 +87,6 @@ class LiveSession {
      */
     List<Map<String, Float>> resultMatrix() {
         def responses = LiveSessionResponse.findAllByLiveSession(this)
-        if (!responses) {
-            return []
-        }
         def matrix = []
         Question question = this.note.question
         def matrixSize = question.answerBlockList.size()
@@ -101,20 +98,23 @@ class LiveSession {
                 matrix[i][answer.textValue] = 0
             }
         }
-        for (LiveSessionResponse response : responses) {
-            for (int i = 0; i < matrixSize; i++) {
-                def currentMap = matrix[i]
-                def currentAnswerBlock = response.userResponse.userAnswerBlockList[i]
-                for (Answer currentAnswer : currentAnswerBlock.answerList) {
-                    currentMap[currentAnswer.textValue] += 1
+        def responseCount = responses.size()
+        if (responseCount > 0) {
+            for (LiveSessionResponse response : responses) {
+                for (int i = 0; i < matrixSize; i++) {
+                    def currentMap = matrix[i]
+                    def currentAnswerBlock = response.userResponse.userAnswerBlockList[i]
+                    for (Answer currentAnswer : currentAnswerBlock.answerList) {
+                        currentMap[currentAnswer.textValue] += 1
+                    }
                 }
             }
-        }
-        def responseCount = responses.size()
-        for (int i = 0; i < matrixSize; i++) { // conversion in percent
-            Map<String, Float> currentMap = matrix[i]
-            for (String currentKey : currentMap.keySet()) {
-                currentMap[currentKey] = (currentMap[currentKey] / responseCount) * 100
+
+            for (int i = 0; i < matrixSize; i++) { // conversion in percent
+                Map<String, Float> currentMap = matrix[i]
+                for (String currentKey : currentMap.keySet()) {
+                    currentMap[currentKey] = (currentMap[currentKey] / responseCount) * 100
+                }
             }
         }
         matrix

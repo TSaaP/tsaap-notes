@@ -19,12 +19,15 @@ package org.tsaap.notes
 import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
 import org.tsaap.directory.User
+import org.tsaap.questions.Question
+import org.tsaap.questions.impl.gift.GiftQuestionService
 
 
 class NotesController {
 
     SpringSecurityService springSecurityService
     NoteService noteService
+    GiftQuestionService giftQuestionService
 
     /**
      *
@@ -110,7 +113,20 @@ class NotesController {
         renderMainPage(params, user, showDiscussion)
     }
 
-
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def evaluateContentAsNote() {
+        String noteInput = params.content
+        if (noteInput?.startsWith('::')) {
+            try {
+                Question question = giftQuestionService.getQuestionFromGiftText(noteInput)
+                render(template: '/questions/preview/detail',model: [question: question])
+            }catch (Exception e) {
+                render("${e.message}")
+            }
+        } else {
+          render(noteInput ?: '')
+        }
+    }
 
     /**
      * Render the main page given the params and the user

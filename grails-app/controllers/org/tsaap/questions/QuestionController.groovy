@@ -22,7 +22,7 @@ class QuestionController {
         } catch (Exception e) {
             liveSession = liveSessionService.createAndStartLiveSessionForNote(currentUser, note)
         }
-        render(template: '/questions/author/Started/detail', model: [note: note, liveSession: liveSession,user:currentUser])
+        render(template: '/questions/author/Started/detail', model: [note: note, liveSession: liveSession, user: currentUser])
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
@@ -34,7 +34,7 @@ class QuestionController {
         if (liveSession.hasErrors()) {
             log.error(liveSession.errors.allErrors.toString())
         }
-        render(template: "/questions/author/${liveSession.status}/detail", model: [note: note, liveSession: liveSession,user:currentUser])
+        render(template: "/questions/author/${liveSession.status}/detail", model: [note: note, liveSession: liveSession, user: currentUser])
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
@@ -44,7 +44,7 @@ class QuestionController {
         def liveSession = note.liveSession
         def sessionStatus = liveSession ? liveSession.status : LiveSessionStatus.NotStarted.name()
         def userType = currentUser == note.author ? 'author' : 'user'
-        render(template: "/questions/${userType}/${sessionStatus}/detail", model: [note: note, liveSession: liveSession,user:currentUser])
+        render(template: "/questions/${userType}/${sessionStatus}/detail", model: [note: note, liveSession: liveSession, user: currentUser])
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
@@ -55,21 +55,22 @@ class QuestionController {
         println params
         StringBuilder answersAsString = new StringBuilder("[[")
         answersWrapper.answers.each { answer ->
-            answer = answer.replace("\\","\\\\")
-            def answerAsString = "\"${answer}\","
-            answersAsString.append(answerAsString)
+            if (answer) {
+                def answerAsString = "\"${answer}\","
+                answersAsString.append(answerAsString)
+            }
         }
         if (answersAsString.length() > 2) {
-            answersAsString.deleteCharAt(answersAsString.length()-1)
+            answersAsString.deleteCharAt(answersAsString.length() - 1)
         }
         answersAsString.append("]]")
 
-        def response = liveSessionService.createResponseForLiveSessionAndUser(liveSession,currentUser,answersAsString.toString())
+        def response = liveSessionService.createResponseForLiveSessionAndUser(liveSession, currentUser, answersAsString.toString())
         if (response.hasErrors()) {
             log.error(response.errors.allErrors.toString())
         }
         def userType = currentUser == note.author ? 'author' : 'user'
-        render(template: "/questions/${userType}/${liveSession.status}/detail", model: [note: note, liveSession: liveSession,user:currentUser])
+        render(template: "/questions/${userType}/${liveSession.status}/detail", model: [note: note, liveSession: liveSession, user: currentUser])
     }
 
 

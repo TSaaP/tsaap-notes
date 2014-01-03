@@ -68,7 +68,7 @@ public class GiftQuestionService {
      *
      * @param userId              the user identifier
      * @param question            the question
-     * @param answerBlockTextList the list of answer text block  of the response
+     * @param answerBlockTextList the list of answer text block  of the response (each answer is represented by its identifier)
      * @return the created user response
      */
     public UserResponse createUserResponseForQuestionAndAnswerBlockList(String userId, Question question, List<List<String>> answerBlockTextList) throws GiftUserResponseAnswerNotFoundInChoiceList, GiftUserResponseAnswerBlockListSizeIsNotValidInResponse {
@@ -89,7 +89,7 @@ public class GiftQuestionService {
             } else {
                 for (String userAnsString : answerBlockTextList.get(i)) {
                     for (Answer answer : currentAnsBlock.getAnswerList()) {
-                        if (answer.getTextValue().equals(userAnsString)) {
+                        if (answer.getIdentifier().equals(userAnsString)) {
                             currentUserAnsBlock.getAnswerList().add(answer);
                             answerHasBeenFound = true;
                             break;

@@ -90,7 +90,7 @@ public class GiftQuizContentHandler implements QuizContentHandler {
      */
     public void onStartAnswerBlock() {
         currentAnswerBlock = new DefaultAnswerBlock();
-        answerCounter = 1;
+        answerCounter = 0;
     }
 
     /**

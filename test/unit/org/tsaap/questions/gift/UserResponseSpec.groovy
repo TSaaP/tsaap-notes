@@ -40,7 +40,7 @@ class UserResponseSpec extends Specification {
     Question question = giftQuestionService.getQuestionFromGiftText(ec_q3_ok)
 
     when:"the user choose the good answer"
-    UserResponse userResponse = giftQuestionService.createUserResponseForQuestionAndAnswerBlockList("u1",question,[["yellow"]])
+    UserResponse userResponse = giftQuestionService.createUserResponseForQuestionAndAnswerBlockList("u1",question,[["0"]])
     userResponse.question == question
     userResponse.userIdentifier == "u1"
 
@@ -49,7 +49,7 @@ class UserResponseSpec extends Specification {
     userResponse.evaluatePercentCredit() == 100f
 
     when:"the user choose the bad answer"
-    userResponse = giftQuestionService.createUserResponseForQuestionAndAnswerBlockList("u1",question,[["blue"]])
+    userResponse = giftQuestionService.createUserResponseForQuestionAndAnswerBlockList("u1",question,[["2"]])
 
     then:"the user has 0% credit"
     userResponse.evaluatePercentCredit() == 0f
@@ -70,13 +70,13 @@ class UserResponseSpec extends Specification {
     Question question = giftQuestionService.getQuestionFromGiftText(ec_q3_ok)
 
     when: "a response given by a user contains a different count of answer blocks"
-    giftQuestionService.createUserResponseForQuestionAndAnswerBlockList("u1",question,[["yellow"],["blue"]])
+    giftQuestionService.createUserResponseForQuestionAndAnswerBlockList("u1",question,[["0"],["2"]])
 
     then:"the response is not valid"
     thrown(GiftUserResponseAnswerBlockListSizeIsNotValidInResponse)
 
     when: "a response given by a user doesn't mach with any choice"
-    giftQuestionService.createUserResponseForQuestionAndAnswerBlockList("u1",question,[["orange"]])
+    giftQuestionService.createUserResponseForQuestionAndAnswerBlockList("u1",question,[["3"]])
 
     then: "the response is not valid"
     thrown(GiftUserResponseAnswerNotFoundInChoiceList)

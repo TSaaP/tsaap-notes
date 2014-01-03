@@ -35,14 +35,14 @@ public class DefaultAnswer implements Answer {
 
         DefaultAnswer that = (DefaultAnswer) o;
 
-        if (!textValue.equals(that.textValue)) return false;
+        if (!identifier.equals(that.identifier)) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return textValue.hashCode();
+        return identifier.hashCode();
     }
 
     /**

@@ -2,6 +2,7 @@ package org.tsaap.questions
 
 import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
+import grails.web.RequestParameter
 import org.tsaap.notes.Note
 
 
@@ -47,14 +48,23 @@ class QuestionController {
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def submitResponse() {
+    def submitResponse(AnswersWrapperCommand answersWrapper) {
         def currentUser = springSecurityService.currentUser
-        def note = Note.get(params.noteId)
-        def liveSession = LiveSession.get(params.liveSessId)
-        String answer = params.answer
-        answer = answer.replace("\\","\\\\")
-        def answerAsString = answer ? "[[\"${answer}\"]]" : "[[]]"
-        def response = liveSessionService.createResponseForLiveSessionAndUser(liveSession,currentUser,answerAsString)
+        def note = Note.get(answersWrapper.noteId)
+        def liveSession = LiveSession.get(answersWrapper.liveSessId)
+        println params
+        StringBuilder answersAsString = new StringBuilder("[[")
+        answersWrapper.answers.each { answer ->
+            answer = answer.replace("\\","\\\\")
+            def answerAsString = "\"${answer}\","
+            answersAsString.append(answerAsString)
+        }
+        if (answersAsString.length() > 2) {
+            answersAsString.deleteCharAt(answersAsString.length()-1)
+        }
+        answersAsString.append("]]")
+
+        def response = liveSessionService.createResponseForLiveSessionAndUser(liveSession,currentUser,answersAsString.toString())
         if (response.hasErrors()) {
             log.error(response.errors.allErrors.toString())
         }
@@ -63,4 +73,10 @@ class QuestionController {
     }
 
 
+}
+
+class AnswersWrapperCommand {
+    Long noteId
+    Long liveSessId
+    List<String> answers
 }

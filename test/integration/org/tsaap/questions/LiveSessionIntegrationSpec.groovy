@@ -73,7 +73,7 @@ class LiveSessionIntegrationSpec extends Specification {
 
         and: "and a live session response"
         LiveSessionResponse liveSessionResponse = new LiveSessionResponse(
-                liveSession: liveSession,answerListAsString: '[["this"]]',
+                liveSession: liveSession,answerListAsString: '[["0"]]',
                 user: bootstrapTestService.learnerMary)
 
         when: "getting the user response"
@@ -81,7 +81,7 @@ class LiveSessionIntegrationSpec extends Specification {
 
         then: "the user response is set correctly"
         userResponse != null
-        userResponse.userAnswerBlockList[0].answerList[0].textValue == "this"
+        userResponse.userAnswerBlockList[0].answerList[0].identifier == "0"
 
         and:"the user response percent credit is reported on the percent credit of the live session response"
         userResponse.evaluatePercentCredit() == liveSessionResponse.percentCredit
@@ -89,7 +89,7 @@ class LiveSessionIntegrationSpec extends Specification {
 
         when: "the live session response content is mal formated"
         liveSessionResponse = new LiveSessionResponse(
-                liveSession: liveSession,answerListAsString: '[["this]',
+                liveSession: liveSession,answerListAsString: '[["0]',
                 user: bootstrapTestService.learnerMary)
 
         and: "trying to get the user response"
@@ -126,16 +126,16 @@ class LiveSessionIntegrationSpec extends Specification {
         liveSession.start()
 
         and:"several live session responses"
-        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learnerMary,'[["good1"]]')
-        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learnerPaul,'[["good1"]]')
-        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learners[0],'[["good1"]]')
-        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learners[1],'[["good1"]]')
-        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learners[2],'[["good1"]]')
-        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learners[3],'[["good1"]]')
-        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learners[4],'[["bad3"]]')
-        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learners[5],'[["bad3"]]')
-        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learners[6],'[["bad3"]]')
-        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learners[7],'[["bad1"]]')
+        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learnerMary,'[["1"]]')
+        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learnerPaul,'[["1"]]')
+        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learners[0],'[["1"]]')
+        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learners[1],'[["1"]]')
+        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learners[2],'[["1"]]')
+        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learners[3],'[["1"]]')
+        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learners[4],'[["3"]]')
+        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learners[5],'[["3"]]')
+        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learners[6],'[["3"]]')
+        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learners[7],'[["0"]]')
         liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learners[8],'[[]]')
         liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learners[9],'[[]]')
 

@@ -69,11 +69,11 @@ class GiftReaderSpec extends Specification {
         Answer ans2 = answerFragment.answerList[1]
 
         and: "the answers have properties correctly set."
-        ans1.identifier != null
+        ans1.identifier == "0"
         ans1.textValue == answerText1
         ans1.feedBack == answerFeedback1
         ans1.percentCredit == answerCredit1
-        ans2.identifier != null
+        ans2.identifier == "1"
         ans2.textValue == answerText2
         ans2.feedBack == answerFeedback2
         ans2.percentCredit == answerCredit2
@@ -147,11 +147,11 @@ class GiftReaderSpec extends Specification {
         Answer ans2 = answerFragment.answerList[1]
 
         and: "the answers have properties correctly set."
-        ans1.identifier != null
+        ans1.identifier == "0"
         ans1.textValue == answerText1
         ans1.feedBack == answerFeedback1
         ans1.percentCredit == answerCredit1
-        ans2.identifier != null
+        ans2.identifier == "1"
         ans2.textValue == answerText2
         ans2.feedBack == answerFeedback2
         ans2.percentCredit == answerCredit2

@@ -1,6 +1,6 @@
 <%@ page import="org.tsaap.questions.impl.gift.GiftQuestionService" %>
 <g:each var="answer" in="${block.answerList}">
-    <g:set var="answerStatus" value="${answer.percentCredit == 100 ? 'success' : 'danger'}"/>
+    <g:set var="answerStatus" value="${answer.percentCredit > 0 ? 'success' : 'danger'}"/>
     <g:set var="percentResult" value="${resultMap[answer.textValue]}"/>
     <div class="label label-${answerStatus}">
         <g:if test="${userAnswerBlock?.answerList?.contains(answer)}">

@@ -57,7 +57,7 @@ public class GiftQuizContentHandler implements QuizContentHandler {
      */
     public void onStartQuestion() {
         currentQuestion = new DefaultQuestion();
-        currentQuestion.setQuestionType(QuestionType.ExclusiveChoice);
+        currentQuestion.setQuestionType(QuestionType.MultipleChoice);
     }
 
     /**
@@ -109,6 +109,7 @@ public class GiftQuizContentHandler implements QuizContentHandler {
         currentAnswer.setIdentifier(String.valueOf(answerCounter++));
         if ("=".equals(prefix)) {
             currentAnswer.setPercentCredit(100f);
+            currentQuestion.setQuestionType(QuestionType.ExclusiveChoice);
         } else {
             currentAnswer.setPercentCredit(0f);
         }

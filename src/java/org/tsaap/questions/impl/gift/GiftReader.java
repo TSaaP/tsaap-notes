@@ -33,6 +33,8 @@ public class GiftReader implements QuizReader {
                 processTildeCharacter();
             } else if (currentChar == '#') {
                 processSharpCharacter();
+            } else if (currentChar == '%') {
+                processPercentCharacter();
             } else {
                 processAnyCharacter(currentChar);
             }
@@ -152,14 +154,16 @@ public class GiftReader implements QuizReader {
         }
         flushAccumulator();
         if (answerFeedbackHasStarted) {
-            getQuizContentHandler().onEndAnswerFeedBack();
             answerFeedbackHasStarted = false;
+            getQuizContentHandler().onEndAnswerFeedBack();
         }
         if (answerHasStarted) { // the '=' or '~' char marks the end of the current answer
             getQuizContentHandler().onEndAnswer();
         } else {
             answerHasStarted = true;
         }
+        answerCreditHasStarted = false;
+        answerCreditHasEnded = false;
         getQuizContentHandler().onStartAnswer(String.valueOf(prefix)); // it marks the beginning of a new one too
     }
 
@@ -174,6 +178,26 @@ public class GiftReader implements QuizReader {
         flushAccumulator();
         answerFeedbackHasStarted = true;
         getQuizContentHandler().onStartAnswerFeedBack(); // it marks the beginning of a new one too
+    }
+
+    private void processPercentCharacter() throws GiftReaderNotEscapedCharacterException {
+        if (escapeMode) {
+            processAnyCharacter('%');
+            return;
+        }
+        if (!answerHasStarted || answerCreditHasEnded) {
+            throw new GiftReaderNotEscapedCharacterException();
+        }
+        flushAccumulator();
+        if (answerCreditHasStarted) {
+            answerCreditHasStarted = false ;
+            answerCreditHasEnded = true;
+            getQuizContentHandler().onEndAnswerCredit();
+        } else {
+            answerCreditHasStarted = true ;
+            getQuizContentHandler().onStartAnswerCredit();
+        }
+
     }
 
     private void processAnyCharacter(int currentChar) throws GiftReaderNotEscapedCharacterException {
@@ -218,6 +242,8 @@ public class GiftReader implements QuizReader {
     private boolean answerFragmentHasEnded;
     private boolean answerHasStarted;
     private boolean answerFeedbackHasStarted;
+    private boolean answerCreditHasStarted;
+    private boolean answerCreditHasEnded;
 
 
 }

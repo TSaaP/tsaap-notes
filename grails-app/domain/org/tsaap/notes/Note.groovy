@@ -17,62 +17,120 @@
 package org.tsaap.notes
 
 import org.tsaap.directory.User
+import org.tsaap.questions.LiveSession
+import org.tsaap.questions.Question
+import org.tsaap.questions.impl.gift.GiftQuestionService
 
 class Note {
-  Date dateCreated
-  User author
-  Context context
-  Tag fragmentTag
-  Note parentNote
+    Date dateCreated
+    User author
+    Context context
+    Tag fragmentTag
+    Note parentNote
 
-  String content
+    String content
 
-  static hasMany = [bookmarks:Bookmark]
+    static hasMany = [bookmarks: Bookmark]
 
-  static constraints = {
-    context nullable: true
-    fragmentTag nullable: true
-    parentNote nullable: true
-    bookmarks nullable: true
-    content maxSize: 280
-  }
-
-  static mapping = {
-    version false
-  }
-
-  static transients = ['noteUrl']
-
-  /**
-   * Indicate if the current note is bookmarked by the given user
-   * @param user the user
-   * @return true if the note is bookmarked, false if not
-   */
-  boolean isBookmarkedByUser(User user) {
-    Bookmark.findByNoteAndUser(this,user)
-  }
-
-  /**
-   * Indicate if a note has a parent note
-   * @return true if the note has a parent, false if not
-   */
-  boolean hasParent() {
-    parentNote
-  }
-
-  /**
-   *
-   * @return the url the note is linked to
-   */
-  String getNoteUrl() {
-    def rootUrl = context?.url
-    if (!rootUrl) {
-      return null
+    static constraints = {
+        context nullable: true
+        fragmentTag nullable: true
+        parentNote nullable: true
+        bookmarks nullable: true
+        content maxSize: 280
     }
-    def hash=""
-    if (fragmentTag) {
-       hash = "#$fragmentTag.name"
+
+    static mapping = {
+        version false
     }
-    "${rootUrl}${hash}"
-  }
+
+    static transients = ['noteUrl', 'question', 'giftQuestionService','liveSession','activeLiveSession']
+
+    /**
+     * Indicate if the current note is bookmarked by the given user
+     * @param user the user
+     * @return true if the note is bookmarked, false if not
+     */
+    boolean isBookmarkedByUser(User user) {
+        Bookmark.findByNoteAndUser(this, user)
+    }
+
+    /**
+     * Indicate if a note has a parent note
+     * @return true if the note has a parent, false if not
+     */
+    boolean hasParent() {
+        parentNote
+    }
+
+    GiftQuestionService giftQuestionService
+
+    /**
+     * Indicate if a note is an interactive question
+     * @return true if the note is an interactive question
+     */
+    boolean isAQuestion() {
+        this.getQuestion() != null
+    }
+
+    Question question
+
+    /**
+     * Get the question corresponding to the note or null
+     * @return the corresponding question or null
+     */
+    Question getQuestion() {
+        if (content?.startsWith("::") && !question) {
+            try {
+                question = giftQuestionService.getQuestionFromGiftText(content)
+            } catch (Exception e) {
+                log.error(e.message)
+            }
+        }
+        question
+    }
+
+    LiveSession liveSession
+
+    /**
+     * Get the last live session for the current note if it is a question
+     * @return the last live session if it exists
+     */
+    LiveSession getLiveSession() {
+        if (liveSession && !liveSession.stopped) {
+            return liveSession
+        }
+        if (isAQuestion()) {
+           liveSession = LiveSession.findByNote(this,[sort: "dateCreated", order: "desc"])
+        }
+        liveSession
+    }
+
+    /**
+     * Get the current active live session if it exists
+     * @return the current active live session or null
+     */
+    LiveSession getActiveLiveSession() {
+        if (liveSession && !liveSession.stopped) {
+           liveSession
+        }
+        null
+    }
+
+
+    /**
+     *
+     * @return the url the note is linked to
+     */
+    String getNoteUrl() {
+        def rootUrl = context?.url
+        if (!rootUrl) {
+            return null
+        }
+        def hash = ""
+        if (fragmentTag) {
+            hash = "#$fragmentTag.name"
+        }
+        "${rootUrl}${hash}"
+    }
 }

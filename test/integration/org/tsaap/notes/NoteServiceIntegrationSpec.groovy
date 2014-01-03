@@ -95,8 +95,8 @@ class NoteServiceIntegrationSpec extends Specification {
     given:"A note with tags, mentions, fragment tag and responses and that is bookmarked"
     Tag tag = Tag.findOrSaveWhere(name: "afragmenttag")
     Note note1 = noteService.addNote(bootstrapTestService.learnerMary, "a note 1 with #tag and @${bootstrapTestService.teacherJeanne.username}", null, tag, null)
-    Note note2 = noteService.addNote(bootstrapTestService.learnerMary, "a note 2", null,null, note1)
-    Note note3 = noteService.addNote(bootstrapTestService.learnerPaul, 'a note 3', null,null, note1)
+    noteService.addNote(bootstrapTestService.learnerMary, "a note 2", null,null, note1)
+    noteService.addNote(bootstrapTestService.learnerPaul, 'a note 3', null,null, note1)
     noteService.bookmarkNotebyUser(note1, bootstrapTestService.learnerPaul)
 
     when: "a note is removed"

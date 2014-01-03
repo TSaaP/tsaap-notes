@@ -1,25 +1,68 @@
-
 <g:set var="idControllSuffix" value="${parentNote ? parentNote.id : 0}"/>
-<g:form method="post" controller="notes" action="addNote">
-    <g:hiddenField name="inline" value="${params.inline}"/>
-    <g:hiddenField name="contextId" value="${context?.id}"
-                   id="contextIdInAddForm${idControllSuffix}"/>
-    <g:hiddenField name="fragmentTagId" value="${fragmentTag?.id}"/>
-    <g:hiddenField name="parentNoteId" value="${parentNote?.id}"/>
-    <g:hiddenField name="displaysMyNotes" id="displaysMyNotesInAddForm${idControllSuffix}"/>
-    <g:hiddenField name="displaysMyFavorites"
-                   id="displaysMyFavoritesInAddForm${idControllSuffix}"/>
-    <g:hiddenField name="displaysAll" id="displaysAllInAddForm${idControllSuffix}"/>
-    <textarea class="form-control note-editable-content" rows="3" id="noteContent${idControllSuffix}" name="noteContent"
-              maxlength="280">${parentNote ? '@'+parentNote.author?.username+' ' : ''}</textarea>
-      <span class="character_counter" id="character_counter${idControllSuffix}"></span><button type="submit"
-                                                class="btn btn-primary btn-xs pull-right" id="buttonAddNote${idControllSuffix}" disabled><span
-            class="glyphicon glyphicon-plus"></span> Add note</button>
-  </g:form>
+
+<div id="edit_tab_${idControllSuffix}">
+
+    <g:form method="post" controller="notes" action="addNote">
+        <g:hiddenField name="inline" value="${params.inline}"/>
+        <g:hiddenField name="contextId" value="${context?.id}"
+                       id="contextIdInAddForm${idControllSuffix}"/>
+        <g:hiddenField name="fragmentTagId" value="${fragmentTag?.id}"/>
+        <g:hiddenField name="parentNoteId" value="${parentNote?.id}"/>
+        <g:hiddenField name="displaysMyNotes" id="displaysMyNotesInAddForm${idControllSuffix}"/>
+        <g:hiddenField name="displaysMyFavorites"
+                       id="displaysMyFavoritesInAddForm${idControllSuffix}"/>
+        <g:hiddenField name="displaysAll" id="displaysAllInAddForm${idControllSuffix}"/>
+        <textarea class="form-control note-editable-content" rows="3" id="noteContent${idControllSuffix}"
+                  name="noteContent"
+                  maxlength="280">${parentNote ? '@' + parentNote.author?.username + ' ' : ''}</textarea>
+        <span class="character_counter" id="character_counter${idControllSuffix}"></span>
+        <div id="prewiew_tab_${idControllSuffix}" class="pull-right">
+            <button type="button" class="btn btn-default btn-xs"
+                    id="preview_button_${idControllSuffix}">
+                Show preview
+            </button>
+        </div>
+        <button type="submit"
+                                                                                                 class="btn btn-primary btn-xs pull-right"
+                                                                                                 id="buttonAddNote${idControllSuffix}"
+                                                                                                 disabled><span
+                class="glyphicon glyphicon-plus"></span> Add note</button>
+    </g:form>
+</div>
 
 
 <r:script>
   $(document).ready(function () {
+
+    var contentPreview
+
+    // preview management
+    //--------
+    $('#preview_button_${idControllSuffix}').popover({
+                                 content: function() {return getNotePreview()},
+                                 html: true,
+                                 placement: 'bottom'
+                               }).on('shown.bs.popover', function() {
+                                 MathJax.Hub.Queue(['Typeset',MathJax.Hub,'prewiew_tab_${idControllSuffix}'])
+                               })
+
+    function getNotePreview() {
+        var noteInput = $("#noteContent${idControllSuffix}").val() ;
+        contentPreview = noteInput
+        if (noteInput.lastIndexOf('::', 0) === 0) {
+            $.ajax({
+                type: "POST",
+                url: '<g:createLink action="evaluateContentAsNote" controller="notes"/>',
+                data: {content:noteInput},
+                async: false
+            }).done(function( data ) {
+                contentPreview = data ;
+            });
+         }
+         return contentPreview
+    }
+
+
 
     // set character counters
     //-----------------------

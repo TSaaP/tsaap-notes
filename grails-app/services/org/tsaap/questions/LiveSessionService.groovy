@@ -3,7 +3,10 @@ package org.tsaap.questions
 import grails.transaction.Transactional
 import org.gcontracts.annotations.Requires
 import org.tsaap.directory.User
+import org.tsaap.notes.Bookmark
 import org.tsaap.notes.Note
+import org.tsaap.notes.NoteMention
+import org.tsaap.notes.NoteTag
 
 @Transactional
 class LiveSessionService {
@@ -45,5 +48,21 @@ class LiveSessionService {
         liveSessionResponse
     }
 
+    /**
+     * Delete a live session
+     * @param liveSession the liveSession to delete
+     * @param user the author of the live session
+     */
+    @org.springframework.transaction.annotation.Transactional
+    @Requires({ liveSession && liveSession.note.author == user })
+    def deleteLiveSessionByAuthor(LiveSession liveSession, User user) {
+        // delete live sessions responses if any
+        def query = LiveSessionResponse.where {
+            liveSession == liveSession
+        }
+        query.deleteAll()
+        // finally delete notes
+        liveSession.delete()
+    }
 
 }

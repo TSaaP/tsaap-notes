@@ -23,7 +23,7 @@ import org.tsaap.notes.NoteService
 import org.tsaap.questions.impl.gift.GiftQuestionService
 import spock.lang.Specification
 
-class LiveSessionResponseIntegrationSpec extends Specification {
+class LiveSessionIntegrationSpec extends Specification {
     BootstrapTestService bootstrapTestService
     NoteService noteService
     LiveSessionService liveSessionService
@@ -154,5 +154,40 @@ class LiveSessionResponseIntegrationSpec extends Specification {
 
     }
 
+    void "test the delete of a live session with responses"() {
+        given:"a live session with at least one response"
+        def liveSession = liveSessionService.createAndStartLiveSessionForNote(bootstrapTestService.learnerPaul,note)
+        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learnerMary,'[["good1"]]')
+        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.teacherJeanne,'[["good1"]]')
+
+        when:"deleting the live session"
+        liveSessionService.deleteLiveSessionByAuthor(liveSession,bootstrapTestService.learnerPaul)
+
+        then:"the responses are deleted"
+        !LiveSessionResponse.findAllByLiveSession(liveSession)
+
+        and:"the live session is deleted"
+        !LiveSession.findByNote(note)
+    }
+
+    void "test the delete of a note that is a question with live sessions"() {
+        given:"a note with live sessions and live session responses attached"
+        def liveSession = liveSessionService.createAndStartLiveSessionForNote(bootstrapTestService.learnerPaul,note)
+        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learnerMary,'[["good1"]]')
+        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.teacherJeanne,'[["good1"]]')
+        liveSession.stop()
+        liveSessionService.createAndStartLiveSessionForNote(bootstrapTestService.learnerPaul,note)
+
+        when:"deleting the note"
+        noteService.deleteNoteByAuthor(note,note.author)
+
+        then:"the live sessions and live session responses are deleted"
+        !LiveSessionResponse.findAllByLiveSession(liveSession)
+        !LiveSession.findAllByNote(note)
+
+        and:"the note is deleted"
+        !Note.findById(note.id)
+
+    }
 
 }

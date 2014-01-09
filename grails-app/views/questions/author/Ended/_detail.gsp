@@ -1,6 +1,6 @@
 <%@ page import="org.tsaap.questions.TextBlock" %>
 <g:set var="question" value="${note.question}"/>
-<g:set var="resultMatrix" value="${liveSession.resultMatrix()}"/>
+<g:set var="resultMatrix" value="${liveSession.resultMatrix}"/>
 <g:set var="indexAnsBlock" value="${0}"/>
 <div class="question" id="question_${note.id}">
    <p>Results <strong>${question.title}</strong> - (response count : ${liveSession.responseCount()})</p>

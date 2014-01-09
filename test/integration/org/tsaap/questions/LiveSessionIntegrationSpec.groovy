@@ -141,7 +141,7 @@ class LiveSessionIntegrationSpec extends Specification {
 
 
         when:"calculating the matrix "
-        def matrix = liveSession.resultMatrix()
+        def matrix = liveSession.buildResultMatrix()
 
         then:"the given matrix is correctly set"
         matrix.size() == 1
@@ -157,8 +157,8 @@ class LiveSessionIntegrationSpec extends Specification {
     void "test the delete of a live session with responses"() {
         given:"a live session with at least one response"
         def liveSession = liveSessionService.createAndStartLiveSessionForNote(bootstrapTestService.learnerPaul,note)
-        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learnerMary,'[["good1"]]')
-        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.teacherJeanne,'[["good1"]]')
+        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learnerMary,'[["1"]]')
+        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.teacherJeanne,'[["1"]]')
 
         when:"deleting the live session"
         liveSessionService.deleteLiveSessionByAuthor(liveSession,bootstrapTestService.learnerPaul)
@@ -173,8 +173,8 @@ class LiveSessionIntegrationSpec extends Specification {
     void "test the delete of a note that is a question with live sessions"() {
         given:"a note with live sessions and live session responses attached"
         def liveSession = liveSessionService.createAndStartLiveSessionForNote(bootstrapTestService.learnerPaul,note)
-        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learnerMary,'[["good1"]]')
-        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.teacherJeanne,'[["good1"]]')
+        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.learnerMary,'[["1"]]')
+        liveSessionService.createResponseForLiveSessionAndUser(liveSession,bootstrapTestService.teacherJeanne,'[["1"]]')
         liveSession.stop()
         liveSessionService.createAndStartLiveSessionForNote(bootstrapTestService.learnerPaul,note)
 

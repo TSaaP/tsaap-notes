@@ -108,10 +108,9 @@
     contentElement.focus().val('').val(content) ;
   }
 
-  $(".note-content").linkify({
+  /*$(".note-content").linkify({
                                target:"_blank"
-                             });
-  //$(".nav li").removeClass('active');
+                             });*/
   $("#mainLinkNotes").addClass('active');
 </r:script>
 </body>

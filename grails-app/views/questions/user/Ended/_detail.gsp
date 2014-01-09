@@ -1,6 +1,6 @@
 <%@ page import="org.tsaap.questions.TextBlock" %>
 <g:set var="question" value="${note.question}"/>
-<g:set var="resultMatrix" value="${liveSession.resultMatrix()}"/>
+<g:set var="resultMatrix" value="${liveSession.resultMatrix}"/>
 <g:set var="sessionResponse" value="${liveSession.getResponseForUser(user)}"/>
 <g:set var="indexAnsBlock" value="${0}"/>
 <div class="question" id="question_${note.id}">

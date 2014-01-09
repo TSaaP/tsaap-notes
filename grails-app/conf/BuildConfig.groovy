@@ -21,57 +21,64 @@ grails.project.test.reports.dir = "target/test-reports"
 
 grails.project.dependency.resolver = "maven"  // or ivy
 grails.project.dependency.resolution = {
-  // inherit Grails' default dependencies
-  inherits("global") {
-    // uncomment to disable ehcache
-    // excludes 'ehcache'
-  }
-  log "warn"
-  // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
-  repositories {
-    grailsCentral()
-    mavenLocal()
-    mavenCentral()
-    // uncomment the below to enable remote dependency resolution
-    // from public Maven repositories
-    //mavenRepo "http://repository.codehaus.org"
-    //mavenRepo "http://download.java.net/maven/2/"
-    //mavenRepo "http://repository.jboss.com/maven2/"
-  }
-  dependencies {
-    // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
-    runtime 'mysql:mysql-connector-java:5.1.24'
-    compile 'org.gcontracts:gcontracts-grails:1.2.12'
+    // inherit Grails' default dependencies
+    inherits("global") {
+        // uncomment to disable ehcache
+        // excludes 'ehcache'
+    }
+    log "error" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
+    checksums true // Whether to verify checksums on resolve
+    legacyResolve false
+    // whether to do a secondary resolve on plugin installation, not advised and here for backwards compatibility
 
-  }
+    // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
+    repositories {
+        inherits true // Whether to inherit repository definitions from plugins
+        grailsPlugins()
+        grailsHome()
+        grailsCentral()
+        mavenLocal()
+        mavenCentral()
+        // uncomment the below to enable remote dependency resolution
+        // from public Maven repositories
+        //mavenRepo "http://repository.codehaus.org"
+        //mavenRepo "http://download.java.net/maven/2/"
+        //mavenRepo "http://repository.jboss.com/maven2/"
+    }
+    dependencies {
+        // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
+        runtime 'mysql:mysql-connector-java:5.1.24'
+        compile 'org.gcontracts:gcontracts-grails:1.2.12'
 
-  plugins {
+    }
 
-    build ":tomcat:7.0.42"
+    plugins {
 
-    // plugins for the compile step
-    compile ":scaffolding:2.0.0"
-    compile ':cache:1.1.1'
-    compile ":spring-security-core:1.2.7.3"
-    compile ":codenarc:0.19"
+        build ":tomcat:7.0.47"
 
-    // plugins for the runtime only
-    runtime ":hibernate4:4.1.11.1" // or ":hibernate:3.6.10.1"
+        // plugins for the compile step
+        compile ":scaffolding:2.0.1"
+        compile ':cache:1.1.1'
+        compile ":spring-security-core:1.2.7.3"
+        compile ":codenarc:0.19"
 
-    runtime ":jquery:1.10.2"
-    runtime ":resources:1.2"
+        // plugins for the runtime only
+        runtime ":hibernate:3.6.10.6" //or ":hibernate4:4.1.11.6"
 
-    //test ":code-coverage:1.2.7"
+        runtime ":jquery:1.10.2.2"
+        runtime ":resources:1.2.1"
 
-    compile ":mail:1.0.1"
-    compile ":quartz:1.0"
+        //test ":code-coverage:1.2.7"
 
-  }
+        compile ":mail:1.0.1"
+        compile ":quartz:1.0"
+
+    }
 }
 
 codenarc.properties = {
-  // Each property definition is of the form:  RULE.PROPERTY-NAME = PROPERTY-VALUE
-  GrailsPublicControllerMethod.enabled = false
+    // Each property definition is of the form:  RULE.PROPERTY-NAME = PROPERTY-VALUE
+    GrailsPublicControllerMethod.enabled = false
 
 }
 

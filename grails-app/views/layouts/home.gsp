@@ -38,7 +38,7 @@
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
     </button>
-    <a class="navbar-brand" href="#">TsaaP-Notes</a>
+    <g:link class="navbar-brand" uri="/">TsaaP-Notes</g:link>
 
     <div class="nav-collapse collapse">
       <ul class="nav navbar-nav">

@@ -128,7 +128,7 @@
     <hr>
 
     <footer>
-      <p>&copy; Tsaap Development Group 2013</p>
+      <p>&copy; Tsaap Development Group 2013 - Tsaap-Notes version <g:meta name="app.version"/></p>
     </footer>
   </div>
 

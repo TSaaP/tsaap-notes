@@ -28,8 +28,8 @@ class MailCheckingJob {
   }
 
   def execute() {
-    log.info("Start email checking job...")
+    log.debug("Start email checking job...")
     mailCheckingService.sendCheckingEmailMessages()
-    log.info("End email checking  job.")
+    log.debug("End email checking  job.")
   }
 }

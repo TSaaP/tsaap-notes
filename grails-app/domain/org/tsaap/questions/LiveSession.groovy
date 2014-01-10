@@ -1,5 +1,7 @@
 package org.tsaap.questions
 
+import groovy.json.JsonBuilder
+import groovy.json.JsonSlurper
 import org.gcontracts.annotations.Requires
 import org.tsaap.directory.User
 import org.tsaap.notes.Note
@@ -11,6 +13,7 @@ class LiveSession {
     String status = LiveSessionStatus.NotStarted.name()
     Date startDate
     Date endDate
+    String resultMatrixAsJson
 
     Note note
 
@@ -18,6 +21,7 @@ class LiveSession {
         status inList: LiveSessionStatus.values()*.name()
         startDate nullable: true
         endDate nullable: true
+        resultMatrixAsJson nullable: true
     }
 
     /**
@@ -58,10 +62,19 @@ class LiveSession {
      * Stop the current live session
      */
     @Requires({ isStarted() })
-    def stop() {
+    def stop(boolean shouldBuildResultMatrix = true) {
         status = LiveSessionStatus.Ended.name()
         endDate = new Date()
+        if (shouldBuildResultMatrix) {
+            updateResultMatrixAsJson()
+        }
         save(flush: true)
+    }
+
+    private def void updateResultMatrixAsJson() {
+        def matrix = buildResultMatrix()
+        JsonBuilder builder = new JsonBuilder(matrix ?: [:])
+        resultMatrixAsJson = builder.toString()
     }
 
     /**
@@ -85,7 +98,21 @@ class LiveSession {
      * Construct the result matrix of the current live session
      * @return the result matrix
      */
-    List<Map<String, Float>> resultMatrix() {
+    List<Map<String, Float>> getResultMatrix() {
+        JsonSlurper parser = new JsonSlurper()
+        if (resultMatrixAsJson == null) {
+            updateResultMatrixAsJson()
+            save(flush: true)
+        }
+        def matrix = parser.parseText(resultMatrixAsJson)
+        matrix
+    }
+
+    /**
+     * Construct the result matrix of the current live session
+     * @return the result matrix
+     */
+    List<Map<String, Float>> buildResultMatrix() {
         def responses = LiveSessionResponse.findAllByLiveSession(this)
         def matrix = []
         Question question = this.note.question
@@ -101,13 +128,13 @@ class LiveSession {
         def responseCount = responses.size()
         if (responseCount > 0) {
             for (LiveSessionResponse response : responses) {
-                    for (int i = 0; i < matrixSize; i++) {
-                        def currentMap = matrix[i]
-                        def currentAnswerBlock = response.userResponse.userAnswerBlockList[i]
-                        for (Answer currentAnswer : currentAnswerBlock.answerList) {
-                            currentMap[currentAnswer.textValue] += 1
-                        }
+                for (int i = 0; i < matrixSize; i++) {
+                    def currentMap = matrix[i]
+                    def currentAnswerBlock = response.userResponse.userAnswerBlockList[i]
+                    for (Answer currentAnswer : currentAnswerBlock.answerList) {
+                        currentMap[currentAnswer.textValue] += 1
                     }
+                }
             }
 
             for (int i = 0; i < matrixSize; i++) { // conversion in percent
@@ -119,6 +146,8 @@ class LiveSession {
         }
         matrix
     }
+
+    static transients = ['resultMatrix']
 }
 
 enum LiveSessionStatus {

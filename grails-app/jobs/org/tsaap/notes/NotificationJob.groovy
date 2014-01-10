@@ -9,8 +9,8 @@ class NotificationJob {
   }
 
   def execute() {
-    log.info("Start notification job...")
+    log.debug("Start notification job...")
     notificationService.notifyUsersOnTodayNotes()
-    log.info("End notification job.")
+    log.debug("End notification job.")
   }
 }

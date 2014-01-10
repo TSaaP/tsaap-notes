@@ -11,7 +11,7 @@
     </div>
     <div class="progress">
         <div class="progress-bar progress-bar-${answerStatus}" role="progressbar" aria-valuenow="${percentResult}" aria-valuemin="0" aria-valuemax="100" style="width: ${percentResult}%">
-            <span>${percentResult}%</span>
+            <span><g:formatNumber number="${percentResult}" type="number" maxFractionDigits="2" />%</span>
         </div>
     </div>
 </g:each>
@@ -19,6 +19,6 @@
 <div class="label label-warning">Do not know</div>
 <div class="progress">
     <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="${percentResult}" aria-valuemin="0" aria-valuemax="100" style="width: ${percentResult}%">
-        <span>${percentResult}%</span>
+        <span><g:formatNumber number="${percentResult}" type="number" maxFractionDigits="2" />%</span>
     </div>
 </div>

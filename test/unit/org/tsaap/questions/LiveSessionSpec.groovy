@@ -11,7 +11,7 @@ import spock.lang.Specification
  * See the API for {@link grails.test.mixin.domain.DomainClassUnitTestMixin} for usage instructions
  */
 @TestFor(LiveSession)
-@Mock([Note])
+@Mock([Note,LiveSessionResponse])
 class LiveSessionSpec extends Specification {
 
     void "test the start and stop of a live session"() {
@@ -34,7 +34,7 @@ class LiveSessionSpec extends Specification {
         thrown(PreconditionViolation)
 
         when: "trying to stop the live session"
-        liveSession.stop()
+        liveSession.stop(false)
 
         then: "the status is updated and the end date is updated"
         !liveSession.isNotStarted()

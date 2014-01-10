@@ -29,7 +29,7 @@ class NotificationService {
                   contextList: contextList]
         }
       } catch (Exception e) {
-        log.error("Error with ${it.email} : ${e.message}")
+        log.error("Error with ${user.email} : ${e.message}")
       }
     }
   }

@@ -15,7 +15,7 @@
   <ol class="breadcrumb">
     <li><g:link class="list" action="index"><g:message code="default.list.label"
                                                        args="[entityName]"/></g:link></li>
-    <li class="active">Create a new context</li>
+    <li class="active">Create a new scope</li>
   </ol>
 </div>
 

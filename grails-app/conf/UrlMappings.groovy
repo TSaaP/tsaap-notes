@@ -23,6 +23,8 @@ class UrlMappings {
 			}
 		}
 
+        "/scope/$action?/$id?" (controller: 'context')
+
 		"/"(view:"/index")
 		"500"(view:'/error')
 	}

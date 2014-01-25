@@ -5,7 +5,7 @@
   <meta name="layout" content="main">
   <r:require modules="tsaap_ui_notes,tsaap_icons"/>
   <g:set var="entityName"
-         value="${message(code: 'context.label', default: 'Context')}"/>
+         value="${message(code: 'context.label', default: 'Scope')}"/>
   <title>Tsaap Notes - <g:message code="default.list.label"
                                   args="[entityName]"/></title>
 </head>
@@ -17,7 +17,7 @@
                                   args="[entityName]"/></li>
   </ol>
   <g:link class="btn btn-primary btn-sm pull-right" action="create"><span
-          class="glyphicon glyphicon-plus"></span> Add context</g:link>
+          class="glyphicon glyphicon-plus"></span> Add scope</g:link>
   <g:form controller="context" method="get" role="form">
     <div class="row">
       <div class="col-lg-6">

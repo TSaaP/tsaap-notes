@@ -4,7 +4,7 @@
 
 <div class="form-group fieldcontain ${hasErrors(bean: context, field: 'contextName', 'error')} required">
   <label for="contextName">
-    <g:message code="context.contextName.label" default="Context Name"/>
+    <g:message code="context.contextName.label" default="Scope Name"/>
     <span class="required-indicator">*</span>
   </label>
   <g:textField name="contextName" required="" value="${context?.contextName}" class="form-control"/>

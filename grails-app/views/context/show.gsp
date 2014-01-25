@@ -6,7 +6,7 @@
   <r:require modules="tsaap_ui_notes,tsaap_icons"/>
 
   <g:set var="entityName"
-         value="${message(code: 'context.label', default: 'Context')}"/>
+         value="${message(code: 'context.label', default: 'Scope')}"/>
   <title>Tsaap Notes - <g:message code="default.show.label"
                                   args="[entityName]"/></title>
 </head>
@@ -17,7 +17,7 @@
   <ol class="breadcrumb">
     <li><g:link class="list" action="index"><g:message code="default.list.label"
                                                        args="[entityName]"/></g:link></li>
-    <li class="active">Show context "${context?.contextName}"</li>
+    <li class="active">Show scope "${context?.contextName}"</li>
   </ol>
 </div>
 
@@ -35,7 +35,7 @@
       <tbody>
       <tr>
         <td>
-          <g:message code="context.contextName.label" default="Context Name"/>
+          <g:message code="context.contextName.label" default="Scope Name"/>
         </td>
         <td>${context.contextName}</td>
       </tr>
@@ -75,7 +75,7 @@
       </tr>
       <tr>
         <td>
-          The notes on this context
+          The notes on this scope
         </td>
         <td><g:link controller="notes"
                     params="[displaysAll: 'on', contextName: context?.contextName, contextId: context.id]"><g:createLink

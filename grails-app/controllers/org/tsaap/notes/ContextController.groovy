@@ -165,6 +165,7 @@ class ContextController {
             return
         }
         def questions = exportAsGiftService.findAllGiftQuestionsWithNotesAsFeedbackForContext(springSecurityService.currentUser, context,message(code:"questions.export.feedback.prefix"))
+        response.setHeader "Content-disposition", "attachment; filename=ExportMoodleGift.txt"
         render(template:"/questions/export/QuestionsAsGift", contentType: "text/plain", encoding: "UTF-8", model: [questions:questions])
     }
 

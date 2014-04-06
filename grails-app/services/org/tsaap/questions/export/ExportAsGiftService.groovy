@@ -16,20 +16,28 @@ class ExportAsGiftService {
      * @param context the context
      * @return the list of questions as gift strings
      */
-    @Requires({context.owner == user})
-    List<String> findAllGiftQuestionsWithNotesAsFeedbackForContext(User user,Context context) {
-        def questions = Note.findAllByContextAndAQuestion(context,true)
+    @Requires({ context.owner == user })
+    List<String> findAllGiftQuestionsWithNotesAsFeedbackForContext(User user, Context context, String feedbackPrefix) {
+        def criteria = Note.createCriteria()
+        def questions = criteria.list {
+            eq('context',context)
+            like('content',"::%")
+        }
         def res = []
         questions.each {
-            def notesOnQuestion = Note.findAllByParentNoteAndAQuestion(it, false)
-            def generalFeedback = buildGeneralFeedback(notesOnQuestion)
-            res.add(questionHelper.insertGeneralFeedbackInGiftQuestion(generalFeedback,it.content))
+            def notesOnQuestion = Note.findAllByParentNote(it)
+            if (notesOnQuestion) {
+                def generalFeedback = buildGeneralFeedback(notesOnQuestion, feedbackPrefix)
+                res.add(questionHelper.insertGeneralFeedbackInGiftQuestion(generalFeedback, it.content))
+            } else {
+                res.add(it.content)
+            }
         }
         res
     }
 
-    private String buildGeneralFeedback(List<Note> notes) {
-        StringBuilder sb = new StringBuilder()
+    private String buildGeneralFeedback(List<Note> notes, String feedbackPrefix) {
+        StringBuilder sb = new StringBuilder(feedbackPrefix)
         notes.each {
             sb.append("@${it.author.username}: ")
             sb.append(it.content)

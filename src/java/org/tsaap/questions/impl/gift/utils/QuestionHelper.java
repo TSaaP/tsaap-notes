@@ -22,6 +22,7 @@ package org.tsaap.questions.impl.gift.utils;
 public class QuestionHelper {
 
     private static final String escapedCloseBracketPlaceholder = "[[CB_PH]]";
+    private static final String NewLinePlaceholder = "[[NL]]";
 
     /**
      * Insert the general feedback in a gift question
@@ -37,13 +38,15 @@ public class QuestionHelper {
            throw new GeneralFeedbackAlreadySetException();
        }
        // in gift format some characters must be escaped
-       String processedFeedback = generalFeedback.replace("\\","\\\\")
+       String processedFeedback = generalFeedback.replace("\n",NewLinePlaceholder)
+                                           .replace("\\","\\\\")
                                            .replace(":","\\:")
                                            .replace("{","\\{")
                                            .replace("=","\\=")
                                            .replace("~","\\~")
                                            .replace("#","\\#")
-                                           .replace("}","\\}");
+                                           .replace("}","\\}")
+                                           .replace(NewLinePlaceholder,"\n");
        // insert the processed feedback
        String processedGiftQuestion = giftQuestion.replace("\\}",escapedCloseBracketPlaceholder);
        if (processedGiftQuestion.lastIndexOf("}")==-1) {

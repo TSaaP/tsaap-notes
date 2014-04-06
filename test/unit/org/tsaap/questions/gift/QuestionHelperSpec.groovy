@@ -40,7 +40,7 @@ class QuestionHelperSpec extends Specification {
 
         given:"a question helper and a general feedback to insert"
         def qh = new QuestionHelper()
-        def gfk = "a general feedback with : special \\ characters { } # = ~"
+        def gfk = "a general feedback \n with : special \\ characters { } # = ~"
 
         when:"trying to insert feedback in gift question"
         def res = qh.insertGeneralFeedbackInGiftQuestion(gfk,mc_q3_ok)
@@ -82,7 +82,7 @@ class QuestionHelperSpec extends Specification {
     def mc_q3_ok = '::Question \\: 3:: What\'are fruits  ? \n { ~%50%tomatoes #yep !  ~%-50%potatoes #bad ! ~%50%apple#yop ! ~%-50%pepper#null!}'
 
     @Shared // MC Question with escape characters
-    def mc_q3_gf_ok = '::Question \\: 3:: What\'are fruits  ? \n { ~%50%tomatoes #yep !  ~%-50%potatoes #bad ! ~%50%apple#yop ! ~%-50%pepper#null!####a general feedback with \\: special \\\\ characters \\{ \\} \\# \\= \\~}'
+    def mc_q3_gf_ok = '::Question \\: 3:: What\'are fruits  ? \n { ~%50%tomatoes #yep !  ~%-50%potatoes #bad ! ~%50%apple#yop ! ~%-50%pepper#null!####a general feedback \n with \\: special \\\\ characters \\{ \\} \\# \\= \\~}'
 
 
 }

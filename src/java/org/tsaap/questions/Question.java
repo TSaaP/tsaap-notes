@@ -58,5 +58,10 @@ public interface Question {
      */
     public QuestionType getQuestionType();
 
+    /**
+     * Get the general feedback for the question
+     * @return the general feedback for the question
+     */
+    public String getGeneralFeedback();
 
 }

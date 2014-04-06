@@ -32,6 +32,7 @@ public class DefaultQuestion implements Question {
     private List<AnswerBlock> answerBlockList = new ArrayList<AnswerBlock>();
     private List<TextBlock> textBlockList = new ArrayList<TextBlock>();
     private QuestionType questionType = QuestionType.Undefined;
+    private String generalFeedback;
 
     /**
      * Get the title of the question
@@ -111,5 +112,21 @@ public class DefaultQuestion implements Question {
         return textBlockList;
     }
 
+    /**
+     * Get the general feedback
+     *
+     * @return the general feedback
+     */
+    public String getGeneralFeedback() {
+        return generalFeedback;
+    }
+
+    /**
+     * Set the general feedback
+     * @param generalFeedback
+     */
+    public void setGeneralFeedback(String generalFeedback) {
+        this.generalFeedback = generalFeedback;
+    }
 
 }

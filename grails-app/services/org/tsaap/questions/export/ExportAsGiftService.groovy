@@ -37,11 +37,11 @@ class ExportAsGiftService {
     }
 
     private String buildGeneralFeedback(List<Note> notes, String feedbackPrefix) {
-        StringBuilder sb = new StringBuilder(feedbackPrefix)
+        StringBuilder sb = new StringBuilder("$feedbackPrefix<br>")
         notes.each {
             sb.append("@${it.author.username}: ")
             sb.append(it.content)
-            sb.append("\n")
+            sb.append("<br>")
         }
         sb.toString()
     }

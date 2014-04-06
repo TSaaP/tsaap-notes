@@ -12,6 +12,6 @@
   - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   - See the License for the specific language governing permissions and
   - limitations under the License.
-  --}%<g:each in="${questions}" var="question"><g:if test="${question.endsWith("\n")}">${question}</g:if><g:else>${question}
+  --}%<g:each in="${questions}" var="question"><g:if test="${question.endsWith("\n")}">${raw(question)}</g:if><g:else>${raw(question)}
 </g:else>
 </g:each>

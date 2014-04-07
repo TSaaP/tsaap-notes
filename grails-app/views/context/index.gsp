@@ -63,6 +63,7 @@
                   class="glyphicon glyphicon-share"></span></a></small>
           </g:if>
           <p>${fieldValue(bean: context, field: "descriptionAsNote")}</p>
+
         </td>
 
 
@@ -82,7 +83,8 @@
           </g:else>
         </g:if>
         <g:else>
-          <td><span class="label label-info" style="width: 90px;display: block; padding: 5px 10px;">Owner</span></td>
+          <td><span class="label label-info" style="width: 90px;display: block; padding: 5px 10px;">Owner</span>
+          </td>
         </g:else>
         <td><g:link controller="notes"
                            params="[displaysAll: 'on', contextName: context.contextName, contextId: context.id]" class="btn btn-default btn-xs">Les notes</g:link></td>

@@ -98,6 +98,7 @@
                           value="${message(code: 'default.button.delete.label', default: 'Delete')}"
                           onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"/>
       </g:if>
+            <g:link class="btn btn-primary" controller="context" action="exportQuestionsAsGift" id="${context.id}" target="_blank">Export questions</g:link>
       </fieldset>
     </g:form>
     </g:if>

@@ -1,5 +1,6 @@
 import grails.plugins.springsecurity.SpringSecurityService
 import org.tsaap.questions.impl.gift.GiftQuestionService
+import org.tsaap.questions.impl.gift.utils.QuestionHelper
 
 /*
 * Copyright 2013 Tsaap Development Group
@@ -22,6 +23,7 @@ beans = {
     //springSecurityService(SpringSecurityService)
     springConfig.addAlias "springSecurityService", "springSecurityCoreSpringSecurityService"
 
+    questionHelper(QuestionHelper)
     giftQuestionService(GiftQuestionService)
 
 }

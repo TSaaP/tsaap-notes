@@ -39,6 +39,8 @@
 <g:layoutBody/>
 
 <r:layoutResources/>
-
+<footer class="container">
+    <p>&copy; Tsaap Development Group 2013 - Tsaap-Notes version <g:meta name="app.version"/> - <a href="${grailsApplication.config.grails.serverURL}/terms.html">Mentions</a></p>
+</footer>
 </body>
 </html>

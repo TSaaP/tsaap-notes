@@ -125,14 +125,7 @@
       </tsaap:ifNotLoggedIn>
     </div>
 
-    <hr>
-
-    <footer>
-      <p>&copy; Tsaap Development Group 2013 - Tsaap-Notes version <g:meta name="app.version"/></p>
-    </footer>
-  </div>
-
+</div>
 </div> <!-- /container -->
-
 </body>
 </html>

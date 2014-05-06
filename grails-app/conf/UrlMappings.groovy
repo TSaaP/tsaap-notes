@@ -26,6 +26,7 @@ class UrlMappings {
         "/scope/$action?/$id?" (controller: 'context')
 
 		"/"(view:"/index")
+        "/terms"(view:"/terms")
 		"500"(view:'/error')
 	}
 }

@@ -115,7 +115,7 @@
               </div>
 
               <p class="help-block">By clicking Sign up, you agree to our <a
-                      href="terms.html" target="_blank">Terms</a>.</p>
+                      href="terms" target="_blank">Terms</a>.</p>
               <button type="submit"
                       class="btn btn-primary">Sign up &raquo;</button>
             </fieldset>

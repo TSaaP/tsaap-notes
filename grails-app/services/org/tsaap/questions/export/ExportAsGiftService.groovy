@@ -18,11 +18,7 @@ class ExportAsGiftService {
      */
     @Requires({ context.owner == user })
     List<String> findAllGiftQuestionsWithNotesAsFeedbackForContext(User user, Context context, String feedbackPrefix) {
-        def criteria = Note.createCriteria()
-        def questions = criteria.list {
-            eq('context',context)
-            like('content',"::%")
-        }
+        def questions = findAllQuestionsForContext(context)
         def res = []
         questions.each {
             def notesOnQuestion = Note.findAllByParentNote(it)
@@ -34,6 +30,30 @@ class ExportAsGiftService {
             }
         }
         res
+    }
+
+    /**
+     * Find all gift questions (without feedback) for a given context
+     * @param context the context
+     * @return the list of questions as gift strings
+     */
+    @Requires({ context.owner == user })
+    List<String> findAllGiftQuestionsForContext(User user, Context context) {
+        def questions = findAllQuestionsForContext(context)
+        def res = []
+        questions.each {
+          res.add(it.content)
+        }
+        res
+    }
+
+    private def findAllQuestionsForContext(Context context) {
+        def criteria = Note.createCriteria()
+        def questions = criteria.list {
+            eq('context',context)
+            like('content',"::%")
+        }
+        questions
     }
 
     private String buildGeneralFeedback(List<Note> notes, String feedbackPrefix) {

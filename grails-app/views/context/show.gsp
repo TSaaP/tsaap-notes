@@ -99,6 +99,7 @@
                           onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"/>
       </g:if>
             <g:link class="btn btn-primary" controller="context" action="exportQuestionsAsGift" id="${context.id}" target="_blank">Export questions</g:link>
+            <g:link class="btn btn-primary" controller="context" action="exportQuestionsAsGiftWithFeedbacks" id="${context.id}" target="_blank">Export questions with feedbacks</g:link>
       </fieldset>
     </g:form>
     </g:if>

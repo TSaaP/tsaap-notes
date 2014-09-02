@@ -159,12 +159,23 @@ class ContextController {
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def exportQuestionsAsGift(Context context) {
+    def exportQuestionsAsGiftWithFeedbacks(Context context) {
         if (context == null) {
             notFound()
             return
         }
         def questions = exportAsGiftService.findAllGiftQuestionsWithNotesAsFeedbackForContext(springSecurityService.currentUser, context,message(code:"questions.export.feedback.prefix"))
+        response.setHeader "Content-disposition", "attachment; filename=ExportMoodleGift.txt"
+        render(template:"/questions/export/QuestionsAsGift", contentType: "text/plain", encoding: "UTF-8", model: [questions:questions])
+    }
+
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def exportQuestionsAsGift(Context context) {
+        if (context == null) {
+            notFound()
+            return
+        }
+        def questions = exportAsGiftService.findAllGiftQuestionsForContext(springSecurityService.currentUser, context)
         response.setHeader "Content-disposition", "attachment; filename=ExportMoodleGift.txt"
         render(template:"/questions/export/QuestionsAsGift", contentType: "text/plain", encoding: "UTF-8", model: [questions:questions])
     }

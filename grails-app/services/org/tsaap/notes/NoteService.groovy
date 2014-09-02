@@ -110,6 +110,22 @@ class NoteService {
     }
 
     /**
+     * mark as liked note a note by a user
+     * @param theNote the note to bookmarked
+     * @param theUser the bookmarker
+     * @return the bookmark
+     */
+    @Requires({ theNote && theUser })
+    @Transactional
+    def scoreNotebyUser(Note theNote, User theUser) {
+        Score score = new Score(user: theUser, note: theNote)
+        // for performance issues the bookmarks bag coming from the to many relationship
+        // is not set
+        theNote.incrementScore()
+        score.save(failOnError: true)
+    }
+
+    /**
      * Delete a note
      * @param note the note to delete
      * @param user the author of the note

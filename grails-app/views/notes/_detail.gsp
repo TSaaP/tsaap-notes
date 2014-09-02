@@ -5,6 +5,7 @@
 </g:if>
 <li class="list-group-item ${noteClassParent}" style="padding-bottom: 20px">
     <g:set var="noteIsBookmarked" value="${note.isBookmarkedByUser(user)}"/>
+    <g:set var="noteIsScored" value="${note.isScoredByUser(user)}"/>
     <g:set var="displayListParams"
            value="${[displaysMyNotes: params.displaysMyNotes, displaysMyFavorites: params.displaysMyFavorites, displaysAll: params.displaysAll, inline: params.inline]}"/>
     <h6 class="list-group-item-heading"><strong>@${note.author.username}</strong>
@@ -88,8 +89,30 @@
                         fragment="note${note.id}"><span
                         class="glyphicon glyphicon-star"></span> Favorite</g:link>
             </g:else>
+            <g:if test="${noteIsScored}">
+                <span style="color: orange"
+                        class="glyphicon glyphicon-thumbs-up"> I learn</span>
+            </g:if>
+            <g:else>
+            <g:link controller="notes" action="markAsLikedNote"
+                params="${[noteId: note.id] + displayListParamsWithPagination}"
+                fragment="note${note.id}"><span
+                class="glyphicon glyphicon-thumbs-up"></span> I learn</g:link>
+            </g:else>
         </small>
     </div>
+    <div>&nbsp;</div>
+    <g:if test="${note.score > 1}">
+        <div>
+            <small class="pull-right">${note.score} users learnt with this note</small>
+        </div>
+    </g:if>
+    <g:if test="${note.score == 1}">
+        <div>
+            <small class="pull-right">${note.score} user learnt with this note</small>
+        </div>
+    </g:if>
+
 
     <div id="replyEdition${note.id}" style="display:none; padding-top:20px">
         <g:render template="edit"

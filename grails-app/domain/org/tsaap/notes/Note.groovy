@@ -29,6 +29,7 @@ class Note {
     Note parentNote
 
     String content
+    Integer score = 0
 
     static hasMany = [bookmarks: Bookmark]
 
@@ -53,6 +54,15 @@ class Note {
      */
     boolean isBookmarkedByUser(User user) {
         Bookmark.findByNoteAndUser(this, user)
+    }
+
+    /**
+     * Indicate if the current note is scored by the given user
+     * @param user the user
+     * @return true if the note is scored, false if not
+     */
+    boolean isScoredByUser(User user) {
+        Score.findByNoteAndUser(this, user)
     }
 
     /**
@@ -132,5 +142,14 @@ class Note {
             hash = "#$fragmentTag.name"
         }
         "${rootUrl}${hash}"
+    }
+
+    /**
+     * Increment the score of the current note
+     * @return the new score
+     */
+    Integer incrementScore() {
+        score = score + 1
+        score
     }
 }

@@ -88,6 +88,15 @@ class NotesController {
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def markAsLikedNote() {
+        def user = springSecurityService.currentUser
+        Note note = Note.get(params.noteId)
+        noteService.scoreNotebyUser(note, user)
+        params.remove('noteId')
+        redirect(action: index(), params: params)
+    }
+
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def deleteNote() {
         def user = springSecurityService.currentUser
         Note note = Note.load(params.noteId)

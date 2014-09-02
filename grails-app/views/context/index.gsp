@@ -33,8 +33,15 @@
 
   </g:form>
 </div>
-
-<div id="list-context" class="container">
+<div class="container">
+    <div class="list-group container pull-left" style="margin-top: 40px;">
+        <a href="#" class="list-group-item active">
+            My scopes
+        </a>
+        <a href="#" class="list-group-item">Followed scopes</a>
+        <a href="#" class="list-group-item">All</a>
+    </div>
+<div id="list-context" class="container pull-right">
   <g:if test="${flash.message}">
     <div class="alert alert-info" role="status">${flash.message}</div>
   </g:if>
@@ -97,7 +104,7 @@
   </div>
 </div>
 
-
+</div>
 
 
 <r:script>

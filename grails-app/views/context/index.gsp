@@ -1,4 +1,4 @@
-<%@ page import="org.tsaap.notes.Context" %>
+<%@ page import="org.tsaap.notes.FilterReservedValue; org.tsaap.notes.Context" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,8 +22,8 @@
     <div class="row">
       <div class="col-lg-6">
         <div class="input-group">
-          <input type="text" class="form-control" placeholder="Starting with"
-                 name="filter" value="${params.filter}">
+          <input type="text" class="form-control" placeholder="containing"
+                 name="filter" value="${!(params.filter in org.tsaap.notes.FilterReservedValue.values()*.name()) ? params.filter : ''}">
           <span class="input-group-btn">
             <button class="btn btn-default" type="submit">Filter</button>
           </span>
@@ -32,19 +32,23 @@
     </div><!-- /.row -->
 
   </g:form>
+    <small>Scope count: ${contextCount}</small>
 </div>
 <div class="container">
     <div class="list-group container pull-left" style="margin-top: 40px;">
-        <a href="#" class="list-group-item active">
+        <g:link class="list-group-item ${params.filter == org.tsaap.notes.FilterReservedValue.__MINE__.name() ? 'active' : ''}" controller="context" action="index" params="[filter:FilterReservedValue.__MINE__.name()]">
             My scopes
-        </a>
-        <a href="#" class="list-group-item">Followed scopes</a>
-        <a href="#" class="list-group-item">All</a>
+        </g:link>
+        <g:link class="list-group-item ${params.filter == org.tsaap.notes.FilterReservedValue.__FOLLOWED__.name() ? 'active' : ''}" controller="context" action="index" params="[filter:FilterReservedValue.__FOLLOWED__.name()]">
+            Followed scopes
+        </g:link>
+        <g:link class="list-group-item ${(!params.filter || params.filter == org.tsaap.notes.FilterReservedValue.__ALL__.name()) ? 'active' : ''}" controller="context" action="index">All</g:link>
     </div>
-<div id="list-context" class="container pull-right">
+<div id="list-context" class="container pull-right" style="width: 540px">
   <g:if test="${flash.message}">
     <div class="alert alert-info" role="status">${flash.message}</div>
   </g:if>
+
   <table class="table table-striped table-hover">
     <thead>
     <tr>

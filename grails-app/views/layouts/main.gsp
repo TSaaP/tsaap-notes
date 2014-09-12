@@ -1,3 +1,4 @@
+<%@ page import="org.tsaap.notes.FilterReservedValue" %>
 %{--
   - Copyright 2013 Tsaap Development Group
   -
@@ -46,7 +47,7 @@
     <div class="nav-collapse collapse">
       <ul class="nav navbar-nav">
         <li id="mainLinkNotes"><g:link controller="notes" params="[displaysMyNotes:'on']">Notes</g:link></li></li>
-        <li id="mainLinkContexts"><g:link controller="context">Scopes</g:link></li>
+        <li id="mainLinkContexts"><g:link controller="context" params="[filter:FilterReservedValue.__MINE__.name()]">Scopes</g:link></li>
       </ul>
 
       <div class="nav-collapse collapse pull-right">

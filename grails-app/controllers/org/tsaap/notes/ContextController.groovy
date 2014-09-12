@@ -25,12 +25,18 @@ class ContextController {
         User user = springSecurityService.currentUser
         def contextList
         def contextCount = 0
-        if (!filter) {
+        if (!filter || filter == FilterReservedValue.__ALL__.name()) {
             contextList = Context.list(params)
             contextCount = Context.count()
+        } else if (filter == FilterReservedValue.__MINE__.name()) {
+            contextList = contextService.contextsForOwner(user, params)
+            contextCount = Context.countByOwner(user)
+        } else if (filter == FilterReservedValue.__FOLLOWED__.name()) {
+            contextList = contextService.contextsFollowedByUser(user, params)
+            contextCount = contextList.totalCount
         } else {
-            contextList = Context.findAllByContextNameIlike("${filter}%", params)
-            contextCount = Context.countByContextNameIlike("${filter}")
+            contextList = Context.findAllByContextNameIlike("%${filter}%", params)
+            contextCount = Context.countByContextNameIlike("%${filter}%")
         }
 
         respond contextList, model: [contextList: contextList, contextCount: contextCount, user: user]
@@ -190,4 +196,10 @@ class ContextController {
             '*' { render status: NOT_FOUND }
         }
     }
+}
+
+enum FilterReservedValue {
+    __ALL__,
+    __FOLLOWED__,
+    __MINE__
 }

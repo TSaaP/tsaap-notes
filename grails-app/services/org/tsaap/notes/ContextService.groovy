@@ -1,7 +1,9 @@
 package org.tsaap.notes
 
+import grails.gorm.PagedResultList
 import org.gcontracts.annotations.Requires
 import org.gcontracts.annotations.Ensures
+import org.tsaap.CustomPagedResultList
 import org.tsaap.directory.User
 
 class ContextService {
@@ -42,11 +44,12 @@ class ContextService {
    * @return
    */
   @Requires({ user })
-  List<ContextFollower> contextsFollowedByUser(User user,
-                                               def paginationAndSorting = [sort: 'contextName', order: 'asc']) {
+  List<ContextFollower> contextFollowersByUser(User user,
+                                               def paginationAndSorting = [max: 10, offset: 0,sort: 'contextName', order: 'asc']) {
     def criteria = ContextFollower.createCriteria()
-    def results = criteria {
+    def results = criteria.list(max:paginationAndSorting.max, offset:paginationAndSorting.offset) {
       eq 'follower',user
+      eq 'isNoMoreSubscribed',false
       context {
         order paginationAndSorting.sort, paginationAndSorting.order
         if (paginationAndSorting.max) {
@@ -60,6 +63,22 @@ class ContextService {
     }
     results
   }
+
+    /**
+     * Find all contexts followed by a user
+     * @param user the follower
+     * @param paginationAndSorting pagination an sorting params
+     * @return
+     */
+    @Requires({ user })
+    List<Context> contextsFollowedByUser(User user,
+                                                 def paginationAndSorting = [max: 10, offset: 0,sort: 'contextName', order: 'asc']) {
+        CustomPagedResultList res = new CustomPagedResultList()
+        def contextFollowers = contextFollowersByUser(user,paginationAndSorting)
+        res.addAll(contextFollowers*.context)
+        res.totalCount = contextFollowers.totalCount
+        res
+    }
 
   /**
    * Delete a given context

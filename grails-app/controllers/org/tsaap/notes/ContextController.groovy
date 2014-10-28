@@ -11,7 +11,7 @@ import static org.springframework.http.HttpStatus.*
 @Transactional(readOnly = true)
 class ContextController {
 
-    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE",duplicateContext: "POST"]
 
     SpringSecurityService springSecurityService
     ContextService contextService
@@ -186,6 +186,16 @@ class ContextController {
         render(template:"/questions/export/QuestionsAsGift", contentType: "text/plain", encoding: "UTF-8", model: [questions:questions])
     }
 
+    @Transactional
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def duplicateContext(Context context) {
+        if (context == null) {
+            notFound()
+            return
+        }
+        def newContext = contextService.duplicateContext(context,springSecurityService.currentUser)
+        redirect action: "edit", controller: "context", id: newContext.id
+    }
 
     protected void notFound() {
         request.withFormat {

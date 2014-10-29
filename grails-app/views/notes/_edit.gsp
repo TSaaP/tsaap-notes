@@ -14,7 +14,7 @@
         <g:hiddenField name="displaysAll" id="displaysAllInAddForm${idControllSuffix}"/>
         <textarea class="form-control note-editable-content" rows="3" id="noteContent${idControllSuffix}"
                   name="noteContent"
-                  maxlength="280">${parentNote ? '@' + parentNote.author?.username + ' ' : ''}</textarea>
+                  maxlength="560">${parentNote ? '@' + parentNote.author?.username + ' ' : ''}</textarea>
         <span class="character_counter" id="character_counter${idControllSuffix}"></span>
         <div id="prewiew_tab_${idControllSuffix}" class="pull-right">
             <button type="button" class="btn btn-default btn-xs"
@@ -74,7 +74,7 @@
             .bind('keyup blur', function () {
                     // Count the characters and set the counter text
                     var counter =  $("#character_counter${idControllSuffix}");
-                    counter.text($(this).val().length + '/280 characters');
+                    counter.text($(this).val().length + '/560 characters');
                     if ($(this).val().length >1) {
                       $("#buttonAddNote${idControllSuffix}").removeAttr('disabled');
                     } else {

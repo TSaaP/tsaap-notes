@@ -38,7 +38,7 @@ class Note {
         fragmentTag nullable: true
         parentNote nullable: true
         bookmarks nullable: true
-        content maxSize: 280
+        content maxSize: 560
     }
 
     static mapping = {

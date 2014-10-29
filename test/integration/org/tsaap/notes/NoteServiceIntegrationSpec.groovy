@@ -24,6 +24,7 @@ class NoteServiceIntegrationSpec extends Specification {
 
   BootstrapTestService bootstrapTestService
   NoteService noteService
+  ContextService contextService
 
   def setup() {
     bootstrapTestService.initializeTests()
@@ -128,5 +129,32 @@ class NoteServiceIntegrationSpec extends Specification {
 
   }
 
+  def "find all question notes for a context"() {
+      given: "a context"
+      Context context = contextService.saveContext(new Context(owner: bootstrapTestService.learnerPaul, contextName: "aContext"))
+
+      and:"a std note"
+      Note note = noteService.addNote(bootstrapTestService.learnerPaul, "a standard note",context)
+
+      and:"a question note"
+      Note question = noteService.addNote(bootstrapTestService.learnerPaul, "::a question:: what ? {=true~false}",context)
+
+      when:"finding all notes for context"
+      List<Note> res = noteService.findAllNotes(bootstrapTestService.learnerPaul,false,false,true,context).list
+
+      then:"all notes (question or not) are found"
+      res.size() == 2
+      res.contains(note)
+      res.contains(question)
+
+      when: "finding only questions"
+      res = noteService.findAllNotesAsQuestionForContext(context)
+
+      then: "only questions are retrieved"
+      res.size() == 1
+      res.contains(question)
+
+
+  }
 
 }

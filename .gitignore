@@ -9,5 +9,6 @@ target
 bin
 .class
 out
+.sonar
 
 cobertura.ser

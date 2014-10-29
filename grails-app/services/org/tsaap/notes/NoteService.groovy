@@ -158,7 +158,7 @@ class NoteService {
         query = LiveSession.where {
             note == note
         }
-        query.findAll { liveSessionService.deleteLiveSessionByAuthor(it,user) }
+        query.findAll { liveSessionService.deleteLiveSessionByAuthor(it, user) }
         query.deleteAll()
         // finally delete notes
         note.delete()
@@ -217,6 +217,27 @@ class NoteService {
             order paginationAndSorting.sort, paginationAndSorting.order
         }
         new DefaultPagedResultList(list: results.list, totalCount: results.totalCount)
+    }
+
+    /**
+     * Duplicate a note in a context
+     * @param note the note to duplicate
+     * @param targetContext the target context
+     * @param user the user triggering the duplication
+     * @return the new note
+     */
+    @Requires({ note && note.author == user })
+    Note duplicateNoteInContext(Note note, Context targetContext, User user) {
+        addNote(user,note.content,targetContext,note.fragmentTag)
+    }
+
+    /**
+     * Find all questions for a context
+     * @param context the context
+     * @return the list of questions
+     */
+    List<Note> findAllNotesAsQuestionForContext(Context context) {
+        Note.findAllByContext(context).findAll { it.isAQuestion() }
     }
 }
 

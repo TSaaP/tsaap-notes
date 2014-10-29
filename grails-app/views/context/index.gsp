@@ -71,7 +71,7 @@
           <br/>
           <small>${fieldValue(bean: context, field: "url")}&nbsp<a
                 href="${context?.url}"><span
-                  class="glyphicon glyphicon-share"></span></a></small>
+                  class="glyphicon glyphicon-link"></span></a></small>
           </g:if>
           <p>${fieldValue(bean: context, field: "descriptionAsNote")}</p>
 
@@ -94,7 +94,8 @@
           </g:else>
         </g:if>
         <g:else>
-          <td><span class="label label-info" style="width: 90px;display: block; padding: 5px 10px;">Owner</span>
+          <td>
+              <g:form action="duplicateContext" controller="context" id="${context.id}"><button class="btn btn-default btn-xs" type="submit">Duplicate</button></g:form>
           </td>
         </g:else>
         <td><g:link controller="notes"

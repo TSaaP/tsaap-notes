@@ -1,4 +1,5 @@
 import grails.plugins.springsecurity.SpringSecurityService
+import liquibase.integration.spring.SpringLiquibase
 import org.tsaap.questions.impl.gift.GiftQuestionService
 import org.tsaap.questions.impl.gift.utils.QuestionHelper
 
@@ -25,5 +26,11 @@ beans = {
 
     questionHelper(QuestionHelper)
     giftQuestionService(GiftQuestionService)
+
+    // beans pour la migration des données
+    liquibase(SpringLiquibase) {
+        dataSource = ref("dataSource")
+        changeLog = "classpath:migrations/changelog-tsaap-notes-incremental.xml"
+    }
 
 }

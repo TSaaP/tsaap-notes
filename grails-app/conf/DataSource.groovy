@@ -28,7 +28,6 @@ environments {
     dataSource {
       driverClassName = "com.mysql.jdbc.Driver"
       dialect = "org.hibernate.dialect.MySQL5InnoDBDialect"
-      dbCreate = "update"
       url = "jdbc:mysql://localhost/tsaap-notes"
       username = "tsaap"
       password = "tsaap"
@@ -41,7 +40,6 @@ environments {
       driverClassName = "org.h2.Driver"
       username = "sa"
       password = ""
-      dbCreate = "update"
       url = "jdbc:h2:mem:testDb;MVCC=TRUE;LOCK_TIMEOUT=10000"
     }
   }
@@ -51,13 +49,11 @@ environments {
       driverClassName = "org.h2.Driver"
       username = "sa"
       password = ""
-      dbCreate = "update"
       url = "jdbc:h2:mem:testDb;MVCC=TRUE;LOCK_TIMEOUT=10000"
     }
   }
   production {
     dataSource {
-      dbCreate = "update"
       driverClassName = "com.mysql.jdbc.Driver"
       dialect = "org.hibernate.dialect.MySQL5InnoDBDialect"
       url = "jdbc:mysql://notes.tsaap.eu/tsaap-notes"

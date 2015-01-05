@@ -50,7 +50,8 @@
         <createIndex tableName="session_phase" indexName="idx_session_phase_live_session_id">
             <column name="live_session_id"></column>
         </createIndex>
-        <addForeignKeyConstraint baseTableName="session_phase" baseColumnNames="live_session_id" constraintName="fk_session_phase_live_session_id" referencedTableName="live_session"
+        <addForeignKeyConstraint baseTableName="session_phase" baseColumnNames="live_session_id"
+                                 constraintName="fk_session_phase_live_session_id" referencedTableName="live_session"
                                  referencedColumnNames="id"/>
     </changeSet>
 
@@ -64,12 +65,48 @@
         <createIndex tableName="live_session_response" indexName="idx_live_session_response_session_phase_id">
             <column name="session_phase_id"></column>
         </createIndex>
-        <addForeignKeyConstraint baseTableName="live_session_response" baseColumnNames="session_phase_id" constraintName="fk_live_session_response_session_phase_id" referencedTableName="session_phase"
+        <addForeignKeyConstraint baseTableName="live_session_response" baseColumnNames="session_phase_id"
+                                 constraintName="fk_live_session_response_session_phase_id"
+                                 referencedTableName="session_phase"
                                  referencedColumnNames="id"/>
         <createIndex tableName="live_session_response" indexName="idx_live_session_response_explanation_id">
             <column name="explanation_id"></column>
         </createIndex>
-        <addForeignKeyConstraint baseTableName="live_session_response" baseColumnNames="explanation_id" constraintName="fk_live_session_response_explanation_id" referencedTableName="note"
+        <addForeignKeyConstraint baseTableName="live_session_response" baseColumnNames="explanation_id"
+                                 constraintName="fk_live_session_response_explanation_id" referencedTableName="note"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="3" author="fsil">
+        <comment>Creation of the "note_grade" table</comment>
+        <createTable tableName="note_grade">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="date_created" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="note_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="grade" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="note_grade" indexName="idx_note_grade_note_id">
+            <column name="note_id"></column>
+        </createIndex>
+        <createIndex tableName="note_grade" indexName="idx_note_grade_user_id">
+            <column name="user_id"></column>
+        </createIndex>
+        <addForeignKeyConstraint baseTableName="note_grade" baseColumnNames="note_id"
+                                 constraintName="fk_note_grade_note_id" referencedTableName="note"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="note_grade" baseColumnNames="user_id"
+                                 constraintName="fk_note_grade_user_id" referencedTableName="user"
                                  referencedColumnNames="id"/>
     </changeSet>
 </databaseChangeLog>

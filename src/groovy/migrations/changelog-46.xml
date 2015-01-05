@@ -109,4 +109,11 @@
                                  constraintName="fk_note_grade_user_id" referencedTableName="user"
                                  referencedColumnNames="id"/>
     </changeSet>
+
+    <changeSet id="4" author="fsil">
+        <comment>Add column grade on note table</comment>
+        <addColumn tableName="note">
+            <column name="grade" type="DOUBLE"></column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

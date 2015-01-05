@@ -54,4 +54,22 @@
                                  referencedColumnNames="id"/>
     </changeSet>
 
+    <changeSet id="2" author="fsil">
+        <comment>Modification of the live_session_response table</comment>
+        <addColumn tableName="live_session_response">
+            <column name="session_phase_id" type="BIGINT"/>
+            <column name="confidence_degree" type="INT"/>
+            <column name="explanation_id" type="BIGINT"/>
+        </addColumn>
+        <createIndex tableName="live_session_response" indexName="idx_live_session_response_session_phase_id">
+            <column name="session_phase_id"></column>
+        </createIndex>
+        <addForeignKeyConstraint baseTableName="live_session_response" baseColumnNames="session_phase_id" constraintName="fk_live_session_response_session_phase_id" referencedTableName="session_phase"
+                                 referencedColumnNames="id"/>
+        <createIndex tableName="live_session_response" indexName="idx_live_session_response_explanation_id">
+            <column name="explanation_id"></column>
+        </createIndex>
+        <addForeignKeyConstraint baseTableName="live_session_response" baseColumnNames="explanation_id" constraintName="fk_live_session_response_explanation_id" referencedTableName="note"
+                                 referencedColumnNames="id"/>
+    </changeSet>
 </databaseChangeLog>

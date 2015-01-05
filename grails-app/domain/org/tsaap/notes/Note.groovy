@@ -30,6 +30,7 @@ class Note {
 
     String content
     Integer score = 0
+    Double grade
 
     static hasMany = [bookmarks: Bookmark]
 
@@ -39,6 +40,7 @@ class Note {
         parentNote nullable: true
         bookmarks nullable: true
         content maxSize: 560
+        grade nullable: true
     }
 
     static mapping = {

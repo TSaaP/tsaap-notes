@@ -20,7 +20,7 @@ class LiveSessionService {
     @Requires({user == note.author && note.isAQuestion() && !note.activeLiveSession})
     LiveSession createLiveSessionForNote(User user, Note note) {
         LiveSession liveSession = new LiveSession(note:note)
-        liveSession.save()
+        liveSession.save(flush: true)
         liveSession
     }
 

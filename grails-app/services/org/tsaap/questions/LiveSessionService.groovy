@@ -21,6 +21,7 @@ class LiveSessionService {
     LiveSession createLiveSessionForNote(User user, Note note) {
         LiveSession liveSession = new LiveSession(note:note)
         liveSession.save(flush: true)
+        note.liveSession = liveSession
         liveSession
     }
 

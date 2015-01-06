@@ -6,10 +6,13 @@ import org.tsaap.directory.User
 import org.tsaap.notes.Bookmark
 import org.tsaap.notes.Note
 import org.tsaap.notes.NoteMention
+import org.tsaap.notes.NoteService
 import org.tsaap.notes.NoteTag
 
 @Transactional
 class LiveSessionService {
+
+    NoteService noteService
 
     /**
      * Create a live session for a corresponding note
@@ -44,7 +47,10 @@ class LiveSessionService {
      */
     @Requires({ liveSession.isStarted() && !liveSession.isStopped() && !liveSession.getResponseForUser(user) })
     LiveSessionResponse createResponseForLiveSessionAndUser(LiveSession liveSession,User user, String value) {
-        LiveSessionResponse liveSessionResponse = new LiveSessionResponse(liveSession:liveSession,user: user,answerListAsString: value)
+        LiveSessionResponse liveSessionResponse = new LiveSessionResponse(
+                liveSession:liveSession,
+                user: user,
+                answerListAsString: value)
         liveSessionResponse.save()
         liveSessionResponse
     }
@@ -79,6 +85,9 @@ class LiveSessionService {
      */
     @Requires({user == liveSession.note.author && !liveSession.hasStartedSessionPhase()})
     SessionPhase createAndStartFirstSessionPhaseForLiveSession(User user, LiveSession liveSession) {
+        if (liveSession.isNotStarted()) {
+            liveSession.start()
+        }
         createSessionPhaseForLiveSessionWithRank(user,liveSession,1).start()
     }
 
@@ -116,15 +125,25 @@ class LiveSessionService {
      * @param session phase the given live session
      * @param user the given user
      * @param value the text value of the response
+     * @param explanation the given explanation for the given response
+     * @param confidenceDegree the confidence degree given by the answerer
      * @return the live session response
      */
     @Requires({ sessionPhase.isStarted() && !sessionPhase.isStopped() && !sessionPhase.getResponseForUser(user) })
-    LiveSessionResponse createResponseForSessionPhaseAndUser(SessionPhase sessionPhase,User user, String value) {
+    LiveSessionResponse createResponseForSessionPhaseAndUser(SessionPhase sessionPhase,User user, String value,
+                                                             String explanation, Integer confidenceDegree) {
+        LiveSession liveSession = sessionPhase.liveSession
         LiveSessionResponse liveSessionResponse = new LiveSessionResponse(
-                liveSession:sessionPhase.liveSession,
+                liveSession:liveSession,
                 sessionPhase: sessionPhase,
                 user: user,
-                answerListAsString: value)
+                answerListAsString: value,
+                confidenceDegree: confidenceDegree
+        )
+        Note note = liveSession.note
+        if (explanation) {
+            liveSessionResponse.explanation = noteService.addNote(user,explanation,note.context,note.fragmentTag,note)
+        }
         liveSessionResponse.save()
         liveSessionResponse
     }

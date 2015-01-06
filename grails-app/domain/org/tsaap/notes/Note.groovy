@@ -33,6 +33,8 @@ class Note {
     Integer score = 0
     Double grade
 
+    Integer kind = NoteKind.STANDARD.ordinal()
+
     static hasMany = [bookmarks: Bookmark]
 
     static constraints = {
@@ -83,7 +85,15 @@ class Note {
      * @return true if the note is an interactive question
      */
     boolean isAQuestion() {
-        this.getQuestion() != null
+        if (kind == NoteKind.QUESTION.ordinal()) {
+            return true
+        }
+        if (this.getQuestion() != null) {
+            kind = NoteKind.QUESTION.ordinal()
+            save()
+            return true
+        }
+        false
     }
 
     Question question
@@ -155,4 +165,10 @@ class Note {
         score = score + 1
         score
     }
+}
+
+enum NoteKind {
+    STANDARD,
+    QUESTION,
+    EXPLANATION
 }

@@ -43,14 +43,17 @@ class NoteService {
                  String content,
                  Context context = null,
                  Tag fragmentTag = null,
-                 Note parentNote = null) {
+                 Note parentNote = null,
+                 NoteKind noteKind = NoteKind.STANDARD) {
 
         // create the note
         Note theNote = new Note(author: author,
                 content: content,
                 context: context,
                 fragmentTag: fragmentTag,
-                parentNote: parentNote)
+                parentNote: parentNote,
+                kind: noteKind.ordinal()
+        )
         // save the note
         theNote.save()
 
@@ -214,6 +217,7 @@ class NoteService {
                     eq 'bmks.user', inUser
                 }
             }
+
             order paginationAndSorting.sort, paginationAndSorting.order
         }
         new DefaultPagedResultList(list: results.list, totalCount: results.totalCount)

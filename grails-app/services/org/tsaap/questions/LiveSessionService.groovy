@@ -5,6 +5,7 @@ import org.gcontracts.annotations.Requires
 import org.tsaap.directory.User
 import org.tsaap.notes.Bookmark
 import org.tsaap.notes.Note
+import org.tsaap.notes.NoteKind
 import org.tsaap.notes.NoteMention
 import org.tsaap.notes.NoteService
 import org.tsaap.notes.NoteTag
@@ -130,7 +131,7 @@ class LiveSessionService {
         )
         Note note = liveSession.note
         if (explanation) {
-            liveSessionResponse.explanation = noteService.addNote(user,explanation,note.context,note.fragmentTag,note)
+            liveSessionResponse.explanation = noteService.addNote(user,explanation,note.context,note.fragmentTag,note,NoteKind.EXPLANATION)
         }
         liveSessionResponse.save()
         liveSessionResponse

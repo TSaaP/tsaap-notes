@@ -108,46 +108,27 @@ class LiveSession {
         matrix
     }
 
+    ResultMatrixService resultMatrixService
+
     /**
      * Construct the result matrix of the current live session
      * @return the result matrix
      */
     List<Map<String, Float>> buildResultMatrix() {
         def responses = LiveSessionResponse.findAllByLiveSession(this)
-        def matrix = []
         Question question = this.note.question
-        def matrixSize = question.answerBlockList.size()
-        for (int i = 0; i < matrixSize; i++) { // initialize the matrix from the question spec
-            matrix[i] = [:]
-            matrix[i][GiftQuestionService.NO_RESPONSE] = 0
-            AnswerBlock answerBlock = question.answerBlockList[i]
-            for (Answer answer : answerBlock.answerList) {
-                matrix[i][answer.textValue] = 0
-            }
-        }
-        def responseCount = responses.size()
-        if (responseCount > 0) {
-            for (LiveSessionResponse response : responses) {
-                for (int i = 0; i < matrixSize; i++) {
-                    def currentMap = matrix[i]
-                    def currentAnswerBlock = response.userResponse.userAnswerBlockList[i]
-                    for (Answer currentAnswer : currentAnswerBlock.answerList) {
-                        currentMap[currentAnswer.textValue] += 1
-                    }
-                }
-            }
-
-            for (int i = 0; i < matrixSize; i++) { // conversion in percent
-                Map<String, Float> currentMap = matrix[i]
-                for (String currentKey : currentMap.keySet()) {
-                    currentMap[currentKey] = (currentMap[currentKey] / responseCount) * 100
-                }
-            }
-        }
-        matrix
+        resultMatrixService.buildResultMatrixForQuestionAndResponses(question,responses)
     }
 
-    static transients = ['resultMatrix']
+    /**
+     *
+     * @return true if the current live session has one started session phase
+     */
+    boolean hasStartedSessionPhase() {
+        SessionPhase.findByLiveSessionAndStatus(this,LiveSessionStatus.Started.name())
+    }
+
+    static transients = ['resultMatrix', 'resultMatrixService']
 }
 
 enum LiveSessionStatus {

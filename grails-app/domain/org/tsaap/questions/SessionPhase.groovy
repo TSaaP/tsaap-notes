@@ -1,6 +1,9 @@
 package org.tsaap.questions
 
+import groovy.json.JsonBuilder
+import groovy.json.JsonSlurper
 import org.gcontracts.annotations.Requires
+import org.tsaap.directory.User
 
 class SessionPhase {
 
@@ -63,8 +66,59 @@ class SessionPhase {
         status = LiveSessionStatus.Ended.name()
         endDate = new Date()
         if (shouldBuildResultMatrix) {
-           // updateResultMatrixAsJson()
+           updateResultMatrixAsJson()
         }
         save(flush: true)
     }
+
+    private def void updateResultMatrixAsJson() {
+        def matrix = buildResultMatrix()
+        JsonBuilder builder = new JsonBuilder(matrix ?: [:])
+        resultMatrixAsJson = builder.toString()
+    }
+
+    /**
+     * Get the response of the current session phase for a given user
+     * @param user the given user
+     * @return the live session response if it exists
+     */
+    LiveSessionResponse getResponseForUser(User user) {
+        LiveSessionResponse.findBySessionPhaseAndUser(this, user)
+    }
+
+    /**
+     * get the count of responses for the current live session
+     * @return the count of responses
+     */
+    Integer responseCount() {
+        LiveSessionResponse.countBySessionPhase(this)
+    }
+
+    /**
+     * Construct the result matrix of the current live session
+     * @return the result matrix
+     */
+    List<Map<String, Float>> getResultMatrix() {
+        JsonSlurper parser = new JsonSlurper()
+        if (resultMatrixAsJson == null) {
+            updateResultMatrixAsJson()
+            save(flush: true)
+        }
+        def matrix = parser.parseText(resultMatrixAsJson)
+        matrix
+    }
+
+    ResultMatrixService resultMatrixService
+
+    /**
+     * Construct the result matrix of the current live session
+     * @return the result matrix
+     */
+    List<Map<String, Float>> buildResultMatrix() {
+        def responses = LiveSessionResponse.findAllBySessionPhase(this)
+        Question question = this.liveSession.note.question
+        resultMatrixService.buildResultMatrixForQuestionAndResponses(question,responses)
+    }
+
+    static transients = ['resultMatrix', 'resultMatrixService']
 }

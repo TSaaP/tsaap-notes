@@ -44,9 +44,15 @@
 
     <g:if test="${note.isAQuestion()}">
         <g:set var="liveSession" value="${note.getLiveSession()}"/>
-        <g:set var="sessionStatus" value="${liveSession ? liveSession.status : LiveSessionStatus.NotStarted.name()}"/>
+        <g:set var="sessionPhase" value="${liveSession ? liveSession.findCurrentPhase() : null}"/>
         <g:set var="userType" value="${user == note.author ? 'author' : 'user'}"/>
-        <g:render template="/questions/${userType}/${sessionStatus}/detail" model="[note: note,liveSession:liveSession,user:user]"/>
+        <g:if test="${sessionPhase == null}">
+            <g:set var="sessionStatus" value="${liveSession ? liveSession.status : LiveSessionStatus.NotStarted.name()}"/>
+            <g:render template="/questions/${userType}/${sessionStatus}/detail" model="[note: note,liveSession:liveSession,user:user]"/>
+        </g:if>
+        <g:else>
+            <g:render template="/questions/${userType}/Phase${sessionPhase.rank}/${sessionPhase.status}/detail" model="[note: note,sessionPhase:sessionPhase,user:user]"/>
+        </g:else>
     </g:if>
     <g:else>
         <p id="content${note.id}" class="note-content">${note.content}</p>

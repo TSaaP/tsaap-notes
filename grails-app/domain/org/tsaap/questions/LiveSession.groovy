@@ -128,6 +128,21 @@ class LiveSession {
         SessionPhase.findByLiveSessionAndStatus(this,LiveSessionStatus.Started.name())
     }
 
+    /**
+     *
+     * @return the current phase if any
+     */
+    SessionPhase findCurrentPhase() {
+        def phases = SessionPhase.findAllByLiveSession(this,[sort: "rank", order: "desc"])
+        def res = null
+        if (!phases.isEmpty()) {
+            if (phases.first().rank <= SessionPhase.MAX_RANK) {
+                res = phases.first()
+            }
+        }
+        res
+    }
+
     static transients = ['resultMatrix', 'resultMatrixService']
 }
 

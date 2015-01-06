@@ -7,6 +7,8 @@ import org.tsaap.directory.User
 
 class SessionPhase {
 
+    public static final int MAX_RANK = 3
+
     Date dateCreated
     String status = LiveSessionStatus.NotStarted.name()
     Date startDate
@@ -120,5 +122,9 @@ class SessionPhase {
         resultMatrixService.buildResultMatrixForQuestionAndResponses(question,responses)
     }
 
-    static transients = ['resultMatrix', 'resultMatrixService']
+    boolean stopLiveSessionWhenIsStopped() {
+        rank == MAX_RANK
+    }
+
+    static transients = ['resultMatrix', 'resultMatrixService','MAX_RANK']
 }

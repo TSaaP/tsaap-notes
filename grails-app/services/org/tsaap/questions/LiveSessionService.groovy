@@ -88,18 +88,7 @@ class LiveSessionService {
         if (liveSession.isNotStarted()) {
             liveSession.start()
         }
-        createSessionPhaseForLiveSessionWithRank(user,liveSession,1).start()
-    }
-
-    /**
-     * Create a second phase for a live session
-     * @param user the user of the session
-     * @param liveSession the live session
-     * @return the second phase
-     */
-    @Requires({user == liveSession.note.author && !liveSession.hasStartedSessionPhase()})
-    SessionPhase createAndStartSecondSessionPhaseForLiveSession(User user, LiveSession liveSession) {
-        createSessionPhaseForLiveSessionWithRank(user,liveSession,2).start()
+        createSessionPhaseForLiveSessionWithRank(liveSession,1).start()
     }
 
     /**
@@ -109,12 +98,11 @@ class LiveSessionService {
      * @return the third phase
      */
     @Requires({user == liveSession.note.author && !liveSession.hasStartedSessionPhase()})
-    SessionPhase createAndStartThirdSessionPhaseForLiveSession(User user, LiveSession liveSession) {
-        createSessionPhaseForLiveSessionWithRank(user,liveSession,3).start()
+    SessionPhase createAndStartSessionPhaseForLiveSessionWithRank(User user, LiveSession liveSession,Integer rank) {
+        createSessionPhaseForLiveSessionWithRank(liveSession,rank).start()
     }
 
-
-    private SessionPhase createSessionPhaseForLiveSessionWithRank(User user, LiveSession liveSession, Integer rank) {
+    private SessionPhase createSessionPhaseForLiveSessionWithRank(LiveSession liveSession, Integer rank) {
         SessionPhase sessionPhase = new SessionPhase(liveSession: liveSession, rank: rank)
         sessionPhase.save(flush: true)
         sessionPhase

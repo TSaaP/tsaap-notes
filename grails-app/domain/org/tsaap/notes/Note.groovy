@@ -18,6 +18,7 @@ package org.tsaap.notes
 
 import org.tsaap.directory.User
 import org.tsaap.questions.LiveSession
+import org.tsaap.questions.LiveSessionResponse
 import org.tsaap.questions.Question
 import org.tsaap.questions.impl.gift.GiftQuestionService
 

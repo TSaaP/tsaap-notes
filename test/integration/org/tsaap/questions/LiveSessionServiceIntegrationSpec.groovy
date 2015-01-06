@@ -67,7 +67,7 @@ class LiveSessionServiceIntegrationSpec extends Specification {
         SessionPhase firstPhase = liveSessionService.createAndStartFirstSessionPhaseForLiveSession(user,liveSession)
 
         when: "trying to create the second phase"
-        SessionPhase secondPhase = liveSessionService.createAndStartSecondSessionPhaseForLiveSession(user, liveSession)
+        liveSessionService.createAndStartSessionPhaseForLiveSessionWithRank(user, liveSession,2)
 
         then: "a precondition is violated"
         thrown(PreconditionViolation)
@@ -76,7 +76,7 @@ class LiveSessionServiceIntegrationSpec extends Specification {
         firstPhase.stop()
 
         and:"trying again"
-        secondPhase = liveSessionService.createAndStartSecondSessionPhaseForLiveSession(user, liveSession)
+        SessionPhase secondPhase = liveSessionService.createAndStartSessionPhaseForLiveSessionWithRank(user, liveSession,2)
 
         then: "the second phase is created without errors"
         !secondPhase.hasErrors()
@@ -92,7 +92,7 @@ class LiveSessionServiceIntegrationSpec extends Specification {
         SessionPhase firstPhase = liveSessionService.createAndStartFirstSessionPhaseForLiveSession(user,liveSession)
 
         when: "trying to create the second phase"
-        SessionPhase thirdPhase = liveSessionService.createAndStartThirdSessionPhaseForLiveSession(user, liveSession)
+        SessionPhase thirdPhase = liveSessionService.createAndStartSessionPhaseForLiveSessionWithRank(user, liveSession,3)
 
         then: "a precondition is violated"
         thrown(PreconditionViolation)
@@ -101,7 +101,7 @@ class LiveSessionServiceIntegrationSpec extends Specification {
         firstPhase.stop()
 
         and:"trying again"
-        thirdPhase = liveSessionService.createAndStartThirdSessionPhaseForLiveSession(user, liveSession)
+        thirdPhase = liveSessionService.createAndStartSessionPhaseForLiveSessionWithRank(user, liveSession,3)
 
         then: "the second phase is created without errors"
         !thirdPhase.hasErrors()
@@ -155,7 +155,7 @@ class LiveSessionServiceIntegrationSpec extends Specification {
 
         when: "creating the second phase"
         firstPhase.stop()
-        SessionPhase secondPhase = liveSessionService.createAndStartSecondSessionPhaseForLiveSession(user,liveSession)
+        SessionPhase secondPhase = liveSessionService.createAndStartSessionPhaseForLiveSessionWithRank(user,liveSession,2)
 
         and:"creating In the second phase the explanation is empty"
         response = liveSessionService.createResponseForSessionPhaseAndUser(secondPhase,learner,'[["1"]]',"",100)

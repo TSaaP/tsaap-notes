@@ -154,6 +154,41 @@ class LiveSessionIntegrationSpec extends Specification {
 
     }
 
+    void "test the construction of the result matrix in a session phase"() {
+        given:"a started live session for a note"
+        def note2 = noteService.addNote(bootstrapTestService.teacherJeanne,"::a question:: What ? {~bad1 =good1 ~bad2 ~bad3}")
+        LiveSession liveSession = liveSessionService.createLiveSessionForNote(bootstrapTestService.teacherJeanne,note2)
+        SessionPhase sessionPhase = liveSessionService.createAndStartFirstSessionPhaseForLiveSession(bootstrapTestService.teacherJeanne,liveSession)
+
+        and:"several live session responses"
+        liveSessionService.createResponseForSessionPhaseAndUser(sessionPhase,bootstrapTestService.learnerMary,'[["1"]]',null,1)
+        liveSessionService.createResponseForSessionPhaseAndUser(sessionPhase,bootstrapTestService.learnerPaul,'[["1"]]',null,1)
+        liveSessionService.createResponseForSessionPhaseAndUser(sessionPhase,bootstrapTestService.learners[0],'[["1"]]',null,1)
+        liveSessionService.createResponseForSessionPhaseAndUser(sessionPhase,bootstrapTestService.learners[1],'[["1"]]',null,1)
+        liveSessionService.createResponseForSessionPhaseAndUser(sessionPhase,bootstrapTestService.learners[2],'[["1"]]',null,1)
+        liveSessionService.createResponseForSessionPhaseAndUser(sessionPhase,bootstrapTestService.learners[3],'[["1"]]',null,1)
+        liveSessionService.createResponseForSessionPhaseAndUser(sessionPhase,bootstrapTestService.learners[4],'[["3"]]',null,1)
+        liveSessionService.createResponseForSessionPhaseAndUser(sessionPhase,bootstrapTestService.learners[5],'[["3"]]',null,1)
+        liveSessionService.createResponseForSessionPhaseAndUser(sessionPhase,bootstrapTestService.learners[6],'[["3"]]',null,1)
+        liveSessionService.createResponseForSessionPhaseAndUser(sessionPhase,bootstrapTestService.learners[7],'[["0"]]',null,1)
+        liveSessionService.createResponseForSessionPhaseAndUser(sessionPhase,bootstrapTestService.learners[8],'[[]]',null,1)
+        liveSessionService.createResponseForSessionPhaseAndUser(sessionPhase,bootstrapTestService.learners[9],'[[]]',null,1)
+
+
+        when:"calculating the matrix "
+        def matrix = sessionPhase.buildResultMatrix()
+
+        then:"the given matrix is correctly set"
+        matrix.size() == 1
+        def currentMap = matrix[0]
+        currentMap["good1"] == 50
+        currentMap["bad2"] == 0
+        currentMap["bad3"] == (3/12)*100
+        currentMap["bad1"] == (1/12)*100
+        currentMap[GiftQuestionService.NO_RESPONSE] == (2/12)*100
+
+    }
+
     void "test the delete of a live session with responses"() {
         given:"a live session with at least one response"
         def liveSession = liveSessionService.createAndStartLiveSessionForNote(bootstrapTestService.learnerPaul,note)
@@ -168,6 +203,25 @@ class LiveSessionIntegrationSpec extends Specification {
 
         and:"the live session is deleted"
         !LiveSession.findByNote(note)
+    }
+
+    void "test the delete of a live session with phase and responses"() {
+        given:"a live session with at least one response"
+        def liveSession = liveSessionService.createLiveSessionForNote(bootstrapTestService.learnerPaul,note)
+        def phase = liveSessionService.createAndStartFirstSessionPhaseForLiveSession(bootstrapTestService.learnerPaul,liveSession)
+        def explanationId = liveSessionService.createResponseForSessionPhaseAndUser(phase,bootstrapTestService.learnerMary,'[["1"]]',"an explanation",1).explanationId
+
+        when:"deleting the live session"
+        liveSessionService.deleteLiveSessionByAuthor(liveSession,bootstrapTestService.learnerPaul)
+
+        then:"the responses are deleted"
+        !LiveSessionResponse.findAllByLiveSession(liveSession)
+        !LiveSessionResponse.findAllBySessionPhase(phase)
+
+        and:"the live session and the phase is deleted"
+        !SessionPhase.findByLiveSession(liveSession)
+        !LiveSession.findByNote(note)
+        //!Note.findById(explanationId)
     }
 
     void "test the delete of a note that is a question with live sessions"() {

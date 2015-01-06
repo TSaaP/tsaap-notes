@@ -2,7 +2,6 @@ package org.tsaap.questions
 
 import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
-import grails.web.RequestParameter
 import org.tsaap.notes.Note
 
 
@@ -45,6 +44,58 @@ class QuestionController {
         def sessionStatus = liveSession ? liveSession.status : LiveSessionStatus.NotStarted.name()
         def userType = currentUser == note.author ? 'author' : 'user'
         render(template: "/questions/${userType}/${sessionStatus}/detail", model: [note: note, liveSession: liveSession, user: currentUser])
+    }
+
+
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def startNPhasesLiveSession() {
+        def currentUser = springSecurityService.currentUser
+        def note = Note.get(params.noteId)
+        def liveSession
+        try {
+            liveSession = LiveSession.get(params.liveSessId)
+        } catch (Exception e) {
+            liveSession = liveSessionService.createLiveSessionForNote(currentUser, note)
+        }
+        SessionPhase sessionPhase = liveSessionService.createAndStartFirstSessionPhaseForLiveSession(currentUser,liveSession)
+        render(template: "/questions/author/Phase1/${sessionPhase.status}/detail", model: [note: note, sessionPhase: sessionPhase, user: currentUser])
+    }
+
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def startPhase() {
+        def currentUser = springSecurityService.currentUser
+        def note = Note.get(params.noteId)
+        Integer rank = params.phaseRank as Integer
+        def liveSession = LiveSession.get(params.liveSessId)
+        def sessionPhase = liveSessionService.createAndStartSessionPhaseForLiveSessionWithRank(currentUser,liveSession,rank)
+        render(template: "/questions/author/Phase${sessionPhase.rank}/${sessionPhase.status}/detail", model: [note: note, sessionPhase: sessionPhase, user: currentUser])
+    }
+
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def stopPhase() {
+        def currentUser = springSecurityService.currentUser
+        def note = Note.get(params.noteId)
+        def phase = SessionPhase.get(params.phaseId)
+        phase.stop()
+        if (phase.stopLiveSessionWhenIsStopped() && !phase.liveSession.isStopped()) {
+            phase.liveSession.stop(false)
+        }
+        if (phase.hasErrors()) {
+            log.error(phase.errors.allErrors.toString())
+        }
+        render(template: "/questions/author/Phase${phase.rank}/${phase.status}/detail", model: [note: note, sessionPhase: phase, user: currentUser])
+    }
+
+
+
+
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def refreshPhase() {
+        def currentUser = springSecurityService.currentUser
+        def note = Note.get(params.noteId)
+        def phase = SessionPhase.get(params.phaseId)
+        def userType = currentUser == note.author ? 'author' : 'user'
+        render(template: "/questions/${userType}/Phase${phase.rank}/${phase.status}/detail", model: [note: note, sessionPhase: phase, user: currentUser])
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])

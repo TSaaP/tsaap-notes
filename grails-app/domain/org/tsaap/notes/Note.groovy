@@ -18,6 +18,7 @@ package org.tsaap.notes
 
 import org.tsaap.directory.User
 import org.tsaap.questions.LiveSession
+import org.tsaap.questions.LiveSessionResponse
 import org.tsaap.questions.Question
 import org.tsaap.questions.impl.gift.GiftQuestionService
 
@@ -30,6 +31,7 @@ class Note {
 
     String content
     Integer score = 0
+    Double grade
 
     static hasMany = [bookmarks: Bookmark]
 
@@ -39,6 +41,7 @@ class Note {
         parentNote nullable: true
         bookmarks nullable: true
         content maxSize: 560
+        grade nullable: true
     }
 
     static mapping = {

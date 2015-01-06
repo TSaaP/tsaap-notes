@@ -4,18 +4,19 @@ import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 import org.gcontracts.annotations.Requires
 import org.tsaap.directory.User
-import org.tsaap.notes.Note
-import org.tsaap.questions.impl.gift.GiftQuestionService
 
-class LiveSession {
+class SessionPhase {
+
+    public static final int MAX_RANK = 3
 
     Date dateCreated
     String status = LiveSessionStatus.NotStarted.name()
     Date startDate
     Date endDate
     String resultMatrixAsJson
+    Integer rank
 
-    Note note
+    LiveSession liveSession
 
     static constraints = {
         status inList: LiveSessionStatus.values()*.name()
@@ -24,32 +25,33 @@ class LiveSession {
         resultMatrixAsJson nullable: true
     }
 
+
     /**
-     * Flag to indicate if the live session is not started
-     * @return true if the live session is not started,false otherwise
+     * Flag to indicate if the phase is not started
+     * @return true if the phase is not started,false otherwise
      */
     boolean isNotStarted() {
         status == LiveSessionStatus.NotStarted.name()
     }
 
     /**
-     * Flag to indicate if the live session is started
-     * @return true if the live session is started,false otherwise
+     * Flag to indicate if the phase is started
+     * @return true if the phase is started,false otherwise
      */
     boolean isStarted() {
         status == LiveSessionStatus.Started.name()
     }
 
     /**
-     * Flag to indicate if the live session is stopped
-     * @return true if the live session is stopped,false otherwise
+     * Flag to indicate if the phase is stopped
+     * @return true if the phase is stopped,false otherwise
      */
     boolean isStopped() {
         status == LiveSessionStatus.Ended.name()
     }
 
     /**
-     * Start the current live session
+     * Start the current phase
      */
     @Requires({ isNotStarted() })
     def start() {
@@ -59,14 +61,14 @@ class LiveSession {
     }
 
     /**
-     * Stop the current live session
+     * Stop the current phase
      */
     @Requires({ isStarted() })
     def stop(boolean shouldBuildResultMatrix = true) {
         status = LiveSessionStatus.Ended.name()
         endDate = new Date()
         if (shouldBuildResultMatrix) {
-            updateResultMatrixAsJson()
+           updateResultMatrixAsJson()
         }
         save(flush: true)
     }
@@ -78,12 +80,12 @@ class LiveSession {
     }
 
     /**
-     * Get the response of the current live session for a given user
+     * Get the response of the current session phase for a given user
      * @param user the given user
      * @return the live session response if it exists
      */
     LiveSessionResponse getResponseForUser(User user) {
-        LiveSessionResponse.findByLiveSessionAndUser(this, user)
+        LiveSessionResponse.findBySessionPhaseAndUser(this, user)
     }
 
     /**
@@ -91,7 +93,7 @@ class LiveSession {
      * @return the count of responses
      */
     Integer responseCount() {
-        LiveSessionResponse.countByLiveSession(this)
+        LiveSessionResponse.countBySessionPhase(this)
     }
 
     /**
@@ -115,39 +117,14 @@ class LiveSession {
      * @return the result matrix
      */
     List<Map<String, Float>> buildResultMatrix() {
-        def responses = LiveSessionResponse.findAllByLiveSession(this)
-        Question question = this.note.question
+        def responses = LiveSessionResponse.findAllBySessionPhase(this)
+        Question question = this.liveSession.note.question
         resultMatrixService.buildResultMatrixForQuestionAndResponses(question,responses)
     }
 
-    /**
-     *
-     * @return true if the current live session has one started session phase
-     */
-    boolean hasStartedSessionPhase() {
-        SessionPhase.findByLiveSessionAndStatus(this,LiveSessionStatus.Started.name())
+    boolean stopLiveSessionWhenIsStopped() {
+        rank == MAX_RANK
     }
 
-    /**
-     *
-     * @return the current phase if any
-     */
-    SessionPhase findCurrentPhase() {
-        def phases = SessionPhase.findAllByLiveSession(this,[sort: "rank", order: "desc"])
-        def res = null
-        if (!phases.isEmpty()) {
-            if (phases.first().rank <= SessionPhase.MAX_RANK) {
-                res = phases.first()
-            }
-        }
-        res
-    }
-
-    static transients = ['resultMatrix', 'resultMatrixService']
-}
-
-enum LiveSessionStatus {
-    NotStarted,
-    Started,
-    Ended
+    static transients = ['resultMatrix', 'resultMatrixService','MAX_RANK']
 }

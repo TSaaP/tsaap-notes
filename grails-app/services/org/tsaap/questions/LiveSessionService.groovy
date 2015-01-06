@@ -6,10 +6,13 @@ import org.tsaap.directory.User
 import org.tsaap.notes.Bookmark
 import org.tsaap.notes.Note
 import org.tsaap.notes.NoteMention
+import org.tsaap.notes.NoteService
 import org.tsaap.notes.NoteTag
 
 @Transactional
 class LiveSessionService {
+
+    NoteService noteService
 
     /**
      * Create a live session for a corresponding note
@@ -20,7 +23,8 @@ class LiveSessionService {
     @Requires({user == note.author && note.isAQuestion() && !note.activeLiveSession})
     LiveSession createLiveSessionForNote(User user, Note note) {
         LiveSession liveSession = new LiveSession(note:note)
-        liveSession.save()
+        liveSession.save(flush: true)
+        note.liveSession = liveSession
         liveSession
     }
 
@@ -43,7 +47,10 @@ class LiveSessionService {
      */
     @Requires({ liveSession.isStarted() && !liveSession.isStopped() && !liveSession.getResponseForUser(user) })
     LiveSessionResponse createResponseForLiveSessionAndUser(LiveSession liveSession,User user, String value) {
-        LiveSessionResponse liveSessionResponse = new LiveSessionResponse(liveSession:liveSession,user: user,answerListAsString: value)
+        LiveSessionResponse liveSessionResponse = new LiveSessionResponse(
+                liveSession:liveSession,
+                user: user,
+                answerListAsString: value)
         liveSessionResponse.save()
         liveSessionResponse
     }
@@ -61,8 +68,72 @@ class LiveSessionService {
             liveSession == liveSession
         }
         query.deleteAll()
-        // finally delete notes
+        // delete session phases if any
+        def query2 = SessionPhase.where {
+            liveSession == liveSession
+        }
+        query2.deleteAll()
+        // finally delete the live session
         liveSession.delete()
+    }
+
+    /**
+     * Create a first phase for a live session
+     * @param user the user of the session
+     * @param liveSession the live session
+     * @return the first phase
+     */
+    @Requires({user == liveSession.note.author && !liveSession.hasStartedSessionPhase()})
+    SessionPhase createAndStartFirstSessionPhaseForLiveSession(User user, LiveSession liveSession) {
+        if (liveSession.isNotStarted()) {
+            liveSession.start()
+        }
+        createSessionPhaseForLiveSessionWithRank(liveSession,1).start()
+    }
+
+    /**
+     * Create a third phase for a live session
+     * @param user the user of the session
+     * @param liveSession the live session
+     * @return the third phase
+     */
+    @Requires({user == liveSession.note.author && !liveSession.hasStartedSessionPhase()})
+    SessionPhase createAndStartSessionPhaseForLiveSessionWithRank(User user, LiveSession liveSession,Integer rank) {
+        createSessionPhaseForLiveSessionWithRank(liveSession,rank).start()
+    }
+
+    private SessionPhase createSessionPhaseForLiveSessionWithRank(LiveSession liveSession, Integer rank) {
+        SessionPhase sessionPhase = new SessionPhase(liveSession: liveSession, rank: rank)
+        sessionPhase.save(flush: true)
+        sessionPhase
+    }
+
+    /**
+     * Create a live session response for a given session phase and  a given user
+     * @param session phase the given live session
+     * @param user the given user
+     * @param value the text value of the response
+     * @param explanation the given explanation for the given response
+     * @param confidenceDegree the confidence degree given by the answerer
+     * @return the live session response
+     */
+    @Requires({ sessionPhase.isStarted() && !sessionPhase.isStopped() && !sessionPhase.getResponseForUser(user) })
+    LiveSessionResponse createResponseForSessionPhaseAndUser(SessionPhase sessionPhase,User user, String value,
+                                                             String explanation, Integer confidenceDegree) {
+        LiveSession liveSession = sessionPhase.liveSession
+        LiveSessionResponse liveSessionResponse = new LiveSessionResponse(
+                liveSession:liveSession,
+                sessionPhase: sessionPhase,
+                user: user,
+                answerListAsString: value,
+                confidenceDegree: confidenceDegree
+        )
+        Note note = liveSession.note
+        if (explanation) {
+            liveSessionResponse.explanation = noteService.addNote(user,explanation,note.context,note.fragmentTag,note)
+        }
+        liveSessionResponse.save()
+        liveSessionResponse
     }
 
 }

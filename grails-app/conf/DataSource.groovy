@@ -36,22 +36,15 @@ environments {
   }
   test {
     dataSource {
-      pooled = true
-      driverClassName = "org.h2.Driver"
-      username = "sa"
-      password = ""
-      url = "jdbc:h2:mem:testDb;MVCC=TRUE;LOCK_TIMEOUT=10000"
+      driverClassName = "com.mysql.jdbc.Driver"
+      dialect = "org.hibernate.dialect.MySQL5InnoDBDialect"
+      url = "jdbc:mysql://localhost/tsaap-notes-test"
+      username = "tsaap"
+      password = "tsaap"
+      logSql = true
     }
   }
-  demo {
-    dataSource {
-      pooled = true
-      driverClassName = "org.h2.Driver"
-      username = "sa"
-      password = ""
-      url = "jdbc:h2:mem:testDb;MVCC=TRUE;LOCK_TIMEOUT=10000"
-    }
-  }
+
   production {
     dataSource {
       driverClassName = "com.mysql.jdbc.Driver"

@@ -1,6 +1,7 @@
 package org.tsaap.questions
 
 import org.tsaap.directory.User
+import org.tsaap.notes.Note
 import org.tsaap.questions.impl.gift.GiftQuestionService
 
 class LiveSessionResponse {
@@ -9,10 +10,17 @@ class LiveSessionResponse {
     User user
     String answerListAsString
     Float percentCredit = null
+    Integer confidenceDegree
+
+    SessionPhase sessionPhase
+    Note explanation
 
     static constraints = {
         answerListAsString nullable: true, blank: false, matches: '\\[,*(,?\\[".*"(,".*")*\\]|,?\\[\\])*,*\\]'
         percentCredit nullable: true
+        confidenceDegree nullable: true
+        sessionPhase nullable: true
+        explanation nullable: true
     }
 
     static transients = ['giftQuestionService', 'userResponse']

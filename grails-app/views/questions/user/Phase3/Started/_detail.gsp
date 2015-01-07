@@ -17,19 +17,21 @@
 
 <%@ page import="org.tsaap.questions.TextBlock" %>
 <g:set var="question" value="${note.question}"/>
-<g:set var="resultMatrix" value="${sessionPhase.resultMatrix}"/>
+<g:set var="secondPhase" value="${sessionPhase.liveSession.findSecondPhase()}"/>
+<g:set var="resultMatrix" value="${secondPhase.resultMatrix}"/>
+<g:set var="sessionResponse" value="${secondPhase.getResponseForUser(user)}"/>
 <g:set var="indexAnsBlock" value="${0}"/>
 <div class="question" id="question_${note.id}">
-    <p>Results <strong>${question.title}</strong> - (response count : ${sessionPhase.responseCount()})</p>
+    <p>Results <strong>${question.title}</strong> - (response count : ${secondPhase.responseCount()})</p>
     <g:each var="block" in="${question.blockList}">
         <g:if test="${block instanceof TextBlock}">
             <p>${block.text}</p>
         </g:if>
         <g:else>
-            <g:render template="/questions/${question.questionType.name()}AnswerBlockResult" model="[block: block,resultMap:resultMatrix[indexAnsBlock++]]"/>
+            <g:render template="/questions/${question.questionType.name()}AnswerBlockResult" model="[block: block,resultMap:resultMatrix[indexAnsBlock],userAnswerBlock:sessionResponse?.userResponse?.userAnswerBlockList?.get(indexAnsBlock++)]"/>
         </g:else>
     </g:each>
-    <g:remoteLink action="stopPhase" controller="question" params="[phaseId:sessionPhase.id,noteId:note.id]"
-                  class="btn btn-warning btn-xs" update="question_${note.id}" onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])">
-        <span class="glyphicon glyphicon-stop"></span> Stop third phase</g:remoteLink>
 </div>
+<g:if test="${sessionResponse}">
+    Your score : ${sessionResponse.percentCredit}%
+</g:if>

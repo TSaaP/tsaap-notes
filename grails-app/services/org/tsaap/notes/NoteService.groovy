@@ -43,14 +43,17 @@ class NoteService {
                  String content,
                  Context context = null,
                  Tag fragmentTag = null,
-                 Note parentNote = null) {
+                 Note parentNote = null,
+                 NoteKind noteKind = NoteKind.STANDARD) {
 
         // create the note
         Note theNote = new Note(author: author,
                 content: content,
                 context: context,
                 fragmentTag: fragmentTag,
-                parentNote: parentNote)
+                parentNote: parentNote,
+                kind: noteKind.ordinal()
+        )
         // save the note
         theNote.save()
 
@@ -188,12 +191,29 @@ class NoteService {
             all = false
         }
         if (all && !inFragmentTag) { // we have a context and user want all notes on the context
-            return new DefaultPagedResultList(list: Note.findAllByContext(inContext, paginationAndSorting),
-                    totalCount: Note.countByContext(inContext, paginationAndSorting))
+            return new DefaultPagedResultList(list: Note.findAllByContextAndKindInList(
+                    inContext,[NoteKind.STANDARD.ordinal(),NoteKind.QUESTION.ordinal()],
+                    paginationAndSorting
+                    ),
+                    totalCount: Note.countByContextAndKindInList(
+                            inContext,
+                            [NoteKind.STANDARD.ordinal(),
+                             NoteKind.QUESTION.ordinal()],
+                            paginationAndSorting)
+                    )
         }
         if (all && inFragmentTag) {
-            return new DefaultPagedResultList(list: Note.findAllByContextAndFragmentTag(inContext, inFragmentTag, paginationAndSorting),
-                    totalCount: Note.countByContextAndFragmentTag(inContext, inFragmentTag, paginationAndSorting))
+            return new DefaultPagedResultList(list: Note.findAllByContextAndFragmentTagAndKindInList(
+                    inContext,
+                    inFragmentTag,
+                    [NoteKind.STANDARD.ordinal(),NoteKind.QUESTION.ordinal()],
+                    paginationAndSorting
+                    ),
+                    totalCount: Note.countByContextAndFragmentTagAndKindInList(
+                            inContext,
+                            inFragmentTag,
+                            [NoteKind.STANDARD.ordinal(),NoteKind.QUESTION.ordinal()],
+                            paginationAndSorting))
         }
         // if not all, we use a criteria
         def criteria = Note.createCriteria()
@@ -214,6 +234,7 @@ class NoteService {
                     eq 'bmks.user', inUser
                 }
             }
+            inList 'kind',[NoteKind.STANDARD.ordinal(),NoteKind.QUESTION.ordinal()]
             order paginationAndSorting.sort, paginationAndSorting.order
         }
         new DefaultPagedResultList(list: results.list, totalCount: results.totalCount)

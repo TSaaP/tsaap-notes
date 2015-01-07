@@ -33,6 +33,8 @@ class Note {
     Integer score = 0
     Double grade
 
+    Integer kind = NoteKind.STANDARD.ordinal()
+
     static hasMany = [bookmarks: Bookmark]
 
     static constraints = {
@@ -83,6 +85,9 @@ class Note {
      * @return true if the note is an interactive question
      */
     boolean isAQuestion() {
+        if (kind == NoteKind.QUESTION.ordinal()) {
+            return true
+        }
         this.getQuestion() != null
     }
 
@@ -96,6 +101,8 @@ class Note {
         if (content?.startsWith("::") && !question) {
             try {
                 question = giftQuestionService.getQuestionFromGiftText(content)
+                kind = NoteKind.QUESTION.ordinal()
+                save()
             } catch (Exception e) {
                 log.error(e.message)
             }
@@ -155,4 +162,10 @@ class Note {
         score = score + 1
         score
     }
+}
+
+enum NoteKind {
+    STANDARD,
+    QUESTION,
+    EXPLANATION
 }

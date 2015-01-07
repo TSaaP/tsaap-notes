@@ -41,9 +41,14 @@ class QuestionController {
         def currentUser = springSecurityService.currentUser
         def note = Note.get(params.noteId)
         def liveSession = note.liveSession
-        def sessionStatus = liveSession ? liveSession.status : LiveSessionStatus.NotStarted.name()
+        def phase = liveSession ? liveSession.findCurrentPhase() : null
         def userType = currentUser == note.author ? 'author' : 'user'
-        render(template: "/questions/${userType}/${sessionStatus}/detail", model: [note: note, liveSession: liveSession, user: currentUser])
+        if (phase) {
+            render(template: "/questions/${userType}/Phase${phase.rank}/${phase.status}/detail", model: [note: note, sessionPhase: phase, user: currentUser])
+        } else {
+            def sessionStatus = liveSession ? liveSession.status : LiveSessionStatus.NotStarted.name()
+            render(template: "/questions/${userType}/${sessionStatus}/detail", model: [note: note, liveSession: liveSession, user: currentUser])
+        }
     }
 
 
@@ -86,9 +91,6 @@ class QuestionController {
         render(template: "/questions/author/Phase${phase.rank}/${phase.status}/detail", model: [note: note, sessionPhase: phase, user: currentUser])
     }
 
-
-
-
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def refreshPhase() {
         def currentUser = springSecurityService.currentUser
@@ -103,7 +105,6 @@ class QuestionController {
         def currentUser = springSecurityService.currentUser
         def note = Note.get(answersWrapper.noteId)
         def liveSession = LiveSession.get(answersWrapper.liveSessId)
-        println params
         StringBuilder answersAsString = new StringBuilder("[[")
         answersWrapper.answers.each { answer ->
             if (answer) {
@@ -124,6 +125,35 @@ class QuestionController {
         render(template: "/questions/${userType}/${liveSession.status}/detail", model: [note: note, liveSession: liveSession, user: currentUser])
     }
 
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def submitResponseInAPhase(AnswersWrapperPhaseCommand answersWrapper) {
+        def currentUser = springSecurityService.currentUser
+        def note = Note.get(answersWrapper.noteId)
+        def phase = SessionPhase.get(answersWrapper.phaseId)
+        StringBuilder answersAsString = new StringBuilder("[[")
+        answersWrapper.answers.each { answer ->
+            if (answer) {
+                def answerAsString = "\"${answer}\","
+                answersAsString.append(answerAsString)
+            }
+        }
+        if (answersAsString.length() > 2) {
+            answersAsString.deleteCharAt(answersAsString.length() - 1)
+        }
+        answersAsString.append("]]")
+
+        def response = liveSessionService.createResponseForSessionPhaseAndUser(
+                phase,
+                currentUser,
+                answersAsString.toString(),
+                answersWrapper.explanation,
+                answersWrapper.confidenceDegree)
+        if (response.hasErrors()) {
+            log.error(response.errors.allErrors.toString())
+        }
+        def userType = currentUser == note.author ? 'author' : 'user'
+        render(template: "/questions/${userType}/Phase${phase.rank}/${phase.status}/detail", model: [note: note, sessionPhase: phase, user: currentUser])
+    }
 
 }
 
@@ -131,4 +161,12 @@ class AnswersWrapperCommand {
     Long noteId
     Long liveSessId
     List<String> answers
+}
+
+class AnswersWrapperPhaseCommand {
+    Long noteId
+    Long phaseId
+    List<String> answers
+    String explanation
+    Integer confidenceDegree
 }

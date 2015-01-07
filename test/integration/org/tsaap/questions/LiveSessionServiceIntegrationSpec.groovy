@@ -20,6 +20,7 @@ import org.gcontracts.PreconditionViolation
 import org.tsaap.BootstrapTestService
 import org.tsaap.directory.User
 import org.tsaap.notes.Note
+import org.tsaap.notes.NoteKind
 import org.tsaap.notes.NoteService
 import org.tsaap.questions.impl.gift.GiftQuestionService
 import spock.lang.Specification
@@ -127,6 +128,7 @@ class LiveSessionServiceIntegrationSpec extends Specification {
         response.liveSession == liveSession
         response.sessionPhase == firstPhase
         response.explanation.content == "an explanation"
+        response.explanation.kind == NoteKind.EXPLANATION.ordinal()
         response.confidenceDegree == 100
 
         when:"trying again"

@@ -21,6 +21,6 @@
 <div class="question" id="question_${note.id}">
     <div class="alert alert-warning">
         Waiting for phase 2 to start for question &quot;<strong>${question.title}</strong>&quot;...
-        <g:remoteLink action="refreshPhase" controller="question" params="[noteId:note.id]" title="Refresh" update="question_${note.id}" onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"><span class="glyphicon glyphicon-refresh">&nbsp;</span></g:remoteLink>
+        <g:remoteLink action="refresh" controller="question" params="[noteId:note.id]" title="Refresh" update="question_${note.id}" onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"><span class="glyphicon glyphicon-refresh">&nbsp;</span></g:remoteLink>
     </div>
 </div>

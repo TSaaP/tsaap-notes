@@ -4,6 +4,7 @@ import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 import org.gcontracts.annotations.Requires
 import org.tsaap.directory.User
+import org.tsaap.ia.conflict.SocioCognitiveConflictService
 
 class SessionPhase {
 
@@ -122,9 +123,26 @@ class SessionPhase {
         resultMatrixService.buildResultMatrixForQuestionAndResponses(question,responses)
     }
 
+    /**
+     *
+     * @return true if have to stop the live session when this phase is stopped
+     */
     boolean stopLiveSessionWhenIsStopped() {
         rank == MAX_RANK
     }
 
-    static transients = ['resultMatrix', 'resultMatrixService','MAX_RANK']
+    SocioCognitiveConflictService socioCognitiveConflictService
+
+    /**
+     *
+     * @param response the response to find the conflict response
+     * @return the conflict response
+     */
+    LiveSessionResponse findConflictResponseForResponse(LiveSessionResponse response) {
+        def responseList = LiveSessionResponse.findAllBySessionPhase(this)
+        socioCognitiveConflictService.findResponseInResponseListWithBestConflictWithResponse(
+                responseList,response)
+    }
+
+    static transients = ['resultMatrix', 'resultMatrixService','MAX_RANK','socioCognitiveConflictService']
 }

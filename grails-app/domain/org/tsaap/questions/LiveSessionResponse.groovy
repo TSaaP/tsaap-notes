@@ -34,7 +34,7 @@ class LiveSessionResponse {
      * @return the user response
      */
     UserResponse getUserResponse() {
-        if (percentCredit == null) {
+        if (userResponse == null) {
             def answerBlockTextList
             def question = liveSession.note.question
             try {
@@ -50,8 +50,9 @@ class LiveSessionResponse {
             }
 
             userResponse = giftQuestionService.createUserResponseForQuestionAndAnswerBlockList(user.username, question, answerBlockTextList)
-            percentCredit = userResponse.evaluatePercentCredit()
-
+            if (percentCredit == null) {
+                percentCredit = userResponse.evaluatePercentCredit()
+            }
         }
         userResponse
     }

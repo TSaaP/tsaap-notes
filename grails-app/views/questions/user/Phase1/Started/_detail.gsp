@@ -42,7 +42,7 @@
             </g:each>
             <p>Give an explanation to your choice</p>
             <g:textArea class="form-control note-editable-content" rows="3" name="explanation"/>
-            <p>What is the degree of confidence in your response (1: not confindent to 5:very confident) ? <g:select name="confidenceDegree" from="[1,2,3,4,5]"/></p>
+            <p>What is the degree of confidence in your response (1: not confident to 5:very confident) ? <g:select name="confidenceDegree" from="[1,2,3,4,5]"/></p>
             <g:submitToRemote action="submitResponseInAPhase" controller="question" update="question_${note.id}"
                               class="btn btn-primary btn-xs" value="Submit" onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"/>
         </g:form>

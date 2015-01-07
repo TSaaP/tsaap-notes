@@ -14,27 +14,47 @@
   - limitations under the License.
   --}%
 
-
-
-<%@ page import="org.tsaap.questions.TextBlock" %>
+<%@ page import="org.tsaap.questions.LiveSessionResponse; org.tsaap.questions.TextBlock" %>
 <g:set var="question" value="${note.question}"/>
-<div class="question" id="question_${note.id}">
 
-        <p><strong>${question.title}</strong></p>
-        <g:each var="block" in="${question.blockList}">
-            <p>
-                <g:if test="${block instanceof TextBlock}">
-                    ${block.text}
-                </g:if>
-                <g:else>
-                    <g:render template="/questions/${question.questionType.name()}AnswerBlock" model="[block: block]"/>
-                </g:else>
-            </p>
-        </g:each>
-    <g:remoteLink action="stopPhase" controller="question" params="[phaseId:sessionPhase.id,noteId:note.id]"
-                  class="btn btn-warning btn-xs" update="question_${note.id}" onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])">
-        <span class="glyphicon glyphicon-stop"></span> Stop second phase</g:remoteLink>
-    (response count : ${sessionPhase.responseCount()} <g:remoteLink action="refreshPhase" controller="question" params="[noteId:note.id,phaseId:sessionPhase.id]" title="Refresh" update="question_${note.id}" onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])">
-    <span class="glyphicon glyphicon-refresh">&nbsp;</span></g:remoteLink>
-    )
+<div class="question" id="question_${note.id}">
+    <g:if test="${sessionPhase.getResponseForUser(user)}">
+        <div class="alert alert-success">
+            Waiting for the end of phase 2 for the question &quot;<strong>${question.title}</strong>&quot;...
+            <g:remoteLink action="refreshPhase" controller="question" params="[noteId:note.id,phaseId:sessionPhase.id]" title="Refresh" update="question_${note.id}" onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"><span class="glyphicon glyphicon-refresh">&nbsp;</span></g:remoteLink>
+            (response count :${sessionPhase.responseCount()})
+        </div>
+    </g:if>
+    <g:else>
+        <g:form >
+            <g:hiddenField name="phaseId" value="${sessionPhase.id}"/>
+            <g:hiddenField name="noteId" value="${note.id}"/>
+            <p><strong>Here is an alternative response to yours.<br/>
+            Please examine this response and feel free to change your response, explanation, confidence degree...</strong></p>
+            <p><strong>Choice(s):</strong><br/>
+                <g:each in="${altResponse.userResponse.userAnswerBlockList}" var="answerBlock">
+                    <g:each in="${answerBlock.answerList}" var="answer">
+                        ${answer}<br/>
+                    </g:each>
+                </g:each>
+            <p><strong>Explanation:</strong> <br/>${altResponse.explanation?.content}</p>
+            <hr/>
+            <p><strong>${question.title}</strong></p>
+            <g:each var="block" in="${question.blockList}">
+                <p>
+                    <g:if test="${block instanceof TextBlock}">
+                        ${block.text}
+                    </g:if>
+                    <g:else>
+                        <g:render template="/questions/${question.questionType.name()}AnswerBlock" model="[block: block]"/>
+                    </g:else>
+                </p>
+            </g:each>
+            <p>Give an explanation to your choice</p>
+            <g:textArea class="form-control note-editable-content" rows="3" name="explanation" value="${firstResponse.explanation.content}"/>
+            <p>What is the degree of confidence in your response (1: not confident to 5:very confident) ? <g:select name="confidenceDegree" from="[1,2,3,4,5]" value="${firstResponse.confidenceDegree}"/></p>
+            <g:submitToRemote action="submitResponseInAPhase" controller="question" update="question_${note.id}"
+                              class="btn btn-primary btn-xs" value="Submit" onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"/>
+        </g:form>
+    </g:else>
 </div>

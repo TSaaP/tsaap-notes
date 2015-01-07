@@ -91,9 +91,6 @@ class QuestionController {
         render(template: "/questions/author/Phase${phase.rank}/${phase.status}/detail", model: [note: note, sessionPhase: phase, user: currentUser])
     }
 
-
-
-
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def refreshPhase() {
         def currentUser = springSecurityService.currentUser

@@ -19,4 +19,11 @@ class SocioCognitiveConflictService {
         // dummy implementation
         response
     }
+
+    List<LiveSessionResponse> findAllResponseToEvaluateInResponseListForResponse(List<LiveSessionResponse> responseList,
+                                                                                 LiveSessionResponse response) {
+        // TODO : propose a real implementation
+        // dummy implementation
+        [response]
+    }
 }

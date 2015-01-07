@@ -155,6 +155,15 @@ class QuestionController {
         render(template: "/questions/${userType}/Phase${phase.rank}/${phase.status}/detail", model: [note: note, sessionPhase: phase, user: currentUser])
     }
 
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def evaluateResponses(EvaluateResponsesCommand evaluateResponsesCommand) {
+        def currentUser = springSecurityService.currentUser
+        def note = Note.get(evaluateResponsesCommand.noteId)
+        def phase = SessionPhase.get(evaluateResponsesCommand.phaseId)
+        def userType = currentUser == note.author ? 'author' : 'user'
+        render(template: "/questions/${userType}/Phase${phase.rank}/${phase.status}/detail", model: [note: note, sessionPhase: phase, user: currentUser])
+    }
+
 }
 
 class AnswersWrapperCommand {
@@ -169,4 +178,11 @@ class AnswersWrapperPhaseCommand {
     List<String> answers
     String explanation
     Integer confidenceDegree
+}
+
+class EvaluateResponsesCommand {
+    Long noteId
+    Long phaseId
+    List<Long> explanationIds
+    List<Double> grades
 }

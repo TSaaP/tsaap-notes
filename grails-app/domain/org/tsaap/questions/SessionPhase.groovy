@@ -144,5 +144,10 @@ class SessionPhase {
                 responseList,response)
     }
 
+    List<LiveSessionResponse> findAllResponsesToEvaluateForResponse(LiveSessionResponse response) {
+        def responseList = LiveSessionResponse.findAllBySessionPhase(this)
+        socioCognitiveConflictService.findAllResponseToEvaluateInResponseListForResponse(responseList,response)
+    }
+
     static transients = ['resultMatrix', 'resultMatrixService','MAX_RANK','socioCognitiveConflictService']
 }

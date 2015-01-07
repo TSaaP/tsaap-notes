@@ -162,6 +162,28 @@ class Note {
         score = score + 1
         score
     }
+
+    /**
+     * Evaluate the mean grade of a note
+     * @return the mean grade of a note
+     */
+    Double evaluateTheMeanGrade() {
+        def query = NoteGrade.where {
+            note == this
+        }.projections {
+            avg('grade')
+        }
+        query.find() as Double
+    }
+
+    /**
+     * Update the grade of the note
+     * @return
+     */
+    def updateMeanGrade() {
+        grade = evaluateTheMeanGrade()
+        save(failOnError: true)
+    }
 }
 
 enum NoteKind {

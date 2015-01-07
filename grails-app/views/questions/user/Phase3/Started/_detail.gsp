@@ -28,10 +28,27 @@
             <p>${block.text}</p>
         </g:if>
         <g:else>
-            <g:render template="/questions/${question.questionType.name()}AnswerBlockResult" model="[block: block,resultMap:resultMatrix[indexAnsBlock],userAnswerBlock:sessionResponse?.userResponse?.userAnswerBlockList?.get(indexAnsBlock++)]"/>
+            <g:render template="/questions/${question.questionType.name()}AnswerBlockResult"
+                      model="[block: block, resultMap: resultMatrix[indexAnsBlock], userAnswerBlock: sessionResponse?.userResponse?.userAnswerBlockList?.get(indexAnsBlock++)]"/>
         </g:else>
     </g:each>
 </div>
 <g:if test="${sessionResponse}">
     Your score : ${sessionResponse.percentCredit}%
+</g:if>
+<g:set var="responsesToEvaluate" value="${secondPhase.findAllResponsesToEvaluateForResponse(sessionResponse)}"/>
+<g:if test="${responsesToEvaluate}">
+
+    <hr/>
+    <p>A last work waits for you: please give a grade to the explanations given for the good answer (1: "not usefull" to 5: "very usefull").</p>
+    <g:form>
+        <g:each in="${responsesToEvaluate}" var="responseToEval" status="i">
+            <g:hiddenField name="explanationIds[$i]" value="${responseToEval?.explanation?.id}"/>
+            <p class="alert alert-info">
+                ${responseToEval?.explanation?.content} <g:select name="grades[$i]" from="[1,2,3,4,5]" style="display: block;"/>
+            </p>
+        </g:each>
+        <g:submitToRemote action="evaluateResponses" controller="question" update="question_${note.id}"
+                          class="btn btn-primary btn-xs" value="Submit" onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"/>
+    </g:form>
 </g:if>

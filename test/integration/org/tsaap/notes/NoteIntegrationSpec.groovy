@@ -85,7 +85,7 @@ class NoteIntegrationSpec extends Specification {
 
         when: "having 2 grades"
         def user2 = bootstrapTestService.learnerMary
-        noteService.gradeNotebyUser(note,user,3d)
+        noteService.gradeNotebyUser(note,user2,3d)
 
         and:"reevaluate the mean grade"
         note.updateMeanGrade()

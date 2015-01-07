@@ -17,19 +17,53 @@
 
 <%@ page import="org.tsaap.questions.TextBlock" %>
 <g:set var="question" value="${note.question}"/>
-<g:set var="resultMatrix" value="${sessionPhase.resultMatrix}"/>
+<g:set var="secondPhase" value="${sessionPhase.liveSession.findSecondPhase()}"/>
+<g:set var="resultMatrix" value="${secondPhase.resultMatrix}"/>
+<g:set var="sessionResponse" value="${secondPhase.getResponseForUser(user)}"/>
 <g:set var="indexAnsBlock" value="${0}"/>
 <div class="question" id="question_${note.id}">
-    <p>Results <strong>${question.title}</strong> - (response count : ${sessionPhase.responseCount()})</p>
+    <p>Results <strong>${question.title}</strong> - (response count : ${secondPhase.responseCount()})</p>
     <g:each var="block" in="${question.blockList}">
         <g:if test="${block instanceof TextBlock}">
             <p>${block.text}</p>
         </g:if>
         <g:else>
-            <g:render template="/questions/${question.questionType.name()}AnswerBlockResult" model="[block: block,resultMap:resultMatrix[indexAnsBlock++]]"/>
+            <g:render template="/questions/${question.questionType.name()}AnswerBlockResult"
+                      model="[block: block, resultMap: resultMatrix[indexAnsBlock], userAnswerBlock: sessionResponse?.userResponse?.userAnswerBlockList?.get(indexAnsBlock++)]"/>
         </g:else>
     </g:each>
-    <g:remoteLink action="stopPhase" controller="question" params="[phaseId:sessionPhase.id,noteId:note.id]"
-                  class="btn btn-warning btn-xs" update="question_${note.id}" onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])">
-        <span class="glyphicon glyphicon-stop"></span> Stop third phase</g:remoteLink>
+
+    <g:if test="${sessionResponse}">
+        Your score : ${sessionResponse.percentCredit}%
+    </g:if>
+    <g:set var="responsesToEvaluate" value="${secondPhase.findAllResponsesToEvaluateForResponse(sessionResponse)}"/>
+
+    <hr/>
+    <g:if test="${!responsesToEvaluate || responsesToEvaluate[0]?.explanation?.hasBeenAlreadyEvaluatedByUser(user)}">
+        <div class="alert alert-success">
+            Waiting for the end of phase 3 for the question &quot;<strong>${question.title}</strong>&quot;...
+            <g:remoteLink action="refreshPhase" controller="question"
+                          params="[noteId: note.id, phaseId: sessionPhase.id]"
+                          title="Refresh" update="question_${note.id}"
+                          onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"><span
+                    class="glyphicon glyphicon-refresh">&nbsp;</span></g:remoteLink>
+        </div>
+    </g:if>
+    <g:else>
+        <p>A last work waits for you: please give a grade to the explanations given for the good answer (1: "not usefull" to 5: "very usefull").</p>
+        <g:form>
+            <g:hiddenField name="noteId" value="${note.id}"/>
+            <g:hiddenField name="phaseId" value="${sessionPhase.id}"/>
+            <g:each in="${responsesToEvaluate}" var="responseToEval" status="i">
+                <g:hiddenField name="explanationIds[${i}]" value="${responseToEval?.explanation?.id}"/>
+                <p class="alert alert-info">
+                    ${responseToEval?.explanation?.content} <g:select name="grades[${i}]" from="[1, 2, 3, 4, 5]"
+                                                                      style="display: block;"/>
+                </p>
+            </g:each>
+            <g:submitToRemote action="evaluateResponses" controller="question" update="question_${note.id}"
+                              class="btn btn-primary btn-xs" value="Submit"
+                              onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"/>
+        </g:form>
+    </g:else>
 </div>

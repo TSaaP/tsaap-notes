@@ -63,5 +63,37 @@ class NoteIntegrationSpec extends Specification {
 
     }
 
+    void "test the evaluation of the grade of a note"() {
+        given: "a note without grade"
+        Note note = noteService.addNote(bootstrapTestService.learnerMary,"not a question")
+
+        when: "trying to update the grade"
+        note.updateMeanGrade()
+
+        then: "the grade is null"
+        note.grade == null
+
+        when:"adding one grade"
+        def user = bootstrapTestService.learnerPaul
+        noteService.gradeNotebyUser(note,user,2d)
+
+        and:"reevaluate the mean grade"
+        note.updateMeanGrade()
+
+        then:"the mean grade is equal to the unique grade"
+        note.grade == 2d
+
+        when: "having 2 grades"
+        def user2 = bootstrapTestService.learnerMary
+        noteService.gradeNotebyUser(note,user2,3d)
+
+        and:"reevaluate the mean grade"
+        note.updateMeanGrade()
+
+        then:"the mean grade is effectively the mean"
+        note.grade == 2.5d
+
+    }
+
 
 }

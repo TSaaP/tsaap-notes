@@ -129,6 +129,21 @@ class NoteService {
     }
 
     /**
+     * mark as liked note a note by a user
+     * @param theNote the note to bookmarked
+     * @param theUser the bookmarker
+     * @return the bookmark
+     */
+    @Requires({ theNote && theUser })
+    @Transactional
+    def gradeNotebyUser(Note theNote, User theUser, Double theGrade) {
+
+        NoteGrade grade = NoteGrade.findOrCreateByNoteAndUser(theNote,theUser)
+        grade.grade = theGrade
+        grade.save(failOnError: true)
+    }
+
+    /**
      * Delete a note
      * @param note the note to delete
      * @param user the author of the note

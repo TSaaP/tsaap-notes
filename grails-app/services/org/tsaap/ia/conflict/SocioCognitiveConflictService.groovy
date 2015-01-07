@@ -17,6 +17,19 @@ class SocioCognitiveConflictService {
                                                                                LiveSessionResponse response) {
         // TODO : propose a real implementation
         // dummy implementation
+        if (response == null || response.explanation == null) {
+            return []
+        }
         response
+    }
+
+    List<LiveSessionResponse> findAllResponseToEvaluateInResponseListForResponse(List<LiveSessionResponse> responseList,
+                                                                                 LiveSessionResponse response) {
+        // TODO : propose a real implementation
+        // dummy implementation
+        if (response == null || response.explanation == null) {
+            return []
+        }
+        [response]
     }
 }

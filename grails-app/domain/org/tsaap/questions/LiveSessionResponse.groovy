@@ -18,7 +18,7 @@ class LiveSessionResponse {
     static constraints = {
         answerListAsString nullable: true, blank: false, matches: '\\[,*(,?\\[".*"(,".*")*\\]|,?\\[\\])*,*\\]'
         percentCredit nullable: true
-        confidenceDegree nullable: true
+        confidenceDegree nullable: true, min: 0, max: 5
         sessionPhase nullable: true
         explanation nullable: true
     }

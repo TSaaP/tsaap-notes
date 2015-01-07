@@ -153,8 +153,26 @@ class NoteServiceIntegrationSpec extends Specification {
       then: "only questions are retrieved"
       res.size() == 1
       res.contains(question)
-
-
   }
 
+  def "test the grade of a note by a user"() {
+    given: "a note and a user"
+    Note note = noteService.addNote(bootstrapTestService.learnerPaul, "a standard note")
+    def user = bootstrapTestService.learnerMary
+
+    when: "user grade for the first time"
+    NoteGrade grade = noteService.gradeNotebyUser(note,user,1d)
+
+    then: "a grade is created"
+    NoteGrade fetchGrade = NoteGrade.findByNoteAndUser(note,user)
+    fetchGrade.grade == 1d
+
+    when:"the same user grade one more time"
+    noteService.gradeNotebyUser(note,user,2d)
+
+    then:"no more grade is created"
+    NoteGrade.countByNoteAndUser(note,user) == 1
+    fetchGrade.grade == 2d
+
+  }
 }

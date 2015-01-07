@@ -151,6 +151,14 @@ class LiveSession {
         SessionPhase.findByLiveSessionAndRank(this,1)
     }
 
+    /**
+     *
+     * @return the second phase if any
+     */
+    SessionPhase findSecondPhase() {
+        SessionPhase.findByLiveSessionAndRank(this,2)
+    }
+
     static transients = ['resultMatrix', 'resultMatrixService']
 }
 

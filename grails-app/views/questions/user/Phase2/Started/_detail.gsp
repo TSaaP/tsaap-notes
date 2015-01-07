@@ -26,24 +26,26 @@
         </div>
     </g:if>
     <g:else>
-        <g:form >
-            <g:hiddenField name="phaseId" value="${sessionPhase.id}"/>
-            <g:hiddenField name="noteId" value="${note.id}"/>
-            <g:set var="firstPhase" value="${sessionPhase.liveSession.findFirstPhase()}"/>
-            <g:set var="firstResponse" value="${firstPhase.getResponseForUser(user)}"/>
-            <g:set var="altResponse" value="${firstPhase.findConflictResponseForResponse(firstResponse)}"/>
-            <p>Here is an alternative response to yours.<br/>
-                Please examine this response and then feel free to change your response, explanation or confidence degree if necessary.</p>
-            <div class="alert alert-info">
+        <g:set var="firstPhase" value="${sessionPhase.liveSession.findFirstPhase()}"/>
+        <g:set var="firstResponse" value="${firstPhase.getResponseForUser(user)}"/>
+        <g:set var="altResponse" value="${firstPhase.findConflictResponseForResponse(firstResponse)}"/>
+
+        <p>Here is an alternative response to yours.<br/>
+            Please examine this response and then feel free to change your response, explanation or confidence degree if necessary.</p>
+        <div class="alert alert-info">
             <p>
-                <g:each in="${altResponse.userResponse.userAnswerBlockList}" var="answerBlock">
+                <g:each in="${altResponse?.userResponse?.userAnswerBlockList}" var="answerBlock">
                     <g:each in="${answerBlock.answerList}" var="answer">
                         ${answer.textValue}<br/>
                     </g:each>
                 </g:each>
-            <p>${altResponse.explanation?.content}</p>
-            </div>
-            <hr/>
+            <p>${altResponse?.explanation?.content}</p>
+        </div>
+        <hr/>
+        <g:form >
+            <g:hiddenField name="phaseId" value="${sessionPhase.id}"/>
+            <g:hiddenField name="noteId" value="${note.id}"/>
+
             <p><strong>${question.title}</strong></p>
             <g:each var="block" in="${question.blockList}">
                 <g:set var="indexAnswerBlock" value="${0}"/>
@@ -52,13 +54,13 @@
                         ${block.text}
                     </g:if>
                     <g:else>
-                        <g:render template="/questions/${question.questionType.name()}AnswerBlock" model="[block: block,userAnswerBlock:firstResponse.userResponse.userAnswerBlockList[indexAnswerBlock++]]"/>
+                        <g:render template="/questions/${question.questionType.name()}AnswerBlock" model="[block: block,userAnswerBlock:firstResponse?.userResponse?.userAnswerBlockList?.get(indexAnswerBlock++)]"/>
                     </g:else>
                 </p>
             </g:each>
             <p>Give an explanation to your choice</p>
-            <g:textArea class="form-control note-editable-content" rows="3" name="explanation" value="${firstResponse.explanation.content}"/>
-            <p>What is the degree of confidence in your response (1: not confident to 5:very confident) ? <g:select name="confidenceDegree" from="[1,2,3,4,5]" value="${firstResponse.confidenceDegree}"/></p>
+            <g:textArea class="form-control note-editable-content" rows="3" name="explanation" value="${firstResponse?.explanation?.content}"/>
+            <p>What is the degree of confidence in your response (1: not confident to 5:very confident) ? <g:select name="confidenceDegree" from="[1,2,3,4,5]" value="${firstResponse?.confidenceDegree}"/></p>
             <g:submitToRemote action="submitResponseInAPhase" controller="question" update="question_${note.id}"
                               class="btn btn-primary btn-xs" value="Submit" onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"/>
         </g:form>

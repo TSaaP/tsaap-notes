@@ -50,7 +50,7 @@ class Note {
         version false
     }
 
-    static transients = ['noteUrl', 'question', 'giftQuestionService','liveSession','activeLiveSession']
+    static transients = ['noteUrl', 'question', 'giftQuestionService', 'liveSession', 'activeLiveSession']
 
     /**
      * Indicate if the current note is bookmarked by the given user
@@ -121,7 +121,7 @@ class Note {
             return liveSession
         }
         if (isAQuestion()) {
-           liveSession = LiveSession.findByNote(this,[sort: "dateCreated", order: "desc"])
+            liveSession = LiveSession.findByNote(this, [sort: "dateCreated", order: "desc"])
         }
         liveSession
     }
@@ -132,11 +132,10 @@ class Note {
      */
     LiveSession getActiveLiveSession() {
         if (liveSession && !liveSession.stopped) {
-           liveSession
+            liveSession
         }
         null
     }
-
 
     /**
      *
@@ -161,6 +160,32 @@ class Note {
     Integer incrementScore() {
         score = score + 1
         score
+    }
+
+    /**
+     * Evaluate the mean grade of a note
+     * @return the mean grade of a note
+     */
+    Double evaluateTheMeanGrade() {
+        def query = NoteGrade.where {
+            note == this
+        }.projections {
+            avg('grade')
+        }
+        query.find() as Double
+    }
+
+    /**
+     * Update the grade of the note
+     * @return
+     */
+    def updateMeanGrade() {
+        grade = evaluateTheMeanGrade()
+        save(failOnError: true)
+    }
+
+    boolean hasBeenAlreadyEvaluatedByUser(User user) {
+        NoteGrade.findByNoteAndUser(this, user)
     }
 }
 

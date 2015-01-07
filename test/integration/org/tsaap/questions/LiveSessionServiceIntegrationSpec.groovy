@@ -121,7 +121,7 @@ class LiveSessionServiceIntegrationSpec extends Specification {
         def learner = bootstrapTestService.learnerMary
 
         when: "trying to create a response for that learner for this session"
-        LiveSessionResponse response = liveSessionService.createResponseForSessionPhaseAndUser(firstPhase,learner,'[["1"]]',"an explanation",100)
+        LiveSessionResponse response = liveSessionService.createResponseForSessionPhaseAndUser(firstPhase,learner,'[["1"]]',"an explanation",5)
 
         then: "the response is created without errors"
         !response.hasErrors()
@@ -129,10 +129,10 @@ class LiveSessionServiceIntegrationSpec extends Specification {
         response.sessionPhase == firstPhase
         response.explanation.content == "an explanation"
         response.explanation.kind == NoteKind.EXPLANATION.ordinal()
-        response.confidenceDegree == 100
+        response.confidenceDegree == 5
 
         when:"trying again"
-        liveSessionService.createResponseForSessionPhaseAndUser(firstPhase,learner,'[["1"]]',"an explanation",100)
+        liveSessionService.createResponseForSessionPhaseAndUser(firstPhase,learner,'[["1"]]',"an explanation",5)
 
         then:"a precondition is violated"
         thrown(PreconditionViolation)
@@ -149,7 +149,7 @@ class LiveSessionServiceIntegrationSpec extends Specification {
         def learner = bootstrapTestService.learnerMary
 
         when: "trying to create a response with null explanation for that learner for this session"
-        LiveSessionResponse response = liveSessionService.createResponseForSessionPhaseAndUser(firstPhase,learner,'[["1"]]',null,100)
+        LiveSessionResponse response = liveSessionService.createResponseForSessionPhaseAndUser(firstPhase,learner,'[["1"]]',null,5)
 
         then: "the response is created without errors"
         !response.hasErrors()
@@ -160,11 +160,29 @@ class LiveSessionServiceIntegrationSpec extends Specification {
         SessionPhase secondPhase = liveSessionService.createAndStartSessionPhaseForLiveSessionWithRank(user,liveSession,2)
 
         and:"creating In the second phase the explanation is empty"
-        response = liveSessionService.createResponseForSessionPhaseAndUser(secondPhase,learner,'[["1"]]',"",100)
+        response = liveSessionService.createResponseForSessionPhaseAndUser(secondPhase,learner,'[["1"]]',"",5)
 
         then: "the response is created without errors"
         !response.hasErrors()
         response.explanation == null
+
+    }
+
+    void "test the creation of a response for a given phase with no degree of confidence"() {
+
+        given:"a live session and a user and the first phase started"
+        LiveSession liveSession = liveSessionService.createLiveSessionForNote(user, note)
+        SessionPhase firstPhase = liveSessionService.createAndStartFirstSessionPhaseForLiveSession(user,liveSession)
+
+        and: "a learner"
+        def learner = bootstrapTestService.learnerMary
+
+        when: "trying to create a response with null explanation for that learner for this session"
+        LiveSessionResponse response = liveSessionService.createResponseForSessionPhaseAndUser(firstPhase,learner,'[["1"]]',"an exxpl",null)
+
+        then: "the response is created without errors"
+        !response.hasErrors()
+        response.confidenceDegree == null
 
     }
 

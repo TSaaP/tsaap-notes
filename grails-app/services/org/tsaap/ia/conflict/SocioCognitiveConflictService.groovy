@@ -17,6 +17,9 @@ class SocioCognitiveConflictService {
                                                                                LiveSessionResponse response) {
         // TODO : propose a real implementation
         // dummy implementation
+        if (response == null || response.explanation == null) {
+            return []
+        }
         response
     }
 
@@ -24,6 +27,9 @@ class SocioCognitiveConflictService {
                                                                                  LiveSessionResponse response) {
         // TODO : propose a real implementation
         // dummy implementation
+        if (response == null || response.explanation == null) {
+            return []
+        }
         [response]
     }
 }

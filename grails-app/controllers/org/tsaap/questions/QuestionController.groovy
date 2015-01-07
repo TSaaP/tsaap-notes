@@ -3,12 +3,14 @@ package org.tsaap.questions
 import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
 import org.tsaap.notes.Note
+import org.tsaap.notes.NoteService
 
 
 class QuestionController {
 
     SpringSecurityService springSecurityService
     LiveSessionService liveSessionService
+    NoteService noteService
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def startLiveSession() {
@@ -160,6 +162,9 @@ class QuestionController {
         def currentUser = springSecurityService.currentUser
         def note = Note.get(evaluateResponsesCommand.noteId)
         def phase = SessionPhase.get(evaluateResponsesCommand.phaseId)
+        evaluateResponsesCommand.explanationIds.eachWithIndex { explanationId, i ->
+            noteService.gradeNotebyUser(Note.get(explanationId),currentUser,evaluateResponsesCommand.grades[i])
+        }
         def userType = currentUser == note.author ? 'author' : 'user'
         render(template: "/questions/${userType}/Phase${phase.rank}/${phase.status}/detail", model: [note: note, sessionPhase: phase, user: currentUser])
     }

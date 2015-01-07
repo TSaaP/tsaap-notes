@@ -88,12 +88,7 @@ class Note {
         if (kind == NoteKind.QUESTION.ordinal()) {
             return true
         }
-        if (this.getQuestion() != null) {
-            kind = NoteKind.QUESTION.ordinal()
-            save()
-            return true
-        }
-        false
+        this.getQuestion() != null
     }
 
     Question question
@@ -106,6 +101,8 @@ class Note {
         if (content?.startsWith("::") && !question) {
             try {
                 question = giftQuestionService.getQuestionFromGiftText(content)
+                kind = NoteKind.QUESTION.ordinal()
+                save()
             } catch (Exception e) {
                 log.error(e.message)
             }

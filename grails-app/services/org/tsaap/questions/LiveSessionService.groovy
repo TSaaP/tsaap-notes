@@ -137,4 +137,22 @@ class LiveSessionService {
         liveSessionResponse
     }
 
+    /**
+     * Close an N phases submit live session
+     * @param liveSession the live session to close
+     */
+    def closeNPhaseSubmitLiveSession(LiveSession liveSession) {
+        // stop all phases
+        def phases = SessionPhase.findAllByLiveSession(liveSession)
+        phases.each { SessionPhase phase ->
+            if (!phase.isStopped()) {
+                phase.stop(false)
+            }
+        }
+        // stop liveSession
+        if (!liveSession.isStopped()) {
+            liveSession.stop(false)
+        }
+    }
+
 }

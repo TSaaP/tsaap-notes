@@ -45,11 +45,11 @@ class QuestionController {
         def liveSession = note.liveSession
         def phase = liveSession ? liveSession.findCurrentPhase() : null
         def userType = currentUser == note.author ? 'author' : 'user'
-        if (phase) {
-            render(template: "/questions/${userType}/Phase${phase.rank}/${phase.status}/detail", model: [note: note, sessionPhase: phase, user: currentUser])
-        } else {
+        if (!phase || liveSession.isStopped()) {
             def sessionStatus = liveSession ? liveSession.status : LiveSessionStatus.NotStarted.name()
             render(template: "/questions/${userType}/${sessionStatus}/detail", model: [note: note, liveSession: liveSession, user: currentUser])
+        } else {
+            render(template: "/questions/${userType}/Phase${phase.rank}/${phase.status}/detail", model: [note: note, sessionPhase: phase, user: currentUser])
         }
     }
 
@@ -64,7 +64,7 @@ class QuestionController {
         } catch (Exception e) {
             liveSession = liveSessionService.createLiveSessionForNote(currentUser, note)
         }
-        SessionPhase sessionPhase = liveSessionService.createAndStartFirstSessionPhaseForLiveSession(currentUser,liveSession)
+        SessionPhase sessionPhase = liveSessionService.createAndStartFirstSessionPhaseForLiveSession(currentUser, liveSession)
         render(template: "/questions/author/Phase1/${sessionPhase.status}/detail", model: [note: note, sessionPhase: sessionPhase, user: currentUser])
     }
 
@@ -74,7 +74,7 @@ class QuestionController {
         def note = Note.get(params.noteId)
         Integer rank = params.phaseRank as Integer
         def liveSession = LiveSession.get(params.liveSessId)
-        def sessionPhase = liveSessionService.createAndStartSessionPhaseForLiveSessionWithRank(currentUser,liveSession,rank)
+        def sessionPhase = liveSessionService.createAndStartSessionPhaseForLiveSessionWithRank(currentUser, liveSession, rank)
         render(template: "/questions/author/Phase${sessionPhase.rank}/${sessionPhase.status}/detail", model: [note: note, sessionPhase: sessionPhase, user: currentUser])
     }
 
@@ -83,15 +83,22 @@ class QuestionController {
         def currentUser = springSecurityService.currentUser
         def note = Note.get(params.noteId)
         def phase = SessionPhase.get(params.phaseId)
-        phase.stop()
-        if (phase.stopLiveSessionWhenIsStopped() && !phase.liveSession.isStopped()) {
-            phase.liveSession.stop(false)
+        def liveSession = phase.liveSession
+        if (phase.stopLiveSessionWhenIsStopped()) {
+            liveSessionService.closeNPhaseSubmitLiveSession(liveSession)
+            render(template: "/questions/author/${liveSession.status}/detail", model: [note: note, liveSession: liveSession, user: currentUser])
+        } else {
+            phase.stop()
+            render(template: "/questions/author/Phase${phase.rank}/${phase.status}/detail", model: [note: note, sessionPhase: phase, user: currentUser])
         }
         if (phase.hasErrors()) {
             log.error(phase.errors.allErrors.toString())
         }
-        render(template: "/questions/author/Phase${phase.rank}/${phase.status}/detail", model: [note: note, sessionPhase: phase, user: currentUser])
+        if (liveSession.hasErrors()) {
+            log.error(liveSession.errors.allErrors.toString())
+        }
     }
+
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def refreshPhase() {
@@ -163,7 +170,7 @@ class QuestionController {
         def note = Note.get(evaluateResponsesCommand.noteId)
         def phase = SessionPhase.get(evaluateResponsesCommand.phaseId)
         evaluateResponsesCommand.explanationIds.eachWithIndex { explanationId, i ->
-            noteService.gradeNotebyUser(Note.get(explanationId),currentUser,evaluateResponsesCommand.grades[i])
+            noteService.gradeNotebyUser(Note.get(explanationId), currentUser, evaluateResponsesCommand.grades[i])
         }
         def userType = currentUser == note.author ? 'author' : 'user'
         render(template: "/questions/${userType}/Phase${phase.rank}/${phase.status}/detail", model: [note: note, sessionPhase: phase, user: currentUser])

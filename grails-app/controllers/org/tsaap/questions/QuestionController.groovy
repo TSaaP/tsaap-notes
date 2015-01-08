@@ -91,12 +91,6 @@ class QuestionController {
             phase.stop()
             render(template: "/questions/author/Phase${phase.rank}/${phase.status}/detail", model: [note: note, sessionPhase: phase, user: currentUser])
         }
-        if (phase.hasErrors()) {
-            log.error(phase.errors.allErrors.toString())
-        }
-        if (liveSession.hasErrors()) {
-            log.error(liveSession.errors.allErrors.toString())
-        }
     }
 
 
@@ -114,51 +108,34 @@ class QuestionController {
         def currentUser = springSecurityService.currentUser
         def note = Note.get(answersWrapper.noteId)
         def liveSession = LiveSession.get(answersWrapper.liveSessId)
-        StringBuilder answersAsString = new StringBuilder("[[")
-        answersWrapper.answers.each { answer ->
-            if (answer) {
-                def answerAsString = "\"${answer}\","
-                answersAsString.append(answerAsString)
+        String answersAsString = buildAnswerAsStringFromAnswers(answersWrapper.answers)
+        if (liveSession.isStarted()) {
+            def response = liveSessionService.createResponseForLiveSessionAndUser(liveSession, currentUser, answersAsString)
+            if (response.hasErrors()) {
+                log.error(response.errors.allErrors.toString())
             }
-        }
-        if (answersAsString.length() > 2) {
-            answersAsString.deleteCharAt(answersAsString.length() - 1)
-        }
-        answersAsString.append("]]")
-
-        def response = liveSessionService.createResponseForLiveSessionAndUser(liveSession, currentUser, answersAsString.toString())
-        if (response.hasErrors()) {
-            log.error(response.errors.allErrors.toString())
         }
         def userType = currentUser == note.author ? 'author' : 'user'
         render(template: "/questions/${userType}/${liveSession.status}/detail", model: [note: note, liveSession: liveSession, user: currentUser])
     }
+
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def submitResponseInAPhase(AnswersWrapperPhaseCommand answersWrapper) {
         def currentUser = springSecurityService.currentUser
         def note = Note.get(answersWrapper.noteId)
         def phase = SessionPhase.get(answersWrapper.phaseId)
-        StringBuilder answersAsString = new StringBuilder("[[")
-        answersWrapper.answers.each { answer ->
-            if (answer) {
-                def answerAsString = "\"${answer}\","
-                answersAsString.append(answerAsString)
+        String answersAsString = buildAnswerAsStringFromAnswers(answersWrapper.answers)
+        if (phase.isStarted()) {
+            def response = liveSessionService.createResponseForSessionPhaseAndUser(
+                    phase,
+                    currentUser,
+                    answersAsString,
+                    answersWrapper.explanation,
+                    answersWrapper.confidenceDegree)
+            if (response.hasErrors()) {
+                log.error(response.errors.allErrors.toString())
             }
-        }
-        if (answersAsString.length() > 2) {
-            answersAsString.deleteCharAt(answersAsString.length() - 1)
-        }
-        answersAsString.append("]]")
-
-        def response = liveSessionService.createResponseForSessionPhaseAndUser(
-                phase,
-                currentUser,
-                answersAsString.toString(),
-                answersWrapper.explanation,
-                answersWrapper.confidenceDegree)
-        if (response.hasErrors()) {
-            log.error(response.errors.allErrors.toString())
         }
         def userType = currentUser == note.author ? 'author' : 'user'
         render(template: "/questions/${userType}/Phase${phase.rank}/${phase.status}/detail", model: [note: note, sessionPhase: phase, user: currentUser])
@@ -169,11 +146,30 @@ class QuestionController {
         def currentUser = springSecurityService.currentUser
         def note = Note.get(evaluateResponsesCommand.noteId)
         def phase = SessionPhase.get(evaluateResponsesCommand.phaseId)
-        evaluateResponsesCommand.explanationIds.eachWithIndex { explanationId, i ->
-            noteService.gradeNotebyUser(Note.get(explanationId), currentUser, evaluateResponsesCommand.grades[i])
-        }
         def userType = currentUser == note.author ? 'author' : 'user'
-        render(template: "/questions/${userType}/Phase${phase.rank}/${phase.status}/detail", model: [note: note, sessionPhase: phase, user: currentUser])
+        if (phase.isStarted()) {
+            evaluateResponsesCommand.explanationIds.eachWithIndex { explanationId, i ->
+                noteService.gradeNotebyUser(Note.get(explanationId), currentUser, evaluateResponsesCommand.grades[i])
+            }
+            render(template: "/questions/${userType}/Phase${phase.rank}/${phase.status}/detail", model: [note: note, sessionPhase: phase, user: currentUser])
+        } else {
+            render(template: "/questions/${userType}/${phase.liveSession.status}/detail", model: [note: note, liveSession: phase.liveSession, user: currentUser])
+        }
+    }
+
+    private String buildAnswerAsStringFromAnswers(List<String> answers) {
+        StringBuilder answersAsString = new StringBuilder("[[")
+        answers.each { answer ->
+            if (answer) {
+                def answerAsString = "\"${answer}\","
+                answersAsString.append(answerAsString)
+            }
+        }
+        if (answersAsString.length() > 2) {
+            answersAsString.deleteCharAt(answersAsString.length() - 1)
+        }
+        answersAsString.append("]]")
+        answersAsString.toString()
     }
 
 }

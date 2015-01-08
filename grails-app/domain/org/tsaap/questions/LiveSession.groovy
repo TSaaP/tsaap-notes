@@ -69,6 +69,9 @@ class LiveSession {
             updateResultMatrixAsJson()
         }
         save(flush: true)
+        if (hasErrors()) {
+            log.error(errors.allErrors)
+        }
     }
 
     private def void updateResultMatrixAsJson() {

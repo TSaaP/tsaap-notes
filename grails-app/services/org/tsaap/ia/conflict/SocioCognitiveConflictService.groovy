@@ -18,7 +18,7 @@ class SocioCognitiveConflictService {
         // TODO : propose a real implementation
         // dummy implementation
         if (response == null || response.explanation == null) {
-            return []
+            return null
         }
         response
     }

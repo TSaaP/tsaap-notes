@@ -42,8 +42,8 @@
     <g:if test="${!responsesToEvaluate || responsesToEvaluate[0]?.explanation?.hasBeenAlreadyEvaluatedByUser(user)}">
         <div class="alert alert-success">
             Waiting for the end of phase 3 for the question &quot;<strong>${question.title}</strong>&quot;...
-            <g:remoteLink action="refreshPhase" controller="question"
-                          params="[noteId: note.id, phaseId: sessionPhase.id]"
+            <g:remoteLink action="refresh" controller="question"
+                          params="[noteId: note.id]"
                           title="Refresh" update="question_${note.id}"
                           onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"><span
                     class="glyphicon glyphicon-refresh">&nbsp;</span></g:remoteLink>

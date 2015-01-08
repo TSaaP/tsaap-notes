@@ -166,7 +166,7 @@ class NotesController {
         if (params.displaysAll == 'on') {
             displaysAll = true
         }
-        params.max = Math.min(params.max as Long ?: 7, 20)
+        params.max = Math.min(params.max as Long ?: 5, 20)
         def paginationAndSorting = [sort: 'dateCreated', order: 'desc', max: params.max]
         if (params.offset) {
             paginationAndSorting.offset = params.offset

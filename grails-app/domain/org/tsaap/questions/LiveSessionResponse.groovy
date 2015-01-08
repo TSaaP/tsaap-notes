@@ -23,8 +23,6 @@ class LiveSessionResponse {
         explanation nullable: true
     }
 
-    static transients = ['giftQuestionService', 'userResponse']
-
     GiftQuestionService giftQuestionService
     UserResponse userResponse
 
@@ -55,5 +53,11 @@ class LiveSessionResponse {
             }
         }
         userResponse
+    }
+
+    static transients = ['giftQuestionService', 'userResponse']
+
+    static mapping = {
+        explanation fetch: 'join'
     }
 }

@@ -86,7 +86,7 @@ class SessionPhase {
      * @return the live session response if it exists
      */
     LiveSessionResponse getResponseForUser(User user) {
-        LiveSessionResponse.findBySessionPhaseAndUser(this, user)
+        LiveSessionResponse.findBySessionPhaseAndUser(this, user,[fetch: [explanation: 'join'] ])
     }
 
     /**

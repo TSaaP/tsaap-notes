@@ -28,3 +28,7 @@
 <g:if test="${sessionResponse}">
     Your score : ${sessionResponse.percentCredit}%
 </g:if>
+<g:if test="${sessionPhase}">
+    <g:set var="responses" value="${liveSession.findAllGoodResponses(sessionPhase)}"/>
+    <g:render template="/questions/ExplanationList" model="[responses:responses, note:note]"/>
+</g:if>

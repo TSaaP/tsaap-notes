@@ -22,3 +22,7 @@
             </g:else>
     </g:each>
 </div>
+<g:if test="${sessionPhase}">
+    <g:set var="responses" value="${liveSession.findAllGoodResponses(sessionPhase)}"/>
+    <g:render template="/questions/ExplanationList" model="[responses:responses]"/>
+</g:if>

@@ -159,6 +159,21 @@ class LiveSession {
         SessionPhase.findByLiveSessionAndRank(this,2)
     }
 
+    /**
+     * Find all good response for the live session or the given phase
+     * @param sessionPhase
+     * @return
+     */
+    List<LiveSessionResponse> findAllGoodResponses(SessionPhase sessionPhase = null) {
+        if (sessionPhase) {
+            return LiveSessionResponse.findAllBySessionPhaseAndPercentCredit(sessionPhase,100,
+                    [sort: "explanation.grade", order: "desc",fetch:[explanation:'join']])
+        } else {
+            return LiveSessionResponse.findAllByLiveSessionAndPercentCredit(this,100,
+                    [sort: "explanation.grade", order: "desc",fetch:[explanation:'join']])
+        }
+    }
+
     static transients = ['resultMatrix', 'resultMatrixService']
 }
 

@@ -1,5 +1,6 @@
 package org.tsaap.questions
 
+import grails.transaction.NotTransactional
 import grails.transaction.Transactional
 import org.gcontracts.annotations.Requires
 import org.tsaap.directory.User
@@ -141,6 +142,7 @@ class LiveSessionService {
      * Close an N phases submit live session
      * @param liveSession the live session to close
      */
+    @NotTransactional
     def closeNPhaseSubmitLiveSession(LiveSession liveSession) {
         // stop all phases
         def phases = SessionPhase.findAllByLiveSession(liveSession)
@@ -152,6 +154,15 @@ class LiveSessionService {
         // stop liveSession
         if (!liveSession.isStopped()) {
             liveSession.stop(false)
+        }
+        // evaluate grades for all explanations
+        SessionPhase secondPhase = liveSession.findSecondPhase()
+        List<LiveSessionResponse> responseList = LiveSessionResponse.findAllBySessionPhase(secondPhase,[fetch: [explanation: 'join']])
+        responseList.each { LiveSessionResponse response ->
+            Note expl = response.explanation
+            if (expl) {
+                expl.updateMeanGrade()
+            }
         }
     }
 

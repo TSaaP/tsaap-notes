@@ -16,6 +16,8 @@ class SessionPhase {
     Date endDate
     String resultMatrixAsJson
     Integer rank
+    // Json string
+    String mappingUserExplanation
 
     LiveSession liveSession
 
@@ -24,6 +26,7 @@ class SessionPhase {
         startDate nullable: true
         endDate nullable: true
         resultMatrixAsJson nullable: true
+        mappingUserExplanation nullable: true
     }
 
 
@@ -70,6 +73,9 @@ class SessionPhase {
         endDate = new Date()
         if (shouldBuildResultMatrix) {
            updateResultMatrixAsJson()
+        }
+        if (rank == 2) {
+            updateMappingUserExplanationAsJson()
         }
         save(flush: true)
         if (hasErrors()) {
@@ -134,7 +140,37 @@ class SessionPhase {
         rank == MAX_RANK
     }
 
+    /**
+     * the map matching users to explanation to evaluate
+     * @return the map
+     */
+    Map<Long,List<Long>> getMappingUserExplanationAsMap() {
+        JsonSlurper parser = new JsonSlurper()
+        if (mappingUserExplanation == null) {
+            updateMappingUserExplanationAsJson()
+            save(flush: true)
+        }
+        Map<Long,List<Long>> res = parser.parseText(mappingUserExplanation)
+        res
+    }
+
+    private def void updateMappingUserExplanationAsJson() {
+        def map = buildMappingUserExplanation()
+        JsonBuilder builder = new JsonBuilder(map ?: [:])
+        mappingUserExplanation = builder.toString()
+    }
+
     SocioCognitiveConflictService socioCognitiveConflictService
+
+    /**
+     * Construct the map matching users to explanation to evaluate
+     * @return
+     */
+    Map<Long,List<Long>> buildMappingUserExplanation() {
+        def responseList = LiveSessionResponse.findAllBySessionPhase(this)
+        socioCognitiveConflictService.explanationIdListByUserId(responseList)
+    }
+
 
     /**
      *
@@ -148,8 +184,10 @@ class SessionPhase {
     }
 
     List<LiveSessionResponse> findAllResponsesToEvaluateForResponse(LiveSessionResponse response) {
-        def responseList = LiveSessionResponse.findAllBySessionPhase(this)
-        socioCognitiveConflictService.findAllResponseToEvaluateInResponseListForResponse(responseList,response)
+        Map<Long,List<Long>> map = getMappingUserExplanationAsMap()
+        String key = response.userId as String
+        List<Long> respIds = map.get(key)
+        LiveSessionResponse.getAll(respIds)
     }
 
     static transients = ['resultMatrix', 'resultMatrixService','MAX_RANK','socioCognitiveConflictService']

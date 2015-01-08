@@ -25,16 +25,6 @@ class SocioCognitiveConflictService {
         response
     }
 
-    List<LiveSessionResponse> findAllResponseToEvaluateInResponseListForResponse(List<LiveSessionResponse> responseList,
-                                                                                 LiveSessionResponse response) {
-        // TODO : propose a real implementation
-        // dummy implementation
-        if (response == null || response.explanation == null) {
-            return []
-        }
-        [response]
-    }
-
     /**
      * Get the map matching user with explanation to evaluate with round robin algorithm
      * @param responseList the list of responses containing users and explanation to evaluate
@@ -42,16 +32,17 @@ class SocioCognitiveConflictService {
      */
     Map<Long, List<Long>> explanationIdListByUserId(List<LiveSessionResponse> responseList) {
         // get the list of suerId shuffleised
-        List<Long> userIdList = Collections.shuffle(responseList*.userId)
+        List<Long> userIdList = responseList*.userId
+        Collections.shuffle(userIdList)
         // get the notes to evaluate : only those with 100% credit
         List<Long> explanationList = []
         responseList.each { LiveSessionResponse response ->
             if (response.percentCredit == 100 && response.explanation?.content?.size()> MIN_SIZE_OF_EXPLANATION_TO_BE_EVALUATED) {
-                explanationList << response.explanationId
+                explanationList << response.id
             }
         }
         // matching algorythm
-        explanationIdListByUserIdRoundRobinAlgorithm(explanationList, userIdList)
+        explanationIdListByUserIdRoundRobinAlgorithm(userIdList,explanationList)
     }
 
     /**

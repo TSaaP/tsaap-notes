@@ -10,19 +10,57 @@ class SocioCognitiveConflictService {
     public static final int MIN_SIZE_OF_EXPLANATION_TO_BE_EVALUATED = 10
 
     /**
-     * Find the best response that is in conflict with a given response
-     * @param responseList the list of response to select in the matching response
-     * @param response the response
-     * @return the best matching response
+     * Get the map matching between two conflict response
+     * @param responseList the list of responses containing users and explanation to evaluate
+     * @return the map
      */
-    LiveSessionResponse findResponseInResponseListWithBestConflictWithResponse(List<LiveSessionResponse> responseList,
-                                                                               LiveSessionResponse response) {
-        // TODO : propose a real implementation
-        // dummy implementation
-        if (response == null || response.explanation == null) {
-            return null
+    Map<Long, Long> responseConflictIdByResponseId(List<LiveSessionResponse> responseList) {
+        // sort response by level of confidence degree
+        responseList = responseList.sort(false) { -it.confidenceDegree }
+        // get the list of response Id
+        List<Long> responseIdList = responseList*.id
+        // the good responses with highest level of confidence
+        List<Long> goodResponseIdList = []
+        // the bad responses with highest level of confidence
+        List<Long> badResponseIdList = []
+        // the map for the good responses
+        Map<Long, Long> goodResponseMap = [:]
+        // the map for the bad responses
+        Map<Long, Long> badResponseMap = [:]
+        // the way to set this two lists and two create two maps of responses (the good and the one)
+        responseList.each { LiveSessionResponse response ->
+            if (response.percentCredit == 100) {
+                goodResponseIdList << response.id
+            } else {
+                badResponseIdList << response.id
+            }
         }
-        response
+        def map
+        // if one of the list is empty, only one value list
+        if (goodResponseIdList.size() == 0) {
+            map = responseValByResponseKey(badResponseIdList, badResponseIdList)
+        } else if (badResponseIdList.size() == 0) {
+            map = responseValByResponseKey(goodResponseIdList, goodResponseIdList)
+        } else {
+            def map1 = responseValByResponseKey(goodResponseIdList, badResponseIdList)
+            def map2 = responseValByResponseKey(badResponseIdList, goodResponseIdList)
+            map = map1 + map2
+        }
+        map
+
+    }
+
+    public Map<Long, Long> responseValByResponseKey(List<Long> responseKeyList, List<Long> responseValueList) {
+        Map<Long, Long> res = [:]
+        def valuesCount = Math.min(4, responseValueList.size())
+        // apply round robin algorithm
+        int indexValues = 0
+        responseKeyList.each { Long keyId ->
+            Long valId = responseValueList.get(indexValues % valuesCount)
+            indexValues++
+            res.put(keyId, valId)
+        }
+        res
     }
 
     /**
@@ -37,12 +75,12 @@ class SocioCognitiveConflictService {
         // get the notes to evaluate : only those with 100% credit
         List<Long> explanationList = []
         responseList.each { LiveSessionResponse response ->
-            if (response.percentCredit == 100 && response.explanation?.content?.size()> MIN_SIZE_OF_EXPLANATION_TO_BE_EVALUATED) {
+            if (response.percentCredit == 100 && response.explanation?.content?.size() > MIN_SIZE_OF_EXPLANATION_TO_BE_EVALUATED) {
                 explanationList << response.id
             }
         }
         // matching algorythm
-        explanationIdListByUserIdRoundRobinAlgorithm(userIdList,explanationList)
+        explanationIdListByUserIdRoundRobinAlgorithm(userIdList, explanationList)
     }
 
     /**
@@ -51,7 +89,7 @@ class SocioCognitiveConflictService {
      * @param explanationList the list of explanation to distribute among all users
      * @return the map
      */
-    public Map<Long, List<Long>> explanationIdListByUserIdRoundRobinAlgorithm(List<Long> userIdList,List<Long> explanationList) {
+    public Map<Long, List<Long>> explanationIdListByUserIdRoundRobinAlgorithm(List<Long> userIdList, List<Long> explanationList) {
         Map<Long, List<Long>> res = [:]
         def explanationCount = explanationList.size()
         if (explanationCount < 4) { // all users are mapped with the all list
@@ -71,4 +109,6 @@ class SocioCognitiveConflictService {
         }
         res
     }
+
+
 }

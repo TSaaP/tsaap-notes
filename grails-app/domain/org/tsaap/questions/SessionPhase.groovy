@@ -18,6 +18,7 @@ class SessionPhase {
     Integer rank
     // Json string
     String mappingUserExplanation
+    String mappingResponseConflictResponse
 
     LiveSession liveSession
 
@@ -27,6 +28,7 @@ class SessionPhase {
         endDate nullable: true
         resultMatrixAsJson nullable: true
         mappingUserExplanation nullable: true
+        mappingResponseConflictResponse nullable: true
     }
 
 
@@ -76,6 +78,9 @@ class SessionPhase {
         }
         if (rank == 2) {
             updateMappingUserExplanationAsJson()
+        }
+        if (rank == 1) {
+            updateMappingConflictResponseResponseAsJson()
         }
         save(flush: true)
         if (hasErrors()) {
@@ -144,13 +149,13 @@ class SessionPhase {
      * the map matching users to explanation to evaluate
      * @return the map
      */
-    Map<Long,List<Long>> getMappingUserExplanationAsMap() {
+    Map<String,List<Long>> getMappingUserExplanationAsMap() {
         JsonSlurper parser = new JsonSlurper()
         if (mappingUserExplanation == null) {
             updateMappingUserExplanationAsJson()
             save(flush: true)
         }
-        Map<Long,List<Long>> res = parser.parseText(mappingUserExplanation)
+        Map<String,List<Long>> res = parser.parseText(mappingUserExplanation)
         res
     }
 
@@ -171,6 +176,36 @@ class SessionPhase {
         socioCognitiveConflictService.explanationIdListByUserId(responseList)
     }
 
+    /**
+     * the map matching users to explanation to evaluate
+     * @return the map
+     */
+    Map<String,Long> getMappingResponseConflictResponseAsMap() {
+        JsonSlurper parser = new JsonSlurper()
+        if (mappingResponseConflictResponse == null) {
+            updateMappingConflictResponseResponseAsJson()
+            save(flush: true)
+        }
+        Map<String,Long> res = parser.parseText(mappingResponseConflictResponse)
+        res
+    }
+
+    private def void updateMappingConflictResponseResponseAsJson() {
+        def map = buildMappingResponsesConflict()
+        JsonBuilder builder = new JsonBuilder(map ?: [:])
+        mappingResponseConflictResponse = builder.toString()
+    }
+
+
+    /**
+     * Construct the map matching users to explanation to evaluate
+     * @return
+     */
+    Map<Long,Long> buildMappingResponsesConflict() {
+        def responseList = LiveSessionResponse.findAllBySessionPhase(this)
+        socioCognitiveConflictService.responseConflictIdByResponseId(responseList)
+    }
+
 
     /**
      *
@@ -178,13 +213,14 @@ class SessionPhase {
      * @return the conflict response
      */
     LiveSessionResponse findConflictResponseForResponse(LiveSessionResponse response) {
-        def responseList = LiveSessionResponse.findAllBySessionPhase(this)
-        socioCognitiveConflictService.findResponseInResponseListWithBestConflictWithResponse(
-                responseList,response)
+        Map<String,Long> map = getMappingResponseConflictResponseAsMap()
+        String key = response.id as String
+        Long val = map.get(key)
+        LiveSessionResponse.get(val)
     }
 
     List<LiveSessionResponse> findAllResponsesToEvaluateForResponse(LiveSessionResponse response) {
-        Map<Long,List<Long>> map = getMappingUserExplanationAsMap()
+        Map<String,List<Long>> map = getMappingUserExplanationAsMap()
         String key = response.userId as String
         List<Long> respIds = map.get(key)
         LiveSessionResponse.getAll(respIds)

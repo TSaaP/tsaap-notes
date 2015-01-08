@@ -52,4 +52,46 @@ class SocioCognitiveConflictServiceSpec extends Specification {
         res.get(5l) == [10,11,12]
 
     }
+
+    void "test round robin for socio cognitive conflict"() {
+        given: "a list of key response Id"
+        def keyIds = [1,2,3,4,5]
+
+        and: "a short list of key values ids (3 or less elements)"
+        def valIds = [10,11,12]
+
+        when: "building the map"
+        Map<Long, Long> res = socioCognitiveConflictService.responseValByResponseKey(keyIds,valIds)
+
+        then: "responses are mapped OK"
+        res.get(1l) == 10
+        res.get(2l) == 11
+        res.get(3l) == 12
+        res.get(4l) == 10
+        res.get(5l) == 11
+
+        when: "has more then 4 values"
+        valIds = [10,11,12,13,14]
+        res = socioCognitiveConflictService.responseValByResponseKey(keyIds,valIds)
+
+        then:"we stay on the 4 firts"
+        res.get(1l) == 10
+        res.get(2l) == 11
+        res.get(3l) == 12
+        res.get(4l) == 13
+        res.get(5l) == 10
+
+        when: "has only 1 value"
+        valIds = [10]
+        res = socioCognitiveConflictService.responseValByResponseKey(keyIds,valIds)
+
+        then:"everyone have the same conflict"
+        res.get(1l) == 10
+        res.get(2l) == 10
+        res.get(3l) == 10
+        res.get(4l) == 10
+        res.get(5l) == 10
+
+    }
+
 }

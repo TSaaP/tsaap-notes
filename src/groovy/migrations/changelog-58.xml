@@ -29,4 +29,11 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="2" author="fsil">
+        <comment>Add column "mappingResponseConflictResponse" on session phase table</comment>
+        <addColumn tableName="session_phase">
+            <column name="mapping_response_conflict_response" type="TEXT"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

@@ -6,9 +6,12 @@ import org.tsaap.notes.Context
 import org.tsaap.notes.Note
 import org.tsaap.questions.impl.gift.utils.QuestionHelper
 
+import java.text.DecimalFormat
+
 
 class ExportAsGiftService {
 
+    public static final double MIN_GRADE_FOR_FEEDBACK = 2.5
     QuestionHelper questionHelper
 
     /**
@@ -21,7 +24,7 @@ class ExportAsGiftService {
         def questions = findAllQuestionsForContext(context)
         def res = []
         questions.each {
-            def notesOnQuestion = Note.findAllByParentNote(it)
+            def notesOnQuestion = Note.findAllByParentNoteAndGradeGreaterThanEquals(it, MIN_GRADE_FOR_FEEDBACK,[sort:"grade", order:"desc"])
             if (notesOnQuestion) {
                 def generalFeedback = buildGeneralFeedback(notesOnQuestion, feedbackPrefix)
                 res.add(questionHelper.insertGeneralFeedbackInGiftQuestion(generalFeedback, it.content))
@@ -58,8 +61,9 @@ class ExportAsGiftService {
 
     private String buildGeneralFeedback(List<Note> notes, String feedbackPrefix) {
         StringBuilder sb = new StringBuilder("$feedbackPrefix<br>")
+        DecimalFormat df = new DecimalFormat("###,##0.00");
         notes.each {
-            sb.append("@${it.author.username}: ")
+            sb.append("${df.format(it.grade)} /5 @${it.author.username}: ")
             sb.append(it.content)
             sb.append("<br>")
         }

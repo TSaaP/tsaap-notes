@@ -92,6 +92,28 @@ class SocioCognitiveConflictServiceSpec extends Specification {
         res.get(4l) == 10
         res.get(5l) == 10
 
+        when:"no key value ids"
+        keyIds = []
+        res = socioCognitiveConflictService.responseValByResponseKey(keyIds,valIds)
+
+        then: "the map is empty"
+        res.isEmpty()
+        res.get(1l) == null
+
+
+        when: "no value ids"
+        keyIds = [1,2,3,4,5]
+        valIds = []
+        res = socioCognitiveConflictService.responseValByResponseKey(keyIds,valIds)
+
+        then: "each key has null for value"
+        res.get(1l) == null
+        res.get(2l) == null
+        res.get(3l) == null
+        res.get(4l) == null
+        res.get(5l) == null
+
+
     }
 
 }

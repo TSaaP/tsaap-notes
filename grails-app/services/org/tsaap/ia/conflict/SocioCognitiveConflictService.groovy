@@ -17,40 +17,40 @@ class SocioCognitiveConflictService {
     Map<Long, Long> responseConflictIdByResponseId(List<LiveSessionResponse> responseList) {
         // sort response by level of confidence degree
         responseList = responseList.sort(false) { -it.confidenceDegree }
-        // get the list of response Id
-        List<Long> responseIdList = responseList*.id
-        // the good responses with highest level of confidence
+        // the good responses
         List<Long> goodResponseIdList = []
-        // the bad responses with highest level of confidence
+        // the good responses candidates for conflict
+        List<Long> goodResponseConflictIdList = []
+        // the bad responses
         List<Long> badResponseIdList = []
-        // the map for the good responses
-        Map<Long, Long> goodResponseMap = [:]
-        // the map for the bad responses
-        Map<Long, Long> badResponseMap = [:]
+        // the bad responses candidates for conflict
+        List<Long> badResponseConflictIdList = []
         // the way to set this two lists and two create two maps of responses (the good and the one)
         responseList.each { LiveSessionResponse response ->
             if (response.percentCredit == 100) {
                 goodResponseIdList << response.id
+                if (response.explanation?.content?.size() > MIN_SIZE_OF_EXPLANATION_TO_BE_EVALUATED) {
+                    goodResponseConflictIdList << response.id
+                }
             } else {
                 badResponseIdList << response.id
+                if (response.explanation?.content?.size() > MIN_SIZE_OF_EXPLANATION_TO_BE_EVALUATED) {
+                    badResponseConflictIdList << response.id
+                }
             }
         }
         def map
-        // if one of the list is empty, only one value list
-        if (goodResponseIdList.size() == 0) {
-            map = responseValByResponseKey(badResponseIdList, badResponseIdList)
-        } else if (badResponseIdList.size() == 0) {
-            map = responseValByResponseKey(goodResponseIdList, goodResponseIdList)
-        } else {
-            def map1 = responseValByResponseKey(goodResponseIdList, badResponseIdList)
-            def map2 = responseValByResponseKey(badResponseIdList, goodResponseIdList)
-            map = map1 + map2
-        }
+        def map1 = responseValByResponseKey(goodResponseIdList, badResponseConflictIdList)
+        def map2 = responseValByResponseKey(badResponseIdList, goodResponseConflictIdList)
+        map = map1 + map2
         map
 
     }
 
     public Map<Long, Long> responseValByResponseKey(List<Long> responseKeyList, List<Long> responseValueList) {
+        if (responseValueList.isEmpty()) {
+            return [:]
+        }
         Map<Long, Long> res = [:]
         def valuesCount = Math.min(4, responseValueList.size())
         // apply round robin algorithm

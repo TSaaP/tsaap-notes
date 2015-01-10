@@ -71,6 +71,20 @@
 <r:layoutResources/>
 <footer class="container">
     <p>&copy; Tsaap Development Group 2013 - Tsaap-Notes version <g:meta name="app.version"/> - <a href="${grailsApplication.config.grails.serverURL}/terms">Mentions</a></p>
+  <g:if env="development">
+    <sec:ifNotSwitched>
+      <form action='${request.contextPath}/j_spring_security_switch_user' method='POST'>
+        Switch to user: <input type='text' name='j_username'/>
+        <input type='submit' value='Switch'/>
+      </form>
+    </sec:ifNotSwitched>
+    <sec:ifSwitched>
+      <a href='${request.contextPath}/j_spring_security_exit_user'>
+        Resume as <sec:switchedUserOriginalUsername/>
+      </a>
+    </sec:ifSwitched>
+  </g:if>
+  <p></p>
 </footer>
 </body>
 </html>

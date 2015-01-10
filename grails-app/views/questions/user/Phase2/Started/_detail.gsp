@@ -29,19 +29,23 @@
         <g:set var="firstPhase" value="${sessionPhase.liveSession.findFirstPhase()}"/>
         <g:set var="firstResponse" value="${firstPhase.getResponseForUser(user)}"/>
         <g:set var="altResponse" value="${firstPhase.findConflictResponseForResponse(firstResponse)}"/>
-
-        <p>Here is an alternative response to yours.<br/>
-            Please examine this response and then feel free to change your response, explanation or confidence degree if necessary.</p>
-        <div class="alert alert-info">
-            <p>
-                <g:each in="${altResponse?.userResponse?.userAnswerBlockList}" var="answerBlock">
-                    <g:each in="${answerBlock.answerList}" var="answer">
-                        ${answer.textValue}<br/>
+        <g:if test="${altResponse}">
+            <p>Here is an alternative response to yours.<br/>
+                Please examine this response and then feel free to change your response, explanation or confidence degree if necessary.</p>
+            <div class="alert alert-info">
+                <p>
+                    <g:each in="${altResponse?.userResponse?.userAnswerBlockList}" var="answerBlock">
+                        <g:each in="${answerBlock.answerList}" var="answer">
+                            ${answer.textValue}<br/>
+                        </g:each>
                     </g:each>
-                </g:each>
-            <p>${altResponse?.explanation?.content}</p>
-        </div>
-        <hr/>
+                <p>${altResponse?.explanation?.content}</p>
+            </div>
+            <hr/>
+        </g:if>
+        <g:else>
+           <p>You get a new chance to answer !</p>
+        </g:else>
         <g:form >
             <g:hiddenField name="phaseId" value="${sessionPhase.id}"/>
             <g:hiddenField name="noteId" value="${note.id}"/>

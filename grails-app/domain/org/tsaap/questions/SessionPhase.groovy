@@ -213,6 +213,9 @@ class SessionPhase {
      * @return the conflict response
      */
     LiveSessionResponse findConflictResponseForResponse(LiveSessionResponse response) {
+        if (response == null) {
+            return null
+        }
         Map<String,Long> map = getMappingResponseConflictResponseAsMap()
         String key = response.id as String
         Long val = map.get(key)
@@ -220,6 +223,9 @@ class SessionPhase {
     }
 
     List<LiveSessionResponse> findAllResponsesToEvaluateForResponse(LiveSessionResponse response) {
+        if (response == null) {
+            return []
+        }
         Map<String,List<Long>> map = getMappingUserExplanationAsMap()
         String key = response.userId as String
         List<Long> respIds = map.get(key)

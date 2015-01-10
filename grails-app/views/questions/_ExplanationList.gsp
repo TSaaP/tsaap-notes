@@ -19,7 +19,7 @@
         <g:set var="explanation" value="${response?.explanation}"/>
         <g:if test="${explanation}">
             <div class="alert alert-info">
-                <strong><g:formatNumber number="${explanation.grade}" format="###,##"/>/5  @${explanation.author.username} <br/></strong>
+                <strong><g:formatNumber number="${explanation.grade}" type="number" maxFractionDigits="2"/> /5  @${explanation.author.username} <br/></strong>
                 ${explanation.content}
             </div>
 
@@ -32,7 +32,7 @@
         <g:set var="explanation" value="${theResponse?.explanation}"/>
         <g:if test="${explanation}">
             <div class="alert alert-info">
-                <strong><g:formatNumber number="${explanation.grade}" format="###,##"/>/5  @${explanation.author.username} <br/></strong>
+                <strong><g:formatNumber number="${explanation.grade}" type="number" maxFractionDigits="2"/> /5  @${explanation.author.username} <br/></strong>
                 ${explanation.content}
             </div>
         </g:if>

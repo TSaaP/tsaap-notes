@@ -187,6 +187,10 @@ class Note {
     boolean hasBeenAlreadyEvaluatedByUser(User user) {
         NoteGrade.findByNoteAndUser(this, user)
     }
+
+    int evaluationCount() {
+        NoteGrade.countByNote(this)
+    }
 }
 
 enum NoteKind {

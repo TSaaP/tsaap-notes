@@ -153,6 +153,9 @@ class NotesController {
             fragmentTag = Tag.get(params.fragmentTagId)
         } else if (params.fragmentTagName && params.fragmentTagName != 'null') {
             fragmentTag = Tag.findOrSaveWhere(name: params.fragmentTagName.toLowerCase())
+            if (fragmentTag != null) {
+                params.fragmentTagId = fragmentTag.id
+            }
         }
         def displaysMyNotes = true
         def displaysMyFavorites = false

@@ -84,12 +84,12 @@
           <g:if test="${context.isFollowedByUser(user)}">
           <td><g:link controller="context" action="unfollowContext" id="${context.id}" style="width: 90px;"
                       class="btn btn-info btn-xs" onmouseover='updateFollowLink($(this),"Unfollow","btn-danger")'
-                      onmouseout='updateFollowLink($(this),"Following","btn-info")'>Following</g:link></td>
+                      onmouseout='updateFollowLink($(this),"Following","btn-info")' params="${[filter:params.filter?:'']}">Following</g:link></td>
           </g:if>
           <g:else>
             <td>
             <g:link controller="context" action="followContext" style="width: 90px;"
-                                  class="btn btn-default btn-xs" id="${context.id}">Follow</g:link>
+                                  class="btn btn-default btn-xs" id="${context.id}" params="${[filter:params.filter?:'']}">Follow</g:link>
             </td>
           </g:else>
         </g:if>

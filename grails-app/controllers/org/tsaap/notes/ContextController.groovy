@@ -20,8 +20,8 @@ class ContextController {
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def index(Integer max, String filter) {
         params.max = Math.min(max ?: 10, 100)
-        params.sort = params.sort ?: 'contextName'
-        params.order = params.order ?: 'asc'
+        params.sort = params.sort ?: 'dateCreated'
+        params.order = params.order ?: 'desc'
         User user = springSecurityService.currentUser
         def contextList
         def contextCount = 0
@@ -141,7 +141,7 @@ class ContextController {
         contextService.subscribeUserOnContext(springSecurityService.currentUser, context)
         request.withFormat {
             html {
-                redirect action: "index", method: "GET"
+                redirect action: "index", method: "GET", params: params
             }
             '*' { respond context, [status: OK] }
         }
@@ -158,7 +158,7 @@ class ContextController {
         contextService.unsuscribeUserOnContext(springSecurityService.currentUser, context)
         request.withFormat {
             html {
-                redirect action: "index", method: "GET"
+                redirect action: "index", method: "GET",params: params
             }
             '*' { respond context, [status: OK] }
         }

@@ -3,6 +3,7 @@ package org.tsaap.questions
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 import org.gcontracts.annotations.Requires
+import org.hibernate.StaleObjectStateException
 import org.tsaap.directory.User
 import org.tsaap.notes.Note
 import org.tsaap.questions.impl.gift.GiftQuestionService
@@ -68,7 +69,12 @@ class LiveSession {
         if (shouldBuildResultMatrix) {
             updateResultMatrixAsJson()
         }
-        save(flush: true)
+        try {
+            save(flush: true)
+        } catch(StaleObjectStateException sose) {
+            log.error(sose.message)
+            refresh()
+        }
         if (hasErrors()) {
             log.error(errors.allErrors)
         }

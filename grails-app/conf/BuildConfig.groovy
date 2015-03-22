@@ -40,6 +40,7 @@ grails.project.dependency.resolution = {
         grailsCentral()
         mavenLocal()
         mavenCentral()
+        mavenRepo "http://repo.grails.org/grails/core"
         // uncomment the below to enable remote dependency resolution
         // from public Maven repositories
         //mavenRepo "http://repository.codehaus.org"
@@ -51,7 +52,7 @@ grails.project.dependency.resolution = {
         runtime 'mysql:mysql-connector-java:5.1.24'
         compile 'org.gcontracts:gcontracts-grails:1.2.12'
         compile 'org.liquibase:liquibase-core:3.2.2'
-
+        compile 'commons-beanutils:commons-beanutils:1.8.3'
     }
 
     plugins {
@@ -74,6 +75,8 @@ grails.project.dependency.resolution = {
 
         compile ":mail:1.0.1"
         compile ":quartz:1.0"
+
+        compile ":export:1.6"
 
     }
 }

@@ -116,23 +116,23 @@ class StatisticsService {
             setLong('liveSessionId', liveSession.id)
             list()
         }
-        res.numberOfUserHavingGivenAnEvaluation = queryResults.get(0).userCount
-        res.meanOfExplanationPerEvaluator = queryResults.get(0).avgEvalCount
+        res.numberOfUserHavingGivenAnEvaluation = queryResults.get(0).getAt(0)
+        res.meanOfExplanationPerEvaluator = queryResults.get(0).getAt(1)
 
         sqlQuery = currentSession.createSQLQuery(queryMeanOfEvaluationPerExplanations)
         queryResults = sqlQuery.with {
             setLong('liveSessionId', liveSession.id)
             list()
         }
-        res.meanOfEvaluationPerExplanations = queryResults.get(0).avg_count_grade
-        res.numberOfEvaluatedExplanations = queryResults.get(0).count_expl
+        res.meanOfEvaluationPerExplanations = queryResults.get(0).getAt(1)
+        res.numberOfEvaluatedExplanations = queryResults.get(0).getAt(0)
 
         sqlQuery = currentSession.createSQLQuery(queryMeanOfStandardDeviationOnEvalutations)
         queryResults = sqlQuery.with {
             setLong('liveSessionId', liveSession.id)
             list()
         }
-        res.meanOfStandardDeviationOnEvalutations = queryResults.get(0).covar
+        res.meanOfStandardDeviationOnEvalutations = queryResults.get(0)
 
         //
         // return res

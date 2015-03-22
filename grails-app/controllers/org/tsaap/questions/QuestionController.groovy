@@ -2,6 +2,7 @@ package org.tsaap.questions
 
 import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
+import org.tsaap.directory.User
 import org.tsaap.notes.Note
 import org.tsaap.notes.NoteService
 
@@ -12,6 +13,10 @@ class QuestionController {
     LiveSessionService liveSessionService
     NoteService noteService
     StatisticsService statisticsService
+
+    // for export stats
+    def exportService
+    def grailsApplication
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def startLiveSession() {
@@ -160,9 +165,16 @@ class QuestionController {
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def statistics() {
+        User user = springSecurityService.currentUser
         LiveSession liveSession = LiveSession.get(params.id)
         NPhasesLiveSessionStatistics stats = statisticsService.getNPhasesLiveSessionStatisticsForLiveSession(liveSession)
-        log.error(stats)
+        if(params?.format && params.format != "html"){
+            response.contentType = grailsApplication.config.grails.mime.types[params.format]
+            response.setHeader("Content-disposition", "attachment; filename=tsaapNotesStats.${params.extension}")
+
+            exportService.export(params.format, response.outputStream,[stats], [:], [:])
+        }
+        render(view: '/questions/nPhasesLiveSessionStats',model: [stats:stats, user:user])
     }
 
     private String buildAnswerAsStringFromAnswers(List<String> answers) {

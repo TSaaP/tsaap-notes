@@ -4,6 +4,8 @@ import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
 import org.tsaap.directory.User
+import org.tsaap.questions.LiveSession
+import org.tsaap.questions.StatisticsService
 import org.tsaap.questions.export.ExportAsGiftService
 
 import static org.springframework.http.HttpStatus.*
@@ -16,6 +18,11 @@ class ContextController {
     SpringSecurityService springSecurityService
     ContextService contextService
     ExportAsGiftService exportAsGiftService
+    StatisticsService statisticsService
+
+    // for export stats
+    def exportService
+    def grailsApplication
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def index(Integer max, String filter) {
@@ -195,6 +202,32 @@ class ContextController {
         }
         def newContext = contextService.duplicateContext(context,springSecurityService.currentUser)
         redirect action: "edit", controller: "context", id: newContext.id
+    }
+
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def statistics() {
+        User user = springSecurityService.currentUser
+        Context context = Context.get(params.id)
+        List liveSessionIds = contextService.findAllNphaseLiveSessionIdsForContext(context)
+        def statsList = []
+        liveSessionIds.each {
+            statsList << statisticsService.getNPhasesLiveSessionStatisticsForLiveSessionId(it as Long)
+        }
+        Map labels = statisticsService.nPhaseSessionStatsLabels()
+        if(params?.format && params.format != "html"){
+            response.contentType = grailsApplication.config.grails.mime.types[params.format]
+            response.setHeader("Content-disposition", "attachment; filename=tsaapNotesStats.${params.extension}")
+            exportService.export(
+                    params.format,
+                    response.outputStream,
+                    statsList,
+                    labels.keySet() as List,
+                    labels,
+                    [:],
+                    [:]
+            )
+        }
+        render(view: '/context/contextStats',model: [stats:statsList, labels: labels,user:user, context: context])
     }
 
     protected void notFound() {

@@ -141,6 +141,16 @@ class StatisticsService {
 
     }
 
+    /**
+     * Get statistics on a live session id
+     * @param liveSessionId the live session id
+     * @return the built NPhasesLiveSessionStatistics
+     */
+    NPhasesLiveSessionStatistics getNPhasesLiveSessionStatisticsForLiveSessionId(Long liveSessionId) {
+        LiveSession liveSession = LiveSession.get(liveSessionId)
+        getNPhasesLiveSessionStatisticsForLiveSession(liveSession)
+    }
+
     Map nPhaseSessionStatsLabels() {
         [
                 contextId: "Context id",

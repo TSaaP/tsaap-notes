@@ -3,21 +3,27 @@ package org.tsaap.notes
 import grails.gorm.PagedResultList
 import org.gcontracts.annotations.Requires
 import org.gcontracts.annotations.Ensures
+import org.hibernate.SQLQuery
+import org.hibernate.Session
+import org.hibernate.SessionFactory
 import org.tsaap.CustomPagedResultList
 import org.tsaap.directory.User
+import org.tsaap.questions.LiveSession
 
 class ContextService {
+
+
+
+    public static final String SUFFIXE_COPY = "-copy"
+
+    NoteService noteService
+    SessionFactory sessionFactory
 
     /**
      * Add a new context
      * @param context
      * @return
      */
-
-    public static final String SUFFIXE_COPY = "-copy"
-
-    NoteService noteService
-
     @Requires({ context })
     Context saveContext(Context context, Boolean flush = false) {
         context.save(flush: flush)
@@ -167,5 +173,20 @@ class ContextService {
         newContext
     }
 
+    /**
+     * Find all n phases session id for a context
+     * @param context the context
+     * @return the list of live session id
+     */
+    List findAllNphaseLiveSessionIdsForContext(Context context) {
+        String query = 'select `live_session`.id from `live_session`, `session_phase`,`note`, `context` where `session_phase`.`live_session_id` = `live_session`.`id` and `live_session`.`note_id` = `note`.id and `note`.`context_id` = `context`.id and `session_phase`.`rank` = 3 and `session_phase`.`status` = \'Ended\' and `context`.id = :contextId'
+        Session currentSession = sessionFactory.currentSession
+        SQLQuery sqlQuery = currentSession.createSQLQuery(query)
+        def queryResults = sqlQuery.with {
+            setLong('contextId', context.id)
+            list()
+        }
+        queryResults
 
+    }
 }

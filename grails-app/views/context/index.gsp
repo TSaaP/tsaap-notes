@@ -97,6 +97,9 @@
           <td>
               <g:form action="duplicateContext" controller="context" id="${context.id}"><button class="btn btn-default btn-xs" type="submit">Duplicate</button></g:form>
           </td>
+          <td>
+              <g:link action="statistics" controller="context" id="${context.id}" class="btn btn-default btn-xs">Generate stats</g:link>
+          </td>
         </g:else>
         <td><g:link controller="notes"
                            params="[displaysAll: 'on', contextName: context.contextName, contextId: context.id]" class="btn btn-default btn-xs">Les notes</g:link></td>

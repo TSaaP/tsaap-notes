@@ -4,7 +4,6 @@ import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
 import org.tsaap.directory.User
-import org.tsaap.questions.LiveSession
 import org.tsaap.questions.StatisticsService
 import org.tsaap.questions.export.ExportAsGiftService
 
@@ -227,7 +226,7 @@ class ContextController {
                     [:]
             )
         }
-        render(view: '/context/contextStats',model: [stats:statsList, labels: labels,user:user, context: context])
+        render(view: '/context/contextNPhaseSessionsStats',model: [stats:statsList, labels: labels,user:user, context: context])
     }
 
     protected void notFound() {

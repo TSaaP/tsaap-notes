@@ -171,8 +171,7 @@ class QuestionController {
         if(params?.format && params.format != "html"){
             response.contentType = grailsApplication.config.grails.mime.types[params.format]
             response.setHeader("Content-disposition", "attachment; filename=tsaapNotesStats.${params.extension}")
-
-            exportService.export(params.format, response.outputStream,[stats], [:], [:])
+            exportService.export(params.format, response.outputStream,[stats],[:], [:])
         }
         render(view: '/questions/nPhasesLiveSessionStats',model: [stats:stats, user:user])
     }

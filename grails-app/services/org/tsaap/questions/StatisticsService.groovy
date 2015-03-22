@@ -140,4 +140,39 @@ class StatisticsService {
         res
 
     }
+
+    Map nPhaseSessionStatsLabels() {
+        [
+                contextId: "Context id",
+                contextName: "Context name",
+                liveSessionId: "Live session id",
+                numberOfPresents: "Number of presents",
+
+                numberOfAnswersOnPhase1 : "Phase 1: number of answers",
+                numberOfAnswersOnPhase2 : "Phase 2: number of answers",
+
+                numberOfGoodAnswersOnPhase1: "Phase 1: number of good answers",
+                numberOfGoodAnswersOnPhase2: "Phase 2: number of good answers",
+
+                numberOfBadAnswersOnPhase1: "Phase 1: number of bad answers",
+                numberOfBadAnswersOnPhase2: "Phase 2: number of bad answers",
+
+                numberOfExplanationsOnPhase1:"Phase 1: number of explanations",
+                numberOfExplanationsOnPhase2:"Phase 2: number of explanations",
+
+                numberOfGoodExplanationsOnPhase1:"Phase 1: number of good explanations",
+                numberOfGoodExplanationsOnPhase2:"Phase 2: number of good explanations",
+
+                numberOfBadExplanationsOnPhase1:"Phase 1: number of bad explanations",
+                numberOfBadExplanationsOnPhase2:"Phase 2: number of bad explanations",
+
+                numberOfEvaluatedExplanations:"Phase 3: number of evaluated explanations",
+                numberOfUserHavingGivenAnEvaluation:"Phase 3: number of evaluators",
+                meanOfEvaluationPerExplanations:"Phase 3: avg evaluations per explanations",
+                meanOfExplanationPerEvaluator: "Phase 3: avg explanations per evaluator",
+                meanOfStandardDeviationOnEvalutations: "Phase 3: avg standard deviation"
+
+
+        ]
+    }
 }

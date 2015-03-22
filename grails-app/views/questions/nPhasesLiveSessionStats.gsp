@@ -37,8 +37,22 @@
 
 <body>
 <div class="container">
-    <export:formats params="[id:stats.liveSessionId]" controller="question" action="statistics"/>
-    ${stats.toString()}
+    <export:formats params="[id: liveSession.id]" controller="question" action="statistics"/>
+    <hr/>
+    <table class="table">
+        <tr>
+            <g:each in="${labels.keySet()}" var="propName">
+                <th style="border: medium">${propName}</th>
+            </g:each>
+        </tr>
+    <g:each in="${stats}" var="currentStats">
+        <tr>
+            <g:each in="${labels.keySet()}" var="propName">
+                <td>${currentStats."$propName"}</td>
+            </g:each>
+            </tr>
+    </g:each>
+    </table>
     <hr/>
 </div>
 

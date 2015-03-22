@@ -168,12 +168,21 @@ class QuestionController {
         User user = springSecurityService.currentUser
         LiveSession liveSession = LiveSession.get(params.id)
         NPhasesLiveSessionStatistics stats = statisticsService.getNPhasesLiveSessionStatisticsForLiveSession(liveSession)
+        Map labels = statisticsService.nPhaseSessionStatsLabels()
         if(params?.format && params.format != "html"){
             response.contentType = grailsApplication.config.grails.mime.types[params.format]
             response.setHeader("Content-disposition", "attachment; filename=tsaapNotesStats.${params.extension}")
-            exportService.export(params.format, response.outputStream,[stats],[:], [:])
+            exportService.export(
+                    params.format,
+                    response.outputStream,
+                    [stats],
+                    labels.keySet() as List,
+                    labels,
+                    [:],
+                    [:]
+            )
         }
-        render(view: '/questions/nPhasesLiveSessionStats',model: [stats:stats, user:user])
+        render(view: '/questions/nPhasesLiveSessionStats',model: [stats:[stats], labels: labels,user:user, liveSession: liveSession])
     }
 
     private String buildAnswerAsStringFromAnswers(List<String> answers) {

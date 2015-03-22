@@ -26,4 +26,5 @@
     <hr/>
     <g:set var="responses" value="${liveSession.findAllGoodResponses(sessionPhase)}"/>
     <g:render template="/questions/ExplanationList" model="[responses:responses]"/>
+    <g:link controller="question" action="statistics" id="${liveSession.id}">Generate stats</g:link>
 </g:if>

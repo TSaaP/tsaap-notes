@@ -16,15 +16,20 @@
 
 package org.tsaap.questions
 
+import groovy.transform.ToString
+
 
 /**
  * Created by franck on 21/03/15.
  */
+@ToString(includeNames=true)
 class NPhasesLiveSessionStatistics {
 
     Long contextId
     String contextName
     Long liveSessionId
+
+    Integer numberOfPresents
 
     Integer numberOfAnswersOnPhase1
     Integer numberOfGoodAnswersOnPhase1
@@ -44,6 +49,7 @@ class NPhasesLiveSessionStatistics {
 
     Integer numberOfUserHavingGivenAnEvaluation
     Double meanOfEvaluationPerExplanations
+    Integer numberOfEvaluatedExplanations
     Double meanOfExplanationPerEvaluator
     Double meanOfStandardDeviationOnEvalutations
 }

@@ -11,6 +11,7 @@ class QuestionController {
     SpringSecurityService springSecurityService
     LiveSessionService liveSessionService
     NoteService noteService
+    StatisticsService statisticsService
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def startLiveSession() {
@@ -155,6 +156,13 @@ class QuestionController {
         } else {
             render(template: "/questions/${userType}/${phase.liveSession.status}/detail", model: [note: note, liveSession: phase.liveSession, user: currentUser])
         }
+    }
+
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def statistics() {
+        LiveSession liveSession = LiveSession.get(params.id)
+        NPhasesLiveSessionStatistics stats = statisticsService.getNPhasesLiveSessionStatisticsForLiveSession(liveSession)
+        log.error(stats)
     }
 
     private String buildAnswerAsStringFromAnswers(List<String> answers) {

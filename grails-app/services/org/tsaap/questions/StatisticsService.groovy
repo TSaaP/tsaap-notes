@@ -107,17 +107,37 @@ class StatisticsService {
         // On evaluations
         //
 
-        String queryNumberOfUserHavingGivenAnEvaluation = 'select count(*), avg(temp_table.number_exp_eval) from (select user_id, count(*) as number_exp_eval from `note_grade`, `note`, `live_session`  where `live_session`.id = :liveSessionId and `note_grade`.`note_id` = `note`.`id` and `note`.`parent_note_id` = `live_session`.`note_id` group by `user_id`) as temp_table;'
-        String queryMeanOfEvaluationPerExplanations = ''
-        String queryMeanOfExplanationPerEvaluator = ''
-        String queryMeanOfStandardDeviationOnEvalutations = ''
+        String queryNumberOfUserHavingGivenAnEvaluation = 'select count(*) as userCount, avg(temp_table.number_exp_eval) as avgEvalCount from (select user_id, count(*) as number_exp_eval from `note_grade`, `note`, `live_session`  where `live_session`.id = :liveSessionId and `note_grade`.`note_id` = `note`.`id` and `note`.`parent_note_id` = `live_session`.`note_id` group by `user_id`) as temp_table;'
+        String queryMeanOfEvaluationPerExplanations = 'select count(*) as count_expl, avg(count_note) as avg_count_grade from (select `note_grade`.note_id, count(*) as count_note from `note_grade`, `note`, `live_session`  where `live_session`.id = :liveSessionId and `note_grade`.`note_id` = `note`.`id` and `note`.`parent_note_id` = `live_session`.`note_id` group by `note_id`) as notes;'
+        String queryMeanOfStandardDeviationOnEvalutations = 'select avg(covar) as covar from (select `note_grade`.note_id, sqrt(variance(`note_grade`.`grade`)) as covar from `note_grade`, `note`, `live_session`  where `live_session`.id = :liveSessionId and `note_grade`.`note_id` = `note`.`id` and `note`.`parent_note_id` = `live_session`.`note_id` group by note_id) as res;'
 
         sqlQuery = currentSession.createSQLQuery(queryNumberOfUserHavingGivenAnEvaluation)
         queryResults = sqlQuery.with {
             setLong('liveSessionId', liveSession.id)
             list()
         }
-        res.numberOfUserHavingGivenAnEvaluation = queryResults.get(0)
+        res.numberOfUserHavingGivenAnEvaluation = queryResults.get(0).userCount
+        res.meanOfExplanationPerEvaluator = queryResults.get(0).avgEvalCount
+
+        sqlQuery = currentSession.createSQLQuery(queryMeanOfEvaluationPerExplanations)
+        queryResults = sqlQuery.with {
+            setLong('liveSessionId', liveSession.id)
+            list()
+        }
+        res.meanOfEvaluationPerExplanations = queryResults.get(0).avg_count_grade
+        res.numberOfEvaluatedExplanations = queryResults.get(0).count_expl
+
+        sqlQuery = currentSession.createSQLQuery(queryMeanOfStandardDeviationOnEvalutations)
+        queryResults = sqlQuery.with {
+            setLong('liveSessionId', liveSession.id)
+            list()
+        }
+        res.meanOfStandardDeviationOnEvalutations = queryResults.get(0).covar
+
+        //
+        // return res
+
+        res
 
     }
 }

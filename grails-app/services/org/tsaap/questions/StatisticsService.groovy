@@ -19,7 +19,9 @@ class StatisticsService {
         NPhasesLiveSessionStatistics res = new NPhasesLiveSessionStatistics(
                 liveSessionId: liveSession.id,
                 contextId: liveSession?.note?.contextId,
-                contextName: liveSession?.note?.context?.contextName
+                contextName: liveSession?.note?.context?.contextName,
+                liveSessionStartDate: liveSession.startDate,
+                liveSessionEndDate: liveSession.endDate
         )
         // the stats
         Session currentSession = sessionFactory.currentSession
@@ -156,6 +158,9 @@ class StatisticsService {
                 contextId: "Context id",
                 contextName: "Context name",
                 liveSessionId: "Live session id",
+                liveSessionStartDate: "Start date",
+                liveSessionEndDate: "End date",
+
                 numberOfPresents: "Number of presents",
 
                 numberOfAnswersOnPhase1 : "Phase 1: number of answers",

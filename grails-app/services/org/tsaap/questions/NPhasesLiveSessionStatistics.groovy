@@ -28,6 +28,8 @@ class NPhasesLiveSessionStatistics {
     Long contextId
     String contextName
     Long liveSessionId
+    Date liveSessionStartDate
+    Date liveSessionEndDate
 
     Integer numberOfPresents
 

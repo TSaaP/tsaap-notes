@@ -28,8 +28,8 @@ environments {
     dataSource {
       driverClassName = "com.mysql.jdbc.Driver"
       dialect = "org.hibernate.dialect.MySQL5InnoDBDialect"
-      //url = "jdbc:mysql://localhost/tsaap-notes"
-      url = "jdbc:mysql://localhost/tsaap-notes-dump"
+      url = "jdbc:mysql://localhost/tsaap-notes"
+      //url = "jdbc:mysql://localhost/tsaap-notes-dump"
       username = "tsaap"
       password = "tsaap"
       logSql = true

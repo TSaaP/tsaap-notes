@@ -2,7 +2,7 @@
 
 <div id="edit_tab_${idControllSuffix}">
 
-    <g:form method="post" controller="notes" action="addNote">
+    <g:form method="post" controller="notes" action="addNote" enctype="multipart/form-data">
         <g:hiddenField name="inline" value="${params.inline}"/>
         <g:hiddenField name="contextId" value="${context?.id}"
                        id="contextIdInAddForm${idControllSuffix}"/>
@@ -12,6 +12,7 @@
         <g:hiddenField name="displaysMyFavorites"
                        id="displaysMyFavoritesInAddForm${idControllSuffix}"/>
         <g:hiddenField name="displaysAll" id="displaysAllInAddForm${idControllSuffix}"/>
+        <label>Image (gif, jpeg and png only)<input style="display: inline-block" type="file" name="myFile"/></label>
         <textarea class="form-control note-editable-content" rows="3" id="noteContent${idControllSuffix}"
                   name="noteContent"
                   maxlength="560">${parentNote ? '@' + parentNote.author?.username + ' ' : ''}</textarea>

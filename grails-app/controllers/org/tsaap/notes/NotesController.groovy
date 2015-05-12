@@ -29,6 +29,8 @@ class NotesController {
     NoteService noteService
     GiftQuestionService giftQuestionService
 
+    private static final okcontents = ['image/png', 'image/jpeg', 'image/gif']
+
     /**
      *
      * @return
@@ -62,6 +64,16 @@ class NotesController {
             if (!fragmentTag) {
                 fragmentTag = parentNote.fragmentTag
             }
+        }
+
+        Image image = new Image()
+        def file = request.getFile('myFile')
+        String nom_image = file.getOriginalFilename()
+        if (okcontents.contains(file.getContentType())) {
+            image.myFile = file.getBytes()
+            image.save()
+            file.transferTo(new File('/home/dorian/Images/'+nom_image))
+
         }
 
         noteService.addNote(user, noteContent, context, fragmentTag, parentNote)

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-  ~ Copyright 2014 Tsaap Development Group
+  ~ Copyright 2015 Tsaap Development Group
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -22,10 +22,14 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <include file="fromscratch/changelog-tsaap-notes-all.xml" relativeToChangelogFile="true"/>
-    <include file="changelog-44.xml" relativeToChangelogFile="true"/>
-    <include file="changelog-46.xml" relativeToChangelogFile="true"/>
-    <include file="changelog-47.xml" relativeToChangelogFile="true"/>
-    <include file="changelog-58.xml" relativeToChangelogFile="true"/>
-    <include file="changelog-63.xml" relativeToChangelogFile="true"/>
+    <changeSet id="1" author="drol">
+        <createTable tableName="image">
+            <column  name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="valeur" type="varchar(255)"/>
+        </createTable>
+    </changeSet>
+
+
 </databaseChangeLog>

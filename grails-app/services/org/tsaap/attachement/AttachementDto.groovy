@@ -3,9 +3,6 @@ package org.tsaap.attachement
 /**
  * Created by dylan on 13/05/15.
  */
-/**
- * @author John Tranier
- */
 class AttachementDto {
     long size
     String typeMime

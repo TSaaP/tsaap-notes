@@ -18,6 +18,8 @@ package org.tsaap.notes
 
 import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
+import org.tsaap.attachement.AttachementDto
+import org.tsaap.attachement.AttachementService
 import org.tsaap.directory.User
 import org.tsaap.questions.Question
 import org.tsaap.questions.impl.gift.GiftQuestionService
@@ -28,6 +30,7 @@ class NotesController {
     SpringSecurityService springSecurityService
     NoteService noteService
     GiftQuestionService giftQuestionService
+    AttachementService attachementService
 
     private static final okcontents = ['image/png', 'image/jpeg', 'image/gif']
 
@@ -69,11 +72,17 @@ class NotesController {
         Attachement attachementNote = null
         def file = request.getFile('myFile')
         String nom_image = file.getOriginalFilename()
+        boolean image = false
         if (okcontents.contains(file.getContentType())) {
+            attachementNote = attachementService.createAttachementForMultipartFile(file)
+            image = true
             file.transferTo(new File('/home/dorian/Images/'+nom_image))
         }
 
-        noteService.addNote(user, noteContent, context, fragmentTag, parentNote)
+        Note myNote = noteService.addNote(user, noteContent, context, fragmentTag, parentNote)
+        if(image){
+           attachementNote = attachementService.addNoteToAttachement(myNote,attachementNote)
+        }
 
         params.remove('noteContent')
         redirect(action: index(), params: params)

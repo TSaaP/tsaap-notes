@@ -1,17 +1,24 @@
 package org.tsaap
 
 import org.tsaap.directory.User
+import org.tsaap.notes.Note
+import org.tsaap.notes.NoteService
 
 class BootstrapTestService {
+
+    NoteService noteService
 
     User learnerPaul
     User teacherJeanne
     User learnerMary
     List<User> learners = []
+    Note note1
+    Note note2
 
 
     def initializeTests() {
         initializeUsers()
+        initializeNotes()
     }
 
     def initializeUsers() {
@@ -36,5 +43,14 @@ class BootstrapTestService {
         }
 
 
+    }
+
+    def initializeNotes(){
+        if(!note1){
+            note1 = noteService.addNote(learnerPaul,"content note 1")
+        }
+        if(!note2) {
+            note2 = noteService.addNote(learnerMary,"content note 2")
+        }
     }
 }

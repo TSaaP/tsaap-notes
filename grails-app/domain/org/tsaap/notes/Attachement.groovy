@@ -1,7 +1,7 @@
 package org.tsaap.notes
 
 /**
- * Classe représentant une fichier attaché à un objet du domaine
+ * Classe représentant un fichier attaché à un objet du domaine
  * @author franck Silvestre
  */
 class Attachement {
@@ -19,12 +19,14 @@ class Attachement {
     Dimension dimension
     String typeMime
     Note note
+    Context context
 
     static constraints = {
         size nullable: true
         typeMime nullable: true
         originalName nullable: true
         dimension nullable: true
+        context nullable: true
     }
 
     static embedded = ['dimension']

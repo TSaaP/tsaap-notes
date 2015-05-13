@@ -1,11 +1,12 @@
 package org.tsaap.attachement
 
 import groovy.transform.ToString
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import org.tsaap.notes.Attachement
+import org.tsaap.notes.Context
 import org.tsaap.notes.Dimension
+import org.tsaap.notes.Note
 import org.tsaap.uploadImage.DataIdentifier
 import org.tsaap.uploadImage.DataRecord
 import org.tsaap.uploadImage.DataStore
@@ -22,9 +23,9 @@ class AttachementService {
 
     /**
      * Create an Attachement object from a HTTP request
-     * encapsulant la pièce jointe
+     * with join file
      * @param file the file from the request
-     * @return l'objet Attachment
+     * @return Attachement object
      */
     @Transactional
     Attachement createAttachementForMultipartFile(
@@ -43,8 +44,7 @@ class AttachementService {
                         name: file.originalFilename,
                         originalFileName: file.originalFilename,
                         bytes: file.bytes
-                ),
-        )
+                ), 10)
     }
 
     @Transactional
@@ -60,8 +60,9 @@ class AttachementService {
                 name: attachementDto.name,
                 originalName: attachementDto.originalFileName,
         )
+
         DataRecord dataRecord = dataStore.addRecord(attachementDto.inputStream)
-        attachement.size = dataRecord.identifier.toString()
+        attachement.path = dataRecord.identifier.toString()
         if (attachement.estUneImageAffichable()) {
             attachement.dimension = determinerDimension(attachementDto.inputStream)
         }
@@ -71,16 +72,13 @@ class AttachementService {
 
     /**
      * Create an Attachement from an ImageIds object
-     * @param file l'objet de type ImageIds
-     * @return l'objet Attachment
+     * @param file ImageIds object type
+     * @return Attachement object
      */
     @Transactional
     Attachement createAttachementForImageIds(
             ImageIds file) {
 
-        // par defaut un nouvel attachement est marque a supprimer
-        // c'est à la création d'un lien vers un item qu'il faut le
-        // considérer comme attaché et donc comme non à supprimer
         Attachement attachement = new Attachement(
                 size: file.size,
                 typeMime: file.contentType,
@@ -93,11 +91,9 @@ class AttachementService {
     }
 
     /**
-     * Retourne l'objet File correspondant à un attachement
-     * @param attachement l'attachement
-     *
-     * @param config le config object
-     * @return l'objet de type File
+     * Return File object matching to an Attachement
+     * @param attachement the attachement
+     * @return File object type
      */
     InputStream getInputStreamForAttachement(Attachement attachement) {
         DataRecord dataRecord = dataStore.getRecord(new DataIdentifier(attachement.size))
@@ -105,9 +101,9 @@ class AttachementService {
     }
 
     /**
-     * Encode en base 64 un attachement
-     * @param attachement l'attachement à econder
-     * @return l'attachement encodé
+     * Encode in base 64 an attachement
+     * @param attachement attachement to encode
+     * @return the encode attachement
      */
     String encodeToBase64(Attachement attachement) {
         ByteArrayOutputStream bos
@@ -125,10 +121,10 @@ class AttachementService {
     }
 
     /**
-     * Determine les dimensions d'un image.
-     * @param imageFile objet du fichier de l'image à analyser
-     * @param fileName non d'origine du fichier.
-     * @return les dimensions du fichier.
+     * Determine image dimensions
+     * @param imageFile file to analyse
+     * @param fileName file original name
+     * @return file dimensions
      */
     private Dimension determinerDimension(InputStream inputStream) {
 
@@ -151,11 +147,21 @@ class AttachementService {
             reader?.dispose()
         }
     }
+
+    Attachement addNoteToAttachement(Note myNote, Attachement myAttachement){
+        myAttachement.setNote(myNote)
+        myAttachement
+    }
+
+    Attachement addContextToAttachement(Context myContext, Attachement myAttachement){
+        myAttachement.setContext(myContext)
+        myAttachement
+    }
+
 }
 
 /**
- * Class représentant une image déjà chargée dans le DataStore (une image
- * importée par exemple)
+ * Class reprensenting an image already upload in DataStore
  */
 @ToString
 class ImageIds {

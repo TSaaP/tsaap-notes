@@ -2,6 +2,7 @@ import grails.plugins.springsecurity.SpringSecurityService
 import liquibase.integration.spring.SpringLiquibase
 import org.tsaap.questions.impl.gift.GiftQuestionService
 import org.tsaap.questions.impl.gift.utils.QuestionHelper
+import org.tsaap.attachement.AttachementDataStore
 
 /*
 * Copyright 2013 Tsaap Development Group
@@ -33,4 +34,11 @@ beans = {
         changeLog = "classpath:migrations/changelog-tsaap-notes-incremental.xml"
     }
 
+    // Configure la gestion du datastore
+
+    dataStore(AttachementDataStore) { bean ->
+        path = application.config.tsaap.datastore.path ?: null
+        bean.initMethod = 'initFileDataStore'
+    }
 }
+

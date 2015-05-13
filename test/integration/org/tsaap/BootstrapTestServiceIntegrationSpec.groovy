@@ -42,5 +42,19 @@ class BootstrapTestServiceIntegrationSpec extends Specification {
 
   }
 
+  def "note initialization"(){
+
+    when: bootstrapTestService.initializeUsers()
+
+    and: bootstrapTestService.initializeNotes()
+
+    then: bootstrapTestService.note1 != null
+          bootstrapTestService.note1.author.firstName == "Paul"
+          bootstrapTestService.note1.content == "content note 1"
+          bootstrapTestService.note2 != null
+          bootstrapTestService.note2.author.firstName == "Mary"
+          bootstrapTestService.note2.content == "content note 2"
+  }
+
 
 }

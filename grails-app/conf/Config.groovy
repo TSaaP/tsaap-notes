@@ -168,3 +168,5 @@ environments {
         tsaap.auth.check_user_email = true
     }
 }
+
+tsaap.datastore.path = '/home/dorian/Images/'

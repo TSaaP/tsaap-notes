@@ -66,17 +66,15 @@ class NotesController {
             }
         }
 
-        Image image = new Image()
+        Attachement attachementNote = null
         def file = request.getFile('myFile')
         String nom_image = file.getOriginalFilename()
         if (okcontents.contains(file.getContentType())) {
-            image.myFile = file.getBytes()
-            image.save()
             file.transferTo(new File('/home/dorian/Images/'+nom_image))
-
         }
 
         noteService.addNote(user, noteContent, context, fragmentTag, parentNote)
+
         params.remove('noteContent')
         redirect(action: index(), params: params)
     }

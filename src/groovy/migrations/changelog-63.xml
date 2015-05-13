@@ -22,13 +22,8 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet id="1" author="drol">
-        <createTable tableName="image">
-            <column  name="id" type="BIGINT" autoIncrement="true">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="valeur" type="varchar(255)"/>
-        </createTable>
+    <changeSet id="1" author="drol" runOnChange="true">
+        <dropTable tableName="image"/>
     </changeSet>
 
 

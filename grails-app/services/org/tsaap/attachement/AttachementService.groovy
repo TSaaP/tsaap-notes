@@ -96,7 +96,7 @@ class AttachementService {
      * @return File object type
      */
     InputStream getInputStreamForAttachement(Attachement attachement) {
-        DataRecord dataRecord = dataStore.getRecord(new DataIdentifier(attachement.size))
+        DataRecord dataRecord = dataStore.getRecord(new DataIdentifier(attachement.path))
         dataRecord.stream
     }
 
@@ -148,14 +148,28 @@ class AttachementService {
         }
     }
 
-    Attachement addNoteToAttachement(Note myNote, Attachement myAttachement){
-        myAttachement.setNote(myNote)
+    Attachement addNoteToAttachement(Note myNote, Attachement myAttachement) {
+        myAttachement.note = myNote
+        myAttachement.save()
         myAttachement
     }
 
-    Attachement addContextToAttachement(Context myContext, Attachement myAttachement){
+    Attachement addNoteAndContextToAttachement(Context myContext, Note myNote, Attachement myAttachement) {
         myAttachement.setContext(myContext)
+        myAttachement.setNote(myNote)
+        myAttachement.save()
         myAttachement
+    }
+
+    Map<Note,Attachement> searchAttachementInNoteList(List<Note> noteList) {
+        Map<Note,Attachement> result = new HashMap<Note,Attachement>()
+        noteList.each {
+            if (Attachement.findByNote(it)) {
+                Attachement theAttachement = Attachement.findByNote(it)
+                result.put(it,theAttachement)
+            }
+        }
+        result
     }
 
 }

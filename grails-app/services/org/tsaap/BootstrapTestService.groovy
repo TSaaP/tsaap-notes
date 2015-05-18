@@ -1,12 +1,15 @@
 package org.tsaap
 
 import org.tsaap.directory.User
+import org.tsaap.notes.Context
+import org.tsaap.notes.ContextService
 import org.tsaap.notes.Note
 import org.tsaap.notes.NoteService
 
 class BootstrapTestService {
 
     NoteService noteService
+    ContextService contextService
 
     User learnerPaul
     User teacherJeanne
@@ -14,11 +17,14 @@ class BootstrapTestService {
     List<User> learners = []
     Note note1
     Note note2
+    Context context1
+    Context context2
 
 
     def initializeTests() {
         initializeUsers()
         initializeNotes()
+        initializeContexts()
     }
 
     def initializeUsers() {
@@ -51,6 +57,15 @@ class BootstrapTestService {
         }
         if(!note2) {
             note2 = noteService.addNote(learnerMary,"content note 2")
+        }
+    }
+
+    def initializeContexts(){
+        if(!context1){
+            context1 = contextService.saveContext(new Context(owner: learnerPaul, contextName: "Context1", url: 'http://www.w3.org', descriptionAsNote: 'a description'))
+        }
+        if(!context2){
+            context2 = contextService.saveContext(new Context(owner: learnerPaul, contextName: "Context2", url: 'http://www.w3.org', descriptionAsNote: 'a description'))
         }
     }
 }

@@ -159,19 +159,19 @@ class AttachementService {
         myAttachement
     }
 
-    Map<Note,Attachement> searchAttachementInNoteList(List<Note> noteList) {
-        Map<Note,Attachement> result = new HashMap<Note,Attachement>()
+    Map<Note, Attachement> searchAttachementInNoteList(List<Note> noteList) {
+        Map<Note, Attachement> result = new HashMap<Note, Attachement>()
         noteList.each {
             if (Attachement.findByNote(it)) {
                 Attachement theAttachement = Attachement.findByNote(it)
-                result.put(it,theAttachement)
+                result.put(it, theAttachement)
             }
         }
         result
     }
 
     def deleteAttachementForNote(Note myNote) {
-        if(Attachement.findByNote(myNote)) {
+        if (Attachement.findByNote(myNote)) {
             Attachement myAttachement = Attachement.findByNote(myNote)
             myAttachement.delete(flush: true)
         }

@@ -92,7 +92,7 @@ class AttachementServiceIntegrationSpec extends Specification {
         myAttachement = attachementService.addNoteAndContextToAttachement(myContext, myNote, myAttachement)
 
         then: "the context and the note is really add to the attachement"
-        //myAttachement.context == myContext
+        myAttachement.context == myContext
         myAttachement.note == myNote
 
     }
@@ -111,7 +111,6 @@ class AttachementServiceIntegrationSpec extends Specification {
 
         and: "a note"
         Note myNote = bootstrapTestService.note2
-        println ">>>>>>>>>>>>>>>>>>>>>>>> $myNote"
 
         when: "adding a note to an attachement"
         myAttachement = attachementService.addNoteToAttachement(myNote, myAttachement)

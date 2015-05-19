@@ -1,7 +1,10 @@
-package org.tsaap.notes
+package org.tsaap.attachement
+
+import org.tsaap.notes.Context
+import org.tsaap.notes.Note
 
 /**
- * Classe représentant un fichier attaché à un objet du domaine
+ * class reprensenting a file attach to a model object
  * @author franck Silvestre
  */
 class Attachement {

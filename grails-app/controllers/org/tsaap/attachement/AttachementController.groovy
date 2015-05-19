@@ -1,5 +1,6 @@
-package org.tsaap.notes
+package org.tsaap.attachement
 
+import org.tsaap.attachement.Attachement
 import org.tsaap.attachement.AttachementService
 
 

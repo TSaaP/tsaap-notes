@@ -3,9 +3,7 @@ package org.tsaap.attachement
 import groovy.transform.ToString
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
-import org.tsaap.notes.Attachement
 import org.tsaap.notes.Context
-import org.tsaap.notes.Dimension
 import org.tsaap.notes.Note
 import org.tsaap.uploadImage.DataIdentifier
 import org.tsaap.uploadImage.DataRecord
@@ -175,7 +173,7 @@ class AttachementService {
     def deleteAttachementForNote(Note myNote) {
         if(Attachement.findByNote(myNote)) {
             Attachement myAttachement = Attachement.findByNote(myNote)
-            myAttachement.delete()
+            myAttachement.delete(flush: true)
         }
     }
 }

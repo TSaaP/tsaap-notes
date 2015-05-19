@@ -1,7 +1,11 @@
-package org.tsaap.notes
+package org.tsaap.attachement
 
 
 import grails.test.mixin.*
+import org.tsaap.attachement.Attachement
+import org.tsaap.attachement.AttachementController
+import org.tsaap.notes.Context
+import org.tsaap.notes.Note
 import spock.lang.*
 
 @TestFor(AttachementController)

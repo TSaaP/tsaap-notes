@@ -1,6 +1,9 @@
-package org.tsaap.notes
+package org.tsaap.attachement
 
 import grails.test.mixin.TestFor
+import org.tsaap.attachement.Attachement
+import org.tsaap.notes.Context
+import org.tsaap.notes.Note
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll

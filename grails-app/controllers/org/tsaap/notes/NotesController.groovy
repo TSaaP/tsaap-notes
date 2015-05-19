@@ -18,7 +18,7 @@ package org.tsaap.notes
 
 import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
-import org.tsaap.attachement.AttachementDto
+import org.tsaap.attachement.Attachement
 import org.tsaap.attachement.AttachementService
 import org.tsaap.directory.User
 import org.tsaap.questions.Question

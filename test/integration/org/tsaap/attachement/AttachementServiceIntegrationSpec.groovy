@@ -1,7 +1,6 @@
 package org.tsaap.attachement
 
 import org.tsaap.BootstrapTestService
-import org.tsaap.notes.Attachement
 import org.tsaap.notes.Context
 import org.tsaap.notes.Note
 import spock.lang.Specification
@@ -36,7 +35,6 @@ class AttachementServiceIntegrationSpec extends Specification {
         attachementService.deleteAttachementForNote(myNote)
 
         then: "the attachement is correctly delete"
-        println Attachement.findById(myAttachement.id)
         Attachement.findById(myAttachement.id) == null
     }
 

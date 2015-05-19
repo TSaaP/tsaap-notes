@@ -20,6 +20,7 @@ import grails.orm.PagedResultList
 import org.gcontracts.annotations.Requires
 import org.hibernate.criterion.CriteriaSpecification
 import org.springframework.transaction.annotation.Transactional
+import org.tsaap.attachement.AttachementService
 import org.tsaap.directory.User
 import org.tsaap.questions.LiveSession
 import org.tsaap.questions.LiveSessionService
@@ -28,6 +29,7 @@ class NoteService {
 
     static transactional = false
     LiveSessionService liveSessionService
+    AttachementService attachementService
 
     /**
      * Add a new note
@@ -182,6 +184,7 @@ class NoteService {
         note.delete()
     }
 
+
     /**
      * Find all notes for the given search criteria
      * @param inUser the user performing the search
@@ -206,6 +209,10 @@ class NoteService {
             all = false
         }
         if (all && !inFragmentTag) { // we have a context and user want all notes on the context
+            def list = Note.findAllByContextAndKindInList(
+                    inContext,[NoteKind.STANDARD.ordinal(),NoteKind.QUESTION.ordinal()],
+                    paginationAndSorting
+            )
             return new DefaultPagedResultList(list: Note.findAllByContextAndKindInList(
                     inContext,[NoteKind.STANDARD.ordinal(),NoteKind.QUESTION.ordinal()],
                     paginationAndSorting
@@ -214,7 +221,11 @@ class NoteService {
                             inContext,
                             [NoteKind.STANDARD.ordinal(),
                              NoteKind.QUESTION.ordinal()],
-                            paginationAndSorting)
+                            paginationAndSorting),
+                    map: attachementService.searchAttachementInNoteList(Note.findAllByContextAndKindInList(
+                            inContext,[NoteKind.STANDARD.ordinal(),NoteKind.QUESTION.ordinal()],
+                            paginationAndSorting
+                    ))
                     )
         }
         if (all && inFragmentTag) {
@@ -228,7 +239,13 @@ class NoteService {
                             inContext,
                             inFragmentTag,
                             [NoteKind.STANDARD.ordinal(),NoteKind.QUESTION.ordinal()],
-                            paginationAndSorting))
+                            paginationAndSorting),
+                    map: attachementService.searchAttachementInNoteList(Note.findAllByContextAndFragmentTagAndKindInList(
+                            inContext,
+                            inFragmentTag,
+                            [NoteKind.STANDARD.ordinal(),NoteKind.QUESTION.ordinal()],
+                            paginationAndSorting
+                    )))
         }
         // if not all, we use a criteria
         def criteria = Note.createCriteria()
@@ -252,7 +269,8 @@ class NoteService {
             inList 'kind',[NoteKind.STANDARD.ordinal(),NoteKind.QUESTION.ordinal()]
             order paginationAndSorting.sort, paginationAndSorting.order
         }
-        new DefaultPagedResultList(list: results.list, totalCount: results.totalCount)
+        def map = attachementService.searchAttachementInNoteList(results.list)
+        new DefaultPagedResultList(list: results.list, totalCount: results.totalCount, map: map)
     }
 
     /**
@@ -283,6 +301,7 @@ class DefaultPagedResultList {
 
     List list
     Long totalCount
+    Map map
 
 }
 

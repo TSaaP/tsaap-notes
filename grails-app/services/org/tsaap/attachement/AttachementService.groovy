@@ -172,6 +172,12 @@ class AttachementService {
         result
     }
 
+    def deleteAttachementForNote(Note myNote) {
+        if(Attachement.findByNote(myNote)) {
+            Attachement myAttachement = Attachement.findByNote(myNote)
+            myAttachement.delete()
+        }
+    }
 }
 
 /**

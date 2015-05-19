@@ -76,7 +76,6 @@ class NotesController {
         if (okcontents.contains(file.getContentType())) {
             attachementNote = attachementService.createAttachementForMultipartFile(file)
             image = true
-            file.transferTo(new File('/home/dorian/Images/'+nom_image))
         }
 
         Note myNote = noteService.addNote(user, noteContent, context, fragmentTag, parentNote)
@@ -119,6 +118,7 @@ class NotesController {
     def deleteNote() {
         def user = springSecurityService.currentUser
         Note note = Note.load(params.noteId)
+        attachementService.deleteAttachementForNote(note)
         noteService.deleteNoteByAuthor(note, user)
         params.remove('noteId')
         redirect(action: index(), params: params)

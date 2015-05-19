@@ -3,7 +3,7 @@
     <g:render template="detail"
               model="[note: note.parentNote, context: context, displaysMyNotes: displaysMyNotes, displaysMyFavorites: displaysMyFavorites, displaysAll: displaysAll, noteClassParent: 'note-parent-note', showDiscussionNote: showDiscussionNote]"/>
 </g:if>
-<li class="list-group-item ${noteClassParent}" style="padding-bottom: 20px">
+<g class="list-group-item ${noteClassParent}" style="padding-bottom: 20px">
     <g:set var="noteIsBookmarked" value="${note.isBookmarkedByUser(user)}"/>
     <g:set var="noteIsScored" value="${note.isScoredByUser(user)}"/>
     <g:set var="displayListParams"
@@ -55,7 +55,11 @@
         </g:else>
     </g:if>
     <g:else>
+        <g:if test="${myImage != ""}">
+            <tsaap:viewAttachement attachement="${myImage}"/>
+        </:if>
         <p id="content${note.id}" class="note-content">${note.content}</p>
+    </g:if>
     </g:else>
     <div id="noteActions" class="pull-right note-actions">
         <g:set var="displayListParamsWithPagination"

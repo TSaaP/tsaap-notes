@@ -35,6 +35,10 @@ class Attachement {
         return typeMime in TYPES_MIME_IMG_AFFICHABLE
     }
 
+    boolean estUnTexteAffichable() {
+        return typeMime?.startsWith('text/')
+    }
+
     /**
      * Calcule la dimension rendu en fonction d'une dimension max donnée.
      * @param dimMax

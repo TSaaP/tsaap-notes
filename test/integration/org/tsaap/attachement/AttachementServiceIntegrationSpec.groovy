@@ -19,6 +19,27 @@ class AttachementServiceIntegrationSpec extends Specification {
         bootstrapTestService.initializeTests()
     }
 
+    def "deleteAttachementForNote"() {
+        given: "an attachement for a note"
+        AttachementDto attachementDto = new AttachementDto(
+                size: 6,
+                typeMime: 'image/png',
+                name: 'grails.png',
+                originalFileName: 'grails.png',
+                bytes: [2, 3, 4, 5, 6, 7]
+        )
+        Attachement myAttachement = attachementService.createAttachement(attachementDto, 10)
+        Note myNote = bootstrapTestService.note1
+        myAttachement = attachementService.addNoteToAttachement(myNote, myAttachement)
+
+        when: "i want to delete the attachement"
+        attachementService.deleteAttachementForNote(myNote)
+
+        then: "the attachement is correctly delete"
+        println Attachement.findById(myAttachement.id)
+        Attachement.findById(myAttachement.id) == null
+    }
+
     def "searchAttachementInNoteList"() {
 
         given: "a note List"
@@ -48,7 +69,7 @@ class AttachementServiceIntegrationSpec extends Specification {
         then:"we get the map with attachement and note"
         myMap.containsKey(bootstrapTestService.note1)
         myMap.containsValue(myAttachement)
-        myMap.containsKey(bootstrapTestService.note2) == false
+        !myMap.containsKey(bootstrapTestService.note2)
     }
 
     def "addNoteAndContextToAttachement"() {

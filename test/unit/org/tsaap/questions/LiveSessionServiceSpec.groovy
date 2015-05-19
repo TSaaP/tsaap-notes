@@ -8,6 +8,7 @@ import grails.test.mixin.domain.DomainClassUnitTestMixin
 import org.gcontracts.PreconditionViolation
 import org.tsaap.directory.User
 import org.tsaap.notes.Note
+import org.tsaap.notes.NoteKind
 import org.tsaap.questions.impl.DefaultQuestion
 import org.tsaap.questions.impl.gift.GiftQuestionService
 import spock.lang.Shared
@@ -25,7 +26,7 @@ class LiveSessionServiceSpec extends Specification {
     User user2 = new User(firstName: "Paul",lastName: "D", username: "learner_paul2", password: "password",email: "paul2@nomail.com")
 
     @Shared
-    Note note = new Note(content:"::it\'s a question:: what ? {=this ~ not this}",author: user)
+    Note note = new Note(content:"::it\'s a question:: what ? {=this ~ not this}",author: user, kind:  NoteKind.QUESTION.ordinal())
     @Shared
     Note note2 = new Note(content:"it's not a question",author: user)
 

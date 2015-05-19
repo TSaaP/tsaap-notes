@@ -22,6 +22,7 @@ import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
 import org.gcontracts.PreconditionViolation
 import org.tsaap.directory.User
+import org.tsaap.questions.impl.gift.GiftQuestionService
 import spock.lang.Specification
 
 /**
@@ -38,6 +39,7 @@ class NoteServiceSpec extends Specification {
 
     def setup() {
         noteService = new NoteService()
+
         user = Mock(User)
         note = Mock(Note) {
             getAuthor() >> user
@@ -45,6 +47,9 @@ class NoteServiceSpec extends Specification {
             getFragmentTag() >> Mock(Tag)
         }
         targetContext = Mock(Context)
+        noteService.giftQuestionService = Mock(GiftQuestionService) {
+            getQuestionFromGiftText(note.content) >> null
+        }
     }
 
     def "duplication of a note is only possible for the owner of the note"() {

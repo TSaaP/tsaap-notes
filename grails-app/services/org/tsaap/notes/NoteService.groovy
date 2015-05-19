@@ -24,12 +24,14 @@ import org.tsaap.attachement.AttachementService
 import org.tsaap.directory.User
 import org.tsaap.questions.LiveSession
 import org.tsaap.questions.LiveSessionService
+import org.tsaap.questions.impl.gift.GiftQuestionService
 
 class NoteService {
 
     static transactional = false
     LiveSessionService liveSessionService
     AttachementService attachementService
+    GiftQuestionService giftQuestionService
 
     /**
      * Add a new note
@@ -56,6 +58,20 @@ class NoteService {
                 parentNote: parentNote,
                 kind: noteKind.ordinal()
         )
+
+
+        // manage the kind of note
+        if (content?.startsWith("::")) {
+            try {
+                if (giftQuestionService.getQuestionFromGiftText(theNote.content)) {
+                    theNote.kind = NoteKind.QUESTION.ordinal()
+                }
+            } catch (Exception e) {
+                log.error(e.getStackTrace())
+            }
+        }
+
+
         // save the note
         theNote.save()
 

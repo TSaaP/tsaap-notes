@@ -57,9 +57,8 @@
     <g:else>
         <g:if test="${myImage != ""}">
             <tsaap:viewAttachement attachement="${myImage}"/>
-        </:if>
+        </g:if>
         <p id="content${note.id}" class="note-content">${note.content}</p>
-    </g:if>
     </g:else>
     <div id="noteActions" class="pull-right note-actions">
         <g:set var="displayListParamsWithPagination"

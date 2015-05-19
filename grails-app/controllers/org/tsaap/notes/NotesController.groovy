@@ -80,7 +80,12 @@ class NotesController {
 
         Note myNote = noteService.addNote(user, noteContent, context, fragmentTag, parentNote)
         if(image){
-           attachementNote = attachementService.addNoteToAttachement(myNote,attachementNote)
+            if(context != null){
+                attachementNote = attachementService.addNoteAndContextToAttachement(context,myNote,attachementNote)
+            }
+            else {
+                attachementNote = attachementService.addNoteToAttachement(myNote,attachementNote)
+            }
         }
 
         params.remove('noteContent')

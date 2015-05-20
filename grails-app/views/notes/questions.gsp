@@ -36,6 +36,14 @@
 
 <body>
 
+<g:if test="${params.inline && params.inline == 'on'}">
+    <div class="container">
+        <g:link controller="notes"
+                     params='[contextId: "${params.contextId}", contextName: "${params.contextName}", displaysMyNotes: "${params.displaysMyNotes}", displaysMyFavorites: "${params.displaysMyFavorites}", displaysAll: "${params.displaysAll}", inline: "${params.inline}", kind: "standard", inline: "on"]'>Notes</g:link>
+        <g:link controller="notes"
+                params='[contextId: "${params.contextId}", contextName: "${params.contextName}", displaysMyNotes: "${params.displaysMyNotes}", displaysMyFavorites: "${params.displaysMyFavorites}", displaysAll: "${params.displaysAll}", inline: "${params.inline}", kind: "question", inline: "on"]'>Questions</g:link>
+    </div>
+</g:if>
 <div class="container note-edition">
     <g:render template="edit" model='[context: context, fragmentTag: fragmentTag]'/>
 </div>

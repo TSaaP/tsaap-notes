@@ -144,14 +144,6 @@ class NoteServiceIntegrationSpec extends Specification {
 
       then:"all notes (question or not) are found"
       res.size() == 1
-      //res.contains(note)
-      res.contains(question)
-
-      when: "finding only questions"
-      res = noteService.findAllNotesAsQuestionForContext(context)
-
-      then: "only questions are retrieved"
-      res.size() == 1
       res.contains(question)
   }
 

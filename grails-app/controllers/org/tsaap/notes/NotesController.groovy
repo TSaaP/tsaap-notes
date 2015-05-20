@@ -207,7 +207,6 @@ class NotesController {
                 fragmentTag,
                 paginationAndSorting,kindParams)
         if(kindParams != 'question') {
-            println kindParams
             render(view: '/notes/index', model: [user: user,
                                                  notes: notes,
                                                  context: context,
@@ -215,7 +214,6 @@ class NotesController {
                                                  showDiscussion: showDiscussion])
         }
         else {
-            println kindParams
             render(view: '/notes/questions', model: [user: user,
                                                  notes: notes,
                                                  context: context,

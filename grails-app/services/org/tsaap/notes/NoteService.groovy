@@ -190,10 +190,17 @@ class NoteService {
         }
         query.deleteAll()
 
+        //delete score if any
+        query = Score.where {
+            note == note
+        }
+        query.deleteAll()
+
         // delete live sessions if any
         query = LiveSession.where {
             note == note
         }
+
         query.findAll { liveSessionService.deleteLiveSessionByAuthor(it, user) }
         query.deleteAll()
         // finally delete notes

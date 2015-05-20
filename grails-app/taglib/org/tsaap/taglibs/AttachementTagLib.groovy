@@ -2,7 +2,7 @@ package org.tsaap.taglibs
 
 import org.tsaap.attachement.AttachementService
 import org.tsaap.attachement.Attachement
-import org.tsaap.notes.Dimension
+import org.tsaap.attachement.Dimension
 
 /**
  * Created by dylan on 19/05/15.

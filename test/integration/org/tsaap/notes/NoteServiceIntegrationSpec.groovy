@@ -140,11 +140,11 @@ class NoteServiceIntegrationSpec extends Specification {
       Note question = noteService.addNote(bootstrapTestService.learnerPaul, "::a question:: what ? {=true~false}",context)
 
       when:"finding all notes for context"
-      List<Note> res = noteService.findAllNotes(bootstrapTestService.learnerPaul,false,false,true,context).list
+      List<Note> res = noteService.findAllNotes(bootstrapTestService.learnerPaul,false,false,true,context,null,null,'question').list
 
       then:"all notes (question or not) are found"
-      res.size() == 2
-      res.contains(note)
+      res.size() == 1
+      //res.contains(note)
       res.contains(question)
 
       when: "finding only questions"

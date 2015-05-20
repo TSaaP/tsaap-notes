@@ -1,3 +1,10 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: dylan
+  Date: 20/05/15
+  Time: 10:03
+--%>
+
 %{--
   - Copyright 2013 Tsaap Development Group
   -
@@ -122,7 +129,7 @@
     /*$(".note-content").linkify({
      target:"_blank"
      });*/
-    $("#mainLinkNotes").addClass('active');
+    $("#mainLinkQuestions").addClass('active');
 </r:script>
 </body>
 </html>

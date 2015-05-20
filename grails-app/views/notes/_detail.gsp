@@ -1,13 +1,13 @@
 <%@ page import="org.tsaap.questions.LiveSessionStatus" %>
 <g:if test="${note.parentNote && showDiscussionNote}">
     <g:render template="detail"
-              model="[note: note.parentNote, context: context, displaysMyNotes: displaysMyNotes, displaysMyFavorites: displaysMyFavorites, displaysAll: displaysAll, noteClassParent: 'note-parent-note', showDiscussionNote: showDiscussionNote]"/>
+              model="[note: note.parentNote, context: context, displaysMyNotes: displaysMyNotes, displaysMyFavorites: displaysMyFavorites, displaysAll: displaysAll, noteClassParent: 'note-parent-note', showDiscussionNote: showDiscussionNote, kind: kind]"/>
 </g:if>
 <g class="list-group-item ${noteClassParent}" style="padding-bottom: 20px">
     <g:set var="noteIsBookmarked" value="${note.isBookmarkedByUser(user)}"/>
     <g:set var="noteIsScored" value="${note.isScoredByUser(user)}"/>
     <g:set var="displayListParams"
-           value="${[displaysMyNotes: params.displaysMyNotes, displaysMyFavorites: params.displaysMyFavorites, displaysAll: params.displaysAll, inline: params.inline]}"/>
+           value="${[displaysMyNotes: params.displaysMyNotes, displaysMyFavorites: params.displaysMyFavorites, displaysAll: params.displaysAll, inline: params.inline, kind: params.kind]}"/>
     <h6 class="list-group-item-heading"><strong>@${note.author.username}</strong>
 
         <g:if test="${note.context}">

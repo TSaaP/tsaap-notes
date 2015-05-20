@@ -198,18 +198,30 @@ class NotesController {
         if (params.offset) {
             paginationAndSorting.offset = params.offset
         }
+        def kindParams = params.kind
         def notes = noteService.findAllNotes(user,
                 displaysMyNotes,
                 displaysMyFavorites,
                 displaysAll,
                 context,
                 fragmentTag,
-                paginationAndSorting)
-        render(view: '/notes/index', model: [user: user,
-                notes: notes,
-                context: context,
-                fragmentTag: fragmentTag,
-                showDiscussion: showDiscussion])
+                paginationAndSorting,kindParams)
+        if(kindParams != 'question') {
+            println kindParams
+            render(view: '/notes/index', model: [user: user,
+                                                 notes: notes,
+                                                 context: context,
+                                                 fragmentTag: fragmentTag,
+                                                 showDiscussion: showDiscussion])
+        }
+        else {
+            println kindParams
+            render(view: '/notes/questions', model: [user: user,
+                                                 notes: notes,
+                                                 context: context,
+                                                 fragmentTag: fragmentTag,
+                                                 showDiscussion: showDiscussion])
+        }
 
     }
 

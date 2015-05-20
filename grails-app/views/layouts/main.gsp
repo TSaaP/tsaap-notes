@@ -46,7 +46,8 @@
 
     <div class="nav-collapse collapse">
       <ul class="nav navbar-nav">
-        <li id="mainLinkNotes"><g:link controller="notes" params="[displaysMyNotes:'on']">Notes</g:link></li></li>
+        <li id="mainLinkNotes"><g:link controller="notes" params="[displaysMyNotes:'on', kind:'standard']">Notes</g:link></li>
+        <li id="mainLinkQuestions"><g:link controller="notes" params="[displaysMyNotes: 'on', kind: 'question']">Questions</g:link></li>
         <li id="mainLinkContexts"><g:link controller="context" params="[filter:FilterReservedValue.__MINE__.name()]">Scopes</g:link></li>
       </ul>
 

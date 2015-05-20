@@ -78,9 +78,9 @@
           The notes on this scope
         </td>
         <td><g:link controller="notes"
-                    params="[displaysAll: 'on', contextName: context?.contextName, contextId: context.id]"><g:createLink
+                    params="[displaysAll: 'on', contextName: context?.contextName, contextId: context.id, kind:'standard']"><g:createLink
                   absolute="true" controller="notes"
-                  params="[displaysAll: 'on', contextName: context?.contextName, contextId: context.id]"/></g:link></td>
+                  params="[displaysAll: 'on', contextName: context?.contextName, contextId: context.id, kind: 'standard']"/></g:link></td>
       </tr>
       </tbody>
     </table>

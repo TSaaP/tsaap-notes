@@ -217,7 +217,16 @@ class NoteService {
                      Boolean all = false,
                      Context inContext = null,
                      Tag inFragmentTag = null,
-                     Map paginationAndSorting = [sort: 'dateCreated', order: 'desc']) {
+                     Map paginationAndSorting = [sort: 'dateCreated', order: 'desc'],
+                     String kindParam) {
+        List kindList = null
+        if(kindParam != 'question') {
+            kindList=[NoteKind.STANDARD.ordinal()]
+        }
+        else
+        {
+            kindList=[NoteKind.QUESTION.ordinal()]
+        }
         if (!(userNotes || userFavorites || all)) {
             return new DefaultPagedResultList(list: [], totalCount: 0)
         }
@@ -226,20 +235,19 @@ class NoteService {
         }
         if (all && !inFragmentTag) { // we have a context and user want all notes on the context
             def list = Note.findAllByContextAndKindInList(
-                    inContext,[NoteKind.STANDARD.ordinal(),NoteKind.QUESTION.ordinal()],
+                    inContext, kindList,
                     paginationAndSorting
             )
             return new DefaultPagedResultList(list: Note.findAllByContextAndKindInList(
-                    inContext,[NoteKind.STANDARD.ordinal(),NoteKind.QUESTION.ordinal()],
+                    inContext,kindList,
                     paginationAndSorting
                     ),
                     totalCount: Note.countByContextAndKindInList(
                             inContext,
-                            [NoteKind.STANDARD.ordinal(),
-                             NoteKind.QUESTION.ordinal()],
+                            kindList,
                             paginationAndSorting),
                     map: attachementService.searchAttachementInNoteList(Note.findAllByContextAndKindInList(
-                            inContext,[NoteKind.STANDARD.ordinal(),NoteKind.QUESTION.ordinal()],
+                            inContext,kindList,
                             paginationAndSorting
                     ))
                     )
@@ -248,18 +256,18 @@ class NoteService {
             return new DefaultPagedResultList(list: Note.findAllByContextAndFragmentTagAndKindInList(
                     inContext,
                     inFragmentTag,
-                    [NoteKind.STANDARD.ordinal(),NoteKind.QUESTION.ordinal()],
+                    kindList,
                     paginationAndSorting
                     ),
                     totalCount: Note.countByContextAndFragmentTagAndKindInList(
                             inContext,
                             inFragmentTag,
-                            [NoteKind.STANDARD.ordinal(),NoteKind.QUESTION.ordinal()],
+                            kindList,
                             paginationAndSorting),
                     map: attachementService.searchAttachementInNoteList(Note.findAllByContextAndFragmentTagAndKindInList(
                             inContext,
                             inFragmentTag,
-                            [NoteKind.STANDARD.ordinal(),NoteKind.QUESTION.ordinal()],
+                            kindList,
                             paginationAndSorting
                     )))
         }
@@ -282,7 +290,7 @@ class NoteService {
                     eq 'bmks.user', inUser
                 }
             }
-            inList 'kind',[NoteKind.STANDARD.ordinal(),NoteKind.QUESTION.ordinal()]
+            inList 'kind', kindList
             order paginationAndSorting.sort, paginationAndSorting.order
         }
         def map = attachementService.searchAttachementInNoteList(results.list)

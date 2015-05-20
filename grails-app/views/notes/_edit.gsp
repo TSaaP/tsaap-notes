@@ -3,6 +3,7 @@
 <div id="edit_tab_${idControllSuffix}">
 
     <g:form method="post" controller="notes" action="addNote" enctype="multipart/form-data">
+        <g:hiddenField name="kind" value="${params.kind}"/>
         <g:hiddenField name="inline" value="${params.inline}"/>
         <g:hiddenField name="contextId" value="${context?.id}"
                        id="contextIdInAddForm${idControllSuffix}"/>

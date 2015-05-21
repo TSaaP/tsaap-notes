@@ -90,7 +90,17 @@
 
     <div class="note-list-content">
         <ul class="list-group">
+            <g:if test="${(notes.list.get(0).author==user)}">
+                <g:set var="separationLine" value="false"/>
+            </g:if>
+            <g:else>
+                <g:set var="separationLine" value="true"/>
+            </g:else>
             <g:each in="${notes.list}" var="note">
+                <g:if test="${(separationLine=="false") && (user != note.author)}">
+                    <hr/>
+                    <g:set var="separationLine" value="true"/>
+                </g:if>
                 <g:set var="showDiscussionNote" value="${showDiscussion[note.id]}"/>
                 <div id="note${note.id}" class="${showDiscussionNote ? 'note-discussion' : 'note-only'}">
                     <g:if test="${notes.map.containsKey(note)}">

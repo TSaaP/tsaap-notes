@@ -225,8 +225,10 @@ class NoteService {
                      Context inContext = null,
                      Tag inFragmentTag = null,
                      Map paginationAndSorting = [sort: 'dateCreated', order: 'desc'],
-                     String kindParam) {
+                     String kindParam,
+                     String inlineParam) {
         List kindList = null
+        List list = null
         if(kindParam != 'question') {
             kindList=[NoteKind.STANDARD.ordinal()]
         }
@@ -241,14 +243,28 @@ class NoteService {
             all = false
         }
         if (all && !inFragmentTag) { // we have a context and user want all notes on the context
-            def list = Note.findAllByContextAndKindInList(
-                    inContext, kindList,
-                    paginationAndSorting
-            )
-            return new DefaultPagedResultList(list: Note.findAllByContextAndKindInList(
-                    inContext,kindList,
-                    paginationAndSorting
-                    ),
+            if(inlineParam == 'on' && kindParam != 'question') {
+                def authorList = Note.findAllByContextAndAuthorAndKindInList(
+                        inContext,
+                        inUser,
+                        kindList,
+                        paginationAndSorting
+                )
+                def othersList = Note.findAllByContextAndAuthorNotEqualAndKindInList(
+                        inContext,
+                        inUser,
+                        kindList,
+                        paginationAndSorting
+                )
+                list = authorList + othersList
+            }
+            else {
+                list = Note.findAllByContextAndKindInList(
+                        inContext, kindList,
+                        paginationAndSorting
+                )
+            }
+            return new DefaultPagedResultList(list: list,
                     totalCount: Note.countByContextAndKindInList(
                             inContext,
                             kindList,
@@ -257,15 +273,35 @@ class NoteService {
                             inContext,kindList,
                             paginationAndSorting
                     ))
-                    )
+                )
         }
         if (all && inFragmentTag) {
-            return new DefaultPagedResultList(list: Note.findAllByContextAndFragmentTagAndKindInList(
-                    inContext,
-                    inFragmentTag,
-                    kindList,
-                    paginationAndSorting
-                    ),
+            if(inlineParam == 'on' && kindParam != 'question') {
+                def authorList = Note.findAllByContextAndAuthorAndFragmentTagAndKindInList(
+                        inContext,
+                        inUser,
+                        inFragmentTag,
+                        kindList,
+                        paginationAndSorting
+                )
+                def othersList = Note.findAllByContextAndAuthorNotEqualAndFragmentTagAndKindInList(
+                        inContext,
+                        inUser,
+                        inFragmentTag,
+                        kindList,
+                        paginationAndSorting
+                )
+                list = authorList + othersList
+            }
+            else {
+                list = Note.findAllByContextAndFragmentTagAndKindInList(
+                        inContext,
+                        inFragmentTag,
+                        kindList,
+                        paginationAndSorting
+                )
+            }
+            return new DefaultPagedResultList(list: list,
                     totalCount: Note.countByContextAndFragmentTagAndKindInList(
                             inContext,
                             inFragmentTag,

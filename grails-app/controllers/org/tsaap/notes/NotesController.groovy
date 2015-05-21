@@ -199,13 +199,16 @@ class NotesController {
             paginationAndSorting.offset = params.offset
         }
         def kindParams = params.kind
+        def inlineParams = params.inline
         def notes = noteService.findAllNotes(user,
                 displaysMyNotes,
                 displaysMyFavorites,
                 displaysAll,
                 context,
                 fragmentTag,
-                paginationAndSorting,kindParams)
+                paginationAndSorting,
+                kindParams,
+                inlineParams)
         if(kindParams != 'question') {
             render(view: '/notes/index', model: [user: user,
                                                  notes: notes,

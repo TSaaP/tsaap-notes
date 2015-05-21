@@ -90,8 +90,10 @@
 
     <div class="note-list-content">
         <ul class="list-group">
-            <g:if test="${(notes.list.get(0).author==user)}">
-                <g:set var="separationLine" value="false"/>
+            <g:if test="${!(notes.list.isEmpty())}">
+                <g:if test="${(notes.list.get(0).author==user)}">
+                    <g:set var="separationLine" value="false"/>
+                </g:if>
             </g:if>
             <g:else>
                 <g:set var="separationLine" value="true"/>

@@ -22,149 +22,193 @@ import spock.lang.Specification
 
 class NoteServiceIntegrationSpec extends Specification {
 
-  BootstrapTestService bootstrapTestService
-  NoteService noteService
-  ContextService contextService
+    BootstrapTestService bootstrapTestService
+    NoteService noteService
+    ContextService contextService
 
-  def setup() {
-    bootstrapTestService.initializeTests()
-  }
-
-  def "add notes"() {
-
-    when: "adding a note"
-    Note note = noteService.addNote(bootstrapTestService.learnerPaul, content)
-
-    then: "the note exists and mentions and tags are created when needed"
-    note != null
-    note.content == content
-    // tags
-    def noteTags = NoteTag.findAllByNote(note)
-    noteTags.size() == tags.size()
-    if (noteTags.size() > 0) {
-      def tagsFromNote = noteTags*.tag*.name
-      tagsFromNote == tags
-    }
-    // mentions
-    def noteMentions = NoteMention.findAllByNote(note)
-    noteMentions.size() == mentions.size()
-    if (noteMentions.size() > 0) {
-      def mentionsFromNote = noteMentions*.mention*.username
-      mentionsFromNote == mentions
+    def setup() {
+        bootstrapTestService.initializeTests()
     }
 
+    def "add notes"() {
 
-    where: "all these data are tested"
-    content                                                                     | tags                                     | mentions
-    "@teacher_jeanne : a simple #content, with no #spaces in the content"       | ["content", "spaces"]                    | ["teacher_jeanne"]
-    "a simple #content with no #spaces in the content but with #content a copy" | ["content", "spaces"]                    | []
-    "a simple #content\n #another\r #tag3\n with #spaces\t in the content"      | ["content", "another", "tag3", "spaces"] | []
-    "a simple with no tags @teacher_jeanne"                                     | []                                       | ["teacher_jeanne"]
-    "a simple with no @tags @teacher_jeanne"                                    | []                                       | ["teacher_jeanne"]
-    "Is it #LOWERCASE ?"                                                        | ["lowercase"]                            | []
+        when: "adding a note"
+        Note note = noteService.addNote(bootstrapTestService.learnerPaul, content)
 
-  }
-
-  def "add bookmark"() {
-    Note note1 = noteService.addNote(bootstrapTestService.learnerMary, "a note 1 with #tag and @${bootstrapTestService.teacherJeanne.username}")
-
-    when: "a user bookmarks a note"
-    noteService.bookmarkNotebyUser(note1, bootstrapTestService.learnerPaul)
-
-    then: 'a bookmark object is persited in database'
-    Bookmark.countByNoteAndUser(note1, bootstrapTestService.learnerPaul) == 1
-
-    and: 'a note has no bookmarks when trying to get it by the to-many relation'
-    !note1.bookmarks
-  }
-
-  def "delete bookmark"() {
-    Note note1 = noteService.addNote(bootstrapTestService.learnerMary, "a note 1")
-    noteService.bookmarkNotebyUser(note1, bootstrapTestService.learnerPaul)
-
-    when: "a user unbookmarked a note"
-    noteService.unbookmarkedNoteByUser(note1, bootstrapTestService.learnerPaul)
-
-    then: "there is no more bookmark record in the database"
-    Bookmark.countByNoteAndUser(note1, bootstrapTestService.learnerPaul) == 0
-
-  }
+        then: "the note exists and mentions and tags are created when needed"
+        note != null
+        note.content == content
+        // tags
+        def noteTags = NoteTag.findAllByNote(note)
+        noteTags.size() == tags.size()
+        if (noteTags.size() > 0) {
+            def tagsFromNote = noteTags*.tag*.name
+            tagsFromNote == tags
+        }
+        // mentions
+        def noteMentions = NoteMention.findAllByNote(note)
+        noteMentions.size() == mentions.size()
+        if (noteMentions.size() > 0) {
+            def mentionsFromNote = noteMentions*.mention*.username
+            mentionsFromNote == mentions
+        }
 
 
-  def "delete a note"() {
+        where: "all these data are tested"
+        content | tags | mentions
+        "@teacher_jeanne : a simple #content, with no #spaces in the content" | ["content", "spaces"] | ["teacher_jeanne"]
+        "a simple #content with no #spaces in the content but with #content a copy" | ["content", "spaces"] | []
+        "a simple #content\n #another\r #tag3\n with #spaces\t in the content" | ["content", "another", "tag3", "spaces"] | []
+        "a simple with no tags @teacher_jeanne" | [] | ["teacher_jeanne"]
+        "a simple with no @tags @teacher_jeanne" | [] | ["teacher_jeanne"]
+        "Is it #LOWERCASE ?" | ["lowercase"] | []
 
-    given:"A note with tags, mentions, fragment tag and responses and that is bookmarked"
-    Tag tag = Tag.findOrSaveWhere(name: "afragmenttag")
-    Note note1 = noteService.addNote(bootstrapTestService.learnerMary, "a note 1 with #tag and @${bootstrapTestService.teacherJeanne.username}", null, tag, null)
-    noteService.addNote(bootstrapTestService.learnerMary, "a note 2", null,null, note1)
-    noteService.addNote(bootstrapTestService.learnerPaul, 'a note 3', null,null, note1)
-    noteService.bookmarkNotebyUser(note1, bootstrapTestService.learnerPaul)
+    }
 
-    when: "a note is removed"
-    noteService.deleteNoteByAuthor(note1, bootstrapTestService.learnerMary)
+    def "add bookmark"() {
+        Note note1 = noteService.addNote(bootstrapTestService.learnerMary, "a note 1 with #tag and @${bootstrapTestService.teacherJeanne.username}")
 
-    then: "the note is deleted from database"
-    Note.get(note1.id) == null
+        when: "a user bookmarks a note"
+        noteService.bookmarkNotebyUser(note1, bootstrapTestService.learnerPaul)
 
-    and: "Child notes have their field parentNote set to null"
-    Note.countByParentNote(note1) == 0
-    // use a fetch because batch query doesn't invalidate first level cache
+        then: 'a bookmark object is persited in database'
+        Bookmark.countByNoteAndUser(note1, bootstrapTestService.learnerPaul) == 1
 
-    and: "note mentions, note tags and bookmarks are deleted too"
-    NoteMention.countByNote(note1) == 0
-    NoteTag.countByNote(note1) == 0
-    Bookmark.countByNote(note1) == 0
+        and: 'a note has no bookmarks when trying to get it by the to-many relation'
+        !note1.bookmarks
+    }
 
-  }
+    def "delete bookmark"() {
+        Note note1 = noteService.addNote(bootstrapTestService.learnerMary, "a note 1")
+        noteService.bookmarkNotebyUser(note1, bootstrapTestService.learnerPaul)
 
-  def "attempting to delete a note by a user that is not the author"() {
+        when: "a user unbookmarked a note"
+        noteService.unbookmarkedNoteByUser(note1, bootstrapTestService.learnerPaul)
 
-    Note note1 = noteService.addNote(bootstrapTestService.learnerMary, "a note 1 with #tag and @${bootstrapTestService.teacherJeanne.username}")
+        then: "there is no more bookmark record in the database"
+        Bookmark.countByNoteAndUser(note1, bootstrapTestService.learnerPaul) == 0
 
-    when: "a user tries to delete a note he has not written"
-    noteService.deleteNoteByAuthor(note1, bootstrapTestService.learnerPaul)
+    }
 
-    then: "the deletion fails with an illegal argument exception"
-    thrown(PreconditionViolation)
 
-  }
+    def "delete a note"() {
 
-  def "find all question notes for a context"() {
-      given: "a context"
-      Context context = contextService.saveContext(new Context(owner: bootstrapTestService.learnerPaul, contextName: "aContext"))
+        given: "A note with tags, mentions, fragment tag and responses and that is bookmarked"
+        Tag tag = Tag.findOrSaveWhere(name: "afragmenttag")
+        Note note1 = noteService.addNote(bootstrapTestService.learnerMary, "a note 1 with #tag and @${bootstrapTestService.teacherJeanne.username}", null, tag, null)
+        noteService.addNote(bootstrapTestService.learnerMary, "a note 2", null, null, note1)
+        noteService.addNote(bootstrapTestService.learnerPaul, 'a note 3', null, null, note1)
+        noteService.bookmarkNotebyUser(note1, bootstrapTestService.learnerPaul)
 
-      and:"a std note"
-      Note note = noteService.addNote(bootstrapTestService.learnerPaul, "a standard note",context)
+        when: "a note is removed"
+        noteService.deleteNoteByAuthor(note1, bootstrapTestService.learnerMary)
 
-      and:"a question note"
-      Note question = noteService.addNote(bootstrapTestService.learnerPaul, "::a question:: what ? {=true~false}",context)
+        then: "the note is deleted from database"
+        Note.get(note1.id) == null
 
-      when:"finding all notes for context"
-      List<Note> res = noteService.findAllNotes(bootstrapTestService.learnerPaul,false,false,true,context,null,null,'question','').list
+        and: "Child notes have their field parentNote set to null"
+        Note.countByParentNote(note1) == 0
+        // use a fetch because batch query doesn't invalidate first level cache
 
-      then:"all questions are found"
-      res.size() == 1
-      res.contains(question)
-  }
+        and: "note mentions, note tags and bookmarks are deleted too"
+        NoteMention.countByNote(note1) == 0
+        NoteTag.countByNote(note1) == 0
+        Bookmark.countByNote(note1) == 0
 
-  def "test the grade of a note by a user"() {
-    given: "a note and a user"
-    Note note = noteService.addNote(bootstrapTestService.learnerPaul, "a standard note")
-    def user = bootstrapTestService.learnerMary
+    }
 
-    when: "user grade for the first time"
-    NoteGrade grade = noteService.gradeNotebyUser(note,user,1d)
+    def "attempting to delete a note by a user that is not the author"() {
 
-    then: "a grade is created"
-    NoteGrade fetchGrade = NoteGrade.findByNoteAndUser(note,user)
-    fetchGrade.grade == 1d
+        Note note1 = noteService.addNote(bootstrapTestService.learnerMary, "a note 1 with #tag and @${bootstrapTestService.teacherJeanne.username}")
 
-    when:"the same user grade one more time"
-    noteService.gradeNotebyUser(note,user,2d)
+        when: "a user tries to delete a note he has not written"
+        noteService.deleteNoteByAuthor(note1, bootstrapTestService.learnerPaul)
 
-    then:"no more grade is created"
-    NoteGrade.countByNoteAndUser(note,user) == 1
-    fetchGrade.grade == 2d
+        then: "the deletion fails with an illegal argument exception"
+        thrown(PreconditionViolation)
 
-  }
+    }
+
+    def "find all question notes for a context"() {
+        given: "a context"
+        Context context = contextService.saveContext(new Context(owner: bootstrapTestService.learnerPaul, contextName: "aContext"))
+
+        and: "a std note"
+        Note note = noteService.addNote(bootstrapTestService.learnerPaul, "a standard note", context)
+
+        and: "a question note"
+        Note question = noteService.addNote(bootstrapTestService.learnerPaul, "::a question:: what ? {=true~false}", context)
+
+        when: "finding all notes for context"
+        List<Note> res = noteService.findAllNotes(bootstrapTestService.learnerPaul, false, false, true, context, null, null, 'question', '').list
+
+        then: "all questions are found"
+        res.size() == 1
+        res.contains(question)
+    }
+
+    def "find all notes and good sort for notes in embedded mode"() {
+        given: "a context"
+        Context context = contextService.saveContext(new Context(owner: bootstrapTestService.learnerPaul, contextName: "aContext"))
+
+        and: "two std notes"
+        Note note1 = noteService.addNote(bootstrapTestService.learnerMary, "a standard note2", context)
+        Note note = noteService.addNote(bootstrapTestService.learnerPaul, "a standard note", context)
+
+        and: "a question note"
+        Note question = noteService.addNote(bootstrapTestService.learnerPaul, "::a question:: what ? {=true~false}", context)
+
+        when: "finding all notes with the fragment tag"
+        List<Note> res = noteService.findAllNotes(bootstrapTestService.learnerPaul, false, false, true, context, null, null, 'standard', 'on').list
+
+        then: "all standard notes are sort with user note in first"
+        res.size() == 2
+        res.contains(note)
+        res.contains(note1)
+        res.get(0) == note
+    }
+
+    def "find all notes and good sort for notes with a fragment tag in embedded mode"() {
+        given: "a context"
+        Context context = contextService.saveContext(new Context(owner: bootstrapTestService.learnerPaul, contextName: "aContext"))
+
+        and: "two std notes with a fragment tag"
+        Tag tag = Tag.findOrSaveWhere(name: "afragmenttag")
+        Note note1 = noteService.addNote(bootstrapTestService.learnerMary, "a standard note2", context, tag)
+        Note note = noteService.addNote(bootstrapTestService.learnerPaul, "a standard note", context, tag)
+
+        and: "a question note"
+        Note question = noteService.addNote(bootstrapTestService.learnerPaul, "::a question:: what ? {=true~false}", context, tag)
+
+        when: "finding all notes with the fragment tag"
+        List<Note> res = noteService.findAllNotes(bootstrapTestService.learnerPaul, false, false, true, context, tag, null, 'standard', 'on').list
+
+        then: "all standard notes with the tag are found and are sort with user note in first"
+        res.size() == 2
+        res.contains(note)
+        res.contains(note1)
+        res.get(0) == note
+    }
+
+    def "test the grade of a note by a user"() {
+        given: "a note and a user"
+        Note note = noteService.addNote(bootstrapTestService.learnerPaul, "a standard note")
+        def user = bootstrapTestService.learnerMary
+
+        when: "user grade for the first time"
+        NoteGrade grade = noteService.gradeNotebyUser(note, user, 1d)
+
+        then: "a grade is created"
+        NoteGrade fetchGrade = NoteGrade.findByNoteAndUser(note, user)
+        fetchGrade.grade == 1d
+
+        when: "the same user grade one more time"
+        noteService.gradeNotebyUser(note, user, 2d)
+
+        then: "no more grade is created"
+        NoteGrade.countByNoteAndUser(note, user) == 1
+        fetchGrade.grade == 2d
+
+    }
+
 }

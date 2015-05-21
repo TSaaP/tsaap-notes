@@ -277,17 +277,17 @@ class NoteService {
         }
         if (all && inFragmentTag) {
             if(inlineParam == 'on' && kindParam != 'question') {
-                def authorList = Note.findAllByContextAndAuthorAndFragmentTagAndKindInList(
+                def authorList = Note.findAllByContextAndFragmentTagAndAuthorAndKindInList(
                         inContext,
-                        inUser,
                         inFragmentTag,
+                        inUser,
                         kindList,
                         paginationAndSorting
                 )
-                def othersList = Note.findAllByContextAndAuthorNotEqualAndFragmentTagAndKindInList(
+                def othersList = Note.findAllByContextAndFragmentTagAndAuthorNotEqualAndKindInList(
                         inContext,
-                        inUser,
                         inFragmentTag,
+                        inUser,
                         kindList,
                         paginationAndSorting
                 )

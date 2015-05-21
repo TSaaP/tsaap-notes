@@ -117,7 +117,7 @@
             </g:each>
         </ul>
     </div>
-<g:if test="${(!(params.inline && params.inline=='on' && params.fragmentTagId && params.fragmentTagId==null) || params.kind=='question')}">
+<g:if test="${(!(params.inline && params.inline=='on' && params.fragmentTagId && params.fragmentTagId!=null) || params.kind=='question')}">
     <div class="note-list-pagination">
         <tsaap:paginate class="pull-right" prev="&laquo;" next="&raquo;" total="${notes.totalCount}"
                         params='[contextId: "${params.contextId}", fragmentTagId: "${params.fragmentTagId}", displaysMyNotes: "${params.displaysMyNotes}", displaysMyFavorites: "${params.displaysMyFavorites}", displaysAll: "${params.displaysAll}", inline: "${params.inline}", kind: "${params.kind}"]'/>

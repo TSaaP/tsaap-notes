@@ -31,10 +31,12 @@ class BootStrap {
         Sql.LOG.level = Level.FINE
         bootstrapService.inializeDevUsers()
         bootstrapService.initializeDevContext()
+        bootstrapService.initializeDevContextWithFragment()
       }
       demo {
         bootstrapService.inializeDevUsers()
         bootstrapService.initializeDevContext()
+        bootstrapService.initializeDevContextWithFragment()
       }
     }
   }

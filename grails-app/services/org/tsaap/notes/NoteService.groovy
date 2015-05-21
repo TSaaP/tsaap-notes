@@ -229,6 +229,7 @@ class NoteService {
                      String inlineParam) {
         List kindList = null
         List list = null
+        def noPagination = [sort: 'dateCreated', order: 'desc']
         if(kindParam != 'question') {
             kindList=[NoteKind.STANDARD.ordinal()]
         }
@@ -260,18 +261,18 @@ class NoteService {
             }
             else {
                 list = Note.findAllByContextAndKindInList(
-                        inContext, kindList,
+                        inContext,
+                        kindList,
                         paginationAndSorting
                 )
             }
             return new DefaultPagedResultList(list: list,
                     totalCount: Note.countByContextAndKindInList(
                             inContext,
-                            kindList,
-                            paginationAndSorting),
+                            kindList),
                     map: attachementService.searchAttachementInNoteList(Note.findAllByContextAndKindInList(
-                            inContext,kindList,
-                            paginationAndSorting
+                            inContext,
+                            kindList
                     ))
                 )
         }
@@ -282,14 +283,14 @@ class NoteService {
                         inFragmentTag,
                         inUser,
                         kindList,
-                        paginationAndSorting
+                        noPagination
                 )
                 def othersList = Note.findAllByContextAndFragmentTagAndAuthorNotEqualAndKindInList(
                         inContext,
                         inFragmentTag,
                         inUser,
                         kindList,
-                        paginationAndSorting
+                        noPagination
                 )
                 list = authorList + othersList
             }

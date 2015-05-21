@@ -147,7 +147,7 @@ class NoteServiceIntegrationSpec extends Specification {
         res.contains(question)
     }
 
-    def "find all notes and good sort for notes in embedded mode"() {
+    def "find all notes in embedded mode"() {
         given: "a context"
         Context context = contextService.saveContext(new Context(owner: bootstrapTestService.learnerPaul, contextName: "aContext"))
 
@@ -158,14 +158,13 @@ class NoteServiceIntegrationSpec extends Specification {
         and: "a question note"
         Note question = noteService.addNote(bootstrapTestService.learnerPaul, "::a question:: what ? {=true~false}", context)
 
-        when: "finding all notes with the fragment tag"
+        when: "finding all notes"
         List<Note> res = noteService.findAllNotes(bootstrapTestService.learnerPaul, false, false, true, context, null, null, 'standard', 'on').list
 
         then: "all standard notes are sort with user note in first"
         res.size() == 2
         res.contains(note)
         res.contains(note1)
-        res.get(0) == note
     }
 
     def "find all notes and good sort for notes with a fragment tag in embedded mode"() {

@@ -99,7 +99,7 @@
                 <g:set var="separationLine" value="true"/>
             </g:else>
             <g:each in="${notes.list}" var="note">
-                <g:if test="${(separationLine=="false") && (user != note.author) && params.inline == 'on'}">
+                <g:if test="${(separationLine=="false") && (user != note.author) && params.inline == 'on' && params.fragmentTagId!=null}">
                     <hr/>
                     <g:set var="separationLine" value="true"/>
                 </g:if>
@@ -117,7 +117,7 @@
             </g:each>
         </ul>
     </div>
-<g:if test="${!((params.inline && params.inline=='on' && params.inFragmentTag!=null) || params.kind=='question')}">
+<g:if test="${!((params.inline && params.inline=='on' && params.fragmentTagId!=null) || params.kind=='question')}">
     <div class="note-list-pagination">
         <tsaap:paginate class="pull-right" prev="&laquo;" next="&raquo;" total="${notes.totalCount}"
                         params='[contextId: "${params.contextId}", fragmentTagId: "${params.fragmentTagId}", displaysMyNotes: "${params.displaysMyNotes}", displaysMyFavorites: "${params.displaysMyFavorites}", displaysAll: "${params.displaysAll}", inline: "${params.inline}", kind: "${params.kind}"]'/>

@@ -6,6 +6,7 @@ import org.gcontracts.annotations.Requires
 import org.tsaap.directory.User
 import org.tsaap.notes.Bookmark
 import org.tsaap.notes.Note
+import org.tsaap.notes.NoteGrade
 import org.tsaap.notes.NoteKind
 import org.tsaap.notes.NoteMention
 import org.tsaap.notes.NoteService
@@ -65,6 +66,34 @@ class LiveSessionService {
     @org.springframework.transaction.annotation.Transactional
     @Requires({ liveSession && liveSession.note.author == user })
     def deleteLiveSessionByAuthor(LiveSession liveSession, User user) {
+
+        //delete note tag and note grade for this live session explanation notes
+        def liveResponse = LiveSessionResponse.where {
+            liveSession == liveSession
+        }
+        List<Note> noteList = new ArrayList<Note>()
+        def notes = liveResponse.findAll()
+        notes.each {
+            if(it.explanationId != null){
+                def theNote = Note.findById(it.explanationId)
+                // delete note tag part
+                if(NoteTag.findAllByNote(theNote)){
+                    def noteTagList = NoteTag.findAllByNote(theNote)
+                    noteTagList.each {
+                        it.delete()
+                    }
+                }
+                // delete note grade part
+                if(NoteGrade.findAllByNote(theNote)){
+                    def noteGradeList = NoteGrade.findAllByNote(theNote)
+                    noteGradeList.each {
+                        it.delete()
+                    }
+                }
+                noteList.add(theNote)
+            }
+        }
+
         // delete live sessions responses if any
         def query = LiveSessionResponse.where {
             liveSession == liveSession
@@ -75,8 +104,13 @@ class LiveSessionService {
             liveSession == liveSession
         }
         query2.deleteAll()
-        // finally delete the live session
+        // delete the live session
         liveSession.delete()
+
+        // finally delete all the explanation notes
+        noteList.each {
+            it.delete()
+        }
     }
 
     /**

@@ -218,10 +218,10 @@ class LiveSessionIntegrationSpec extends Specification {
         !LiveSessionResponse.findAllByLiveSession(liveSession)
         !LiveSessionResponse.findAllBySessionPhase(phase)
 
-        and:"the live session and the phase is deleted"
+        and:"the live session, explanations notes and the phase are deleted"
         !SessionPhase.findByLiveSession(liveSession)
         !LiveSession.findByNote(note)
-        //!Note.findById(explanationId)
+        !Note.findById(explanationId)
     }
 
     void "test the delete of a note that is a question with live sessions"() {

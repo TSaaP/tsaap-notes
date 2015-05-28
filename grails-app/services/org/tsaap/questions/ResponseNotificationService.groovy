@@ -22,7 +22,7 @@ class ResponseNotificationService {
             try {
                 mailService.sendMail {
                     to user.email
-                    subject "[tsaap-notes] questions response"
+                    subject "[tsaap-notes] Someone as reply to your note"
                     html view: "/email/responsesNotification", model: [user: user,
                                                                    questionMap: questionMap]
                 }

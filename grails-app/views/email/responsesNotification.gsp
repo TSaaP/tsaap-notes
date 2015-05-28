@@ -13,19 +13,21 @@
 
 <body>
 
-<p>Hi ${user.firstName}</p>
+<p>Hi ${user.first_name}</p>
 
-<p>There is some responses to your questions:</p>
+<p>Someone as reply to your notes:</p>
 <g:set var="keys" value="${questionMap.keySet()}"/>
 <g:set var="keyTab" value="${keys.toArray()}"/>
 <g:each in="${keyTab}" var="key">
+    <hr/>
     <p>Your question: <br>
     Context: ${key.context_name}<br>
-    ${key.question_content}<br>
+    Tag: ${key.fragment_tag}<br>
+    Message: ${key.question_content}<br><br>
 
     Responses: <br><br>
 
-    <g:each in="${questionMap.get($key)}" var="response">
+    <g:each in="${questionMap.get(key)}" var="response">
         From: ${response.response_author}<br>
         Message : ${response.response_content} <br><br>
     </g:each>

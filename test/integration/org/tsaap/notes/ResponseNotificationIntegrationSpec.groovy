@@ -15,6 +15,8 @@ class ResponseNotificationIntegrationSpec extends Specification {
 
     def setup() {
         bootstrapTestService.initializeTests()
+        bootstrapTestService.context1.refresh()
+        bootstrapTestService.context2.refresh()
     }
 
     void "finding all responses to notify"() {

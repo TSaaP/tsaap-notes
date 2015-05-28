@@ -47,25 +47,24 @@ class BootstrapTestService {
             }
             learners[i] = currentUser
         }
-
-
     }
 
     def initializeNotes(){
-        if(!note1){
+        if(!Note.findByContent("content note 1")){
             note1 = noteService.addNote(learnerPaul,"content note 1")
         }
-        if(!note2) {
+        if(!Note.findByContent("content note 2")) {
             note2 = noteService.addNote(learnerMary,"content note 2")
         }
     }
 
     def initializeContexts(){
-        if(!context1){
+        if(!Context.findByContextName("Context1")){
             context1 = contextService.saveContext(new Context(owner: learnerPaul, contextName: "Context1", url: 'http://www.w3.org', descriptionAsNote: 'a description'))
         }
-        if(!context2){
+        if(!Context.findByContextName("Context2")){
             context2 = contextService.saveContext(new Context(owner: learnerPaul, contextName: "Context2", url: 'http://www.w3.org', descriptionAsNote: 'a description'))
         }
+
     }
 }

@@ -13,11 +13,14 @@
         <g:hiddenField name="displaysMyFavorites"
                        id="displaysMyFavoritesInAddForm${idControllSuffix}"/>
         <g:hiddenField name="displaysAll" id="displaysAllInAddForm${idControllSuffix}"/>
-        <label>Image (gif, jpeg and png only)<input style="display: inline-block" type="file" name="myFile"/></label>
+        <g:if test="${params.kind == 'question'}">
+            <g:set var="kind" value="question"/>
+            <a id="question_sample">Want to know how to write an interactive question ?</a>
+        </g:if>
         <textarea class="form-control note-editable-content" rows="3" id="noteContent${idControllSuffix}"
                   name="noteContent"
                   maxlength="560">${parentNote ? '@' + parentNote.author?.username + ' ' : ''}</textarea>
-        <span class="character_counter" id="character_counter${idControllSuffix}"></span>
+        <input type="file" name="myFile" title="Image: gif, jpeg and png only" class="pull-left" style="margin-top: 5px"/>
         <div id="prewiew_tab_${idControllSuffix}" class="pull-right">
             <button type="button" class="btn btn-default btn-xs"
                     id="preview_button_${idControllSuffix}">
@@ -28,7 +31,8 @@
                                                                                                  class="btn btn-primary btn-xs pull-right"
                                                                                                  id="buttonAddNote${idControllSuffix}"
                                                                                                  disabled><span
-                class="glyphicon glyphicon-plus"></span> Add note</button>
+                class="glyphicon glyphicon-plus"></span> <g:if test="${params.kind == 'question'}">Add question</g:if><g:else>Add note</g:else></button>
+        <span class="character_counter pull-right" style="margin-right: 10px;margin-top: 5px" id="character_counter${idControllSuffix}"></span>
     </g:form>
 </div>
 
@@ -93,5 +97,41 @@
     $("#displaysMyFavoritesInAddForm${idControllSuffix}").val($("#displaysMyFavorites").attr('checked') ? 'on' : '');
     $("#displaysAllInAddForm${idControllSuffix}").val($("#displaysAll").attr('checked') ? 'on' : '');
 
-  });
+    // Questions samples popup management
+    $('#question_sample').popover({
+                                 content: function() {return getQuestionSample()},
+                                 html: true,
+                                 placement: 'bottom'
+                               }).on('shown.bs.popover', function() {
+                                 MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_sample'])
+                               })
+
+    function getQuestionSample() {
+        var contentQuestionSample = "" ;
+            $.ajax({
+                type: "POST",
+                url: '<g:createLink action="getQuestionsSamples" controller="notes"/>',
+                async: false
+            }).done(function( data ) {
+                contentQuestionSample = data ;
+            });
+         return contentQuestionSample
+    }
+
+    });
+
+    function sampleLink(id){
+        $('#question_sample').popover('hide');
+        var precedentText = $('textarea[name="noteContent"]').val();
+        if(id == 0) {
+            $('textarea[name="noteContent"]').val("::Question title:: \nquestion wording {\n=good answer\n~bad answer\n}"+"\n"+precedentText);
+        }
+        else {
+            $('textarea[name="noteContent"]').val("::Question title:: \nquestion wording {\n~%50%a good answer\n~%-50%bad answer\n~%50%an other good answer\n}"
+            +"\n"+precedentText);
+        }
+        $('textarea[name="noteContent"]').focus()
+        $('textarea[name="noteContent"]').blur()
+    }
+
 </r:script>

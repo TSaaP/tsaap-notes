@@ -162,6 +162,36 @@ class NotesController {
     }
 
     /**
+     * Give the different question type sample and create link for popup window dedicate to questions samples
+     * @return the popup window content
+     */
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def getQuestionsSamples() {
+
+        def content = """You can ask single or multiple choice questions:<br><br>
+
+                         - Single choice question:<br>
+                         Exemple:<br><br>
+                      """
+
+        Question singleChoice = giftQuestionService.getQuestionFromGiftText("::Question title:: question wording {=good answer ~bad answer}")
+        def single = """<a class="sampleLink" id="singleQuestionSample" onClick="sampleLink(0)">Use this sample as template</a><br><br>
+                        - Multiple choice question:<br>
+                        Exemple:<br><br>
+                     """
+
+        Question multipleChoice = giftQuestionService.getQuestionFromGiftText("::Question title:: question wording {~%50%a good answer ~%-50%bad answer ~%50%an other good answer}")
+        def multiple = '<a class="sampleLink" id="singleQuestionSample" onClick="sampleLink(1)">Use this sample as template</a>'
+
+        render(content)
+        render(template: '/questions/preview/detail',model: [question: singleChoice])
+        render(single)
+        render(template: '/questions/preview/detail',model: [question: multipleChoice])
+        render(multiple)
+
+    }
+
+    /**
      * Render the main page given the params and the user
      * @param params the params
      * @param user the user

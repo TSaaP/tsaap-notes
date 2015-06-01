@@ -15,6 +15,7 @@
 
 <p>Hi ${user.first_name}</p>
 
+<g:if test="${questionMap != null}">
 <p>Someone as reply to your notes:</p>
 <g:set var="keys" value="${questionMap.keySet()}"/>
 <g:set var="keyTab" value="${keys.toArray()}"/>
@@ -37,5 +38,22 @@
     </p>
     <br>
 </g:each>
+</g:if>
+<g:if test="${mentionsList != null}">
+    <p>Someone as mentioned you on his note:</p>
+
+    <g:each in="${mentionsList}" var="mention">
+        <hr>
+        <p> The note:
+        Author: ${mention.mention_author}<br>
+        Context: ${mention.context_name}<br>
+        Tag: ${mention.fragment_tag_name}<br>
+        Message: ${mention.mention_content}<br>
+
+        Come and see: <g:createLink absolute="true"
+                                    params="[displaysAll: 'on', contextName: mention.context_name, contextId: mention.context_id, fragmentTagId: mention.fragment_tag]"
+                                    controller="notes"/>
+    </g:each>
+</g:if>
 </body>
 </html>

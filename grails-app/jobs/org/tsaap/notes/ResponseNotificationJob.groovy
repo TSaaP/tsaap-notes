@@ -15,7 +15,7 @@ class ResponseNotificationJob {
 
     def execute() {
         log.debug("Start response notification job...")
-        responseNotificationService.notififyUsersOnResponses()
+        responseNotificationService.notififyUsersOnResponsesAndMentions()
         log.debug("End response notification job.")
     }
 }

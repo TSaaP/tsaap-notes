@@ -36,9 +36,9 @@ class ResponseNotificationIntegrationSpec extends Specification {
         then: "we got a map with 1 notifications for Paul's questions."
         result.containsKey([user_id: bootstrapTestService.learnerPaul.id, first_name: bootstrapTestService.learnerPaul.firstName, email: bootstrapTestService.learnerPaul.email])
         def res2 = result.get([user_id: bootstrapTestService.learnerPaul.id, first_name: bootstrapTestService.learnerPaul.firstName, email: bootstrapTestService.learnerPaul.email])
-        res2.containsKey([context_id: bootstrapTestService.context1.id, context_name: bootstrapTestService.context1.contextName, fragment_tag: tag.id,
+        res2.containsKey([context_id: bootstrapTestService.context1.id, context_name: bootstrapTestService.context1.contextName, fragment_tag: tag.id, fragment_tag_name: tag.name,
                           question_id: note1.id, question_content: "paul's question 1"])
-        def res3 = res2.get([context_id: bootstrapTestService.context1.id, context_name: bootstrapTestService.context1.contextName, fragment_tag: tag.id,
+        def res3 = res2.get([context_id: bootstrapTestService.context1.id, context_name: bootstrapTestService.context1.contextName, fragment_tag: tag.id, fragment_tag_name: tag.name,
                              question_id: note1.id, question_content: "paul's question 1"])
         res3.contains([response_author: bootstrapTestService.learnerMary.username, response_id: note3.id, response_content: "mary's response 1"])
     }

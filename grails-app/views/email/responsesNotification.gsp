@@ -23,7 +23,7 @@
     <hr/>
     <p>Your question: <br>
     Context: ${key.context_name}<br>
-    Tag: ${key.fragment_tag}<br>
+    Tag: ${key.fragment_tag_name}<br>
     Message: ${key.question_content}<br><br>
 
     Responses: <br><br>

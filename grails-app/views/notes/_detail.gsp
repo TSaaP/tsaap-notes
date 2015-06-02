@@ -3,7 +3,7 @@
     <g:render template="detail"
               model="[note: note.parentNote, context: context, displaysMyNotes: displaysMyNotes, displaysMyFavorites: displaysMyFavorites, displaysAll: displaysAll, noteClassParent: 'note-parent-note', showDiscussionNote: showDiscussionNote, kind: kind]"/>
 </g:if>
-<g class="list-group-item ${noteClassParent}" style="padding-bottom: 20px">
+<li class="list-group-item ${noteClassParent}" style="padding-bottom: 20px">
     <g:set var="noteIsBookmarked" value="${note.isBookmarkedByUser(user)}"/>
     <g:set var="noteIsScored" value="${note.isScoredByUser(user)}"/>
     <g:set var="displayListParams"
@@ -68,57 +68,57 @@
                 <g:link controller="notes" action="showDiscussion"
                         params="${[noteId: note.id] + displayListParamsWithPagination}"
                         fragment="note${note.id}">
-                    <span class="glyphicon glyphicon-circle-arrow-left"></span> Show discussion
+                    <span class="glyphicon glyphicon-circle-arrow-left"></span> ${message(code: "notes.detail.showDiscussion")}
                 </g:link>
             </g:if>
             <g:if test="${note.hasParent() && !noteClassParent && showDiscussionNote}">
                 <g:link controller="notes" action="hideDiscussion"
                         params="${displayListParamsWithPagination}"
                         fragment="note${note.id}">
-                    <span class="glyphicon glyphicon-circle-arrow-right"></span> Hide discussion
+                    <span class="glyphicon glyphicon-circle-arrow-right"></span> ${message(code: "notes.detail.hideDiscussion")}
                 </g:link>
             </g:if>
             <a href="#note${note.id}" id="replyLink${note.id}"
                onclick="displaysReplyField(${note.id})"><span
-                    class="glyphicon glyphicon-share"></span> Reply</a>
+                    class="glyphicon glyphicon-share"></span> ${message(code: "notes.detail.reply")}</a>
             <g:if test="${user == note.author}">
                 <g:link controller="notes" action="deleteNote"
                         params="${[noteId: note.id] + displayListParamsWithPagination}"><span
-                        class="glyphicon glyphicon-trash"></span> Delete</g:link>
+                        class="glyphicon glyphicon-trash"></span> ${message(code: "notes.detail.delete")}</g:link>
             </g:if>
             <g:if test="${noteIsBookmarked}">
                 <g:link style="color: orange" controller="notes" action="unbookmarkNote"
                         params="${[noteId: note.id] + displayListParamsWithPagination}"
                         fragment="note${note.id}"><span
-                        class="glyphicon glyphicon-star"></span> Favorite</g:link>
+                        class="glyphicon glyphicon-star"></span> ${message(code: "notes.detail.favorite")}</g:link>
             </g:if>
             <g:else>
                 <g:link controller="notes" action="bookmarkNote"
                         params="${[noteId: note.id] + displayListParamsWithPagination}"
                         fragment="note${note.id}"><span
-                        class="glyphicon glyphicon-star"></span> Favorite</g:link>
+                        class="glyphicon glyphicon-star"></span> ${message(code: "notes.detail.favorite")}</g:link>
             </g:else>
             <g:if test="${noteIsScored}">
                 <span style="color: orange"
-                        class="glyphicon glyphicon-thumbs-up"> I learn</span>
+                        class="glyphicon glyphicon-thumbs-up"> ${message(code: "notes.detail.learn")}</span>
             </g:if>
             <g:else>
             <g:link controller="notes" action="markAsLikedNote"
                 params="${[noteId: note.id] + displayListParamsWithPagination}"
                 fragment="note${note.id}"><span
-                class="glyphicon glyphicon-thumbs-up"></span> I learn</g:link>
+                class="glyphicon glyphicon-thumbs-up"></span> ${message(code: "notes.detail.learn")}</g:link>
             </g:else>
         </small>
     </div>
     <div>&nbsp;</div>
     <g:if test="${note.score > 1}">
         <div>
-            <small class="pull-right">${note.score} users learnt with this note</small>
+            <small class="pull-right">${note.score} ${message(code: "notes.detail.multipleLearnScore")}</small>
         </div>
     </g:if>
     <g:if test="${note.score == 1}">
         <div>
-            <small class="pull-right">${note.score} user learnt with this note</small>
+            <small class="pull-right">${note.score} ${message(code: "notes.detail.uniqueLearnScore")}</small>
         </div>
     </g:if>
 

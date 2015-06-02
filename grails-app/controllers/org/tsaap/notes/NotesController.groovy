@@ -168,26 +168,25 @@ class NotesController {
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def getQuestionsSamples() {
 
-        def content = """You can ask single or multiple choice questions:<br><br>
+        def content = "${message(code: "notes.edit.sampleQuestion.text")}"
+        def single = "${message(code: "notes.edit.sampleQuestion.singleChoice")}"
 
-                         - Single choice question:<br>
-                         Exemple:<br><br>
-                      """
+        Question singleChoice = giftQuestionService.getQuestionFromGiftText("${message(code: "notes.edit.sampleQuestion.singleChoiceExemple")}")
 
-        Question singleChoice = giftQuestionService.getQuestionFromGiftText("::Question title:: question wording {=good answer ~bad answer}")
-        def single = """<a class="sampleLink" id="singleQuestionSample" onClick="sampleLink(0)">Use this sample as template</a><br><br>
-                        - Multiple choice question:<br>
-                        Exemple:<br><br>
-                     """
+        def singlelink = """<a class="sampleLink" id="singleQuestionSample" onClick="sampleLink(0)">${message(code: "notes.edit.sampleQuestion.link")}</a><br><br>"""
+        def multiple = "${message(code: "notes.edit.sampleQuestion.multipleChoice")}"
 
-        Question multipleChoice = giftQuestionService.getQuestionFromGiftText("::Question title:: question wording {~%50%a good answer ~%-50%bad answer ~%50%an other good answer}")
-        def multiple = '<a class="sampleLink" id="singleQuestionSample" onClick="sampleLink(1)">Use this sample as template</a>'
+        Question multipleChoice = giftQuestionService.getQuestionFromGiftText("${message(code: "notes.edit.sampleQuestion.multipleChoiceExemple")}")
+
+        def multiplelink ="""<a class="sampleLink" id="singleQuestionSample" onClick="sampleLink(1)">${message(code: "notes.edit.sampleQuestion.link")}</a>"""
 
         render(content)
-        render(template: '/questions/preview/detail',model: [question: singleChoice])
         render(single)
-        render(template: '/questions/preview/detail',model: [question: multipleChoice])
+        render(template: '/questions/preview/detail',model: [question: singleChoice])
+        render(singlelink)
         render(multiple)
+        render(template: '/questions/preview/detail',model: [question: multipleChoice])
+        render(multiplelink)
 
     }
 

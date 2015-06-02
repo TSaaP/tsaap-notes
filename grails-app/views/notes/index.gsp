@@ -68,20 +68,20 @@
                 <g:hiddenField name="kind" value="${params.kind}"/>
                 <label class="checkbox-inline">
                     <g:checkBox name="displaysMyNotes" checked="${params.displaysMyNotes == 'on' ? true : false}"
-                                onchange="submit();"/> My notes
+                                onchange="submit();"/> ${message(code: "notes.index.myNotes.checkbox")}
                 </label>
                 <label class="checkbox-inline">
                     <g:checkBox name="displaysMyFavorites"
                                 checked="${params.displaysMyFavorites == 'on' ? true : false}"
-                                onchange="submit();"/> My favorites
+                                onchange="submit();"/> ${message(code: "notes.index.myFavorites.checkbox")}
                 </label>
                 <label class="checkbox-inline">
                     <g:if test="${context}">
                         <g:checkBox name="displaysAll" checked="${params.displaysAll == 'on' ? true : false}"
-                                    onchange="submit();"/>  All
+                                    onchange="submit();"/>  ${message(code: "notes.index.allNotes.checkbox")}
                     </g:if>
                     <g:else>
-                        <input type="checkbox" name="displaysAll" disabled/> <span style="color: gainsboro">All</span>
+                        <input type="checkbox" name="displaysAll" disabled/> <span style="color: gainsboro">${message(code: "notes.index.allNotes.checkbox")}</span>
                     </g:else>
                 </label>
             </g:form>

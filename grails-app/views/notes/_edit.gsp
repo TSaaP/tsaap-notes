@@ -15,7 +15,7 @@
         <g:hiddenField name="displaysAll" id="displaysAllInAddForm${idControllSuffix}"/>
         <g:if test="${params.kind == 'question'}">
             <g:set var="kind" value="question"/>
-            <a id="question_sample">Want to know how to write an interactive question ?</a>
+            <a id="question_sample">${message(code: "notes.edit.sampleQuestion")}</a>
         </g:if>
         <textarea class="form-control note-editable-content" rows="3" id="noteContent${idControllSuffix}"
                   name="noteContent"
@@ -24,14 +24,14 @@
         <div id="prewiew_tab_${idControllSuffix}" class="pull-right">
             <button type="button" class="btn btn-default btn-xs"
                     id="preview_button_${idControllSuffix}">
-                Show preview
+                ${message(code: "notes.edit.preview")}
             </button>
         </div>
         <button type="submit"
                                                                                                  class="btn btn-primary btn-xs pull-right"
                                                                                                  id="buttonAddNote${idControllSuffix}"
                                                                                                  disabled><span
-                class="glyphicon glyphicon-plus"></span> <g:if test="${params.kind == 'question'}">Add question</g:if><g:else>Add note</g:else></button>
+                class="glyphicon glyphicon-plus"></span> <g:if test="${params.kind == 'question'}">${message(code: "notes.edit.add.question.button")}</g:if><g:else>${message(code: "notes.edit.add.note.button")}</g:else></button>
         <span class="character_counter pull-right" style="margin-right: 10px;margin-top: 5px" id="character_counter${idControllSuffix}"></span>
     </g:form>
 </div>
@@ -124,11 +124,10 @@
         $('#question_sample').popover('hide');
         var precedentText = $('textarea[name="noteContent"]').val();
         if(id == 0) {
-            $('textarea[name="noteContent"]').val("::Question title:: \nquestion wording {\n=good answer\n~bad answer\n}"+"\n"+precedentText);
+            $('textarea[name="noteContent"]').val("${message(code: "notes.edit.sampleQuestion.singleChoiceExemple")}"+"\n"+precedentText);
         }
         else {
-            $('textarea[name="noteContent"]').val("::Question title:: \nquestion wording {\n~%50%a good answer\n~%-50%bad answer\n~%50%an other good answer\n}"
-            +"\n"+precedentText);
+            $('textarea[name="noteContent"]').val("${message(code: "notes.edit.sampleQuestion.multipleChoiceExemple")}" +"\n"+precedentText);
         }
         $('textarea[name="noteContent"]').focus()
         $('textarea[name="noteContent"]').blur()

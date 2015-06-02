@@ -31,11 +31,11 @@
     </g:if>
     <g:else>
       <p>
-        Sorry, something went wrong.
+        ${message(code: "error.apologies.text")}
       </p>
     </g:else>
     <p>
-      You can continue on Tsaap-Notes following <g:link uri="/login/auth">this link</g:link>.
+      ${message(code: "error.continueLink.message")} <g:link uri="/login/auth">${message(code: "error.continueLink.link")}</g:link>.
     </p>
 
   </div>
@@ -43,7 +43,7 @@
   <g:if env="development">
     <p>
       <a href="#"
-         onclick="showException()">Click to see detail of the error.</a>
+         onclick="showException()">${message(code: "error.development.errorDetail.link")}</a>
     </p>
 
     <div id="exception" style="display:none">

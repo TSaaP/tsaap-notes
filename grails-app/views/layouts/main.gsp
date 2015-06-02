@@ -48,7 +48,7 @@
       <ul class="nav navbar-nav">
         <li id="mainLinkNotes"><g:link controller="notes" params="[displaysMyNotes:'on', kind:'standard']">Notes</g:link></li>
         <li id="mainLinkQuestions"><g:link controller="notes" params="[displaysMyNotes: 'on', kind: 'question']">Questions</g:link></li>
-        <li id="mainLinkContexts"><g:link controller="context" params="[filter:FilterReservedValue.__MINE__.name()]">Scopes</g:link></li>
+        <li id="mainLinkContexts"><g:link controller="context" params="[filter:FilterReservedValue.__MINE__.name()]">${message(code: "layout.main.scope")}</g:link></li>
       </ul>
 
       <div class="nav-collapse collapse pull-right">
@@ -58,9 +58,9 @@
                       <a href="#" class="dropdown-toggle" data-toggle="dropdown">${user.fullname}
                         <span class="glyphicon glyphicon-cog"></span> <b class="caret"></b></a>
                       <ul class="dropdown-menu">
-                        <li><g:link controller="userAccount" action="doEdit">My account</g:link></li>
+                        <li><g:link controller="userAccount" action="doEdit">${message(code: "layout.main.account")}</g:link></li>
                         <li class="divider"></li>
-                        <li><g:link controller="logout">disconnect</g:link></li>
+                        <li><g:link controller="logout">${message(code: "layout.main.disconnect")}</g:link></li>
                       </ul>
                     </li>
           </tsaap:ifLoggedIn>

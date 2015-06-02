@@ -42,8 +42,8 @@
 
     <div class="nav-collapse collapse">
       <ul class="nav navbar-nav">
-        <li><a href="https://github.com/TSaaP/tsaap-notes" target="_blank">On Github</a></li>
-        <li><a href="https://github.com/TSaaP/tsaap-notes/issues?state=open" target="_blank">Bug tracker</a></li>
+        <li><a href="https://github.com/TSaaP/tsaap-notes" target="_blank">${message(code: "layout.home.github")}</a></li>
+        <li><a href="https://github.com/TSaaP/tsaap-notes/issues?state=open" target="_blank">${message(code: "layout.home.bug")}</a></li>
         <li><a href="mailto:franck.silvestre@irit.fr">Contact</a></li>
         %{--<li class="dropdown">--}%
           %{--<a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b--}%
@@ -63,10 +63,10 @@
       <div class="nav-collapse collapse pull-right">
         <ul class="nav navbar-nav">
           <tsaap:ifNotLoggedIn>
-          <li><g:link controller="login" action="auth">Already an account ? Sign in &raquo;</g:link></li>
+          <li><g:link controller="login" action="auth">${message(code: "layout.home.signIn")} &raquo;</g:link></li>
           </tsaap:ifNotLoggedIn>
           <tsaap:ifLoggedIn>
-            <li><g:link controller="notes" params="[displaysMyNotes:'on']">Welcome back @<sec:username/> !</g:link></li>
+            <li><g:link controller="notes" params="[displaysMyNotes:'on']">${message(code: "layout.home.welcome")} @<sec:username/> !</g:link></li>
           </tsaap:ifLoggedIn>
         </ul>
       </div>

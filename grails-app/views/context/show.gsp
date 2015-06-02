@@ -17,7 +17,7 @@
     <ol class="breadcrumb">
         <li><g:link class="list" action="index"><g:message code="default.list.label"
                                                            args="[entityName]"/></g:link></li>
-        <li class="active">Show scope "${context?.contextName}"</li>
+        <li class="active">${message(code: 'context.show.li.active')} "${context?.contextName}"</li>
     </ol>
 </div>
 
@@ -35,7 +35,7 @@
             <tbody>
             <tr>
                 <td>
-                    <g:message code="context.contextName.label" default="Scope Name"/>
+                    <g:message code="context.scopeName.label" default="Scope Name"/>
                 </td>
                 <td>${context.contextName}</td>
             </tr>
@@ -47,35 +47,35 @@
             </tr>
             <tr>
                 <td>
-                    <g:message code="context.descriptionAsNote.label"
+                    <g:message code="context.show.description.label"
                                default="Description"/>
                 </td>
                 <td>${context.descriptionAsNote}</td>
             </tr>
             <tr>
                 <td>
-                    <g:message code="context.owner.label" default="Owner"/>
+                    <g:message code="context.show.owner.label" default="Owner"/>
                 </td>
                 <td>@${context.owner.username} <g:if
-                        test="${context.ownerIsTeacher}">(as teacher)</g:if></td>
+                        test="${context.ownerIsTeacher}">${message(code: 'context.show.teacher.label')}</g:if></td>
             </tr>
             <tr>
                 <td>
-                    <g:message code="context.dateCreated.label" default="Created"/>
+                    <g:message code="context.show.dateCreated.label" default="Created"/>
                 </td>
                 <td><g:formatDate
                         date="${context.dateCreated}"/></td>
             </tr>
             <tr>
                 <td>
-                    <g:message code="context.lastUpdated.label" default="Updated"/>
+                    <g:message code="context.show.lastUpdated.label" default="Updated"/>
                 </td>
                 <td><g:formatDate
                         date="${context.lastUpdated}"/></td>
             </tr>
             <tr>
                 <td>
-                    The notes on this scope
+                    ${message(code: 'context.show.notes')}
                 </td>
                 <td><g:link controller="notes"
                             params="[displaysAll: 'on', contextName: context?.contextName, contextId: context.id, kind: 'standard']"><g:createLink
@@ -84,7 +84,7 @@
             </tr>
             <tr>
                 <td>
-                    The questions on this scope
+                    ${message(code: 'context.show.questions')}
                 </td>
                 <td><g:link controller="notes"
                             params="[displaysAll: 'on', contextName: context?.contextName, contextId: context.id, kind: 'question']"><g:createLink
@@ -108,9 +108,9 @@
                                         onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"/>
                     </g:if>
                     <g:link class="btn btn-primary" controller="context" action="exportQuestionsAsGift"
-                            id="${context.id}" target="_blank">Export questions</g:link>
+                            id="${context.id}" target="_blank">${message(code: 'context.show.export.link')}</g:link>
                     <g:link class="btn btn-primary" controller="context" action="exportQuestionsAsGiftWithFeedbacks"
-                            id="${context.id}" target="_blank">Export questions with feedbacks</g:link>
+                            id="${context.id}" target="_blank">${message(code: 'context.show.exportFeedback.link')}</g:link>
                 </fieldset>
             </g:form>
         </g:if>

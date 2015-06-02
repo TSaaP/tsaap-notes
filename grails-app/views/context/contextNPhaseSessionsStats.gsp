@@ -34,7 +34,7 @@
     </g:else>
     <r:require modules="tsaap_ui_notes,tsaap_icons"/>
     <r:require module="export"/>
-    <title>Tsaap-Notes statistics</title>
+    <title>${message(code: "context.sessionStats.page.title")}</title>
 </head>
 
 <body>

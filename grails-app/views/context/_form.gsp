@@ -4,7 +4,7 @@
 
 <div class="form-group fieldcontain ${hasErrors(bean: context, field: 'contextName', 'error')} required">
   <label for="contextName">
-    <g:message code="context.contextName.label" default="Scope Name"/>
+    <g:message code="context.scopeName.label" default="Scope Name"/>
     <span class="required-indicator">*</span>
   </label>
   <g:textField name="contextName" required="" value="${context?.contextName}" class="form-control"/>
@@ -20,7 +20,7 @@
 
 <div class="form-group fieldcontain ${hasErrors(bean: context, field: 'descriptionAsNote', 'error')} ">
   <label for="descriptionAsNote">
-    <g:message code="context.descriptionAsNote.label"
+    <g:message code="context.form.description.label"
                default="Description As Note"/>
 
   </label>
@@ -32,7 +32,7 @@
 
 <div class="checkbox fieldcontain ${hasErrors(bean: context, field: 'ownerIsTeacher', 'error')} ">
   <g:checkBox name="ownerIsTeacher" value="${context?.ownerIsTeacher}"/>
-  <g:message code="context.ownerIsTeacher.label" default="You teach on this context"/>
+  <g:message code="context.form.teach.checkbox" default="You teach on this context"/>
 </div>
 
 <g:hiddenField name="owner" value="${context?.owner?.id}"/>

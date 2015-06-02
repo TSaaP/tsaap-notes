@@ -15,7 +15,7 @@
   <ol class="breadcrumb">
     <li><g:link class="list" action="index"><g:message code="default.list.label"
                                                        args="[entityName]"/></g:link></li>
-    <li class="active">Edit scope ${context?.contextName}</li>
+    <li class="active">${message(code: "context.edit.li.active")} ${context?.contextName}</li>
   </ol>
 </div>
 

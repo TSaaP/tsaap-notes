@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>TsaaP-Notes | Sign In</title>
+  <title>${message(code: "springSecurity.login.page.title")}</title>
   <meta name='layout' content='home'/>
   <r:require module="tsaap_ui_signin"/>
 </head>
@@ -26,17 +26,17 @@
 <div class="container">
 
   <form class="form-signin" action='${postUrl}' id='loginForm' method="post">
-    <h3>Sign in</h3>
+    <h3>${message(code: "springSecurity.login.connexion.title")}</h3>
     <g:if test='${flash.message}'>
       <div class='alert'>${flash.message}</div>
     </g:if>
     <div class="form-group">
-      <input type="text" class="input-block-level" placeholder="Username"
+      <input type="text" class="input-block-level" placeholder=${message(code: "springSecurity.login.username.placeholder")}
              autofocus name='j_username' id='username'>
     </div>
 
     <div class="form-group">
-      <input type="password" class="input-block-level" placeholder="Password"
+      <input type="password" class="input-block-level" placeholder=${message(code: "springSecurity.login.password.placeholder")}
              name='j_password' id='password'>
     </div>
 
@@ -45,12 +45,12 @@
         <g:if test="${hasCookie}">
           <input type="checkbox" value="remember-me"
                  name='${rememberMeParameter}'
-                 id='remember_me' checked='checked'/> Remember me
+                 id='remember_me' checked='checked'/> ${message(code: "springSecurity.login.rememberMe.checkbox")}
         </g:if>
         <g:else>
           <input type="checkbox" value="remember-me"
                  name='${rememberMeParameter}'
-                 id='remember_me'/> Remember me
+                 id='remember_me'/> ${message(code: "springSecurity.login.rememberMe.checkbox")}
         </g:else>
       </label>
     </div>

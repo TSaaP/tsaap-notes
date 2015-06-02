@@ -35,9 +35,9 @@
         <h2><img src="images/LogoTsaapNotes.png"></h2>
         
 
-        <p>Tsaap-Notes is born in the french research laboratory <a
+        <p>${message(code: "index.tsaap.presentation1")}<a
                 href="http://www.irit.fr"
-                target="_blank">IRIT</a> to help designing intelligent functions in technology-enhanced learning software.
+                target="_blank">IRIT</a> ${message(code: "index.tsaap.presentation2")}
         </p>
         <p>
           <a class="twitter-timeline" href="https://twitter.com/TsaapNotes" data-widget-id="389395203288608769">Tweets de @TsaapNotes</a>
@@ -48,7 +48,7 @@
 
       <tsaap:ifNotLoggedIn>
         <div class="col-lg-6">
-          <h2>New to Tsaap-Notes ? Sign up</h2>
+          <h2>${message(code: "index.newUser.signUp.message")}</h2>
           <g:form controller="userAccount" action="doSubscribe">
             <fieldset>
 
@@ -65,39 +65,39 @@
                     <input type="text" class="form-control" id="firstName"
                            name="firstName"
                            value="${fieldValue(bean: user, field: 'firstName')}"
-                           placeholder="First name">
+                           placeholder=${message(code: "index.signUp.form.firstName.placeholder")}>
                   </div>
 
                   <div class="col-lg-5">
                     <input type="text" class="form-control" id="lastName"
                            name="lastName"
                            value="${fieldValue(bean: user, field: 'lastName')}"
-                           placeholder="Last name">
+                           placeholder=${message(code: "index.signUp.form.lastName.placeholder")}>
                   </div>
                 </div>
               </div>
 
               <div class="form-group">
                 <input type="text" class="form-control" id="email" name="email"
-                       placeholder="Your email"
+                       placeholder=${message(code: "index.signUp.form.email.placeholder")}
                        value="${fieldValue(bean: user, field: 'email')}">
               </div>
 
               <div class="form-group">
                 <label class="radio-inline">
                   <input type="radio" name="role" id="STUDENT_ROLE"
-                         value="STUDENT_ROLE" checked="checked"> Learner
+                         value="STUDENT_ROLE" checked="checked"> ${message(code: "index.signUp.form.learner.radio")}
                 </label>
                 <label class="radio-inline">
                   <input type="radio" name="role" id="TEACHER_ROLE"
-                         value="TEACHER_ROLE"> Teacher
+                         value="TEACHER_ROLE"> ${message(code: "index.signUp.form.teacher.radio")}
                 </label>
 
               </div>
 
               <div class="form-group">
                 <input type="text" class="form-control"
-                       id="username" placeholder="Choose your username"
+                       id="username" placeholder=${message(code: "index.signUp.form.username.placeholder")}
                        name="username"
                        value="${fieldValue(bean: user, field: 'username')}">
               </div>
@@ -105,19 +105,19 @@
 
               <div class="form-group">
                 <input type="password" class="form-control"
-                       id="password" placeholder="Password" name="password">
+                       id="password" placeholder=${message(code: "index.signUp.form.password.placeholder")} name="password">
               </div>
 
               <div class="form-group">
                 <input type="password" class="form-control"
-                       id="password2" placeholder="Confirm password"
+                       id="password2" placeholder=${message(code: "index.signUp.form.confirmPassword.placeholder")}
                        name="password2">
               </div>
 
-              <p class="help-block">By clicking Sign up, you agree to our <a
-                      href="terms" target="_blank">Terms</a>.</p>
+              <p class="help-block">${message(code: "index.signUp.form.agreements")} <a
+                      href="terms" target="_blank">${message(code: "index.signUp.form.terms")}</a>.</p>
               <button type="submit"
-                      class="btn btn-primary">Sign up &raquo;</button>
+                      class="btn btn-primary">${message(code: "index.signUp.form.button")} &raquo;</button>
             </fieldset>
           </g:form>
 

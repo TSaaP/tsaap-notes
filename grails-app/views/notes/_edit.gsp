@@ -28,10 +28,9 @@
             </button>
         </div>
         <button type="submit"
-                                                                                                 class="btn btn-primary btn-xs pull-right"
-                                                                                                 id="buttonAddNote${idControllSuffix}"
-                                                                                                 disabled><span
-                class="glyphicon glyphicon-plus"></span> <g:if test="${params.kind == 'question'}">${message(code: "notes.edit.add.question.button")}</g:if><g:else>${message(code: "notes.edit.add.note.button")}</g:else></button>
+            class="btn btn-primary btn-xs pull-right"
+             id="buttonAddNote${idControllSuffix}"
+             disabled><span class="glyphicon glyphicon-plus"></span> <g:if test="${params.kind == 'question'}">${message(code: "notes.edit.add.question.button")}</g:if><g:else>${message(code: "notes.edit.add.note.button")}</g:else></button>
         <span class="character_counter pull-right" style="margin-right: 10px;margin-top: 5px" id="character_counter${idControllSuffix}"></span>
     </g:form>
 </div>

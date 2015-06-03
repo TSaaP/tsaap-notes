@@ -160,13 +160,13 @@ environments {
 environments {
     development {
         tsaap.auth.check_user_email = true
+        tsaap.datastore.path = '/opt/shared/tsaap-repo'
     }
     test {
         tsaap.auth.check_user_email = false
+        tsaap.datastore.path = '/opt/shared/tsaap-repo'
     }
     prod {
         tsaap.auth.check_user_email = true
     }
 }
-
-tsaap.datastore.path = '/home/dorian/Images/'

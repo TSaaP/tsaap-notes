@@ -45,6 +45,9 @@ class AttachementService {
                 ), 10)
     }
 
+
+
+
     @Transactional
     Attachement createAttachement(AttachementDto attachementDto,
                                   def maxSizeEnMega = 10) {
@@ -57,11 +60,12 @@ class AttachementService {
                 typeMime: attachementDto.typeMime,
                 name: attachementDto.name,
                 originalName: attachementDto.originalFileName,
+                toDelete: true
         )
 
         DataRecord dataRecord = dataStore.addRecord(attachementDto.inputStream)
         attachement.path = dataRecord.identifier.toString()
-        if (attachement.estUneImageAffichable()) {
+        if (attachement.imageIsDisplayable()) {
             attachement.dimension = determinerDimension(attachementDto.inputStream)
         }
         attachement.save()
@@ -82,6 +86,7 @@ class AttachementService {
                 typeMime: file.contentType,
                 name: file.fileName,
                 originalName: file.fileName,
+                toDelete: true
         )
         attachement.path = file.dataSoreId
         attachement.save()
@@ -146,15 +151,29 @@ class AttachementService {
         }
     }
 
-    Attachement addNoteToAttachement(Note myNote, Attachement myAttachement) {
-        myAttachement.note = myNote
-        myAttachement.save()
-        myAttachement
+
+    /**
+     * Add file to attachment
+     * @param file the file to attach
+     * @param note the note
+     * @return the attached attachment
+     */
+    Attachement addFileToNote(MultipartFile file, Note note) {
+        Attachement attachement = createAttachementForMultipartFile(file)
+        addNoteToAttachement(note,attachement)
+        attachement
     }
 
-    Attachement addNoteAndContextToAttachement(Context myContext, Note myNote, Attachement myAttachement) {
-        myAttachement.setContext(myContext)
-        myAttachement.setNote(myNote)
+    /**
+     * Add a note to an attachment
+     * @param myNote the note to add
+     * @param myAttachement the attachment
+     * @return the modified attachment
+     */
+    Attachement addNoteToAttachement(Note myNote, Attachement myAttachement) {
+        myAttachement.context = myNote.context
+        myAttachement.note = myNote
+        myAttachement.toDelete = false
         myAttachement.save()
         myAttachement
     }
@@ -170,11 +189,19 @@ class AttachementService {
         result
     }
 
-    def deleteAttachementForNote(Note myNote) {
-        if (Attachement.findByNote(myNote)) {
-            Attachement myAttachement = Attachement.findByNote(myNote)
-            myAttachement.delete(flush: true)
+    /**
+     * Detach an attachment
+     * @param myAttachement the attachment to detach
+     * @return the detached attachment
+     */
+    Attachement detachAttachement(Attachement myAttachement) {
+        if (myAttachement.context != null) {
+            myAttachement.context = null
         }
+        myAttachement.note = null
+        myAttachement.toDelete = true
+        myAttachement.save(flush: true)
+        myAttachement
     }
 }
 

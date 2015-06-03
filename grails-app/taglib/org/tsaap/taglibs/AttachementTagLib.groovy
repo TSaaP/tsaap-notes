@@ -24,12 +24,12 @@ class AttachementTagLib {
             String link = g.createLink(action: 'viewAttachement',
                     controller: 'attachement',
                     id: attachement.id)
-            if (attachement.estUneImageAffichable()) {
+            if (attachement.imageIsDisplayable()) {
 
                 out << '<img src="' << link << '"'
                 if (attrs.width && attrs.height) {
-                    def dimInitial = new Dimension(largeur: attrs.width, hauteur: attrs.height)
-                    def dimensionRendu = attachement.calculeDimensionRendu(dimInitial)
+                    def dimInitial = new Dimension(width: attrs.width, height: attrs.height)
+                    def dimensionRendu = attachement.calculateDisplayDimension(dimInitial)
                     out << ' width="' << dimensionRendu.width << '"'
                     out << ' height="' << dimensionRendu.height << '"'
                 }
@@ -40,12 +40,12 @@ class AttachementTagLib {
                     out << ' class="' << attrs.class << '"'
                 }
                 out << '/>'
-            } else if (attachement.estUnTexteAffichable()) {
+            } else if (attachement.textIsDisplayable()) {
                 def is = attachementService.getInputStreamForAttachement(attachement)
                 out << '<span style="white-space: pre;">' << is.text.encodeAsHTML() << '</span>'
             } else {
                 out << '<a target="_blank" href="' << link << '">' <<
-                        g.message(code: "attachement.acces") <<
+                        attachement.originalName <<
                         '</a>'
             }
         }

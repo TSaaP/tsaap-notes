@@ -41,11 +41,15 @@
                 style="color: orange; padding-right: 5px;"></span></g:if>
 
     </h6>
-
+    <g:set var="attachment" value="${note.attachment}"/>
+    <g:if test="${attachment != null}">
+        <tsaap:viewAttachement width="650" height="380" attachement="${attachment}"/>
+    </g:if>
     <g:if test="${note.isAQuestion()}">
         <g:set var="liveSession" value="${note.getLiveSession()}"/>
         <g:set var="sessionPhase" value="${liveSession ? liveSession.findCurrentPhase() : null}"/>
         <g:set var="userType" value="${user == note.author ? 'author' : 'user'}"/>
+
         <g:if test="${!sessionPhase || liveSession.isStopped()}">
             <g:set var="sessionStatus" value="${liveSession ? liveSession.status : LiveSessionStatus.NotStarted.name()}"/>
             <g:render template="/questions/${userType}/${sessionStatus}/detail" model="[note: note,liveSession:liveSession,user:user]"/>
@@ -55,9 +59,6 @@
         </g:else>
     </g:if>
     <g:else>
-        <g:if test="${myImage != ""}">
-            <tsaap:viewAttachement attachement="${myImage}"/>
-        </g:if>
         <p id="content${note.id}" class="note-content">${note.content}</p>
     </g:else>
     <div id="noteActions" class="pull-right note-actions">

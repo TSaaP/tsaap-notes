@@ -16,9 +16,9 @@
 
 package org.tsaap.notes
 
+import org.tsaap.attachement.Attachement
 import org.tsaap.directory.User
 import org.tsaap.questions.LiveSession
-import org.tsaap.questions.LiveSessionResponse
 import org.tsaap.questions.Question
 import org.tsaap.questions.impl.gift.GiftQuestionService
 
@@ -35,6 +35,10 @@ class Note {
 
     Integer kind = NoteKind.STANDARD.ordinal()
 
+    GiftQuestionService giftQuestionService
+    Question question
+    LiveSession liveSession
+
     static hasMany = [bookmarks: Bookmark]
 
     static constraints = {
@@ -50,7 +54,15 @@ class Note {
         version false
     }
 
-    static transients = ['noteUrl', 'question', 'giftQuestionService', 'liveSession', 'activeLiveSession']
+    static transients = ['noteUrl', 'question', 'giftQuestionService', 'liveSession', 'activeLiveSession','attachment']
+
+    /**
+     * Get the attachment of the note if any
+     * @return the attachment or null
+     */
+    Attachement getAttachment() {
+        Attachement.findByNote(this)
+    }
 
     /**
      * Indicate if the current note is bookmarked by the given user
@@ -78,7 +90,6 @@ class Note {
         parentNote
     }
 
-    GiftQuestionService giftQuestionService
 
     /**
      * Indicate if a note is an interactive question
@@ -88,7 +99,6 @@ class Note {
         kind == NoteKind.QUESTION.ordinal()
     }
 
-    Question question
 
     /**
      * Get the question corresponding to the note or null
@@ -105,7 +115,6 @@ class Note {
         question
     }
 
-    LiveSession liveSession
 
     /**
      * Get the last live session for the current note if it is a question

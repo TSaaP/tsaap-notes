@@ -32,7 +32,6 @@ class NotesController {
     GiftQuestionService giftQuestionService
     AttachementService attachementService
 
-    private static final okcontents = ['image/png', 'image/jpeg', 'image/gif']
 
     /**
      *
@@ -69,24 +68,14 @@ class NotesController {
             }
         }
 
-        Attachement attachementNote = null
-        def file = request.getFile('myFile')
-        String nom_image = file.getOriginalFilename()
-        boolean image = false
-        if (okcontents.contains(file.getContentType())) {
-            attachementNote = attachementService.createAttachementForMultipartFile(file)
-            image = true
-        }
 
         Note myNote = noteService.addNote(user, noteContent, context, fragmentTag, parentNote)
-        if(image){
-            if(context != null){
-                attachementNote = attachementService.addNoteAndContextToAttachement(context,myNote,attachementNote)
-            }
-            else {
-                attachementNote = attachementService.addNoteToAttachement(myNote,attachementNote)
-            }
+
+        def file = request.getFile('myFile')
+        if (file && !file.isEmpty()) {
+            attachementService.addFileToNote(file, myNote)
         }
+
 
         params.remove('noteContent')
         redirect(action: index(), params: params)
@@ -123,7 +112,6 @@ class NotesController {
     def deleteNote() {
         def user = springSecurityService.currentUser
         Note note = Note.load(params.noteId)
-        attachementService.deleteAttachementForNote(note)
         noteService.deleteNoteByAuthor(note, user)
         params.remove('noteId')
         redirect(action: index(), params: params)

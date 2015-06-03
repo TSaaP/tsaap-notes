@@ -18,7 +18,7 @@ class AttachementServiceIntegrationSpec extends Specification {
         bootstrapTestService.initializeTests()
     }
 
-    def "deleteAttachementForNote"() {
+    def "test detachAttachement"() {
         given: "an attachement for a note"
         AttachementDto attachementDto = new AttachementDto(
                 size: 6,
@@ -31,14 +31,17 @@ class AttachementServiceIntegrationSpec extends Specification {
         Note myNote = bootstrapTestService.note1
         myAttachement = attachementService.addNoteToAttachement(myNote, myAttachement)
 
-        when: "i want to delete the attachement"
-        attachementService.deleteAttachementForNote(myNote)
+        when: "i want to detach the attachement"
+        def detachedAttachment = attachementService.detachAttachement(myAttachement)
 
-        then: "the attachement is correctly delete"
-        Attachement.findById(myAttachement.id) == null
+        then: "the attachement is correctly detach"
+        detachedAttachment.context == null
+        detachedAttachment.note == null
+        detachedAttachment.toDelete == true
+        !detachedAttachment.hasErrors()
     }
 
-    def "searchAttachementInNoteList"() {
+    def "test searchAttachementInNoteList"() {
 
         given: "a note List"
 
@@ -70,7 +73,7 @@ class AttachementServiceIntegrationSpec extends Specification {
         !myMap.containsKey(bootstrapTestService.note2)
     }
 
-    def "addNoteAndContextToAttachement"() {
+    def "test add Note with context To Attachement"() {
 
         given: "an attachement"
         AttachementDto attachementDto = new AttachementDto(
@@ -82,17 +85,15 @@ class AttachementServiceIntegrationSpec extends Specification {
         )
         Attachement myAttachement = attachementService.createAttachement(attachementDto, 10)
 
-        and: "a note"
+        and: "a note with a context"
         Note myNote = bootstrapTestService.note1
+        myNote.context = bootstrapTestService.context1
 
-        and: "a context"
-        Context myContext = bootstrapTestService.context1
-
-        when: "adding context and note to an attachement"
-        myAttachement = attachementService.addNoteAndContextToAttachement(myContext, myNote, myAttachement)
+        when: "adding the note with context to an attachement"
+        myAttachement = attachementService.addNoteToAttachement(myNote, myAttachement)
 
         then: "the context and the note is really add to the attachement"
-        myAttachement.context == myContext
+        myAttachement.context == myNote.context
         myAttachement.note == myNote
 
     }

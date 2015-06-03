@@ -169,6 +169,11 @@ class NoteService {
     @Transactional
     @Requires({ note && note.author == user })
     def deleteNoteByAuthor(Note note, User user) {
+        // detach attachment if needed
+        if (note.attachment) {
+            attachementService.detachAttachement(note.attachment)
+        }
+
         // set parentNote fields
         def query = Note.where {
             parentNote == note
@@ -244,23 +249,10 @@ class NoteService {
             all = false
         }
         if (all && !inFragmentTag) { // we have a context and user want all notes on the context
-            def list = Note.findAllByContextAndKindInList(
-                    inContext,
-                    kindList,
-                    paginationAndSorting
-            )
             return new DefaultPagedResultList(list: Note.findAllByContextAndKindInList(
                     inContext,
                     kindList,
-                    paginationAndSorting
-                    ),
-                    totalCount: Note.countByContextAndKindInList(
-                            inContext,
-                            kindList),
-                    map: attachementService.searchAttachementInNoteList(Note.findAllByContextAndKindInList(
-                            inContext,
-                            kindList
-                    ))
+                    paginationAndSorting)
                 )
         }
         if (all && inFragmentTag) {
@@ -294,13 +286,7 @@ class NoteService {
                             inContext,
                             inFragmentTag,
                             kindList,
-                            paginationAndSorting),
-                    map: attachementService.searchAttachementInNoteList(Note.findAllByContextAndFragmentTagAndKindInList(
-                            inContext,
-                            inFragmentTag,
-                            kindList,
-                            paginationAndSorting
-                    )))
+                            paginationAndSorting))
         }
         // if not all, we use a criteria
         def criteria = Note.createCriteria()
@@ -325,7 +311,7 @@ class NoteService {
             order paginationAndSorting.sort, paginationAndSorting.order
         }
         def map = attachementService.searchAttachementInNoteList(results.list)
-        new DefaultPagedResultList(list: results.list, totalCount: results.totalCount, map: map)
+        new DefaultPagedResultList(list: results.list, totalCount: results.totalCount)
     }
 
     /**

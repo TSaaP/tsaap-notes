@@ -52,4 +52,19 @@
                                  constraintName="fk_context_id" referencedTableName="context"
                                  referencedColumnNames="id"/>
     </changeSet>
+
+    <changeSet id="2" author="drol">
+            <addColumn tableName="attachement">
+                <column name="to_delete" type="INT"/>
+            </addColumn>
+    </changeSet>
+
+    <changeSet id="3" author="drol">
+            <modifyDataType columnName="to_delete"
+                            newDataType="BOOLEAN"
+                            tableName="attachement"/>
+            <dropNotNullConstraint columnDataType="BIGINT"
+                            columnName="note_id"
+                            tableName="attachement"/>
+    </changeSet>
 </databaseChangeLog>

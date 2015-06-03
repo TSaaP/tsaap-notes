@@ -43,6 +43,7 @@ class AttachementSpec extends Specification {
         "/home/dorian"  | "grails.png" | "grails.png"   | 1     | myDimension    | null         | Mock(Note)| Mock(Context)
         "/home/dorian"  | "grails.png" | "grails.png"   | 1     | null           | "image/png"  | Mock(Note)| Mock(Context)
         "/home/dorian"  | "grails.png" | "grails.png"   | 1     | myDimension    | "image/png"  | Mock(Note)| null
+        "/home/dorian"  | "grails.png" | "grails.png"   | 1     | myDimension    | "image/png"  | null      | Mock(Context)
 
     }
 }

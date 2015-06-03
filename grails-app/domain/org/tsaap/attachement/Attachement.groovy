@@ -9,7 +9,7 @@ import org.tsaap.notes.Note
  */
 class Attachement {
 
-    private static final ArrayList<String> TYPES_MIME_IMG_AFFICHABLE = [
+    private static final ArrayList<String> TYPES_MIME_IMG_DISPLAYABLE = [
             'image/gif',
             'image/jpeg',
             'image/png'
@@ -23,6 +23,7 @@ class Attachement {
     String typeMime
     Note note
     Context context
+    Boolean toDelete = false
 
     static constraints = {
         size nullable: true
@@ -30,24 +31,25 @@ class Attachement {
         originalName nullable: true
         dimension nullable: true
         context nullable: true
+        note nullable : true
     }
 
     static embedded = ['dimension']
 
-    boolean estUneImageAffichable() {
-        return typeMime in TYPES_MIME_IMG_AFFICHABLE
+    boolean imageIsDisplayable() {
+        return typeMime in TYPES_MIME_IMG_DISPLAYABLE
     }
 
-    boolean estUnTexteAffichable() {
+    boolean textIsDisplayable() {
         return typeMime?.startsWith('text/')
     }
 
     /**
-     * Calcule la dimension rendu en fonction d'une dimension max donnée.
+     * compute the image dimension
      * @param dimMax
      * @return
      */
-    Dimension calculeDimensionRendu(Dimension dimMax) {
+    Dimension calculateDisplayDimension(Dimension dimMax) {
         def l = dimension.width
         def h = dimension.height
         def ratio = [l / dimMax.width, h / dimMax.height].max()

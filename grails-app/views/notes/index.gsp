@@ -105,14 +105,9 @@
                 </g:if>
                 <g:set var="showDiscussionNote" value="${showDiscussion[note.id]}"/>
                 <div id="note${note.id}" class="${showDiscussionNote ? 'note-discussion' : 'note-only'}">
-                    <g:if test="${notes.map.containsKey(note)}">
-                        <g:set var="myImage" value="${notes.map.get(note)}"/>
-                    </g:if>
-                    <g:else>
-                        <g:set var="myImage" value=""/>
-                    </g:else>
+
                     <g:render template="detail"
-                              model="[note: note, context: context, showDiscussionNote: showDiscussionNote, myImage: myImage]"/>
+                              model="[note: note, context: context, showDiscussionNote: showDiscussionNote]"/>
                 </div>
             </g:each>
         </ul>

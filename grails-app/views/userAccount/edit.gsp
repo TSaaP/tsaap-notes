@@ -29,7 +29,7 @@
 <div class="container context-nav">
 
   <ol class="breadcrumb">
-    <li class="active">My account informations</li>
+    <li class="active">${message(code: "useraccount.title")}</li>
   </ol>
 
   <div class="body-content">
@@ -56,21 +56,21 @@
                   <input type="text" class="form-control" id="firstName"
                          name="firstName"
                          value="${fieldValue(bean: user, field: 'firstName')}"
-                         placeholder="First name">
+                         placeholder=${message(code: "useraccount.form.firstName.placeholder")}>
                 </div>
 
                 <div class="col-lg-5">
                   <input type="text" class="form-control" id="lastName"
                          name="lastName"
                          value="${fieldValue(bean: user, field: 'lastName')}"
-                         placeholder="Last name">
+                         placeholder=${message(code: "useraccount.form.lastName.placeholder")}>
                 </div>
               </div>
             </div>
 
             <div class="form-group">
               <input type="text" class="form-control" id="email" name="email"
-                     placeholder="Your email"
+                     placeholder=${message(code: "useraccount.form.email.placeholder")}
                      value="${fieldValue(bean: user, field: 'email')}">
             </div>
 
@@ -78,18 +78,18 @@
               <label class="radio-inline">
                 <g:radio name="role" value="STUDENT_ROLE" id="STUDENT_ROLE"
                          checked="${user.isLearner()}"/>
-                Learner
+                ${message(code: "useraccount.form.learner.radio")}
               </label>
               <label class="radio-inline">
                 <g:radio name="role" value="TEACHER_ROLE" id="TEACHER_ROLE"
-                         checked="${user.isTeacher()}"/> Teacher
+                         checked="${user.isTeacher()}"/> ${message(code: "useraccount.form.teacher.radio")}
               </label>
 
             </div>
 
             <div class="form-group">
               <input type="text" class="form-control"
-                     id="username" placeholder="Choose your username"
+                     id="username" placeholder=${message(code: "useraccount.form.username.placeholder")}
                      name="username"
                      value="${fieldValue(bean: user, field: 'username')}">
             </div>
@@ -97,18 +97,18 @@
 
             <div class="form-group">
               <input type="password" class="form-control"
-                     id="password" placeholder="Password" name="password">
+                     id="password" placeholder=${message(code: "useraccount.form.password.placeholder")} name="password">
             </div>
 
             <div class="form-group">
               <input type="password" class="form-control"
-                     id="password2" placeholder="Confirm password"
+                     id="password2" placeholder=${message(code: "useraccount.form.confirmPassword.placeholder")}
                      name="password2">
             </div>
 
 
             <button type="submit"
-                    class="btn btn-primary">Save &raquo;</button><br/>
+                    class="btn btn-primary">${message(code: "useraccount.save.button")} &raquo;</button><br/>
 
           </fieldset>
         </g:form>
@@ -123,12 +123,8 @@
 <div class="container">
   <hr>
   <g:link action="doUnsubscribe" controller="userAccount"
-          class="btn btn-danger">Unsubscribe Tsaap-Notes</g:link>
+          class="btn btn-danger">${message(code: "useraccount.unsubscribe.button")}</g:link>
   <hr>
-
-  <footer>
-    <p>&copy; Tsaap Development Group 2013</p>
-  </footer>
 </div>
 
 </body>

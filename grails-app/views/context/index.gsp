@@ -138,7 +138,14 @@
     $("#mainLinkContexts").addClass('active');
 
     function updateFollowLink(followLink, text, classBtn) {
-        $(followLink).text(text);
+        var finalText =""
+        if(text == "Unfollow"){
+           finalText  = "${message(code: 'context.index.unfollow.button')}"
+        }
+        else {
+            finalText = "${message(code: 'context.index.following.button')}"
+        }
+        $(followLink).text(finalText);
         $(followLink).removeClass();
         $(followLink).addClass("btn btn-xs " + classBtn);
     }

@@ -22,7 +22,7 @@
 <g:set var="sessionResponse" value="${secondPhase.getResponseForUser(user)}"/>
 <g:set var="indexAnsBlock" value="${0}"/>
 <div class="question" id="question_${note.id}">
-    <p>Results <strong>${question.title}</strong> - (response count : ${secondPhase.responseCount()})</p>
+    <p>${message(code: "questions.results")} <strong>${question.title}</strong> - (${message(code: "questions.responseCount")} : ${secondPhase.responseCount()})</p>
     <g:each var="block" in="${question.blockList}">
         <g:if test="${block instanceof TextBlock}">
             <p>${block.text}</p>
@@ -34,14 +34,14 @@
     </g:each>
 
     <g:if test="${sessionResponse}">
-        Your score : ${sessionResponse.percentCredit}%
+        ${message(code: "questions.user.score")} : ${sessionResponse.percentCredit}%
     </g:if>
     <g:set var="responsesToEvaluate" value="${secondPhase.findAllResponsesToEvaluateForResponse(sessionResponse)}"/>
 
     <hr/>
     <g:if test="${!responsesToEvaluate || responsesToEvaluate[0]?.explanation?.hasBeenAlreadyEvaluatedByUser(user)}">
         <div class="alert alert-success">
-            Waiting for the end of phase 3 for the question &quot;<strong>${question.title}</strong>&quot;...
+            ${message(code: "questions.user.phase3.started.wait")} &quot;<strong>${question.title}</strong>&quot;...
             <g:remoteLink action="refresh" controller="question"
                           params="[noteId: note.id]"
                           title="Refresh" update="question_${note.id}"
@@ -50,7 +50,7 @@
         </div>
     </g:if>
     <g:else>
-        <p>A last work waits for you: please give a grade to the explanations given for the good answer (1: "not usefull" to 5: "very usefull").</p>
+        <p>${message(code: "questions.user.phase3.started.evaluateExplanations")}</p>
         <g:form>
             <g:hiddenField name="noteId" value="${note.id}"/>
             <g:hiddenField name="phaseId" value="${sessionPhase.id}"/>
@@ -62,7 +62,7 @@
                 </p>
             </g:each>
             <g:submitToRemote action="evaluateResponses" controller="question" update="question_${note.id}"
-                              class="btn btn-primary btn-xs" value="Submit"
+                              class="btn btn-primary btn-xs" value="${message(code: "questions.user.submit")}"
                               onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"/>
         </g:form>
     </g:else>

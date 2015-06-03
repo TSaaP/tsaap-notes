@@ -12,7 +12,7 @@
 
 <g:set var="indexAnsBlock" value="${0}"/>
 <div class="question" id="question_${note.id}">
-   <p>Results <strong>${question.title}</strong> - (response count : ${responseCount})</p>
+   <p>${message(code: "questions.results")} <strong>${question.title}</strong> - (${message(code: "questions.responseCount")} : ${responseCount})</p>
     <g:each var="block" in="${question.blockList}">
             <g:if test="${block instanceof TextBlock}">
                 <p>${block.text}</p>
@@ -26,5 +26,5 @@
     <hr/>
     <g:set var="responses" value="${liveSession.findAllGoodResponses(sessionPhase)}"/>
     <g:render template="/questions/ExplanationList" model="[responses:responses]"/>
-    <g:link class="btn btn-success btn-xs" controller="question" action="statistics" id="${liveSession.id}">Generate stats</g:link>
+    <g:link class="btn btn-success btn-xs" controller="question" action="statistics" id="${liveSession.id}">${message(code: "questions.author.ended.generateStats")}</g:link>
 </g:if>

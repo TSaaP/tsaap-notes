@@ -4,7 +4,7 @@
 <div class="question" id="question_${note.id}">
     <g:if test="${liveSession.getResponseForUser(user)}">
         <div class="alert alert-success">
-            Waiting for results for the question &quot;<strong>${question.title}</strong>&quot;...
+            ${message(code: "questions.user.started.wait")} &quot;<strong>${question.title}</strong>&quot;...
             <g:remoteLink action="refresh" controller="question" params="[noteId:note.id]" title="Refresh" update="question_${note.id}" onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"><span class="glyphicon glyphicon-refresh">&nbsp;</span></g:remoteLink>
             (response count :${liveSession.responseCount()})
         </div>
@@ -25,7 +25,7 @@
             </p>
         </g:each>
         <g:submitToRemote action="submitResponse" controller="question" update="question_${note.id}"
-                class="btn btn-primary btn-xs" value="Submit" onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"/>
+                class="btn btn-primary btn-xs" value="${message(code: "questions.user.submit")}" onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"/>
     </g:form>
     </g:else>
 </div>

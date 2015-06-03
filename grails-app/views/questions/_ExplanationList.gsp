@@ -19,7 +19,7 @@
         <g:set var="explanation" value="${response?.explanation}"/>
         <g:if test="${explanation}">
             <div class="alert alert-info">
-                <strong><g:formatNumber number="${explanation.grade}" type="number" maxFractionDigits="2"/> /5  @${explanation.author.username}</strong> evaluated by ${explanation.evaluationCount()} contributors<br/>
+                <strong><g:formatNumber number="${explanation.grade}" type="number" maxFractionDigits="2"/> /5  @${explanation.author.username}</strong> ${message(code: "questions.explanation.evaluated")} ${explanation.evaluationCount()} ${message(code: "questions.explanation.contributors")}<br/>
                 ${explanation.content}
             </div>
 
@@ -32,27 +32,27 @@
         <g:set var="explanation" value="${theResponse?.explanation}"/>
         <g:if test="${explanation}">
             <div class="alert alert-info">
-                <strong><g:formatNumber number="${explanation.grade}" type="number" maxFractionDigits="2"/> /5  @${explanation.author.username}</strong> evaluated by ${explanation.evaluationCount()} contributors<br/>
+                <strong><g:formatNumber number="${explanation.grade}" type="number" maxFractionDigits="2"/> /5  @${explanation.author.username}</strong> ${message(code: "questions.explanation.evaluated")} ${explanation.evaluationCount()} ${message(code: "questions.explanation.contributors")}<br/>
                 ${explanation.content}
             </div>
         </g:if>
 
     </g:each>
     <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#all_explanations_for_${note.id}">
-        See all explanations
+        ${message(code: "questions.explanation.all.button")}
     </button>
     <div id="all_explanations_for_${note.id}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">All Explanations...</h4>
+                    <h4 class="modal-title" id="myModalLabel">${message(code: "questions.explanation.all")}</h4>
                 </div>
                 <div class="modal-body">
                     <g:render template="/questions/ExplanationList" model="[responses:responses, note:note,displaysAll:true]"/>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">${message(code: "questions.explanation.close.button")}</button>
                 </div>
             </div>
         </div>

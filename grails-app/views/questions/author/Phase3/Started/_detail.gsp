@@ -21,7 +21,7 @@
 <g:set var="resultMatrix" value="${secondPhase.resultMatrix}"/>
 <g:set var="indexAnsBlock" value="${0}"/>
 <div class="question" id="question_${note.id}">
-    <p>Results <strong>${question.title}</strong> - (response count : ${secondPhase.responseCount()})</p>
+    <p>${message(code: "questions.results")} <strong>${question.title}</strong> - (${message(code: "questions.responseCount")} : ${secondPhase.responseCount()})</p>
     <g:each var="block" in="${question.blockList}">
         <g:if test="${block instanceof TextBlock}">
             <p>${block.text}</p>
@@ -32,5 +32,5 @@
     </g:each>
     <g:remoteLink action="stopPhase" controller="question" params="[phaseId:sessionPhase.id,noteId:note.id]"
                   class="btn btn-warning btn-xs" update="question_${note.id}" onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])">
-        <span class="glyphicon glyphicon-stop"></span> Stop third phase</g:remoteLink>
+        <span class="glyphicon glyphicon-stop"></span> ${message(code: "questions.author.phase3.started.endPhase")}</g:remoteLink>
 </div>

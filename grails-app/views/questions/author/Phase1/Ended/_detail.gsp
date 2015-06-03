@@ -29,8 +29,8 @@
             </g:else>
         </p>
     </g:each>
-    Phase 1 closed with ${sessionPhase.responseCount()} responses >
+    ${message(code: "questions.author.phase1.ended.close")} ${sessionPhase.responseCount()} ${message(code: "questions.author.responses")} >
     <g:remoteLink action="startPhase" controller="question" params="[liveSessId:sessionPhase.liveSession.id,noteId:note.id,phaseRank:2]"
                   class="btn btn-success btn-xs" update="question_${note.id}" onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])">
-        <span class="glyphicon glyphicon-play"></span> Start second phase</g:remoteLink>
+        <span class="glyphicon glyphicon-play"></span> ${message(code: "questions.author.phase1.ended.start.phase2")}</g:remoteLink>
 </div>

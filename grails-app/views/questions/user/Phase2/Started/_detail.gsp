@@ -20,9 +20,9 @@
 <div class="question" id="question_${note.id}">
     <g:if test="${sessionPhase.getResponseForUser(user)}">
         <div class="alert alert-success">
-            Waiting for the end of phase 2 for the question &quot;<strong>${question.title}</strong>&quot;...
+            ${message(code: "questions.user.phase2.started.wait")} &quot;<strong>${question.title}</strong>&quot;...
             <g:remoteLink action="refreshPhase" controller="question" params="[noteId:note.id,phaseId:sessionPhase.id]" title="Refresh" update="question_${note.id}" onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"><span class="glyphicon glyphicon-refresh">&nbsp;</span></g:remoteLink>
-            (response count :${sessionPhase.responseCount()})
+            (${message(code: "questions.responseCount")} :${sessionPhase.responseCount()})
         </div>
     </g:if>
     <g:else>
@@ -30,8 +30,7 @@
         <g:set var="firstResponse" value="${firstPhase.getResponseForUser(user)}"/>
         <g:set var="altResponse" value="${firstPhase.findConflictResponseForResponse(firstResponse)}"/>
         <g:if test="${altResponse}">
-            <p>Here is an alternative response to yours.<br/>
-                Please examine this response and then feel free to change your response, explanation or confidence degree if necessary.</p>
+            <p>${message(code: "questions.user.phase2.started.alternative")}</p>
             <div class="alert alert-info">
                 <p>
                     <g:each in="${altResponse?.userResponse?.userAnswerBlockList}" var="answerBlock">
@@ -44,7 +43,7 @@
             <hr/>
         </g:if>
         <g:else>
-           <p>You get a new chance to answer !</p>
+           <p>${message(code: "questions.user.phase2.started.newChance")}</p>
         </g:else>
         <g:form >
             <g:hiddenField name="phaseId" value="${sessionPhase.id}"/>
@@ -62,11 +61,11 @@
                     </g:else>
                 </p>
             </g:each>
-            <p>Give an explanation to your choice</p>
+            <p>${message(code: "questions.explanation")}</p>
             <g:textArea class="form-control note-editable-content" rows="3" name="explanation" value="${firstResponse?.explanation?.content}"/>
-            <p>What is the degree of confidence in your response (1: not confident to 5:very confident) ? <g:select name="confidenceDegree" from="[1,2,3,4,5]" value="${firstResponse?.confidenceDegree}"/></p>
+            <p>${message(code: "questions.confidenceDegree")} <g:select name="confidenceDegree" from="[1,2,3,4,5]" value="${firstResponse?.confidenceDegree}"/></p>
             <g:submitToRemote action="submitResponseInAPhase" controller="question" update="question_${note.id}"
-                              class="btn btn-primary btn-xs" value="Submit" onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"/>
+                              class="btn btn-primary btn-xs" value="${message(code: "questions.user.submit")}" onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"/>
         </g:form>
     </g:else>
 </div>

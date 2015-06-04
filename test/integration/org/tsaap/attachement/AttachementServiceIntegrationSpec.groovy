@@ -5,6 +5,8 @@ import org.tsaap.notes.Context
 import org.tsaap.notes.Note
 import spock.lang.Specification
 
+import java.nio.file.Files
+
 /**
  * Created by dylan on 13/05/15.
  */
@@ -118,5 +120,30 @@ class AttachementServiceIntegrationSpec extends Specification {
 
         then: "the note is really add to the attachement"
         myAttachement.note == myNote
+    }
+
+    def "test the delete of an attachment"() {
+        given: "two attachments to the same image"
+        AttachementDto attachementDto = new AttachementDto(
+                size: 6,
+                typeMime: 'image/png',
+                name: 'grails.png',
+                originalFileName: 'grails.png',
+                bytes: [2, 3, 4, 5, 6, 7]
+        )
+        Attachement attachement1 = attachementService.createAttachement(attachementDto, 10)
+        def path = "/opt/shared/tsaap-repo/${attachement1.path.substring(0,2)}/${attachement1.path.substring(2,4)}/" +
+                "${attachement1.path.substring(4,6)}/$attachement1.path"
+        Attachement attachement2 = attachementService.createAttachement(attachementDto, 10)
+
+        when: "the garbage collector is running and the two attachments are to delete"
+        attachementService.deleteAttachementAndFileInSystem()
+
+        then: "the two attachments are deleted and the image record in system too"
+        Attachement.findById(attachement1.id) == null
+        Attachement.findById(attachement2.id) == null
+        !new File(path).exists()
+
+
     }
 }

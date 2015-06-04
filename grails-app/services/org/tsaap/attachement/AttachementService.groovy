@@ -203,6 +203,35 @@ class AttachementService {
         myAttachement.save(flush: true)
         myAttachement
     }
+
+    /**
+     * Check if there are attachment to delete and delete them in this case.
+     */
+    def deleteAttachementAndFileInSystem() {
+        def attachementToRemoveList = Attachement.findAllByToDelete(true)
+        println attachementToRemoveList
+        def iteratorAttachement = attachementToRemoveList.iterator()
+        while(iteratorAttachement.hasNext()) {
+            def attachementToDelete = iteratorAttachement.next()
+            boolean deleteInSystem = true
+            Attachement.findAllByPathAndIdNotEqual(attachementToDelete.path,attachementToDelete.id).each {
+                if(!it.toDelete) {
+                   deleteInSystem = false
+                }
+                else {
+                    attachementToRemoveList.remove(it)
+                    it.delete(flush: true)
+                }
+            }
+            if(deleteInSystem) {
+                String attachementPath = attachementToDelete.path
+                String finalPath = "/opt/shared/tsaap-repo/${attachementPath.substring(0,2)}/${attachementPath.substring(2,4)}/" +
+                        "${attachementPath.substring(4,6)}/$attachementPath"
+                new File(finalPath).delete()
+            }
+            attachementToDelete.delete(flush: true)
+        }
+    }
 }
 
 /**

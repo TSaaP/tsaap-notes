@@ -122,7 +122,7 @@ class AttachementServiceIntegrationSpec extends Specification {
         myAttachement.note == myNote
     }
 
-    def "test the delete of an attachment"() {
+    def "test the delete of an attachment and file system"() {
         given: "two attachments to the same image"
         AttachementDto attachementDto = new AttachementDto(
                 size: 6,
@@ -144,6 +144,32 @@ class AttachementServiceIntegrationSpec extends Specification {
         Attachement.findById(attachement2.id) == null
         !new File(path).exists()
 
+    }
 
+    def "test the delete of an attachment but not delete file system"() {
+        given: "two attachments to the same image"
+        AttachementDto attachementDto = new AttachementDto(
+                size: 6,
+                typeMime: 'image/png',
+                name: 'grails.png',
+                originalFileName: 'grails.png',
+                bytes: [2, 3, 4, 5, 6, 7]
+        )
+        Attachement attachement1 = attachementService.createAttachement(attachementDto, 10)
+        def path = "/opt/shared/tsaap-repo/${attachement1.path.substring(0,2)}/${attachement1.path.substring(2,4)}/" +
+                "${attachement1.path.substring(4,6)}/$attachement1.path"
+        Attachement attachement2 = attachementService.createAttachement(attachementDto, 10)
+
+        and: "one of them is attach to a note"
+        Note myNote = bootstrapTestService.note2
+        attachementService.addNoteToAttachement(myNote,attachement2)
+
+        when: "the garbage collector is running"
+        attachementService.deleteAttachementAndFileInSystem()
+
+        then: "only attachement1 is delete"
+        Attachement.findById(attachement1.id) == null
+        Attachement.findById(attachement2.id)
+        new File(path).exists()
     }
 }

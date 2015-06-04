@@ -252,6 +252,9 @@ class NoteService {
             return new DefaultPagedResultList(list: Note.findAllByContextAndKindInList(
                     inContext,
                     kindList,
+                    paginationAndSorting),
+                    totalCount: Note.countByContextAndKindInList(
+                    inContext, kindList,
                     paginationAndSorting)
                 )
         }
@@ -310,7 +313,6 @@ class NoteService {
             inList 'kind', kindList
             order paginationAndSorting.sort, paginationAndSorting.order
         }
-        def map = attachementService.searchAttachementInNoteList(results.list)
         new DefaultPagedResultList(list: results.list, totalCount: results.totalCount)
     }
 
@@ -342,7 +344,6 @@ class DefaultPagedResultList {
 
     List list
     Long totalCount
-    Map map
 
 }
 

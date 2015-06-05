@@ -92,6 +92,7 @@ class ResponseNotificationService {
             def key = [user_id: it.question_author, first_name: it.first_name, email: it.email]
             if (notifications[key] == null) {
                 notifications[key] = [:]
+                questions = [:]
             }
             def question_key = [context_id: it.context_id, context_name: it.context_name, fragment_tag: it.tag_id, fragment_tag_name: it.tag_name,
                                 question_id: it.question_id, question_content: it.question]

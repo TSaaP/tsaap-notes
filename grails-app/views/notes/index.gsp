@@ -65,7 +65,7 @@
                 <g:hiddenField name="contextId" value="${context?.id}"/>
                 <g:hiddenField name="fragmentTagId" value="${fragmentTag?.id}"/>
                 <g:hiddenField name="inline" value="${params.inline}"/>
-                <g:hiddenField name="kind" value="${params.kind}"/>
+                <g:hiddenField id="noteKind" name="kind" value="${params.kind}"/>
                 <label class="checkbox-inline">
                     <g:checkBox name="displaysMyNotes" checked="${params.displaysMyNotes == 'on' ? true : false}"
                                 onchange="submit();"/> ${message(code: "notes.index.myNotes.checkbox")}
@@ -91,7 +91,7 @@
     <div class="note-list-content">
         <ul class="list-group">
             <g:if test="${!(notes.list.isEmpty())}">
-                <g:if test="${(notes.list.get(0).author==user)}">
+                <g:if test="${(notes.list.get(0).author==user) && params.kind=='standard'}">
                     <g:set var="separationLine" value="false"/>
                 </g:if>
             </g:if>
@@ -139,7 +139,12 @@
     /*$(".note-content").linkify({
      target:"_blank"
      });*/
-    $("#mainLinkNotes").addClass('active');
+    if($("#noteKind").val()=='question') {
+        $("#mainLinkQuestions").addClass('active');
+    }
+    else {
+        $("#mainLinkNotes").addClass('active');
+    }
 </r:script>
 </body>
 </html>

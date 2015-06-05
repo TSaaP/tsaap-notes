@@ -226,21 +226,12 @@ class NotesController {
                 paginationAndSorting,
                 kindParams,
                 inlineParams)
-        if(kindParams != 'question') {
+
             render(view: '/notes/index', model: [user: user,
                                                  notes: notes,
                                                  context: context,
                                                  fragmentTag: fragmentTag,
                                                  showDiscussion: showDiscussion])
-        }
-        else {
-            render(view: '/notes/questions', model: [user: user,
-                                                 notes: notes,
-                                                 context: context,
-                                                 fragmentTag: fragmentTag,
-                                                 showDiscussion: showDiscussion])
-        }
-
     }
 
 }

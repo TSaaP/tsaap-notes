@@ -25,6 +25,7 @@ class UserAccountController {
   UserAccountService userAccountService
   SpringSecurityService springSecurityService
 
+
   /**
    * Action allowing a user to subscribe
    * @param firsName the first name given by the user
@@ -36,6 +37,9 @@ class UserAccountController {
    */
   def doSubscribe() {
     Role mainRole = RoleEnum.valueOf(RoleEnum, params.role).role
+    if(!userAccountService.languageIsSupported(params.language)) {
+      params.language='en'
+    }
     User user = new User(params)
     def checkEmail = grailsApplication.config.tsaap.auth.check_user_email ?: true
     if (params.password == params.password2) {
@@ -71,6 +75,7 @@ class UserAccountController {
         params.remove('password')
       }
       Role mainRole = RoleEnum.valueOf(RoleEnum, params.role).role
+      params.language = userAccountService.LANGUAGES_SUPPORTED.get(params.language)
       user.properties = params
       user = userAccountService.updateUser(user, mainRole)
     }

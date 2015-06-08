@@ -114,6 +114,8 @@
                        name="password2">
               </div>
 
+              <g:hiddenField name="language" id="language"/>
+
               <p class="help-block">${message(code: "index.signUp.form.agreements")} <a
                       href="terms" target="_blank">${message(code: "index.signUp.form.terms")}</a>.</p>
               <button type="submit"
@@ -127,5 +129,18 @@
 
 </div>
 </div> <!-- /container -->
+
+<r:script>
+    $(document).ready(function () {
+        if (navigator.browserLanguage) {
+            $("#language").val(navigator.browserLanguage);
+        }
+        else {
+            $("#language").val(navigator.languages[0]);
+        }
+        console.log($("#language").val());
+    });
+</r:script>
+
 </body>
 </html>

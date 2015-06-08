@@ -24,14 +24,14 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-  <title>Email checking - Tsaap-Notes</title>
+  <title>${message(code: "email.checking.page.title",locale: new Locale(user.language))}</title>
 </head>
 
 <body>
-<p>Hi ${user.first_name}</p>
+<p>${message(code: "email.hi",locale: new Locale(user.language))} ${user.first_name}</p>
 
 <p>
-  You have successfully subscribed to Tsaap-Notes. To activate your account you need click on the link below or copy-paste it in you favorite browser.<br><br>
+  ${message(code: "email.checking.message",locale: new Locale(user.language))}<br><br>
   <g:createLink absolute="true"
                 params='[actKey: "${actKey}", id:"${user.user_id}"]' action="doEnableUser"
                 controller="userAccount"/>

@@ -3,6 +3,7 @@ package org.tsaap.questions
 import grails.plugin.mail.MailService
 import groovy.sql.Sql
 import org.hibernate.SessionFactory
+import org.springframework.context.MessageSource
 
 import javax.sql.DataSource
 
@@ -13,16 +14,17 @@ class ResponseNotificationService {
     MailService mailService
     DataSource dataSource
     SessionFactory sessionFactory
+    MessageSource messageSource
 
     def notififyUsersOnResponsesAndMentions() {
         Map notifications = findAllResponsesNotifications()
         Map notificationsMentions = findAllMentionsNotifications()
-        def sub = "[tsaap-notes] Someone as reply to your note"
         notifications.each { user, questionMap ->
+            def sub = messageSource.getMessage("email.response.notification.title",null,new Locale(user.language))
             def mentionsList = null
             if (notificationsMentions.containsKey(user)) {
                 mentionsList = notificationsMentions.get(user)
-                sub = "[tsaap-notes] Someone as reply to your note and someone mentioned you"
+                sub = messageSource.getMessage("email.response&mention.notification.title",null,new Locale(user.language))
             }
             try {
                 mailService.sendMail {
@@ -39,8 +41,8 @@ class ResponseNotificationService {
         }
         if(notificationsMentions.size()>0) {
             def questionMap = null
-            sub = "[tsaap-notes] Someone mentioned you on his note"
             notificationsMentions.each { user, mentionsList ->
+                def sub = messageSource.getMessage("email.mention.notification.title",null,new Locale(user.language))
                 try {
                     mailService.sendMail {
                         to user.email
@@ -60,7 +62,7 @@ class ResponseNotificationService {
     Map findAllResponsesNotifications() {
         def sql = new Sql(sessionFactory.currentSession.connection())
         def req = """
-              SELECT tnote1.author_id as question_author, tuser1.first_name, tuser1.email, tcontext.id as context_id, tcontext.context_name,
+              SELECT tnote1.author_id as question_author, tuser1.first_name, tuser1.email, tuser1.language, tcontext.id as context_id, tcontext.context_name,
               tnote1.fragment_tag_id as tag_id, if((tnote1.fragment_tag_id is null),null,ttag.name) tag_name,
               tnote1.id as question_id, tnote1.content as question, tuser2.username as response_author,
               tnote2.id as response_id, tnote2.content as response
@@ -73,7 +75,7 @@ class ResponseNotificationService {
               AND tnote2.author_id = tuser2.id
               and ttag.id = tnote1.fragment_tag_id
               union
-              SELECT tnote1.author_id as question_author, tuser1.first_name, tuser1.email, tcontext.id as context_id, tcontext.context_name,
+              SELECT tnote1.author_id as question_author, tuser1.first_name, tuser1.email, tuser1.language, tcontext.id as context_id, tcontext.context_name,
               tnote1.fragment_tag_id as tag_id, if((tnote1.fragment_tag_id is null),null,ttag.name) tag_name,
               tnote1.id as question_id, tnote1.content as question, tuser2.username as response_author,
               tnote2.id as response_id, tnote2.content as response
@@ -89,7 +91,7 @@ class ResponseNotificationService {
         def notifications = [:]
         def questions = [:]
         rows.each {
-            def key = [user_id: it.question_author, first_name: it.first_name, email: it.email]
+            def key = [user_id: it.question_author, first_name: it.first_name, email: it.email, language: it.language]
             if (notifications[key] == null) {
                 notifications[key] = [:]
                 questions = [:]
@@ -108,7 +110,7 @@ class ResponseNotificationService {
 
     Map findAllMentionsNotifications() {
         def sql = new Sql(sessionFactory.currentSession.connection())
-        def req = """SELECT tmention.mention_id as receiver_id, tuser1.first_name, tuser1.email, tcontext.id as context_id,
+        def req = """SELECT tmention.mention_id as receiver_id, tuser1.first_name, tuser1.email, tuser1.language, tcontext.id as context_id,
                      tcontext.context_name, tnote.fragment_tag_id as tag_id, if((tnote.fragment_tag_id is null),null,ttag.name) tag_name, tuser2.username as author, tnote.content
                      FROM note_mention as tmention, note as tnote, context as tcontext, user as tuser1, user as tuser2, tag as ttag
                      WHERE tnote.date_created > date_sub(now(),interval 5 minute) and tnote.date_created <= NOW()
@@ -120,7 +122,7 @@ class ResponseNotificationService {
                      and tnote.parent_note_id is null
                     and ttag.id = tnote.fragment_tag_id
                     union
-                    SELECT tmention.mention_id as receiver_id, tuser1.first_name, tuser1.email, tcontext.id as context_id,
+                    SELECT tmention.mention_id as receiver_id, tuser1.first_name, tuser1.email, tuser1.language, tcontext.id as context_id,
                     tcontext.context_name, tnote.fragment_tag_id as tag_id, if((tnote.fragment_tag_id is null),null,ttag.name) tag_name, tuser2.username as author, tnote.content
                     FROM note_mention as tmention, note as tnote, context as tcontext, user as tuser1, user as tuser2, tag as ttag
                     WHERE tnote.date_created > date_sub(now(),interval 5 minute) and tnote.date_created <= NOW()
@@ -134,7 +136,7 @@ class ResponseNotificationService {
         def rows = sql.rows(req)
         def notifications = [:]
         rows.each {
-            def key = [user_id: it.receiver_id, first_name: it.first_name, email: it.email]
+            def key = [user_id: it.receiver_id, first_name: it.first_name, email: it.email, language: it.language]
             if (notifications[key] == null) {
                 notifications[key] = []
             }

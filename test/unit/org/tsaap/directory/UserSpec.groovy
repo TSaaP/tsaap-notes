@@ -29,7 +29,7 @@ class UserSpec extends Specification {
   @Unroll
   def "'#username' is valid username is #usernameIsOK"() {
     when:
-      User user = new User(firstName: "franck", lastName: "s", username: username, email: "mail@mail.com", password: "password")
+      User user = new User(firstName: "franck", lastName: "s", username: username, email: "mail@mail.com", password: "password", language: 'en')
     then:
       println "-${user.username}-"
       user.validate() == usernameIsOK

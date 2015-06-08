@@ -2,6 +2,7 @@ package org.tsaap.directory
 
 import grails.plugin.mail.MailService
 import groovy.sql.Sql
+import org.springframework.context.MessageSource
 
 import javax.sql.DataSource
 
@@ -11,6 +12,7 @@ class MailCheckingService {
 
   MailService mailService
   DataSource dataSource
+  MessageSource messageSource
 
   /**
    * Send email to check user emails and then activate the corresponding user
@@ -23,9 +25,10 @@ class MailCheckingService {
     notifications.each { actKey, user ->
       actKeysWithEmailSent << actKey
       try {
+        def sub = messageSource.getMessage("email.checking.title",null,new Locale(user.language))
         mailService.sendMail {
           to user.email
-          subject "[tsaap-notes] Email checking"
+          subject sub
           html view: "/email/emailChecking", model: [user: user,
                   actKey: actKey]
         }
@@ -50,7 +53,7 @@ class MailCheckingService {
   private Map findAllNotifications() {
     def sql = new Sql(dataSource)
     def req = """
-              SELECT tuser.id as user_id, tuser.first_name, tuser.email, tact_key.activation_key
+              SELECT tuser.id as user_id, tuser.first_name, tuser.email, tuser.language, tact_key.activation_key
               FROM `tsaap-notes`.user as tuser
               INNER JOIN  `tsaap-notes`.activation_key as tact_key ON tact_key.user_id = tuser.id
               where tact_key.activation_email_sent = false"""
@@ -60,7 +63,7 @@ class MailCheckingService {
     def notifications = [:]
     rows.each {
       def key = it.activation_key
-      notifications[key] = [user_id: it.user_id, first_name: it.first_name, email: it.email]
+      notifications[key] = [user_id: it.user_id, first_name: it.first_name, email: it.email, language: it.language]
     }
     sql.close()
     log.debug("Notifications to process : $notifications")

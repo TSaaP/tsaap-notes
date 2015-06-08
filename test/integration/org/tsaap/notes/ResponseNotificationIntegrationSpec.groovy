@@ -34,8 +34,8 @@ class ResponseNotificationIntegrationSpec extends Specification {
         Map result = responseNotificationService.findAllResponsesNotifications()
 
         then: "we got a map with 1 notifications for Paul's questions."
-        result.containsKey([user_id: bootstrapTestService.learnerPaul.id, first_name: bootstrapTestService.learnerPaul.firstName, email: bootstrapTestService.learnerPaul.email])
-        def res2 = result.get([user_id: bootstrapTestService.learnerPaul.id, first_name: bootstrapTestService.learnerPaul.firstName, email: bootstrapTestService.learnerPaul.email])
+        result.containsKey([user_id: bootstrapTestService.learnerPaul.id, first_name: bootstrapTestService.learnerPaul.firstName, email: bootstrapTestService.learnerPaul.email, language: bootstrapTestService.learnerPaul.language])
+        def res2 = result.get([user_id: bootstrapTestService.learnerPaul.id, first_name: bootstrapTestService.learnerPaul.firstName, email: bootstrapTestService.learnerPaul.email, language: bootstrapTestService.learnerPaul.language])
         res2.containsKey([context_id: bootstrapTestService.context1.id, context_name: bootstrapTestService.context1.contextName, fragment_tag: tag.id, fragment_tag_name: tag.name,
                           question_id: note1.id, question_content: "paul's question 1"])
         def res3 = res2.get([context_id: bootstrapTestService.context1.id, context_name: bootstrapTestService.context1.contextName, fragment_tag: tag.id, fragment_tag_name: tag.name,
@@ -52,8 +52,8 @@ class ResponseNotificationIntegrationSpec extends Specification {
         Map result = responseNotificationService.findAllMentionsNotifications()
 
         then: "we got a map with one notification for Paul"
-        result.containsKey([user_id: bootstrapTestService.learnerPaul.id, first_name: bootstrapTestService.learnerPaul.firstName, email: bootstrapTestService.learnerPaul.email])
-        def res = result.get([user_id: bootstrapTestService.learnerPaul.id, first_name: bootstrapTestService.learnerPaul.firstName, email: bootstrapTestService.learnerPaul.email])
+        result.containsKey([user_id: bootstrapTestService.learnerPaul.id, first_name: bootstrapTestService.learnerPaul.firstName, email: bootstrapTestService.learnerPaul.email, language: bootstrapTestService.learnerPaul.language])
+        def res = result.get([user_id: bootstrapTestService.learnerPaul.id, first_name: bootstrapTestService.learnerPaul.firstName, email: bootstrapTestService.learnerPaul.email, language: bootstrapTestService.learnerPaul.language])
         res.contains([context_id: bootstrapTestService.context1.id, context_name: bootstrapTestService.context1.contextName, fragment_tag: tag.id, fragment_tag_name: tag.name, mention_author: bootstrapTestService.learnerMary.username, mention_content: note1.content])
     }
 }

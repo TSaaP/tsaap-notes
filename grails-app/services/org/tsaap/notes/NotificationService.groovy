@@ -22,9 +22,10 @@ class NotificationService {
     Map notifications = findAllNotifications()
     notifications.each { user, contextList ->
       try {
+        def sub = messageSource.getMessage("email.notes.notification.title",null,new Locale(user.language))
         mailService.sendMail {
           to user.email
-          subject "[tsaap-notes] notes of the day"
+          subject sub
           html view: "/email/notesNotification", model: [user: user,
                   contextList: contextList]
         }
@@ -46,7 +47,7 @@ class NotificationService {
   private Map findAllNotifications() {
     def sql = new Sql(dataSource)
     def req = """
-              SELECT tuser.id as user_id, tuser.first_name, tuser.email, tcontext.id as context_id, tcontext.context_name, count(tnote.id) as count_notes
+              SELECT tuser.id as user_id, tuser.first_name, tuser.email, tuser.language, tcontext.id as context_id, tcontext.context_name, count(tnote.id) as count_notes
               FROM `tsaap-notes`.note as tnote
               INNER JOIN `tsaap-notes`.context_follower as tcontextfo ON tnote.context_id = tcontextfo.context_id
               INNER JOIN `tsaap-notes`.context as tcontext ON tcontextfo.context_id = tcontext.id
@@ -54,7 +55,7 @@ class NotificationService {
               where tnote.date_created < NOW() and tnote.date_created > concat(date_sub(curdate(),interval 1 day),' ',curtime()) and tuser.enabled = TRUE
               group by context_id, user_id
               UNION
-              SELECT tuser.id as user_id, tuser.first_name, tuser.email, tcontext.id as context_id, tcontext.context_name, count(tnote.id)
+              SELECT tuser.id as user_id, tuser.first_name, tuser.email, tuser.language, tcontext.id as context_id, tcontext.context_name, count(tnote.id)
               FROM `tsaap-notes`.note as tnote
               INNER JOIN `tsaap-notes`.context as tcontext ON tnote.context_id = tcontext.id
               INNER JOIN `tsaap-notes`.user as tuser ON tcontext.owner_id = tuser.id
@@ -64,7 +65,7 @@ class NotificationService {
     def rows = sql.rows(req)
     def notifications = [:]
     rows.each {
-      def key = [user_id: it.user_id, first_name: it.first_name, email: it.email]
+      def key = [user_id: it.user_id, first_name: it.first_name, email: it.email, language: it.language]
       if (notifications[key] == null) {
         notifications[key] = []
       }

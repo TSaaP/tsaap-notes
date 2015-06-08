@@ -106,6 +106,9 @@
                      name="password2">
             </div>
 
+            <div class="form-group">
+            <label> ${message(code: "useraccount.form.language.label")} : <g:select name="language" from="${org.tsaap.directory.UserAccountService.LANGUAGES_SUPPORTED.keySet()}" ></g:select></label>
+            </div>
 
             <button type="submit"
                     class="btn btn-primary">${message(code: "useraccount.save.button")} &raquo;</button><br/>

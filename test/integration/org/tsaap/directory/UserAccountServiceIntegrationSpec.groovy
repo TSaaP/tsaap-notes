@@ -35,7 +35,8 @@ class UserAccountServiceIntegrationSpec extends Specification {
     def u = userAccountService.addUser(new User(firstName: "Mary", lastName: "S",
                                                 username: "Mary_test",
                                                 email: "mary@nomail.com",
-                                                password: "password"),
+                                                password: "password",
+                                                language: 'en'),
                                        RoleEnum.STUDENT_ROLE.role)
     println "${u.errors}"
 
@@ -45,6 +46,7 @@ class UserAccountServiceIntegrationSpec extends Specification {
     !user.enabled
     user.normalizedUsername == "mary_test"
     user.email == "mary@nomail.com"
+    user.language == 'en'
     !user.authorities.empty
     user.authorities.first().authority == RoleEnum.STUDENT_ROLE.name()
     user.password == springSecurityService.encodePassword("password")
@@ -53,7 +55,8 @@ class UserAccountServiceIntegrationSpec extends Specification {
     def user2 = userAccountService.addUser(new User(firstName: "Mary", lastName: "G",
                                                     username: "Mary_test_g",
                                                     email: "mary@mary.com",
-                                                    password: "password"),
+                                                    password: "password",
+                                                    language: 'en'),
                                            RoleEnum.STUDENT_ROLE.role, false, true)
 
     then: "the activation key is generated"
@@ -70,7 +73,8 @@ class UserAccountServiceIntegrationSpec extends Specification {
     def mary = userAccountService.addUser(new User(firstName: "Mary", lastName: "S",
                                                    username: "Mary_test",
                                                    email: "mary@nomail.com",
-                                                   password: "password"),
+                                                   password: "password",
+                                                   language: 'en'),
                                           RoleEnum.STUDENT_ROLE.role)
     userAccountService.enableUser(mary)
 
@@ -86,7 +90,8 @@ class UserAccountServiceIntegrationSpec extends Specification {
     def mary = userAccountService.addUser(new User(firstName: "Mary", lastName: "S",
                                                    username: "Mary_test",
                                                    email: "mary@nomail.com",
-                                                   password: "password"),
+                                                   password: "password",
+                                                   language: 'en'),
                                           RoleEnum.STUDENT_ROLE.role)
     userAccountService.enableUser(mary)
 
@@ -107,12 +112,14 @@ class UserAccountServiceIntegrationSpec extends Specification {
     def mary = userAccountService.addUser(new User(firstName: "Mary", lastName: "S",
                                                    username: "Mary_test",
                                                    email: "mary@nomail.com",
-                                                   password: "password"),
+                                                   password: "password",
+                                                   language: 'en'),
                                           RoleEnum.STUDENT_ROLE.role)
 
-    when: 'modifying properties of the  user and ask for an update'
+    when: 'modifying properties of the user and ask for an update'
     mary.firstName = newFirstName
     mary.email = newEmail
+    mary.language = newLanguage
     Role mainRole = RoleEnum.valueOf(newRoleName).role
     userAccountService.updateUser(mary, mainRole)
 
@@ -126,10 +133,10 @@ class UserAccountServiceIntegrationSpec extends Specification {
       UserRole.get(user.id, mainRole.id) != null
     }
 
-    where: newFirstName | newEmail          | newRoleName                  | userHasChanged | userHasErrors
-    "Franck"            | "fsil@fsil.com"   | RoleEnum.TEACHER_ROLE.name() | true           | false
-    "Mary"              | "mary@nomail.com" | RoleEnum.TEACHER_ROLE.name() | false          | false
-    "Mary"              | "mary@"           | RoleEnum.TEACHER_ROLE.name() | false          | true
+    where: newFirstName | newEmail          | newLanguage | newRoleName                   | userHasChanged | userHasErrors
+    "Franck"            | "fsil@fsil.com"   | 'fr'        |  RoleEnum.TEACHER_ROLE.name() | true           | false
+    "Mary"              | "mary@nomail.com" | 'en'        |  RoleEnum.TEACHER_ROLE.name() | false          | false
+    "Mary"              | "mary@"           | 'en'        |  RoleEnum.TEACHER_ROLE.name() | false          | true
   }
 
 }

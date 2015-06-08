@@ -4,6 +4,20 @@ import org.gcontracts.annotations.Requires
 
 class UserAccountService {
 
+  private static final HashMap<String,String> LANGUAGES_SUPPORTED = [
+          'English':'en',
+          'Français':'fr'
+  ]
+
+  /**
+   * Check if the language passed in parameter is in LANGUAGES_SUPPORTED list
+   * @param language the language to check
+   * @return if LANGUAGES_SUPPORTED contains language
+   */
+  boolean languageIsSupported(String language) {
+    LANGUAGES_SUPPORTED.containsValue(language)
+  }
+
   /**
    * Add a new user, the user is not enabled
    * @param enabled flag that indicate if the account is enabled

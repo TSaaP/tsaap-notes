@@ -18,28 +18,28 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-  <title>Notification Tsaap-Notes</title>
+  <title>${message(code: "email.notification.page.title",locale: new Locale(user.language))}</title>
 </head>
 
 <body>
 
-<p>Hi ${user.first_name}</p>
+<p>${message(code: "email.hi",locale: new Locale(user.language))} ${user.first_name}</p>
 
 
 <g:each in="${contextList}" var="context">
   <g:set var="noteCount" value="${context.count_notes}"/>
   <g:if test="${noteCount > 1}">
     <p>
-      There are ${noteCount} new notes on scope <strong>${context.context_name}</strong> since yesterday. <br>
-      Come and see : <g:createLink absolute="true"
+      ${message(code: "email.notification.severalNotes.message1",locale: new Locale(user.language))} ${noteCount} ${message(code: "email.notification.severalNotes.message2",locale: new Locale(user.language))} <strong>${context.context_name}</strong> ${message(code: "email.notification.endMessage",locale: new Locale(user.language))} <br>
+      ${message(code: "email.notification.beforeLink",locale: new Locale(user.language))} <g:createLink absolute="true"
                                    params="[displaysAll: 'on', contextName: context.context_name, contextId: context.context_id]"
                                    controller="notes"/>
     </p>
   </g:if>
   <g:elseif test="${noteCount == 1}">
     <p>
-      There is one new note on scope <strong>${context.context_name}<strong> since yesterday. <br>
-      Come and see : <g:createLink absolute="true"
+      ${message(code: "email.notification.oneNote.message",locale: new Locale(user.language))} <strong>${context.context_name}<strong> ${message(code: "email.notification.endMessage",locale: new Locale(user.language))} <br>
+      ${message(code: "email.notification.beforeLink",locale: new Locale(user.language))} <g:createLink absolute="true"
                                    params="[displaysAll: 'on', contextName: context.context_name, contextId: context.context_id]"
                                    controller="notes"/>
     </p>

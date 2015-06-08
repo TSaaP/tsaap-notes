@@ -27,10 +27,12 @@ class User {
   String email
   String password
   String fullname
+  String language
   boolean enabled
   boolean accountExpired
   boolean accountLocked
   boolean passwordExpired
+
 
   void setUsername(String val) {
     this.username = val

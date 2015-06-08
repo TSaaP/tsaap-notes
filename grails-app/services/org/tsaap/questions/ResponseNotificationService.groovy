@@ -51,7 +51,6 @@ class ResponseNotificationService {
                                                                            questionMap: questionMap,
                                                                            mentionsList: mentionsList]
                     }
-                    notificationsMentions.remove(user)
                 } catch (Exception e) {
                     log.error("Error with ${user.email} : ${e.message}")
                 }

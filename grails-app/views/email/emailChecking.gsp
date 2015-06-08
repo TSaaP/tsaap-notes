@@ -24,14 +24,14 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-  <title>${message(code: "email.checking.page.title")}</title>
+  <title>Email checking - Tsaap-Notes</title>
 </head>
 
 <body>
-<p>${message(code: "email.content.hi")} ${user.first_name}</p>
+<p>Hi ${user.first_name}</p>
 
 <p>
-  ${message(code: "email.checking.message")}<br>
+  You have successfully subscribed to Tsaap-Notes. To activate your account you need click on the link below or copy-paste it in you favorite browser.<br><br>
   <g:createLink absolute="true"
                 params='[actKey: "${actKey}", id:"${user.user_id}"]' action="doEnableUser"
                 controller="userAccount"/>

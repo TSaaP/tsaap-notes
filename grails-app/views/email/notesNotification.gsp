@@ -18,28 +18,28 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-  <title>${message(code: "email.notification.page.title")}</title>
+  <title>Notification Tsaap-Notes</title>
 </head>
 
 <body>
 
-<p>${message(code: "email.content.hi")} ${user.first_name}</p>
+<p>Hi ${user.first_name}</p>
 
 
 <g:each in="${contextList}" var="context">
   <g:set var="noteCount" value="${context.count_notes}"/>
   <g:if test="${noteCount > 1}">
     <p>
-      ${message(code: "email.notification.severalNotes.message1")} ${noteCount} ${message(code: "email.notification.severalNotes.message2")} <strong>${context.context_name}</strong> ${message(code: "email.notification.endMessage")} <br>
-      ${message(code: "email.notification.beforeLink")} <g:createLink absolute="true"
+      There are ${noteCount} new notes on scope <strong>${context.context_name}</strong> since yesterday. <br>
+      Come and see : <g:createLink absolute="true"
                                    params="[displaysAll: 'on', contextName: context.context_name, contextId: context.context_id]"
                                    controller="notes"/>
     </p>
   </g:if>
   <g:elseif test="${noteCount == 1}">
     <p>
-      ${message(code: "email.notification.oneNote.message")} <strong>${context.context_name}<strong> ${message(code: "email.notification.endMessage")} <br>
-      ${message(code: "email.notification.beforeLink")} <g:createLink absolute="true"
+      There is one new note on scope <strong>${context.context_name}<strong> since yesterday. <br>
+      Come and see : <g:createLink absolute="true"
                                    params="[displaysAll: 'on', contextName: context.context_name, contextId: context.context_id]"
                                    controller="notes"/>
     </p>

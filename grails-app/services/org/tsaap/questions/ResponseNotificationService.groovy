@@ -85,7 +85,8 @@ class ResponseNotificationService {
               AND tnote1.context_id = tcontext.id
               AND tnote1.id = tnote2.parent_note_id
               AND tnote2.author_id = tuser2.id
-              and tnote1.fragment_tag_id is null"""
+              and tnote1.fragment_tag_id is null
+              order by question_author"""
         def rows = sql.rows(req)
         def notifications = [:]
         def questions = [:]
@@ -131,7 +132,8 @@ class ResponseNotificationService {
                     and tmention.mention_id = tuser1.id
                     and tnote.author_id = tuser2.id
                     and tnote.parent_note_id is null
-                    and tnote.fragment_tag_id is null;"""
+                    and tnote.fragment_tag_id is null
+                    order by receiver_id;"""
         def rows = sql.rows(req)
         def notifications = [:]
         rows.each {

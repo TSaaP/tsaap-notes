@@ -2,6 +2,7 @@ package org.tsaap.notes
 
 import grails.plugin.mail.MailService
 import groovy.sql.Sql
+import org.springframework.context.MessageSource
 
 import javax.sql.DataSource
 
@@ -12,6 +13,7 @@ class NotificationService {
   MailService mailService
   ContextService contextService
   DataSource dataSource
+  MessageSource messageSource
 
   /**
    * Notify the given user on  notes of the day coming from the context the user

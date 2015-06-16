@@ -53,6 +53,21 @@ Brief summary/description of the plugin.
 //    def scm = [ url: "http://svn.codehaus.org/grails-plugins/" ]
 
     def doWithWebDescriptor = { xml ->
+        def servlets = xml.'servlet'
+        servlets[servlets.size() - 1] + {
+            servlet {
+                'servlet-name'('Launch')
+                'servlet-class'('org.tsaap.lti.Launch')
+            }
+        }
+
+        def mappings = xml.'servlet-mapping'
+        mappings[mappings.size() - 1] + {
+            'servlet-mapping' {
+                'servlet-name'('Launch')
+                'url-pattern'('/launch')
+            }
+        }
         // TODO Implement additions to web.xml (optional), this event occurs before
     }
 

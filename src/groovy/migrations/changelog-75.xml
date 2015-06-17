@@ -93,7 +93,7 @@
             <column name="user_id" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="lti_result_sourceid" type="varchar(255)">
+            <column name="lti_result_sourcedid" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="created" type="datetime"/>
@@ -133,19 +133,6 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-    </changeSet>
-
-    <changeSet id="6" author="drol">
-        <addForeignKeyConstraint baseTableName="lti_context" baseColumnNames="consumer_key" constraintName="lti_context_consumer_FK1" referencedTableName="lti_consumer"
-                                 referencedColumnNames="consumer_key"/>
-        <addForeignKeyConstraint baseTableName="lti_context" baseColumnNames="primary_consumer_key,primary_context_id" constraintName="lti_context_context_FK1" referencedTableName="lti_context"
-                                 referencedColumnNames="consumer_key,context_id"/>
-        <addForeignKeyConstraint  baseTableName="lti_user" baseColumnNames="consumer_key,context_id" constraintName="lti_user_context_FK1" referencedColumnNames="consumer_key,context_id"
-                                 referencedTableName="lti_context"/>
-        <addForeignKeyConstraint baseColumnNames="consumer_key" baseTableName="lti_nonce" constraintName="lti_nonce_consumer_FK1" referencedColumnNames="consumer_key"
-                                 referencedTableName="lti_consumer"/>
-        <addForeignKeyConstraint baseColumnNames="primary_consumer_key, primary_context_id" baseTableName="lti_share_key" constraintName="lti_share_key_context_FK1" referencedColumnNames="consumer_key, context_id"
-                                 referencedTableName="lti_context"/>
     </changeSet>
 
 </databaseChangeLog>

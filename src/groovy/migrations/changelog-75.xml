@@ -65,7 +65,7 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="lti_context_id" type="varchar(255)" defaultValue="NULL"/>
-            <column name="lti_ressource_id" type="varchar(255)" defaultValue="NULL"/>
+            <column name="lti_resource_id" type="varchar(255)" defaultValue="NULL"/>
             <column name="title" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>

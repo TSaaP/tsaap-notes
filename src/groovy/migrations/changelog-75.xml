@@ -135,4 +135,33 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="6" author="drol">
+        <createTable tableName="lms_user">
+            <column name="tsaap_user_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="lti_consumer_key" type="varchar(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="lti_user_id" type="varchar(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="7" author="drol">
+        <addForeignKeyConstraint baseTableName="lms_user" baseColumnNames="tsaap_user_id" constraintName="lms_user_fk1" referencedTableName="user"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="lms_user" baseColumnNames="lti_consumer_key" constraintName="lms_user_fk2" referencedTableName="lti_consumer"
+                                 referencedColumnNames="consumer_key"/>
+    </changeSet>
+
+    <changeSet id="8" author="drol">
+        <createIndex tableName="lti_user" indexName="user_id_index">
+            <column name="user_id"></column>
+        </createIndex>
+        <addForeignKeyConstraint baseTableName="lms_user" baseColumnNames="lti_user_id" constraintName="lms_user_fk3" referencedTableName="lti_user"
+                                 referencedColumnNames="user_id"/>
+    </changeSet>
+
 </databaseChangeLog>

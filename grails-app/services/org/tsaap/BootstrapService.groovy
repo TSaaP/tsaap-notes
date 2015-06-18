@@ -60,19 +60,19 @@ class BootstrapService {
     def inializeDevUsers() {
         fsil = User.findByUsername("fsil")
         if (!fsil) {
-            def user = new User(firstName: "Franck", lastName: "Sil", username: "fsil", password: "1234", email: 'fsil@fsil.com')
+            def user = new User(firstName: "Franck", lastName: "Sil", username: "fsil", password: "1234", email: 'fsil@fsil.com', language: 'fr')
             fsil = userAccountService.addUser(user, studentRole, true)
 
         }
         mary = User.findByUsername("mary")
         if (!mary) {
-            def user = new User(firstName: "Mary", lastName: "Sil", username: "mary", password: "1234", email: 'mary@mary.com')
+            def user = new User(firstName: "Mary", lastName: "Sil", username: "mary", password: "1234", email: 'mary@mary.com', language: 'fr')
             mary = userAccountService.addUser(user, teacherRole, true)
         }
         thom = User.findByUsername("thom")
         if (!thom) {
-            def user = new User(firstName: "Thom", lastName: "Thom", username: "thom", password: "1234", email: 'thom@thom.com')
-            user = userAccountService.addUser(user, studentRole, true)
+            def user = new User(firstName: "Thom", lastName: "Thom", username: "thom", password: "1234", email: 'thom@thom.com', language: 'fr')
+            thom = userAccountService.addUser(user, studentRole, true)
         }
     }
 

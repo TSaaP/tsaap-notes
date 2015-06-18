@@ -40,5 +40,22 @@ class BootstrapServiceIntegrationSpec extends Specification {
 
   }
 
+  def "user initialization"() {
+
+    when: "users are initilized"
+    bootstrapService.inializeDevUsers()
+
+    then: "we have 3 users"
+    bootstrapService.fsil != null
+    bootstrapService.fsil.username == "fsil"
+    bootstrapService.fsil.language == 'fr'
+    bootstrapService.mary != null
+    bootstrapService.mary.username == "mary"
+    bootstrapService.mary.language == 'fr'
+    bootstrapService.thom != null
+    bootstrapService.thom.username == "thom"
+    bootstrapService.thom.language == 'fr'
+  }
+
 
 }

@@ -56,6 +56,7 @@ grails.project.dependency.resolution = {
         compile 'jdom:jdom:1.0'
         compile 'commons-httpclient:commons-httpclient:3.1'
         compile 'commons-codec:commons-codec:1.8'
+        compile 'org.springframework.security:spring-security-crypto:3.2.3.RELEASE'
     }
 
     plugins {

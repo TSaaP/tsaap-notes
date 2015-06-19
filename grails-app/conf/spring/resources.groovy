@@ -1,5 +1,7 @@
 import grails.plugins.springsecurity.SpringSecurityService
 import liquibase.integration.spring.SpringLiquibase
+import org.tsaap.directory.UserAccountService
+import org.tsaap.lti.LmsUserHelper
 import org.tsaap.questions.impl.gift.GiftQuestionService
 import org.tsaap.questions.impl.gift.utils.QuestionHelper
 import org.tsaap.attachement.AttachementDataStore

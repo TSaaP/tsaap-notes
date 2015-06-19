@@ -1,16 +1,23 @@
 package org.tsaap.lti;
 
+import grails.plugins.springsecurity.SpringSecurityService;
+import groovy.sql.GroovyRowResult;
+import groovy.sql.Sql;
+import org.tsaap.directory.RoleEnum;
+import org.tsaap.directory.User;
+import org.tsaap.directory.UserAccountService;
 import org.tsaap.lti.tp.Callback;
 import org.tsaap.lti.tp.DataConnector;
 import org.tsaap.lti.tp.ToolProvider;
 import org.tsaap.lti.tp.dataconnector.JDBC;
+import org.tsaap.lti.LmsUserHelper;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
+import java.sql.SQLException;
 
 
 /**
@@ -19,6 +26,7 @@ import java.io.IOException;
 public class Launch extends HttpServlet implements Callback {
 
     private static final long serialVersionUID = 7955577706944298060L;
+    Db db;
 
     @Override
     public boolean execute(ToolProvider toolProvider) {
@@ -35,6 +43,11 @@ public class Launch extends HttpServlet implements Callback {
             toolProvider.getRequest().getSession().setAttribute("user_id", toolProvider.getUser().getId());
             toolProvider.getRequest().getSession().setAttribute("isStudent", toolProvider.getUser().isLearner());
 
+            //Check the user
+            LmsUserHelper lms = new LmsUserHelper();
+            lms.findUserIsKnowOrCreateIt(db, toolProvider.getUser().getId(), toolProvider.getUser().getFirstname(), toolProvider.getUser().getLastname(),
+                    toolProvider.getUser().getEmail(), toolProvider.getConsumer().getKey());
+
             // Redirect the user to display the list of items for the resource link
             String serverUrl = toolProvider.getRequest().getRequestURL().toString();
             serverUrl = serverUrl.substring(0, serverUrl.lastIndexOf("/"));
@@ -42,13 +55,18 @@ public class Launch extends HttpServlet implements Callback {
         } else {
             toolProvider.setReason("Invalid role.");
         }
-
+        try {
+            db.closeConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return ok;
 
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
 
         // Cancel any existing session and start a new session
         request.getSession().invalidate();
@@ -57,7 +75,7 @@ public class Launch extends HttpServlet implements Callback {
         request.setCharacterEncoding("UTF-8");
 
         // Initialise database
-        Db db = Utils.initialise(request.getSession(), false);
+        db = Utils.initialise(request.getSession(), false);
 
         DataConnector dc = null;
         if (db != null) {

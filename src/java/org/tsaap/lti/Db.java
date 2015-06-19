@@ -51,4 +51,16 @@ public class Db {
     public Connection getConnection() {
         return this.connection;
     }
+
+    /**
+     * Close datatabase connection
+     * @throws SQLException
+     */
+    public void closeConnection() throws SQLException {
+        try {
+            this.connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

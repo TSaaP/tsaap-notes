@@ -13,6 +13,18 @@ class LmsUserHelper {
 
     SpringSecurityService springSecurityService
 
+    /**
+     * Find if an user who connect from LMS have a TsaaP-Notes account linked with his LMS id
+     * If it's the case: the user is automatically log to his account
+     * Else a Tsaap-Notes account is create for this user and the user is also log with it
+     * @param db the database connection
+     * @param user_id user id given by LMS
+     * @param firstName user firstname
+     * @param lastName user lastname
+     * @param email user email
+     * @param key lti consumer key
+     * @return
+     */
     def findUserIsKnowOrCreateIt(Db db, String user_id, String firstName, String lastName, String email, String key) {
         def sql = new Sql(db.getConnection())
         def username

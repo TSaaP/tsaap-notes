@@ -2,7 +2,6 @@ package org.tsaap.lti
 
 import grails.plugins.springsecurity.SpringSecurityService
 import groovy.sql.Sql
-import org.springframework.security.*
 import org.springframework.security.crypto.password.StandardPasswordEncoder
 
 import javax.sql.DataSource

@@ -38,7 +38,7 @@ class BootstrapTestService {
         }
         learnerMary = User.findByUsername("learner_Mary")
         if (!learnerMary) {
-            learnerMary = new User(firstName: "Mary", lastName: "S", username: "learner_Mary", password: "password", email: "mary@nomail.com",language: 'en').save()
+            learnerMary = new User(firstName: "Mary", lastName: "S", username: "learner_Mary", password: "password", email: "mary@nomail.com",language: 'fr').save()
         }
         for (int i=0 ; i<10 ; i++) {
             User currentUser = User.findByUsername("learner_$i")

@@ -1,16 +1,9 @@
 package org.tsaap.lti;
 
-import grails.plugins.springsecurity.SpringSecurityService;
-import groovy.sql.GroovyRowResult;
-import groovy.sql.Sql;
-import org.tsaap.directory.RoleEnum;
-import org.tsaap.directory.User;
-import org.tsaap.directory.UserAccountService;
 import org.tsaap.lti.tp.Callback;
 import org.tsaap.lti.tp.DataConnector;
 import org.tsaap.lti.tp.ToolProvider;
 import org.tsaap.lti.tp.dataconnector.JDBC;
-import org.tsaap.lti.LmsUserHelper;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

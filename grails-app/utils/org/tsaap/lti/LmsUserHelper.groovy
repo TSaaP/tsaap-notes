@@ -25,7 +25,7 @@ class LmsUserHelper {
      * @param key lti consumer key
      * @return
      */
-    def findUserIsKnowOrCreateIt(Db db, String user_id, String firstName, String lastName, String email, String key) {
+    def findUserIsKnowOrCreateIt(Db db, String user_id, String firstName, String lastName, String email, String key, Boolean role) {
         def sql = new Sql(db.getConnection())
         def username
         def password
@@ -69,7 +69,13 @@ class LmsUserHelper {
             def getNewUserId = "Select id from user where username = $username;"
             def userId = sql.firstRow(getNewUserId).id
 
-            def insertUserRole = """INSERT INTO user_role VALUES (2,$userId); """
+            def insertUserRole
+            if(role){
+                insertUserRole = """INSERT INTO user_role VALUES (2,$userId); """
+            }
+            else{
+                insertUserRole = """INSERT INTO user_role VALUES (3,$userId); """
+            }
             sql.execute(insertUserRole)
 
             def insertLms = """INSERT INTO lms_user VALUES ($userId,$key,$user_id);"""

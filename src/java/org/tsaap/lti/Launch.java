@@ -39,7 +39,8 @@ public class Launch extends HttpServlet implements Callback {
             //Check the user
             LmsUserHelper lms = new LmsUserHelper();
             lms.findUserIsKnowOrCreateIt(db, toolProvider.getUser().getId(), toolProvider.getUser().getFirstname(), toolProvider.getUser().getLastname(),
-                    toolProvider.getUser().getEmail(), toolProvider.getConsumer().getKey());
+                    toolProvider.getUser().getEmail(), toolProvider.getConsumer().getKey(),
+                    toolProvider.getUser().isLearner());
 
             // Redirect the user to display the list of items for the resource link
             String serverUrl = toolProvider.getRequest().getRequestURL().toString();

@@ -1,5 +1,6 @@
 package org.tsaap.lti;
 
+import groovy.sql.Sql;
 import org.tsaap.lti.tp.Callback;
 import org.tsaap.lti.tp.DataConnector;
 import org.tsaap.lti.tp.ToolProvider;
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.SQLException;
 
 
@@ -37,22 +39,24 @@ public class Launch extends HttpServlet implements Callback {
             toolProvider.getRequest().getSession().setAttribute("isStudent", toolProvider.getUser().isLearner());
 
             //Check the user
-            LmsUserHelper lms = new LmsUserHelper();
-            lms.findUserIsKnowOrCreateIt(db, toolProvider.getUser().getId(), toolProvider.getUser().getFirstname(), toolProvider.getUser().getLastname(),
+            LmsUserService lmsUserService = new LmsUserService();
+            Connection connection = db.getConnection();
+            Sql sql = new Sql(connection);
+            lmsUserService.findOrCreateUser(sql, toolProvider.getUser().getId(), toolProvider.getUser().getFirstname(), toolProvider.getUser().getLastname(),
                     toolProvider.getUser().getEmail(), toolProvider.getConsumer().getKey(),
                     toolProvider.getUser().isLearner());
 
+            try {
+                db.closeConnection();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
             // Redirect the user to display the list of items for the resource link
             String serverUrl = toolProvider.getRequest().getRequestURL().toString();
             serverUrl = serverUrl.substring(0, serverUrl.lastIndexOf("/"));
             toolProvider.setRedirectUrl(serverUrl);
         } else {
             toolProvider.setReason("Invalid role.");
-        }
-        try {
-            db.closeConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
         return ok;
 

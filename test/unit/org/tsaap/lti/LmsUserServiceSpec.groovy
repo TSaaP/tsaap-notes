@@ -22,7 +22,7 @@ class LmsUserServiceSpec extends Specification {
         lmsUserService = new LmsUserService()
     }
 
-    void "test to find or create a tsaap note account for a given lti user without a tsaap account"() {
+    void "test to find or create a tsaap note account for given lti users without a tsaap account"() {
 
         given:"the collaborators"
         sql = Mock(Sql)
@@ -33,10 +33,10 @@ class LmsUserServiceSpec extends Specification {
         lmsUserService.userProvisionAccountService = userProvisionAccountService
         lmsUserService.springSecurityService = springSecurityService
 
-        when: "I try to found or create a tsaap account for this lti user"
+        when: "I try to found or create a tsaap account for a lti user as learner"
         lmsUserService.findOrCreateUser(sql,'10',"john","doe","doe@nomail.com",'key',true)
 
-        then: "The user is log with the created account"
+        then: "The user is log with his learner created account"
         1*lmsUserHelper.selectLmsUser(sql,'10') >> null
         1*userProvisionAccountService.generateUsername(sql,"john","doe") >> "jdoe"
         1*userProvisionAccountService.generatePassword() >> "pass"
@@ -45,6 +45,19 @@ class LmsUserServiceSpec extends Specification {
         1*lmsUserHelper.insertUserRoleInDatabase(sql,2,88)
         1*lmsUserHelper.insertLmsUserInDatabase(sql,88,'key','10')
         1*springSecurityService.reauthenticate("jdoe","pass")
+
+        when: "I try to found or create a tsaap account for a lti user as a teacher"
+        lmsUserService.findOrCreateUser(sql,'11',"jean","test","test@nomail.com",'key',false)
+
+        then: "the user is log with his teacher created account"
+        1*lmsUserHelper.selectLmsUser(sql,'11') >> null
+        1*userProvisionAccountService.generateUsername(sql,"jean","test") >> "jtes"
+        1*userProvisionAccountService.generatePassword() >> "password"
+        1*lmsUserHelper.insertUserInDatabase(sql,"test@nomail.com","jean","test","jtes","password")
+        1*lmsUserHelper.selectUserId(sql,"jtes") >> 90
+        1*lmsUserHelper.insertUserRoleInDatabase(sql,3,90)
+        1*lmsUserHelper.insertLmsUserInDatabase(sql,90,'key','11')
+        1*springSecurityService.reauthenticate("jtes","password")
     }
 
     void "test to find or create a tsaap note account for a given lti user who have a tsaap account"() {

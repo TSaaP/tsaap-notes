@@ -2,13 +2,15 @@ package org.tsaap.lti
 
 import grails.plugins.springsecurity.SpringSecurityService
 import groovy.sql.Sql
-import org.springframework.security.crypto.password.StandardPasswordEncoder
+import org.tsaap.directory.RoleEnum
+import org.tsaap.directory.UserProvisionAccountService
 
-import java.sql.Connection
 
 class LmsUserService {
 
     SpringSecurityService springSecurityService
+    LmsUserHelper lmsUserHelper
+    UserProvisionAccountService userProvisionAccountService
 
     /**
      * Find or create a tsaap account for a given lti user
@@ -19,46 +21,24 @@ class LmsUserService {
      * @param key lti consumer key
      * @param role true if the lti user is a learner else false
      */
-    def findOrCreateUser(Sql sql, String ltiUserId, String firstName, String lastName, String email, String key, Boolean role) {
-        LmsUserHelper lmsUserHelper = new LmsUserHelper()
-        springSecurityService = new SpringSecurityService()
+    def findOrCreateUser(Sql sql, String ltiUserId, String firstName, String lastName, String email, String key, Boolean isLearner) {
         def username
         def password
-        StandardPasswordEncoder encoder = new StandardPasswordEncoder("secret")
-
         // Verify if the user have already an account
         def result = lmsUserHelper.selectLmsUser(sql,ltiUserId)
         if(result == null) {
             // If not, create an account for it
-            username = firstName.substring(0,1)+lastName.substring(0,3)
-            // Check if the new username is not already use
-            def checkUsername = lmsUserHelper.selectUsernameIfExist(sql,username)
-            if(checkUsername != null) {
-                int number = 2
-                if(checkUsername.length() > 4) {
-                    number = Integer.parseInt(checkUsername.substring(4))
-                    number++
-                }
-                username = username+number
-            }
-
-            // Create password for user
-            def alphabet = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789"
-            Random rand = new Random()
-            password = ""
-            for(int i = 0; i < 8; i++) {
-                password += alphabet.charAt(rand.nextInt(alphabet.length()))
-            }
-            password = encoder.encode(password)
+            username = userProvisionAccountService.generateUsername(sql,firstName,lastName)
+            password = userProvisionAccountService.generatePassword()
 
             // Add user in database
             lmsUserHelper.insertUserInDatabase(sql,email,firstName,lastName,username,password)
             Long tsaapUserId = lmsUserHelper.selectUserId(sql,username)
-            if(role){
-                lmsUserHelper.insertUserRoleInDatabase(sql,2,tsaapUserId)
+            if(isLearner){
+                lmsUserHelper.insertUserRoleInDatabase(sql,RoleEnum.STUDENT_ROLE.id,tsaapUserId)
             }
             else {
-                lmsUserHelper.insertUserRoleInDatabase(sql,3,tsaapUserId)
+                lmsUserHelper.insertUserRoleInDatabase(sql,RoleEnum.TEACHER_ROLE.id,tsaapUserId)
             }
             lmsUserHelper.insertLmsUserInDatabase(sql,tsaapUserId,key,ltiUserId)
 

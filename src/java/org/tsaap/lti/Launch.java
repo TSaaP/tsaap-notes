@@ -1,6 +1,10 @@
 package org.tsaap.lti;
 
+import grails.plugins.springsecurity.BCryptPasswordEncoder;
+import grails.plugins.springsecurity.SpringSecurityService;
 import groovy.sql.Sql;
+import org.springframework.security.crypto.password.StandardPasswordEncoder;
+import org.tsaap.directory.UserProvisionAccountService;
 import org.tsaap.lti.tp.Callback;
 import org.tsaap.lti.tp.DataConnector;
 import org.tsaap.lti.tp.ToolProvider;
@@ -22,6 +26,23 @@ public class Launch extends HttpServlet implements Callback {
 
     private static final long serialVersionUID = 7955577706944298060L;
     Db db;
+    LmsUserService lmsUserService;
+
+    public void initialiseLmsUserService() {
+        lmsUserService = new LmsUserService();
+        LmsUserHelper lmsUserHelper = new LmsUserHelper();
+        UserProvisionAccountService userProvisionAccountService = new UserProvisionAccountService();
+        SpringSecurityService springSecurityService = new SpringSecurityService();
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        springSecurityService.setPasswordEncoder(bCryptPasswordEncoder);
+        lmsUserService.setLmsUserHelper(lmsUserHelper);
+        lmsUserService.setSpringSecurityService(springSecurityService);
+        lmsUserService.setUserProvisionAccountService(userProvisionAccountService);
+        lmsUserService.getUserProvisionAccountService().setLmsUserHelper(lmsUserHelper);
+        lmsUserService.getUserProvisionAccountService().setSpringSecurityService(springSecurityService);
+
+
+    }
 
     @Override
     public boolean execute(ToolProvider toolProvider) {
@@ -39,12 +60,12 @@ public class Launch extends HttpServlet implements Callback {
             toolProvider.getRequest().getSession().setAttribute("isStudent", toolProvider.getUser().isLearner());
 
             //Check the user
-            LmsUserService lmsUserService = new LmsUserService();
+            initialiseLmsUserService();
             Connection connection = db.getConnection();
             Sql sql = new Sql(connection);
             lmsUserService.findOrCreateUser(sql, toolProvider.getUser().getId(), toolProvider.getUser().getFirstname(), toolProvider.getUser().getLastname(),
-                    toolProvider.getUser().getEmail(), toolProvider.getConsumer().getKey(),
-                    toolProvider.getUser().isLearner());
+                        toolProvider.getUser().getEmail(), toolProvider.getConsumer().getKey(),
+                        toolProvider.getUser().isLearner());
 
             try {
                 db.closeConnection();

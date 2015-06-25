@@ -11,17 +11,22 @@ import java.sql.SQLException
  */
 class LmsUserHelperIntegrationSpec extends Specification {
 
-
     DataSource dataSource
+    LmsUserHelper lmsUserHelper
+    Sql sql
+
+    def setup(){
+        lmsUserHelper = new LmsUserHelper()
+        sql = new Sql(dataSource)
+    }
 
     def "test select an username and password in database"() {
 
         when: "I want to know tsaap username and password for a given lti user"
-        def sql = new Sql(dataSource)
+
         def req = null
         def res = null
         def userId
-        LmsUserHelper lmsUserHelper = new LmsUserHelper()
         try {
             sql.withTransaction { ->
                 lmsUserHelper.insertUserInDatabase(sql, "user@mail.com", "john", "doe", "jdoe", "pass")

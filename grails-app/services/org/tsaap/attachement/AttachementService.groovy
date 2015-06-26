@@ -46,8 +46,6 @@ class AttachementService {
     }
 
 
-
-
     @Transactional
     Attachement createAttachement(AttachementDto attachementDto,
                                   def maxSizeEnMega = 10) {
@@ -101,26 +99,6 @@ class AttachementService {
     InputStream getInputStreamForAttachement(Attachement attachement) {
         DataRecord dataRecord = dataStore.getRecord(new DataIdentifier(attachement.path))
         dataRecord.stream
-    }
-
-    /**
-     * Encode in base 64 an attachement
-     * @param attachement attachement to encode
-     * @return the encode attachement
-     */
-    String encodeToBase64(Attachement attachement) {
-        ByteArrayOutputStream bos
-        OutputStream b64os
-        try {
-            bos = new ByteArrayOutputStream()
-            b64os = MimeUtility.encode(bos, 'base64')
-            b64os << getInputStreamForAttachement(attachement)
-            b64os.flush()
-            bos.toString()
-        } finally {
-            bos?.close()
-            b64os?.close()
-        }
     }
 
     /**

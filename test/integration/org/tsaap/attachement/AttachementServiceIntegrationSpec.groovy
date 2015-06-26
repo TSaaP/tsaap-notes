@@ -1,11 +1,10 @@
 package org.tsaap.attachement
 
+import org.springframework.mock.web.MockMultipartFile
+import org.springframework.web.multipart.MultipartFile
 import org.tsaap.BootstrapTestService
-import org.tsaap.notes.Context
 import org.tsaap.notes.Note
 import spock.lang.Specification
-
-import java.nio.file.Files
 
 /**
  * Created by dylan on 13/05/15.
@@ -18,6 +17,106 @@ class AttachementServiceIntegrationSpec extends Specification {
 
     def setup() {
         bootstrapTestService.initializeTests()
+    }
+
+    def "test create attachment for multipart file"() {
+        given: "some multipart files"
+        byte[] content = "Attachment".getBytes()
+        MultipartFile multipartFile = new MockMultipartFile("grails","grails","text/plain",content)
+        MultipartFile multipartFile2 = null
+
+        when: "I want to create attachment for this multipart file"
+        Attachement attachement = attachementService.createAttachementForMultipartFile(multipartFile)
+
+        then: "the attachment is correctly created"
+        attachement != null
+        attachement.name == "grails"
+
+        when: "I want to create attachment for null multipart file"
+        attachementService.createAttachementForMultipartFile(multipartFile2)
+
+        then: "I get exception"
+        thrown(AttachementUploadException)
+
+    }
+
+    def "test create attachement with to big size"() {
+
+        given: "an attachmentDto"
+        AttachementDto attachementDto = new AttachementDto(
+                size: 100000000000000000000,
+                typeMime: 'image/png',
+                name: 'grails.png',
+                originalFileName: 'grails.png',
+                bytes: [2, 3, 4, 5, 6, 7]
+        )
+
+        when: "I try to create the attachement"
+        attachementService.createAttachement(attachementDto, 10)
+
+        then: "I get an exception"
+        thrown(AttachementUploadException)
+    }
+
+    def "test create attachement from an ImageIds"() {
+
+        given: "an attachment in datastore and his ImageIds"
+        AttachementDto attachementDto = new AttachementDto(
+                size: 6,
+                typeMime: 'image/png',
+                name: 'grails.png',
+                originalFileName: 'grails.png',
+                bytes: [2, 3, 4, 5, 6, 7]
+        )
+        Attachement myAttachement = attachementService.createAttachement(attachementDto, 10)
+        ImageIds imageIds = new ImageIds()
+        imageIds.contentType = myAttachement.typeMime
+        imageIds.fileName = myAttachement.name
+        imageIds.size = myAttachement.size
+        imageIds.dataSoreId = myAttachement.path
+
+        when: "I want to create an attachment from an ImageIds"
+        Attachement myAttachementIds = attachementService.createAttachementForImageIds(imageIds)
+
+        then: "the attachment is correctly create from the ImageIds"
+        myAttachementIds.name == imageIds.fileName
+        myAttachementIds.path == imageIds.dataSoreId
+
+    }
+
+    def "test get input stream for an attachment"() {
+
+        given: "an attachment"
+        AttachementDto attachementDto = new AttachementDto(
+                size: 6,
+                typeMime: 'image/png',
+                name: 'grails.png',
+                originalFileName: 'grails.png',
+                bytes: [2, 3, 4, 5, 6, 7]
+        )
+        Attachement myAttachement = attachementService.createAttachement(attachementDto, 10)
+
+        when: "I want to get an input stream for a given attachement"
+        InputStream inputStream = attachementService.getInputStreamForAttachement(myAttachement)
+
+        then: "I get the input stream"
+        inputStream != null
+    }
+
+    def "test add file to note"() {
+
+        given: "a note and a multipart file"
+        Note note = bootstrapTestService.note1
+        byte[] content = "Attachment".getBytes()
+        MultipartFile multipartFile = new MockMultipartFile("grails","grails","text/plain",content)
+
+        when: "I want to add multipart file to note"
+        Attachement attachement = attachementService.addFileToNote(multipartFile,note)
+
+        then: "The file is correctly add to note"
+        attachement != null
+        attachement.note == note
+
     }
 
     def "test detachAttachement"() {
@@ -39,7 +138,7 @@ class AttachementServiceIntegrationSpec extends Specification {
         then: "the attachement is correctly detach"
         detachedAttachment.context == null
         detachedAttachment.note == null
-        detachedAttachment.toDelete == true
+        detachedAttachment.toDelete
         !detachedAttachment.hasErrors()
     }
 

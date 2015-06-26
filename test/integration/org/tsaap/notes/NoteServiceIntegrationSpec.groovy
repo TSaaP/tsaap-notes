@@ -18,6 +18,9 @@ package org.tsaap.notes
 
 import org.gcontracts.PreconditionViolation
 import org.tsaap.BootstrapTestService
+import org.tsaap.attachement.Attachement
+import org.tsaap.attachement.AttachementDto
+import org.tsaap.attachement.AttachementService
 import spock.lang.Specification
 
 class NoteServiceIntegrationSpec extends Specification {
@@ -25,6 +28,7 @@ class NoteServiceIntegrationSpec extends Specification {
     BootstrapTestService bootstrapTestService
     NoteService noteService
     ContextService contextService
+    AttachementService attachementService
 
     def setup() {
         bootstrapTestService.initializeTests()
@@ -114,6 +118,29 @@ class NoteServiceIntegrationSpec extends Specification {
         NoteMention.countByNote(note1) == 0
         NoteTag.countByNote(note1) == 0
         Bookmark.countByNote(note1) == 0
+
+    }
+
+    def "delete a note with attachement"() {
+
+        given: "A note with an attachement"
+        Note note1 = noteService.addNote(bootstrapTestService.learnerMary, "a note with attachement")
+        AttachementDto attachementDto = new AttachementDto(
+                size: 6,
+                typeMime: 'image/png',
+                name: 'grails.png',
+                originalFileName: 'grails.png',
+                bytes: [2, 3, 4, 5, 6, 7]
+        )
+        Attachement myAttachement = attachementService.createAttachement(attachementDto, 10)
+        myAttachement = attachementService.addNoteToAttachement(note1,myAttachement)
+
+        when: "I want to delete this note"
+        noteService.deleteNoteByAuthor(note1,bootstrapTestService.learnerMary)
+
+        then: "The note is delete"
+        Note.get(note1.id) == null
+        myAttachement.note == null
 
     }
 

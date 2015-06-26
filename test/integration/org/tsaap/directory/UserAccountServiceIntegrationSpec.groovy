@@ -139,4 +139,19 @@ class UserAccountServiceIntegrationSpec extends Specification {
     "Mary"              | "mary@"           | 'en'        |  RoleEnum.TEACHER_ROLE.name() | false          | true
   }
 
+  def "test language is supported"() {
+
+      given: "some languages"
+      String english = 'en'
+      String russian = 'ru'
+
+      when: "we test if given language are in LANGUAGE_SUPPORTED"
+      def res1 = userAccountService.languageIsSupported(english)
+      def res2 = userAccountService.languageIsSupported(russian)
+
+      then: "we kwow if the language is supported by tsaap note"
+      res1 == true
+      res2 == false
+  }
+
 }

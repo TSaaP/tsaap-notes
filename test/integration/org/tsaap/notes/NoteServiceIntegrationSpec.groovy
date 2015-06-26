@@ -21,6 +21,7 @@ import org.tsaap.BootstrapTestService
 import org.tsaap.attachement.Attachement
 import org.tsaap.attachement.AttachementDto
 import org.tsaap.attachement.AttachementService
+import org.tsaap.directory.User
 import spock.lang.Specification
 
 class NoteServiceIntegrationSpec extends Specification {
@@ -166,12 +167,14 @@ class NoteServiceIntegrationSpec extends Specification {
         and: "a question note"
         Note question = noteService.addNote(bootstrapTestService.learnerPaul, "::a question:: what ? {=true~false}", context)
 
-        when: "finding all notes for context"
+        when: "finding all questions for context"
         List<Note> res = noteService.findAllNotes(bootstrapTestService.learnerPaul, false, false, true, context, null, null, 'question', '').list
+        List<Note> res2 = noteService.findAllNotesAsQuestionForContext(context)
 
         then: "all questions are found"
         res.size() == 1
         res.contains(question)
+        res == res2
     }
 
     def "find all notes in embedded mode"() {
@@ -235,6 +238,21 @@ class NoteServiceIntegrationSpec extends Specification {
         NoteGrade.countByNoteAndUser(note, user) == 1
         fetchGrade.grade == 2d
 
+    }
+
+    def "test the score of a note by a user"() {
+
+        given: "a note and a user"
+        Note note = noteService.addNote(bootstrapTestService.learnerPaul, "a note", bootstrapTestService.context1)
+        User user = bootstrapTestService.learnerMary
+
+        when: "user like the note"
+        noteService.scoreNotebyUser(note,user)
+
+        then: "the note get score"
+        note.score != null
+        def score = Score.findByUser(user)
+        score.note == note
     }
 
 }

@@ -48,4 +48,15 @@ class UserSpec extends Specification {
       "thisusernameistoolong" | false
   }
 
+  def "user get full name string"() {
+
+    given: "a user"
+    User user = new User(firstName: "franck", lastName: "s", username: "fs", email: "mail@mail.com", password: "password", language: 'en')
+
+    when: "I want a string with this user fullname"
+    def res = user.getFullname()
+
+    then: "I get a string with this user fullname"
+    res == "franck s"
+  }
 }

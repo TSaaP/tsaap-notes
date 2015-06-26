@@ -46,4 +46,63 @@ class AttachementSpec extends Specification {
         "/home/dorian"  | "grails.png" | "grails.png"   | 1     | myDimension    | "image/png"  | null      | Mock(Context)
 
     }
+
+    void "test dimension compare to"() {
+
+        given: "A dimensions"
+        Dimension dimension1 = new Dimension(width: 100, height: 100)
+
+        when: "I compare it to others Dimension"
+        def res1 = dimension1.compareTo(new Dimension(width: 100, height: 100))
+        def res2 = dimension1.compareTo(new Dimension(width: 50, height: 50))
+        def res3 = dimension1.compareTo(new Dimension(width: 150, height: 150))
+
+        then: "I get good results"
+        res1 == 0
+        res2 == 1
+        res3 == -1
+
+    }
+
+    void "test dimension to string"() {
+
+        given: "A dimension"
+        Dimension dimension1 = new Dimension(width: 100, height: 100)
+
+        when: "I want a String with dimension properties"
+        def res = dimension1.toString()
+
+        then: "I get a String with dimension properties"
+        res == "dim    h: 100     l: 100"
+    }
+
+    void "test dimension calculate display dimension"() {
+
+        given: "An attachment and a maximum display dimension"
+        Attachement attachement = new Attachement()
+        Dimension dimension1 = new Dimension(width: 800, height: 600)
+        attachement.dimension = dimension1
+        Dimension dimensionMax = new Dimension(width: 600, height: 600)
+
+        when: "I want to calculate the display dimension"
+        Dimension givenDimension = attachement.calculateDisplayDimension(dimensionMax)
+
+        then: "I get the display dimension"
+        givenDimension.height == 450
+        givenDimension.width == 600
+    }
+
+    void "test if attachment is displayable"() {
+
+        given: "A displayable text attachement"
+        Attachement attachement = new Attachement()
+        attachement.typeMime = 'text/'
+
+        when: "I want to know is the attachment is a text displayable"
+        def res = attachement.textIsDisplayable()
+
+        then: "I get a true answer"
+        res
+    }
+
 }

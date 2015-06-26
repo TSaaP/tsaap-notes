@@ -124,7 +124,7 @@ class NoteServiceIntegrationSpec extends Specification {
     def "delete a note with attachement"() {
 
         given: "A note with an attachement"
-        Note note1 = noteService.addNote(bootstrapTestService.learnerMary, "a note with attachement")
+        Note note1 = noteService.addNote(bootstrapTestService.learnerMary, "a note with attachement", bootstrapTestService.context1)
         AttachementDto attachementDto = new AttachementDto(
                 size: 6,
                 typeMime: 'image/png',

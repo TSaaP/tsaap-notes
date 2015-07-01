@@ -32,6 +32,7 @@ class Context {
 
   String contextName
   String url
+  String source
 
   /**
    * The owner is most probably the teacher in a learning context
@@ -48,10 +49,10 @@ class Context {
   String descriptionAsNote
 
   static constraints = {
-    contextName blank: false, unique: true, maxSize: 1024, validator: { val -> val==~/^[a-zA-Z0-9_\/\-]{1,1024}$/
-    }
+    contextName blank: false, maxSize: 1024
     url url: true, nullable: true
     descriptionAsNote nullable: true, maxSize: 280
+    source nullable: true, editable: false
   }
 
   /**

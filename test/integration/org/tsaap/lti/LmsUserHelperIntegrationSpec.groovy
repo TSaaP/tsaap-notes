@@ -54,7 +54,6 @@ class LmsUserHelperIntegrationSpec extends Specification {
         def userId
         def req = null
         def res = null
-        LmsUserHelper lmsUserHelper = new LmsUserHelper()
         try {
             sql.withTransaction { ->
                 lmsUserHelper.insertUserInDatabase(sql, "user@mail.com", "john", "doe", "jdoe", "pass")
@@ -77,7 +76,6 @@ class LmsUserHelperIntegrationSpec extends Specification {
         def sql = new Sql(dataSource)
         def res = null
         def res2 = null
-        LmsUserHelper lmsUserHelper = new LmsUserHelper()
         try {
             sql.withTransaction { ->
                 lmsUserHelper.insertUserInDatabase(sql, "user@mail.com", "john", "doe", "jdoe", "pass")
@@ -99,7 +97,6 @@ class LmsUserHelperIntegrationSpec extends Specification {
         def res = null
         def req = null
         def userId
-        LmsUserHelper lmsUserHelper = new LmsUserHelper()
         try {
             sql.withTransaction { ->
                 lmsUserHelper.insertUserInDatabase(sql, "user@mail.com", "john", "doe", "jdoe", "pass")
@@ -129,7 +126,6 @@ class LmsUserHelperIntegrationSpec extends Specification {
         def res = null
         def res2 = null
         def userId
-        LmsUserHelper lmsUserHelper = new LmsUserHelper()
         try {
             sql.withTransaction { ->
                 lmsUserHelper.insertUserInDatabase(sql, "user@mail.com", "john", "doe", "jdoe", "pass")
@@ -159,7 +155,6 @@ class LmsUserHelperIntegrationSpec extends Specification {
         def req = null
         def res = null
         def userId
-        LmsUserHelper lmsUserHelper = new LmsUserHelper()
         try {
             sql.withTransaction { ->
                 lmsUserHelper.insertUserInDatabase(sql, "user@mail.com", "john", "doe", "jdoe", "pass")
@@ -182,7 +177,6 @@ class LmsUserHelperIntegrationSpec extends Specification {
         when: "I want to insert a user in database"
         def sql = new Sql(dataSource)
         def res = null
-        LmsUserHelper lmsUserHelper = new LmsUserHelper()
         try {
             sql.withTransaction { ->
                 lmsUserHelper.insertUserInDatabase(sql, "user@mail.com", "john", "doe", "jdoe", "pass")
@@ -200,7 +194,6 @@ class LmsUserHelperIntegrationSpec extends Specification {
     def "test lti_consumer insertion"() {
 
         when: "we create a lti_consumer"
-        LmsUserHelper lmsUserHelper = new LmsUserHelper()
         def sql = new Sql(dataSource)
         def res = null
         try {
@@ -220,7 +213,6 @@ class LmsUserHelperIntegrationSpec extends Specification {
     def "test lti_context insertion"() {
 
         when: "we create a lti_context"
-        LmsUserHelper lmsUserHelper = new LmsUserHelper()
         def sql = new Sql(dataSource)
         def res = null
         try {
@@ -241,7 +233,6 @@ class LmsUserHelperIntegrationSpec extends Specification {
     def "test lti_user insertion"() {
 
         when: "we create a lti_user"
-        LmsUserHelper lmsUserHelper = new LmsUserHelper()
         def sql = new Sql(dataSource)
         def res = null
         try {

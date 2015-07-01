@@ -1,3 +1,5 @@
+import org.tsaap.lti.LtiContextInitialisationException
+
 /*
  * Copyright 2013 Tsaap Development Group
  *
@@ -28,5 +30,6 @@ class UrlMappings {
 		"/"(view:"/index")
         "/terms"(view:"/terms")
 		"500"(view:'/error')
+		"500"(view: '/lti/error', exception: LtiContextInitialisationException)
 	}
 }

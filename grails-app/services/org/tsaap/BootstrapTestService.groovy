@@ -60,10 +60,10 @@ class BootstrapTestService {
 
     def initializeContexts(){
         if(!Context.findByContextName("Context1")){
-            context1 = contextService.saveContext(new Context(owner: learnerPaul, contextName: "Context1", url: 'http://www.w3.org', descriptionAsNote: 'a description'))
+            context1 = contextService.saveContext(new Context(owner: learnerPaul, contextName: "Context1", url: 'http://www.w3.org', descriptionAsNote: 'a description', source: null))
         }
         if(!Context.findByContextName("Context2")){
-            context2 = contextService.saveContext(new Context(owner: learnerPaul, contextName: "Context2", url: 'http://www.w3.org', descriptionAsNote: 'a description'))
+            context2 = contextService.saveContext(new Context(owner: learnerPaul, contextName: "Context2", url: 'http://www.w3.org', descriptionAsNote: 'a description', source: null))
         }
 
     }

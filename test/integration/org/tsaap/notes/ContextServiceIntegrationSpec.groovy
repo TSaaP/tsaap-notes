@@ -46,7 +46,7 @@ class ContextServiceIntegrationSpec extends Specification {
     }
 
     where: contextHasErrors | descContent                                  | contextName  | url
-    true                    | 'NR'                                         | 'not a name' | 'http://www.irit.fr'
+    false                   | 'NR'                                         | 'not a name' | 'http://www.irit.fr'
     false                   | 'Un context avec des #tags et des @mentions' | 'ivvq_sd1'   | 'http://www.irit.fr'
 
   }

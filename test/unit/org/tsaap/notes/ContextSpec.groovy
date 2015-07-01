@@ -38,16 +38,16 @@ class ContextSpec extends Specification {
 
     where: "name and nameIsOK"
     name            | nameIsOK
-    "is not a word" | false
+    "is not a word" | true
     "franck"        | true
     "Mary"          | true
     "franck-s"      | true
     "Mary_s"        | true
-    "fr@nck"        | false
-    "Mar%"          | false
-    "éric"          | false
+    "fr@nck"        | true
+    "Mar%"          | true
+    "éric"          | true
     "69"            | true
-    "thi_s/is/OK"    | true
+    "thi_s/is/OK"   | true
   }
 
 }

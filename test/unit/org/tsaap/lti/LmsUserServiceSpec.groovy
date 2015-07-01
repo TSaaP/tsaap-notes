@@ -34,7 +34,7 @@ class LmsUserServiceSpec extends Specification {
         lmsUserService.springSecurityService = springSecurityService
 
         when: "I try to found or create a tsaap account for a lti user as learner"
-        lmsUserService.findOrCreateUser(sql,'10',"john","doe","doe@nomail.com",'key',true)
+        def res = lmsUserService.findOrCreateUser(sql,'10',"john","doe","doe@nomail.com",'key',true)
 
         then: "The user is log with his learner created account"
         1*lmsUserHelper.selectLmsUser(sql,'10') >> null
@@ -45,9 +45,10 @@ class LmsUserServiceSpec extends Specification {
         1*lmsUserHelper.insertUserRoleInDatabase(sql,2,88)
         1*lmsUserHelper.insertLmsUserInDatabase(sql,88,'key','10')
         1*springSecurityService.reauthenticate("jdoe","pass")
+        res == "jdoe"
 
         when: "I try to found or create a tsaap account for a lti user as a teacher"
-        lmsUserService.findOrCreateUser(sql,'11',"jean","test","test@nomail.com",'key',false)
+        res = lmsUserService.findOrCreateUser(sql,'11',"jean","test","test@nomail.com",'key',false)
 
         then: "the user is log with his teacher created account"
         1*lmsUserHelper.selectLmsUser(sql,'11') >> null
@@ -58,6 +59,7 @@ class LmsUserServiceSpec extends Specification {
         1*lmsUserHelper.insertUserRoleInDatabase(sql,3,90)
         1*lmsUserHelper.insertLmsUserInDatabase(sql,90,'key','11')
         1*springSecurityService.reauthenticate("jtes","password")
+        res == "jtes"
     }
 
     void "test to find or create a tsaap note account for a given lti user who have a tsaap account"() {
@@ -72,11 +74,12 @@ class LmsUserServiceSpec extends Specification {
         lmsUserService.springSecurityService = springSecurityService
 
         when: "I try to found or create a tsaap account for this lti user"
-        lmsUserService.findOrCreateUser(sql,'10',"john","doe","doe@nomail.com",'key',true)
+        def res = lmsUserService.findOrCreateUser(sql,'10',"john","doe","doe@nomail.com",'key',true)
 
         then: "The user is log with his account"
         1*lmsUserHelper.selectLmsUser(sql,'10') >> 88
         1*lmsUserHelper.selectUsernameAndPassword(sql,'10') >> [username: "jdoe", password: "pass"]
         1*springSecurityService.reauthenticate("jdoe","pass")
+        res == "jdoe"
     }
 }

@@ -54,6 +54,13 @@
             </tr>
             <tr>
                 <td>
+                    <g:message code="context.show.source.label"
+                               default="Description"/>
+                </td>
+                <td>${context.source}</td>
+            </tr>
+            <tr>
+                <td>
                     <g:message code="context.show.owner.label" default="Owner"/>
                 </td>
                 <td>@${context.owner.username} <g:if

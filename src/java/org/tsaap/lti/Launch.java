@@ -3,6 +3,7 @@ package org.tsaap.lti;
 import grails.plugins.springsecurity.BCryptPasswordEncoder;
 import grails.plugins.springsecurity.SpringSecurityService;
 import groovy.sql.Sql;
+import org.apache.log4j.Logger;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.tsaap.directory.UserProvisionAccountService;
 import org.tsaap.lti.tp.Callback;
@@ -17,6 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Map;
 
 
 /**
@@ -27,6 +30,8 @@ public class Launch extends HttpServlet implements Callback {
     private static final long serialVersionUID = 7955577706944298060L;
     Db db;
     LmsUserService lmsUserService;
+    LmsContextService lmsContextService;
+    private static Logger logger = Logger.getLogger(Launch.class);
 
     public void initialiseLmsUserService() {
         lmsUserService = new LmsUserService();
@@ -41,45 +46,63 @@ public class Launch extends HttpServlet implements Callback {
         lmsUserService.getUserProvisionAccountService().setLmsUserHelper(lmsUserHelper);
         lmsUserService.getUserProvisionAccountService().setSpringSecurityService(springSecurityService);
 
+    }
+
+    public void initialiseLmsContextService() {
+        lmsContextService = new LmsContextService();
+        LmsContextHelper lmsContextHelper = new LmsContextHelper();
+        lmsContextService.setLmsContextHelper(lmsContextHelper);
+        LmsUserHelper lmsUserHelper = new LmsUserHelper();
+        lmsContextService.setLmsUserHelper(lmsUserHelper);
 
     }
 
     @Override
     public boolean execute(ToolProvider toolProvider) {
+            // Check the user has an appropriate role
+            boolean isAnUser = toolProvider.getUser().isLearner() || toolProvider.getUser().isStaff();
+            if (isAnUser) {
+                try {
+                    // Initialise the user session
+                    toolProvider.getRequest().getSession().setAttribute("consumer_key", toolProvider.getConsumer().getKey());
+                    toolProvider.getRequest().getSession().setAttribute("resource_id", toolProvider.getResourceLink().getId());
+                    toolProvider.getRequest().getSession().setAttribute("user_consumer_key",
+                            toolProvider.getUser().getResourceLink().getConsumer().getKey());
+                    toolProvider.getRequest().getSession().setAttribute("user_id", toolProvider.getUser().getId());
+                    toolProvider.getRequest().getSession().setAttribute("isStudent", toolProvider.getUser().isLearner());
+                    toolProvider.getRequest().getSession().setAttribute("lti_context_id", toolProvider.getResourceLink().getLtiContextId());
 
-        // Check the user has an appropriate role
-        boolean ok = toolProvider.getUser().isLearner() || toolProvider.getUser().isStaff();
-        if (ok) {
+                    Connection connection = db.getConnection();
+                    Sql sql = new Sql(connection);
+                    String consumerKey = toolProvider.getConsumer().getKey();
+                    Boolean isLearner = toolProvider.getUser().isLearner();
 
-            // Initialise the user session
-            toolProvider.getRequest().getSession().setAttribute("consumer_key", toolProvider.getConsumer().getKey());
-            toolProvider.getRequest().getSession().setAttribute("resource_id", toolProvider.getResourceLink().getId());
-            toolProvider.getRequest().getSession().setAttribute("user_consumer_key",
-                    toolProvider.getUser().getResourceLink().getConsumer().getKey());
-            toolProvider.getRequest().getSession().setAttribute("user_id", toolProvider.getUser().getId());
-            toolProvider.getRequest().getSession().setAttribute("isStudent", toolProvider.getUser().isLearner());
+                    //Check the user
+                    initialiseLmsUserService();
+                    String username = (String) lmsUserService.findOrCreateUser(sql, toolProvider.getUser().getId(), toolProvider.getUser().getFirstname(), toolProvider.getUser().getLastname(),
+                            toolProvider.getUser().getEmail(), consumerKey, isLearner);
 
-            //Check the user
-            initialiseLmsUserService();
-            Connection connection = db.getConnection();
-            Sql sql = new Sql(connection);
-            lmsUserService.findOrCreateUser(sql, toolProvider.getUser().getId(), toolProvider.getUser().getFirstname(), toolProvider.getUser().getLastname(),
-                        toolProvider.getUser().getEmail(), toolProvider.getConsumer().getKey(),
-                        toolProvider.getUser().isLearner());
-
-            try {
-                db.closeConnection();
-            } catch (SQLException e) {
-                e.printStackTrace();
+                    //Check context
+                    initialiseLmsContextService();
+                    ArrayList context = (ArrayList) lmsContextService.findOrCreateContext(sql, consumerKey, toolProvider.getResourceLink().getId(), toolProvider.getResourceLink().getLtiContextId(), toolProvider.getConsumer().getConsumerName(),
+                            toolProvider.getResourceLink().getTitle(), username, isLearner);
+                    // Redirect the user to display the list of items for the resource link
+                    String serverUrl = toolProvider.getRequest().getRequestURL().toString();
+                    serverUrl = serverUrl.substring(0, serverUrl.lastIndexOf("/"));
+                    serverUrl = serverUrl + "/notes/index/?displaysAll=on&contextName=" + context.get(0) + "&contextId=" + context.get(1) + "&kind=standard";
+                    toolProvider.setRedirectUrl(serverUrl);
+                }
+                finally {
+                    try {
+                        db.closeConnection();
+                    } catch (SQLException e) {
+                        logger.error(e.getMessage());
+                    }
+                }
+            } else {
+                toolProvider.setReason("Invalid role.");
             }
-            // Redirect the user to display the list of items for the resource link
-            String serverUrl = toolProvider.getRequest().getRequestURL().toString();
-            serverUrl = serverUrl.substring(0, serverUrl.lastIndexOf("/"));
-            toolProvider.setRedirectUrl(serverUrl);
-        } else {
-            toolProvider.setReason("Invalid role.");
-        }
-        return ok;
+        return isAnUser;
 
     }
 

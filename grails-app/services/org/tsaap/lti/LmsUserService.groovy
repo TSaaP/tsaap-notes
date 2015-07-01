@@ -22,7 +22,7 @@ class LmsUserService {
      * @param role true if the lti user is a learner else false
      */
     def findOrCreateUser(Sql sql, String ltiUserId, String firstName, String lastName, String email, String key, Boolean isLearner) {
-        def username
+        String username
         def password
         // Verify if the user have already an account
         def result = lmsUserHelper.selectLmsUser(sql,ltiUserId)
@@ -51,5 +51,6 @@ class LmsUserService {
         }
         // Connect it
         springSecurityService.reauthenticate(username,password)
+        username
     }
 }

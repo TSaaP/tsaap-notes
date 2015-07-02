@@ -17,10 +17,17 @@
 <div class="container">
 
     <div class="alert">
-        <p>Sorry, but the scope you want to access doesn't exist. Please contact your teacher to indicate it this error.</p>
+        <p>${message(code: exception.message)}</p>
     </div>
+    <g:if env="development">
+        <p>
+            <a href="#"
+               onclick="showException()">${message(code: "error.development.errorDetail.link")}</a>
+        </p>
 
-</div>
-
+        <div id="exception" style="display:none">
+            <g:renderException exception="${exception}"/>
+        </div>
+    </g:if>
 </body>
 </html>

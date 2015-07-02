@@ -32,7 +32,7 @@ class LmsContextService {
                 lmsContextHelper.insertLmsContext(sql,contextId,ltiCourseId,ltiActivityId,consumerKey,consumerName)
             }
             else {
-                throw new LtiContextInitialisationException("initialisation context error")
+                throw new LtiContextInitialisationException("error.lti.context.initialisation")
             }
         }
         else {

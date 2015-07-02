@@ -4,7 +4,7 @@ import grails.plugins.springsecurity.BCryptPasswordEncoder;
 import grails.plugins.springsecurity.SpringSecurityService;
 import groovy.sql.Sql;
 import org.apache.log4j.Logger;
-import org.springframework.security.crypto.password.StandardPasswordEncoder;
+
 import org.tsaap.directory.UserProvisionAccountService;
 import org.tsaap.lti.tp.Callback;
 import org.tsaap.lti.tp.DataConnector;
@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Map;
 
 
 /**

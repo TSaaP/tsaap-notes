@@ -40,4 +40,16 @@ class LmsContextService {
         }
         [contextName,contextId]
     }
+
+    /**
+     * Delete an Lms context for a given tsaap note context
+     * @param sql
+     * @param contextId tsaap note context id
+     */
+    def deleteLmsContextForContext(Sql sql, long contextId) {
+        def exist = lmsContextHelper.selectLmsContextForContextId(sql,contextId)
+        if(exist != null) {
+            lmsContextHelper.deleteLmsContext(sql,contextId)
+        }
+    }
 }

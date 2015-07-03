@@ -3,8 +3,13 @@ package org.tsaap.notes
 import grails.plugins.springsecurity.SpringSecurityService
 import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
+import groovy.sql.Sql
 import org.tsaap.directory.User
+import org.tsaap.lti.LmsContextHelper
+import org.tsaap.lti.LmsContextService
 import spock.lang.Specification
+
+import javax.sql.DataSource
 
 @TestFor(ContextController)
 @Mock([Context, User, Note, ContextService, ContextFollower])
@@ -12,11 +17,19 @@ class ContextControllerSpec extends Specification {
 
   User user
   SpringSecurityService springSecurityService = Mock(SpringSecurityService)
+  DataSource dataSource = Mock(DataSource)
+  Sql sql = Mock(Sql)
+  LmsContextService lmsContextService = Mock(LmsContextService)
+  LmsContextHelper lmsContextHelper = Mock(LmsContextHelper)
 
   def setup() {
     controller.springSecurityService = springSecurityService
     user = new User(firstName: "franck", lastName: "s", username: "fsil", email: "mail@mail.com", password: "password")
     user.springSecurityService = springSecurityService
+    controller.contextService.dataSource = dataSource
+    controller.contextService.sql = sql
+    controller.contextService.lmsContextService = lmsContextService
+    controller.contextService.lmsContextHelper = lmsContextHelper
     springSecurityService.encodePassword(user.password) >> user.password
     user.save()
   }

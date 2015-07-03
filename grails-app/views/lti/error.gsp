@@ -29,5 +29,11 @@
             <g:renderException exception="${exception}"/>
         </div>
     </g:if>
+    <r:script>
+        function showException() {
+            $('#exception').show()
+        }
+
+    </r:script>
 </body>
 </html>

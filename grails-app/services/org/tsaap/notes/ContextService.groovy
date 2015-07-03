@@ -1,6 +1,7 @@
 package org.tsaap.notes
 
 import grails.gorm.PagedResultList
+import groovy.sql.Sql
 import org.gcontracts.annotations.Requires
 import org.gcontracts.annotations.Ensures
 import org.hibernate.SQLQuery
@@ -8,7 +9,11 @@ import org.hibernate.Session
 import org.hibernate.SessionFactory
 import org.tsaap.CustomPagedResultList
 import org.tsaap.directory.User
+import org.tsaap.lti.LmsContextHelper
+import org.tsaap.lti.LmsContextService
 import org.tsaap.questions.LiveSession
+
+import javax.sql.DataSource
 
 class ContextService {
 
@@ -18,6 +23,10 @@ class ContextService {
 
     NoteService noteService
     SessionFactory sessionFactory
+    DataSource dataSource
+    LmsContextService lmsContextService
+    LmsContextHelper lmsContextHelper
+    Sql sql
 
     /**
      * Add a new context
@@ -100,6 +109,10 @@ class ContextService {
     def deleteContext(Context context, User user, Boolean flush = false) {
         def contextFollowers = ContextFollower.where { context == context }
         contextFollowers.deleteAll()
+        sql = new Sql(dataSource)
+        lmsContextHelper = new LmsContextHelper()
+        lmsContextService.lmsContextHelper = lmsContextHelper
+        lmsContextService.deleteLmsContextForContext(sql,context.id)
         context.delete(flush: flush)
     }
 

@@ -64,4 +64,25 @@ class LmsContextServiceSpec extends Specification {
         res.get(0) == 'Tsaap Teach: Tsaap'
         res.get(1) == 55
     }
+
+    void "test to delete a lms context for a tsaap context"() {
+
+        given: "the collaborators"
+        sql = Mock(Sql)
+        lmsContextHelper = Mock(LmsContextHelper)
+        lmsContextService.lmsContextHelper = lmsContextHelper
+
+        when: "I try to delete an existing lms context for a tsaap context"
+        lmsContextService.deleteLmsContextForContext(sql,55)
+
+        then: "the lms context is delete"
+        1*lmsContextHelper.selectLmsContextForContextId(sql,55) >> 55
+        1*lmsContextHelper.deleteLmsContext(sql,55)
+
+        when: "I try to delete an unexisting lms context for a tsaap context"
+        lmsContextService.deleteLmsContextForContext(sql,99)
+
+        then: "Nothing is delete"
+        1*lmsContextHelper.selectLmsContextForContextId(sql,99) >> null
+    }
 }

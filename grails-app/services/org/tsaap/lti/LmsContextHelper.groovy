@@ -75,4 +75,23 @@ class LmsContextHelper {
     def insertLmsContext(Sql sql, Long tsaapContextId, String ltiCourseId, String ltiActivityId, String consumerKey, String source) {
         sql.execute("INSERT INTO lms_context VALUES ($tsaapContextId,$ltiCourseId,$ltiActivityId,$consumerKey,$source)")
     }
+
+    /**
+     * Select a lms context for a given tsaap context id
+     * @param sql
+     * @param contextId tsaap context id
+     */
+    def selectLmsContextForContextId(Sql sql,long contextId) {
+        def res = sql.firstRow("SELECT tsaap_context_id FROM lms_context WHERE tsaap_context_id = $contextId")
+        res
+    }
+
+    /**
+     * Delete a lms context for a given tsaap context id
+     * @param sql
+     * @param contextId tsaap context id
+     */
+    def deleteLmsContext(Sql sql, long contextId) {
+        sql.execute("DELETE FROM lms_context WHERE tsaap_context_id = $contextId")
+    }
 }

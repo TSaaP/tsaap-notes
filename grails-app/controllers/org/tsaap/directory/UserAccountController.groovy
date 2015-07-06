@@ -18,12 +18,21 @@ package org.tsaap.directory
 
 import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
+import groovy.sql.Sql
 import org.gcontracts.PreconditionViolation
+import org.tsaap.lti.LmsUserHelper
+import org.tsaap.lti.LmsUserService
+import org.tsaap.lti.LtiUserException
+
+import javax.sql.DataSource
 
 class UserAccountController {
 
   UserAccountService userAccountService
   SpringSecurityService springSecurityService
+  LmsUserHelper lmsUserHelper
+  DataSource dataSource
+  Sql sql
 
 
   /**
@@ -127,4 +136,16 @@ class UserAccountController {
     redirect (uri:'/login/auth')
   }
 
+  def ltiConnection() {
+    if(params.agree == "true") {
+      springSecurityService.reauthenticate(params.username)
+      sql = new Sql(dataSource)
+      lmsUserHelper = new LmsUserHelper()
+      lmsUserHelper.enableUser(sql,params.username)
+      redirect(controller: "notes", params: [contextId: params.contextId, contextName: params.contextName, displaysAll: params.displaysAll, kind: params.kind])
+    }
+    else {
+      throw new LtiUserException("error.lti.user.agreement")
+    }
+  }
 }

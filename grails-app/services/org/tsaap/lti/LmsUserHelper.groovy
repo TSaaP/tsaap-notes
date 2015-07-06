@@ -46,10 +46,10 @@ class LmsUserHelper {
      * @param username user username
      * @param password user password
      */
-    def insertUserInDatabase(Sql sql, String email, String firstname, String lastname, String username, String password) {
+    def insertUserInDatabase(Sql sql, String email, String firstname, String lastname, String username, String password, Boolean enable) {
         sql.execute("INSERT INTO user (account_expired,account_locked,email,enabled,first_name,last_name," +
                 "normalized_username,password,password_expired,username,version,language) " +
-                "VALUES (0,0,'$email',1,'$firstname','$lastname','$username','$password',0,'$username',0,'en')")
+                "VALUES (0,0,'$email',$enable,'$firstname','$lastname','$username','$password',0,'$username',0,'en')")
     }
 
     /**
@@ -148,5 +148,27 @@ class LmsUserHelper {
     def insertLtiUserInDatabase(Sql sql, String consumerKey, String contextId, String userId, String ltiResultSourcedid) {
         sql.execute("INSERT INTO lti_user (consumer_key, context_id, user_id, lti_result_sourcedid, created, updated) " +
                     "VALUES ('$consumerKey', '$contextId', '$userId', '$ltiResultSourcedid', now(), now())")
+    }
+
+    /**
+     * Select if an user account is enable for a given username
+     * @param sql
+     * @param username user username
+     * @return res account is enable
+     */
+    boolean selectUserIsEnable(Sql sql, String username) {
+        def req = sql.firstRow("SELECT enabled FROM user WHERE username = $username")
+        def res = req.enabled
+        res
+    }
+
+    /**
+     * Enable tsaap account for a given username
+     * @param sql
+     * @param username user username
+     */
+    def enableUser(Sql sql, def username) {
+        println sql == null
+        sql.executeUpdate("UPDATE user SET enabled = 1 WHERE username = $username")
     }
 }

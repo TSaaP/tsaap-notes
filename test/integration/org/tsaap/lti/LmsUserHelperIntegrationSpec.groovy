@@ -29,7 +29,7 @@ class LmsUserHelperIntegrationSpec extends Specification {
         def userId
         try {
             sql.withTransaction { ->
-                lmsUserHelper.insertUserInDatabase(sql, "user@mail.com", "john", "doe", "jdoe", "pass")
+                lmsUserHelper.insertUserInDatabase(sql, "user@mail.com", "john", "doe", "jdoe", "pass", true)
                 req = sql.firstRow("SELECT id FROM user WHERE username = 'jdoe'")
                 userId = req.id
                 lmsUserHelper.insertLtiConsumerInDatabase(sql,'key', 'Moodle', 'azer', 'LTI-1p0', 'Moodle-Tsaap', 'moodle-2015051100.06', '130.120.214.80', null, 0, 1, null, null)
@@ -56,7 +56,7 @@ class LmsUserHelperIntegrationSpec extends Specification {
         def res = null
         try {
             sql.withTransaction { ->
-                lmsUserHelper.insertUserInDatabase(sql, "user@mail.com", "john", "doe", "jdoe", "pass")
+                lmsUserHelper.insertUserInDatabase(sql, "user@mail.com", "john", "doe", "jdoe", "pass", true)
                 req = sql.firstRow("SELECT * FROM user WHERE username = 'jdoe'")
                 userId = req.id
                 res = lmsUserHelper.selectUserId(sql,"jdoe")
@@ -78,7 +78,7 @@ class LmsUserHelperIntegrationSpec extends Specification {
         def res2 = null
         try {
             sql.withTransaction { ->
-                lmsUserHelper.insertUserInDatabase(sql, "user@mail.com", "john", "doe", "jdoe", "pass")
+                lmsUserHelper.insertUserInDatabase(sql, "user@mail.com", "john", "doe", "jdoe", "pass", true)
                 res = lmsUserHelper.selectUsernameIfExist(sql,"jdoe")
                 res2 = lmsUserHelper.selectUsernameIfExist(sql,"drol")
                 throw new SQLException()
@@ -99,7 +99,7 @@ class LmsUserHelperIntegrationSpec extends Specification {
         def userId
         try {
             sql.withTransaction { ->
-                lmsUserHelper.insertUserInDatabase(sql, "user@mail.com", "john", "doe", "jdoe", "pass")
+                lmsUserHelper.insertUserInDatabase(sql, "user@mail.com", "john", "doe", "jdoe", "pass", true)
                 req = sql.firstRow("SELECT id FROM user WHERE username = 'jdoe'")
                 userId = req.id
                 lmsUserHelper.insertLtiConsumerInDatabase(sql,'key', 'Moodle', 'azer', 'LTI-1p0', 'Moodle-Tsaap', 'moodle-2015051100.06', '130.120.214.80', null, 0, 1, null, null)
@@ -128,7 +128,7 @@ class LmsUserHelperIntegrationSpec extends Specification {
         def userId
         try {
             sql.withTransaction { ->
-                lmsUserHelper.insertUserInDatabase(sql, "user@mail.com", "john", "doe", "jdoe", "pass")
+                lmsUserHelper.insertUserInDatabase(sql, "user@mail.com", "john", "doe", "jdoe", "pass", true)
                 req = sql.firstRow("SELECT id FROM user WHERE username = 'jdoe'")
                 userId = req.id
                 lmsUserHelper.insertLtiConsumerInDatabase(sql,'key', 'Moodle', 'azer', 'LTI-1p0', 'Moodle-Tsaap', 'moodle-2015051100.06', '130.120.214.80', null, 0, 1, null, null)
@@ -157,7 +157,7 @@ class LmsUserHelperIntegrationSpec extends Specification {
         def userId
         try {
             sql.withTransaction { ->
-                lmsUserHelper.insertUserInDatabase(sql, "user@mail.com", "john", "doe", "jdoe", "pass")
+                lmsUserHelper.insertUserInDatabase(sql, "user@mail.com", "john", "doe", "jdoe", "pass", true)
                 req = sql.firstRow("SELECT id FROM user WHERE username = 'jdoe'")
                 userId = req.id
                 lmsUserHelper.insertUserRoleInDatabase(sql, 2, userId)
@@ -179,7 +179,7 @@ class LmsUserHelperIntegrationSpec extends Specification {
         def res = null
         try {
             sql.withTransaction { ->
-                lmsUserHelper.insertUserInDatabase(sql, "user@mail.com", "john", "doe", "jdoe", "pass")
+                lmsUserHelper.insertUserInDatabase(sql, "user@mail.com", "john", "doe", "jdoe", "pass", true)
                 res = sql.firstRow("SELECT * FROM user WHERE username = 'jdoe'")
                 throw new SQLException()
             }
@@ -250,5 +250,49 @@ class LmsUserHelperIntegrationSpec extends Specification {
         res.consumer_key == 'key'
         res.user_id == '10'
 
+    }
+
+    def "test select if account is enable"() {
+
+        when: "I want to know if an account is enable for a given username"
+        def sql = new Sql(dataSource)
+        def res = null
+        def res2 = null
+        try {
+            sql.withTransaction { ->
+                lmsUserHelper.insertUserInDatabase(sql, "user@mail.com", "john", "doe", "jdoe", "pass", true)
+                lmsUserHelper.insertUserInDatabase(sql, "user@mail.com", "jane", "doe", "jdoe2", "pass", false)
+                res = lmsUserHelper.selectUserIsEnable(sql,"jdoe")
+                res2 = lmsUserHelper.selectUserIsEnable(sql,"jdoe2")
+                throw new SQLException()
+            }
+        }
+        catch (SQLException e){}
+
+        then: "I get if user is enable"
+        res
+        !res2
+    }
+
+    def "test enable user account"() {
+
+        when: "I want to enable an user account"
+        def sql = new Sql(dataSource)
+        def res = null
+        def res2 = null
+        try {
+            sql.withTransaction { ->
+                lmsUserHelper.insertUserInDatabase(sql, "user@mail.com", "jane", "doe", "jdoe", "pass", false)
+                res = lmsUserHelper.selectUserIsEnable(sql,"jdoe")
+                lmsUserHelper.enableUser(sql,"jdoe")
+                res2 = lmsUserHelper.selectUserIsEnable(sql,"jdoe")
+                throw new SQLException()
+            }
+        }
+        catch (SQLException e){}
+
+        then: "the account is enable"
+        res == false
+        res2 == true
     }
 }

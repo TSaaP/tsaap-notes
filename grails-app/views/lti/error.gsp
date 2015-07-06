@@ -9,13 +9,13 @@
 <html>
 <head>
     <title>Tsaap-Notes</title>
-    <meta name="layout" content="home">
+    <meta name="layout" content="error">
     <r:require module="tsaap_ui_home"/>
 </head>
 
 <body>
 <div class="container">
-
+    <br>
     <div class="alert">
         <p>${message(code: exception.message)}</p>
     </div>

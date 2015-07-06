@@ -78,17 +78,26 @@ public class Launch extends HttpServlet implements Callback {
 
                     //Check the user
                     initialiseLmsUserService();
-                    String username = (String) lmsUserService.findOrCreateUser(sql, toolProvider.getUser().getId(), toolProvider.getUser().getFirstname(), toolProvider.getUser().getLastname(),
+                    ArrayList user = (ArrayList) lmsUserService.findOrCreateUser(sql, toolProvider.getUser().getId(), toolProvider.getUser().getFirstname(), toolProvider.getUser().getLastname(),
                             toolProvider.getUser().getEmail(), consumerKey, isLearner);
+                    String username = (String) user.get(0);
+                    Boolean userEnable = (Boolean) user.get(1);
 
-                    //Check context
+                    String serverUrl = toolProvider.getRequest().getRequestURL().toString();
+                    serverUrl = serverUrl.substring(0, serverUrl.lastIndexOf("/"));
+
+                    //Check the context
                     initialiseLmsContextService();
                     ArrayList context = (ArrayList) lmsContextService.findOrCreateContext(sql, consumerKey, toolProvider.getResourceLink().getId(), toolProvider.getResourceLink().getLtiContextId(), toolProvider.getConsumer().getConsumerName(),
                             toolProvider.getResourceLink().getTitle(), username, isLearner);
-                    // Redirect the user to display the list of items for the resource link
-                    String serverUrl = toolProvider.getRequest().getRequestURL().toString();
-                    serverUrl = serverUrl.substring(0, serverUrl.lastIndexOf("/"));
-                    serverUrl = serverUrl + "/notes/index/?displaysAll=on&contextName=" + context.get(0) + "&contextId=" + context.get(1) + "&kind=standard";
+
+                    // Give redirect url
+                    if(userEnable){
+                        serverUrl = serverUrl + "/notes/index?displaysAll=on&contextName=" + context.get(0) + "&contextId=" + context.get(1) + "&kind=standard";
+                    }
+                    else {
+                        serverUrl = serverUrl + "/lti/terms?username="+username+"&contextName=" + context.get(0) + "&contextId=" + context.get(1);
+                    }
                     toolProvider.setRedirectUrl(serverUrl);
                 }
                 finally {

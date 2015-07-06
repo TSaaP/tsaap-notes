@@ -24,6 +24,7 @@ class LmsUserService {
     def findOrCreateUser(Sql sql, String ltiUserId, String firstName, String lastName, String email, String key, Boolean isLearner) {
         String username
         def password
+        Boolean enable
         // Verify if the user have already an account
         def result = lmsUserHelper.selectLmsUser(sql,ltiUserId)
         if(result == null) {
@@ -32,15 +33,16 @@ class LmsUserService {
             password = userProvisionAccountService.generatePassword()
 
             // Add user in database
-            lmsUserHelper.insertUserInDatabase(sql,email,firstName,lastName,username,password)
+            lmsUserHelper.insertUserInDatabase(sql,email,firstName,lastName,username,password,false)
             Long tsaapUserId = lmsUserHelper.selectUserId(sql,username)
-            if(isLearner){
+            if(isLearner) {
                 lmsUserHelper.insertUserRoleInDatabase(sql,RoleEnum.STUDENT_ROLE.id,tsaapUserId)
             }
             else {
                 lmsUserHelper.insertUserRoleInDatabase(sql,RoleEnum.TEACHER_ROLE.id,tsaapUserId)
             }
             lmsUserHelper.insertLmsUserInDatabase(sql,tsaapUserId,key,ltiUserId)
+            enable = false
 
         }
         else {
@@ -48,9 +50,11 @@ class LmsUserService {
             def user = lmsUserHelper.selectUsernameAndPassword(sql,ltiUserId)
             username = user.username
             password = user.password
+            enable = lmsUserHelper.selectUserIsEnable(sql,username)
         }
-        // Connect it
-        springSecurityService.reauthenticate(username,password)
-        username
+        if(enable) {
+            springSecurityService.reauthenticate(username,password)
+        }
+        [username,enable]
     }
 }

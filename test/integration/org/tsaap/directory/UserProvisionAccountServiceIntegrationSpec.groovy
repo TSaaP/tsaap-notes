@@ -26,9 +26,9 @@ class UserProvisionAccountServiceIntegrationSpec extends Specification{
 
         when: "I want to generate a new username for two user with same quadrigram"
         def username = userProvisionAccountService.generateUsername(sql,"john","doe")
-        lmsUserHelper.insertUserInDatabase(sql,'jdoe@mail.com','john','doe','jdoe','pass')
+        lmsUserHelper.insertUserInDatabase(sql,'jdoe@mail.com','john','doe','jdoe','pass',true)
         def username2 = userProvisionAccountService.generateUsername(sql,'jane','doe')
-        lmsUserHelper.insertUserInDatabase(sql,'jane@mail.com','jane','doe','jdoe2','passw')
+        lmsUserHelper.insertUserInDatabase(sql,'jane@mail.com','jane','doe','jdoe2','passw',true)
         def username3 = userProvisionAccountService.generateUsername(sql,'jean','doel')
 
 

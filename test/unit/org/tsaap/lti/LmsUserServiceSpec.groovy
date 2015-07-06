@@ -40,12 +40,11 @@ class LmsUserServiceSpec extends Specification {
         1*lmsUserHelper.selectLmsUser(sql,'10') >> null
         1*userProvisionAccountService.generateUsername(sql,"john","doe") >> "jdoe"
         1*userProvisionAccountService.generatePassword() >> "pass"
-        1*lmsUserHelper.insertUserInDatabase(sql,"doe@nomail.com","john","doe","jdoe","pass")
+        1*lmsUserHelper.insertUserInDatabase(sql,"doe@nomail.com","john","doe","jdoe","pass",false)
         1*lmsUserHelper.selectUserId(sql,"jdoe") >> 88
         1*lmsUserHelper.insertUserRoleInDatabase(sql,2,88)
         1*lmsUserHelper.insertLmsUserInDatabase(sql,88,'key','10')
-        1*springSecurityService.reauthenticate("jdoe","pass")
-        res == "jdoe"
+        res == ["jdoe",false]
 
         when: "I try to found or create a tsaap account for a lti user as a teacher"
         res = lmsUserService.findOrCreateUser(sql,'11',"jean","test","test@nomail.com",'key',false)
@@ -54,12 +53,11 @@ class LmsUserServiceSpec extends Specification {
         1*lmsUserHelper.selectLmsUser(sql,'11') >> null
         1*userProvisionAccountService.generateUsername(sql,"jean","test") >> "jtes"
         1*userProvisionAccountService.generatePassword() >> "password"
-        1*lmsUserHelper.insertUserInDatabase(sql,"test@nomail.com","jean","test","jtes","password")
+        1*lmsUserHelper.insertUserInDatabase(sql,"test@nomail.com","jean","test","jtes","password",false)
         1*lmsUserHelper.selectUserId(sql,"jtes") >> 90
         1*lmsUserHelper.insertUserRoleInDatabase(sql,3,90)
         1*lmsUserHelper.insertLmsUserInDatabase(sql,90,'key','11')
-        1*springSecurityService.reauthenticate("jtes","password")
-        res == "jtes"
+        res == ["jtes",false]
     }
 
     void "test to find or create a tsaap note account for a given lti user who have a tsaap account"() {
@@ -79,7 +77,8 @@ class LmsUserServiceSpec extends Specification {
         then: "The user is log with his account"
         1*lmsUserHelper.selectLmsUser(sql,'10') >> 88
         1*lmsUserHelper.selectUsernameAndPassword(sql,'10') >> [username: "jdoe", password: "pass"]
+        1*lmsUserHelper.selectUserIsEnable(sql,"jdoe") >> true
         1*springSecurityService.reauthenticate("jdoe","pass")
-        res == "jdoe"
+        res == ["jdoe",true]
     }
 }

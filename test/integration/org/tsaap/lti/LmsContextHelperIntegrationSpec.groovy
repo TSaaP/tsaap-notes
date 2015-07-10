@@ -204,4 +204,30 @@ class LmsContextHelperIntegrationSpec extends Specification{
         res == null
     }
 
+    def "test select consumer key and lti course id"() {
+
+        when: "I want to get consumer key and lti course id for a given context id"
+        def req = null
+        def res = null
+        def userId
+        def contextId
+        try {
+            sql.withTransaction { ->
+                lmsUserHelper.insertLtiConsumerInDatabase(sql,'key', 'Moodle', 'azer', 'LTI-1p0', 'Moodle-Tsaap', 'moodle-2015051100.06', '130.120.214.80', null, 0, 1, null, null)
+                lmsUserHelper.insertLtiContextInDatabase(sql,"key","3", "4", "3", "Tsaap teach: Tsaap", "{\"lis_outcome_service_url\":\"http://130.120.214.80/moodle/mod/lti/service.php\",\"lis_result_sourcedid\":\"{\\\"data\\\":{\\\"instanceid\\\":\\\"3\\\",\\\"userid\\\":\\\"5\\\",\\\"typeid\\\":\\\"1\\\",\\\"launchid\\\":827256523},\\\"hash\\\":\\\"26cdb9af21a105ee3c7d9211ca7809d6a43f34489f32cfc715ff9718a7193da5\\\"}\"}")
+                lmsUserHelper.insertUserInDatabase(sql,"jdoe@nomail.com","john","doe","jdoe","pass", true)
+                userId = lmsUserHelper.selectUserId(sql,"jdoe")
+                lmsContextHelper.insertContext(sql,"Tsaap teach: Tsaap",null,userId,true,null,'Moodle-Tsaap')
+                req = lmsContextHelper.selectContextId(sql,"Tsaap teach: Tsaap",'Moodle-Tsaap')
+                contextId = req
+                lmsContextHelper.insertLmsContext(sql,contextId,"3","4",'key','Moodle-Tsaap')
+                res = lmsContextHelper.selectConsumerKeyAndCourseId(sql,contextId)
+                throw new SQLException()
+            }
+        }
+        catch (SQLException e){}
+
+        then: "I get consumer key and lti course id"
+        res == ["key","3"]
+    }
 }

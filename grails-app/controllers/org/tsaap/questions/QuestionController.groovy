@@ -2,9 +2,17 @@ package org.tsaap.questions
 
 import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
+import groovy.sql.Sql
 import org.tsaap.directory.User
+import org.tsaap.lti.LmsContextHelper
+import org.tsaap.lti.LmsGradeService
+import org.tsaap.lti.tp.ResourceLink
+import org.tsaap.lti.tp.ToolConsumer
+import org.tsaap.lti.tp.dataconnector.JDBC
 import org.tsaap.notes.Note
 import org.tsaap.notes.NoteService
+
+import javax.sql.DataSource
 
 
 class QuestionController {
@@ -13,6 +21,9 @@ class QuestionController {
     LiveSessionService liveSessionService
     NoteService noteService
     StatisticsService statisticsService
+    LmsGradeService lmsGradeService
+    LmsContextHelper lmsContextHelper
+    DataSource dataSource
 
     // for export stats
     def exportService
@@ -38,6 +49,25 @@ class QuestionController {
         def note = Note.get(params.noteId)
         def liveSession = LiveSession.get(params.liveSessId)
         liveSession.stop()
+        if(liveSession.note.context) {
+            if(liveSession.note.context.source != null) {
+                lmsContextHelper = new LmsContextHelper()
+                Sql sql = new Sql(dataSource)
+                String consumerKey
+                String courseId
+                def req = lmsContextHelper.selectConsumerKeyAndCourseId(sql, liveSession.note.context.id)
+                consumerKey = req.get(0)
+                courseId = req.get(1)
+                JDBC jdbc = new JDBC("", dataSource.connection)
+                ToolConsumer toolConsumer = new ToolConsumer(consumerKey, jdbc, false)
+                ResourceLink resourceLink = new ResourceLink(toolConsumer, courseId)
+                def grades = lmsGradeService.getUsersGradeForContext(sql, liveSession.note.context.id)
+                grades.each { ltiUserId, grade ->
+                    org.tsaap.lti.tp.User user = new org.tsaap.lti.tp.User(resourceLink, ltiUserId)
+                    lmsGradeService.sendUserGradeToLms(resourceLink, user, grade)
+                }
+            }
+        }
         if (liveSession.hasErrors()) {
             log.error(liveSession.errors.allErrors.toString())
         }
@@ -92,6 +122,25 @@ class QuestionController {
         def liveSession = phase.liveSession
         if (phase.stopLiveSessionWhenIsStopped()) {
             liveSessionService.closeNPhaseSubmitLiveSession(liveSession)
+            if (liveSession.note.context) {
+                if (liveSession.note.context.source != null) {
+                    lmsContextHelper = new LmsContextHelper()
+                    Sql sql = new Sql(dataSource)
+                    String consumerKey
+                    String courseId
+                    def req = lmsContextHelper.selectConsumerKeyAndCourseId(sql, liveSession.note.contextId)
+                    consumerKey = req.get(0)
+                    courseId = req.get(1)
+                    JDBC jdbc = new JDBC("", dataSource.connection)
+                    ToolConsumer toolConsumer = new ToolConsumer(consumerKey, jdbc, false)
+                    ResourceLink resourceLink = new ResourceLink(toolConsumer, courseId)
+                    def grades = lmsGradeService.getUsersGradeForContext(sql, liveSession.note.contextId)
+                    grades.each { ltiUserId, grade ->
+                        org.tsaap.lti.tp.User user = new org.tsaap.lti.tp.User(resourceLink, ltiUserId)
+                        lmsGradeService.sendUserGradeToLms(resourceLink, user, grade)
+                    }
+                }
+            }
             render(template: "/questions/author/${liveSession.status}/detail", model: [note: note, liveSession: liveSession, user: currentUser])
         } else {
             phase.stop()

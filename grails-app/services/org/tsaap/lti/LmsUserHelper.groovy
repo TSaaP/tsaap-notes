@@ -168,7 +168,17 @@ class LmsUserHelper {
      * @param username user username
      */
     def enableUser(Sql sql, def username) {
-        println sql == null
         sql.executeUpdate("UPDATE user SET enabled = 1 WHERE username = $username")
+    }
+
+    /**
+     * Select a lti user id for a given user id
+     * @param sql
+     * @param userId user id
+     */
+    def selectLtiUserId(Sql sql, long userId) {
+        def req = sql.firstRow("SELECT lti_user_id from lms_user WHERE tsaap_user_id = $userId")
+        def res = req.lti_user_id
+        res
     }
 }

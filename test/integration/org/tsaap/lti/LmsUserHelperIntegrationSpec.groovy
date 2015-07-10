@@ -50,7 +50,6 @@ class LmsUserHelperIntegrationSpec extends Specification {
     def "test select an user id in database"() {
 
         when: "I want to know the user id for a given username"
-        def sql = new Sql(dataSource)
         def userId
         def req = null
         def res = null
@@ -73,7 +72,6 @@ class LmsUserHelperIntegrationSpec extends Specification {
     def "test select an username in database"() {
 
         when: "I want to know if an username in database begin with the username passed in parameter"
-        def sql = new Sql(dataSource)
         def res = null
         def res2 = null
         try {
@@ -93,7 +91,6 @@ class LmsUserHelperIntegrationSpec extends Specification {
 
     def "test insert lms user in database"() {
         when: "I want to insert a lms user"
-        def sql = new Sql(dataSource)
         def res = null
         def req = null
         def userId
@@ -121,7 +118,6 @@ class LmsUserHelperIntegrationSpec extends Specification {
     def "test select lms user in database"() {
 
         when: "I want to find if a lti user is attach to a lms user"
-        def sql = new Sql(dataSource)
         def req = null
         def res = null
         def res2 = null
@@ -151,7 +147,6 @@ class LmsUserHelperIntegrationSpec extends Specification {
     def "test insert user role in database"() {
 
         when: "I want to insert a user role in database"
-        def sql = new Sql(dataSource)
         def req = null
         def res = null
         def userId
@@ -175,7 +170,6 @@ class LmsUserHelperIntegrationSpec extends Specification {
     def "test insert user in database"() {
 
         when: "I want to insert a user in database"
-        def sql = new Sql(dataSource)
         def res = null
         try {
             sql.withTransaction { ->
@@ -194,7 +188,6 @@ class LmsUserHelperIntegrationSpec extends Specification {
     def "test lti_consumer insertion"() {
 
         when: "we create a lti_consumer"
-        def sql = new Sql(dataSource)
         def res = null
         try {
             sql.withTransaction { ->
@@ -213,7 +206,6 @@ class LmsUserHelperIntegrationSpec extends Specification {
     def "test lti_context insertion"() {
 
         when: "we create a lti_context"
-        def sql = new Sql(dataSource)
         def res = null
         try {
             sql.withTransaction { ->
@@ -233,7 +225,6 @@ class LmsUserHelperIntegrationSpec extends Specification {
     def "test lti_user insertion"() {
 
         when: "we create a lti_user"
-        def sql = new Sql(dataSource)
         def res = null
         try {
             sql.withTransaction { ->
@@ -255,7 +246,6 @@ class LmsUserHelperIntegrationSpec extends Specification {
     def "test select if account is enable"() {
 
         when: "I want to know if an account is enable for a given username"
-        def sql = new Sql(dataSource)
         def res = null
         def res2 = null
         try {
@@ -277,7 +267,6 @@ class LmsUserHelperIntegrationSpec extends Specification {
     def "test enable user account"() {
 
         when: "I want to enable an user account"
-        def sql = new Sql(dataSource)
         def res = null
         def res2 = null
         try {
@@ -294,5 +283,30 @@ class LmsUserHelperIntegrationSpec extends Specification {
         then: "the account is enable"
         res == false
         res2 == true
+    }
+
+    def "test select lti user id"() {
+
+        when: "I want to get a lti user id for a given user id"
+        def req = null
+        def res = null
+        def userId
+        try {
+            sql.withTransaction { ->
+                lmsUserHelper.insertUserInDatabase(sql, "user@mail.com", "john", "doe", "jdoe", "pass", true)
+                req = sql.firstRow("SELECT id FROM user WHERE username = 'jdoe'")
+                userId = req.id
+                lmsUserHelper.insertLtiConsumerInDatabase(sql,'key', 'Moodle', 'azer', 'LTI-1p0', 'Moodle-Tsaap', 'moodle-2015051100.06', '130.120.214.80', null, 0, 1, null, null)
+                lmsUserHelper.insertLtiContextInDatabase(sql,"key","3", "4", "3", "Tsaap teach: Tsaap", "{\"lis_outcome_service_url\":\"http://130.120.214.80/moodle/mod/lti/service.php\",\"lis_result_sourcedid\":\"{\\\"data\\\":{\\\"instanceid\\\":\\\"3\\\",\\\"userid\\\":\\\"5\\\",\\\"typeid\\\":\\\"1\\\",\\\"launchid\\\":827256523},\\\"hash\\\":\\\"26cdb9af21a105ee3c7d9211ca7809d6a43f34489f32cfc715ff9718a7193da5\\\"}\"}")
+                lmsUserHelper.insertLtiUserInDatabase(sql, "key", "3", "10", "{\"data\":{\"instanceid\":\"3\",\"userid\":\"10\",\"typeid\":\"1\",\"launchid\":1369810096},\"hash\":\"e6e30cc48a52c8344c0f5be4ffc3ea2194490a86cf42aa811d843f375c5e1cea\"}")
+                lmsUserHelper.insertLmsUserInDatabase(sql, userId, 'key', '10')
+                res = lmsUserHelper.selectLtiUserId(sql,userId)
+                throw new SQLException()
+            }
+        }
+        catch (SQLException e){}
+
+        then: "I get lti user id"
+        res == "10"
     }
 }

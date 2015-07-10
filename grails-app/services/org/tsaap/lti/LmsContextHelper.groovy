@@ -33,9 +33,9 @@ class LmsContextHelper {
      * @param url context url
      * @param source lti context source
      */
-    def insertContext(Sql sql, String contextName, String description, Long owner, Boolean isTeacher, String url, String source) {
+    def insertContext(Sql sql, String contextName, String description, long owner, Boolean isTeacher, String url, String source) {
         sql.execute("INSERT INTO context (context_name, date_created, description_as_note, last_updated, owner_id, owner_is_teacher, url, source) VALUES " +
-                "('$contextName',now(),$description,now(),$owner,$isTeacher,$url,'$source')")
+                "('$contextName',now(),'$description',now(),$owner,$isTeacher,'$url','$source')")
     }
 
     /**
@@ -57,7 +57,7 @@ class LmsContextHelper {
      * @param tsaapContextId context id
      * @return res context name
      */
-    def selectContextName(Sql sql, Long tsaapContextId) {
+    def selectContextName(Sql sql, long tsaapContextId) {
         def req = sql.firstRow("SELECT context_name FROM context WHERE id = $tsaapContextId")
         def res = req.context_name
         res
@@ -72,7 +72,7 @@ class LmsContextHelper {
      * @param consumerKey lti consumer key
      * @param source lti consumer name
      */
-    def insertLmsContext(Sql sql, Long tsaapContextId, String ltiCourseId, String ltiActivityId, String consumerKey, String source) {
+    def insertLmsContext(Sql sql, long tsaapContextId, String ltiCourseId, String ltiActivityId, String consumerKey, String source) {
         sql.execute("INSERT INTO lms_context VALUES ($tsaapContextId,$ltiCourseId,$ltiActivityId,$consumerKey,$source)")
     }
 
@@ -93,5 +93,17 @@ class LmsContextHelper {
      */
     def deleteLmsContext(Sql sql, long contextId) {
         sql.execute("DELETE FROM lms_context WHERE tsaap_context_id = $contextId")
+    }
+
+    /**
+     * Select a consumer key and lti course id for a given context id
+     * @param sql
+     * @param contextId context id
+     * @return res an array with consumer key and lti course id
+     */
+    def selectConsumerKeyAndCourseId(Sql sql, long contextId) {
+        def req = sql.firstRow("SELECT lti_consumer_key,lti_course_id from lms_context WHERE tsaap_context_id = $contextId")
+        def res = [req.lti_consumer_key,req.lti_course_id]
+        res
     }
 }

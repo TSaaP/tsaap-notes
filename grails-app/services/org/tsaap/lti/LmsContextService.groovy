@@ -27,7 +27,7 @@ class LmsContextService {
             // We create a new context
             if(!isLearner) {
                 def userId = lmsUserHelper.selectUserId(sql,username)
-                lmsContextHelper.insertContext(sql,contextName,null,userId,true,null,consumerName)
+                lmsContextHelper.insertContext(sql,contextName,"",userId,true,"",consumerName)
                 contextId = lmsContextHelper.selectContextId(sql,contextName,consumerName)
                 lmsContextHelper.insertLmsContext(sql,contextId,ltiCourseId,ltiActivityId,consumerKey,consumerName)
             }

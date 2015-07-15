@@ -34,7 +34,7 @@ class LmsContextServiceSpec extends Specification {
         then: "a context is created and I get his id and his name"
         1*lmsContextHelper.selectLmsContext(sql,'key','3','4') >> null
         1*lmsUserHelper.selectUserId(sql,"jdoe") >> 88
-        1*lmsContextHelper.insertContext(sql,'Tsaap Teach: Tsaap',null,88,true,null,'Moodle Tsaap')
+        1*lmsContextHelper.insertContext(sql,'Tsaap Teach: Tsaap',"",88,true,"",'Moodle Tsaap')
         1*lmsContextHelper.selectContextId(sql,'Tsaap Teach: Tsaap','Moodle Tsaap') >> 55
         1*lmsContextHelper.insertLmsContext(sql,55,'3','4','key','Moodle Tsaap')
         res.get(0) == 'Tsaap Teach: Tsaap'

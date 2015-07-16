@@ -1,38 +1,81 @@
 <g:set var="idControllSuffix" value="${parentNote ? parentNote.id : 0}"/>
 
 <div id="edit_tab_${idControllSuffix}">
-
-    <g:form method="post" controller="notes" action="addNote" enctype="multipart/form-data">
-        <g:hiddenField name="kind" value="${params.kind}"/>
-        <g:hiddenField name="inline" value="${params.inline}"/>
-        <g:hiddenField name="contextId" value="${context?.id}"
-                       id="contextIdInAddForm${idControllSuffix}"/>
-        <g:hiddenField name="fragmentTagId" value="${fragmentTag?.id}"/>
-        <g:hiddenField name="parentNoteId" value="${parentNote?.id}"/>
-        <g:hiddenField name="displaysMyNotes" id="displaysMyNotesInAddForm${idControllSuffix}"/>
-        <g:hiddenField name="displaysMyFavorites"
-                       id="displaysMyFavoritesInAddForm${idControllSuffix}"/>
-        <g:hiddenField name="displaysAll" id="displaysAllInAddForm${idControllSuffix}"/>
-        <g:if test="${params.kind == 'question'}">
-            <g:set var="kind" value="question"/>
-            <a id="question_sample">${message(code: "notes.edit.sampleQuestion")}</a>
-        </g:if>
-        <textarea class="form-control note-editable-content" rows="3" id="noteContent${idControllSuffix}"
-                  name="noteContent"
-                  maxlength="560">${parentNote ? '@' + parentNote.author?.username + ' ' : ''}</textarea>
-        <input type="file" name="myFile" title="Image: gif, jpeg and png only" class="pull-left" style="margin-top: 5px"/>
-        <div id="prewiew_tab_${idControllSuffix}" class="pull-right">
-            <button type="button" class="btn btn-default btn-xs"
-                    id="preview_button_${idControllSuffix}">
-                ${message(code: "notes.edit.preview")}
-            </button>
+    <g:if test="${params.kind == 'question'}">
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingOne">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                            ${message(code: "notes.edit.question.editor")}
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                    <div class="panel-body">
+                        <g:form method="post" controller="notes" action="addNote" enctype="multipart/form-data">
+                            <g:hiddenField name="kind" value="${params.kind}"/>
+                            <g:hiddenField name="inline" value="${params.inline}"/>
+                            <g:hiddenField name="contextId" value="${context?.id}"
+                                           id="contextIdInAddForm${idControllSuffix}"/>
+                            <g:hiddenField name="fragmentTagId" value="${fragmentTag?.id}"/>
+                            <g:hiddenField name="parentNoteId" value="${parentNote?.id}"/>
+                            <g:hiddenField name="displaysMyNotes" id="displaysMyNotesInAddForm${idControllSuffix}"/>
+                            <g:hiddenField name="displaysMyFavorites"
+                                           id="displaysMyFavoritesInAddForm${idControllSuffix}"/>
+                            <g:hiddenField name="displaysAll" id="displaysAllInAddForm${idControllSuffix}"/>
+                            <g:set var="kind" value="question"/>
+                            <a id="question_sample">${message(code: "notes.edit.sampleQuestion")}</a>
+                            <textarea class="form-control note-editable-content" rows="3" id="noteContent${idControllSuffix}"
+                                      name="noteContent"
+                                      maxlength="560">${parentNote ? '@' + parentNote.author?.username + ' ' : ''}</textarea>
+                            <input type="file" name="myFile" title="Image: gif, jpeg and png only" class="pull-left" style="margin-top: 5px"/>
+                            <span class="character_counter" style="margin-left: 50px;margin-right: 10px;margin-top: 5px" id="character_counter${idControllSuffix}"></span>
+                            <button type="submit"
+                                    class="btn btn-primary btn-xs"
+                                    id="buttonAddNote${idControllSuffix}"
+                                    disabled><span class="glyphicon glyphicon-plus"></span>${message(code: "notes.edit.add.question.button")}</button>
+                            <div id="prewiew_tab_${idControllSuffix}" style="display: inline-block;">
+                                <button type="button" class="btn btn-default btn-xs"
+                                        id="preview_button_${idControllSuffix}">
+                                    ${message(code: "notes.edit.preview")}
+                                </button>
+                            </div>
+                        </g:form>
+                    </div>
+                </div>
+            </div>
         </div>
-        <button type="submit"
-            class="btn btn-primary btn-xs pull-right"
-             id="buttonAddNote${idControllSuffix}"
-             disabled><span class="glyphicon glyphicon-plus"></span> <g:if test="${params.kind == 'question'}">${message(code: "notes.edit.add.question.button")}</g:if><g:else>${message(code: "notes.edit.add.note.button")}</g:else></button>
-        <span class="character_counter pull-right" style="margin-right: 10px;margin-top: 5px" id="character_counter${idControllSuffix}"></span>
-    </g:form>
+    </g:if>
+    <g:else>
+        <g:form method="post" controller="notes" action="addNote" enctype="multipart/form-data">
+            <g:hiddenField name="kind" value="${params.kind}"/>
+            <g:hiddenField name="inline" value="${params.inline}"/>
+            <g:hiddenField name="contextId" value="${context?.id}"
+                           id="contextIdInAddForm${idControllSuffix}"/>
+            <g:hiddenField name="fragmentTagId" value="${fragmentTag?.id}"/>
+            <g:hiddenField name="parentNoteId" value="${parentNote?.id}"/>
+            <g:hiddenField name="displaysMyNotes" id="displaysMyNotesInAddForm${idControllSuffix}"/>
+            <g:hiddenField name="displaysMyFavorites"
+                           id="displaysMyFavoritesInAddForm${idControllSuffix}"/>
+            <g:hiddenField name="displaysAll" id="displaysAllInAddForm${idControllSuffix}"/>
+            <textarea class="form-control note-editable-content" rows="3" id="noteContent${idControllSuffix}"
+                      name="noteContent"
+                      maxlength="560">${parentNote ? '@' + parentNote.author?.username + ' ' : ''}</textarea>
+            <input type="file" name="myFile" title="Image: gif, jpeg and png only" class="pull-left" style="margin-top: 5px"/>
+            <div id="prewiew_tab_${idControllSuffix}" class="pull-right">
+                <button type="button" class="btn btn-default btn-xs"
+                        id="preview_button_${idControllSuffix}">
+                    ${message(code: "notes.edit.preview")}
+                </button>
+            </div>
+            <button type="submit"
+                    class="btn btn-primary btn-xs pull-right"
+                    id="buttonAddNote${idControllSuffix}"
+                    disabled><span class="glyphicon glyphicon-plus"></span>${message(code: "notes.edit.add.note.button")}</button>
+            <span class="character_counter pull-right" style="margin-right: 10px;margin-top: 5px" id="character_counter${idControllSuffix}"></span>
+        </g:form>
+    </g:else>
 </div>
 
 

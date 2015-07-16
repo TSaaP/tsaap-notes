@@ -46,8 +46,6 @@
 
     <div class="nav-collapse collapse">
       <ul class="nav navbar-nav">
-        <li id="mainLinkNotes"><g:link controller="notes" params="[displaysMyNotes:'on', kind:'standard']">${message(code: "layout.main.notes")}</g:link></li>
-        <li id="mainLinkQuestions"><g:link controller="notes" params="[displaysMyNotes: 'on', kind: 'question']">${message(code: "layout.main.questions")}</g:link></li>
         <li id="mainLinkContexts"><g:link controller="context" params="[filter:FilterReservedValue.__MINE__.name()]">${message(code: "layout.main.scope")}</g:link></li>
       </ul>
 

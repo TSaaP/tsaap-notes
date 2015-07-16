@@ -29,14 +29,51 @@
 
 <body>
 
-<g:if test="${params.inline && params.inline == 'on'}">
-    <div class="container">
-        <g:link controller="notes"
-                params='[contextId: "${params.contextId}", contextName: "${params.contextName}", displaysMyNotes: "${params.displaysMyNotes}", displaysMyFavorites: "${params.displaysMyFavorites}", displaysAll: "${params.displaysAll}", fragmentTagId: "${params.fragmentTagId}", inline: "${params.inline}", kind: "standard", inline: "on"]'>Notes</g:link>
-        <g:link controller="notes"
-                params='[contextId: "${params.contextId}", contextName: "${params.contextName}", displaysMyNotes: "${params.displaysMyNotes}", displaysMyFavorites: "${params.displaysMyFavorites}", displaysAll: "${params.displaysAll}", fragmentTagId: "${params.fragmentTagId}", inline: "${params.inline}", kind: "question", inline: "on"]'>Questions</g:link>
-    </div>
-</g:if>
+<div class="container">
+    <ol class="breadcrumb" style="display: inline-block;">
+        <li>
+            <g:link controller="context" params='[filter: "__FOLLOWED__"]'>
+            ${message(code: 'notes.scope.link')}</g:link>
+        </li>
+        <g:if test="${context}">
+            <g:if test="${fragmentTag}">
+                <li>
+                    <g:link controller="notes"
+                            params='[contextId: "${params.contextId}", displaysMyNotes: "${params.displaysMyNotes}", displaysMyFavorites: "${params.displaysMyFavorites}", displaysAll: "${params.displaysAll}", inline: "${params.inline}", kind: "${params.kind}"]'>
+                        ${context.contextName}</g:link>
+                </li>
+                <li class="active">
+                    ${fragmentTag.name}
+                </li>
+            </g:if>
+            <g:else>
+                <li class="active">
+                    ${context.contextName}
+                </li>
+            </g:else>
+        </g:if>
+    </ol>
+    <ul class="nav nav-pills pull-right">
+        <g:if test="${params.kind != 'question'}">
+            <li role="presentation" class="active"><a>${message(code: "notes.link")}</a></li>
+            <li role="presentation">
+                <g:link controller="notes"
+                        params='[contextId: "${params.contextId}", contextName: "${params.contextName}", displaysMyNotes: "${params.displaysMyNotes}", displaysMyFavorites: "${params.displaysMyFavorites}", displaysAll: "${params.displaysAll}", fragmentTagId: "${params.fragmentTagId}", kind: "question", inline: "${params.inline}"]'>
+                    ${message(code: "notes.question.link")}
+                </g:link>
+            </li>
+        </g:if>
+        <g:else>
+            <li role="presentation">
+                <g:link controller="notes"
+                        params='[contextId: "${params.contextId}", contextName: "${params.contextName}", displaysMyNotes: "${params.displaysMyNotes}", displaysMyFavorites: "${params.displaysMyFavorites}", displaysAll: "${params.displaysAll}", fragmentTagId: "${params.fragmentTagId}", kind: "standard", inline: "${params.inline}"]'>
+                    ${message(code: "notes.link")}
+                </g:link>
+            </li>
+            <li role="presentation" class="active"><a>${message(code: "notes.question.link")}</a></li>
+        </g:else>
+    </ul>
+</div>
 
 <div class="container note-edition">
     <g:render template="edit" model='[context: context, fragmentTag: fragmentTag]'/>
@@ -46,20 +83,6 @@
 
 <div class="container note-list">
     <div class="note-list-header">
-        <g:if test="${context}">
-            <div class="note-list-context pull-left">
-                <button type="button" class="btn btn-default btn-xs"
-                        id="button_context">
-                    ${context.contextName}
-                </button>
-                <g:if test="${fragmentTag}">
-                    <span class="badge"
-                          id="button_fragment_tag">#${fragmentTag.name} <g:link controller="notes"
-                                                                                params='[contextId: "${params.contextId}", displaysMyNotes: "${params.displaysMyNotes}", displaysMyFavorites: "${params.displaysMyFavorites}", displaysAll: "${params.displaysAll}", inline: "${params.inline}", kind: "${params.kind}"]'><span
-                                class="glyphicon glyphicon-remove-sign"></span></g:link></span>
-                </g:if>
-            </div>
-        </g:if>
         <div class="note-list-selector pull-right">
             <g:form controller="notes" action="index" method="get">
                 <g:hiddenField name="contextId" value="${context?.id}"/>

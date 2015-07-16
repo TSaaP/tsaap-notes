@@ -53,7 +53,7 @@
             </g:else>
         </g:if>
     </ol>
-    <ul class="nav nav-pills pull-right">
+    <ul class="nav nav-tabs pull-right">
         <g:if test="${params.kind != 'question'}">
             <li role="presentation" class="active"><a>${message(code: "notes.link")}</a></li>
             <li role="presentation">

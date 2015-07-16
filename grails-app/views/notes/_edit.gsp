@@ -30,17 +30,17 @@
                                       name="noteContent"
                                       maxlength="560">${parentNote ? '@' + parentNote.author?.username + ' ' : ''}</textarea>
                             <input type="file" name="myFile" title="Image: gif, jpeg and png only" class="pull-left" style="margin-top: 5px"/>
-                            <span class="character_counter" style="margin-left: 50px;margin-right: 10px;margin-top: 5px" id="character_counter${idControllSuffix}"></span>
-                            <button type="submit"
-                                    class="btn btn-primary btn-xs"
-                                    id="buttonAddNote${idControllSuffix}"
-                                    disabled><span class="glyphicon glyphicon-plus"></span>${message(code: "notes.edit.add.question.button")}</button>
+                            <span class="character_counter" style="margin-left: 30px;margin-right: 30px;margin-top: 5px" id="character_counter${idControllSuffix}"></span>
                             <div id="prewiew_tab_${idControllSuffix}" style="display: inline-block;">
                                 <button type="button" class="btn btn-default btn-xs"
                                         id="preview_button_${idControllSuffix}">
                                     ${message(code: "notes.edit.preview")}
                                 </button>
                             </div>
+                            <button type="submit"
+                                    class="btn btn-primary btn-xs"
+                                    id="buttonAddNote${idControllSuffix}"
+                                    disabled><span class="glyphicon glyphicon-plus"></span>${message(code: "notes.edit.add.question.button")}</button>
                         </g:form>
                     </div>
                 </div>
@@ -122,7 +122,7 @@
             .bind('keyup blur', function () {
                     // Count the characters and set the counter text
                     var counter =  $("#character_counter${idControllSuffix}");
-                    counter.text($(this).val().length + '/560 characters');
+                    counter.text($(this).val().length + '/560 ${message(code: "notes.edit.characters")}');
                     if ($(this).val().length >1) {
                       $("#buttonAddNote${idControllSuffix}").removeAttr('disabled');
                     } else {

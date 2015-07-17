@@ -4,9 +4,9 @@
     <g:if test="${params.kind == 'question'}">
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
             <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="headingOne">
+                <div class="panel-heading" role="tab" id="headingOne" style="margin-bottom: -15px;">
                     <h4 class="panel-title">
-                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                        <a data-toggle="collapse" id="accordionLink" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed">
                             ${message(code: "notes.edit.question.editor")}
                         </a>
                     </h4>
@@ -25,22 +25,31 @@
                                            id="displaysMyFavoritesInAddForm${idControllSuffix}"/>
                             <g:hiddenField name="displaysAll" id="displaysAllInAddForm${idControllSuffix}"/>
                             <g:set var="kind" value="question"/>
-                            <a id="question_sample">${message(code: "notes.edit.sampleQuestion")}</a>
+                            <a id="question_sample" style="margin-top: 15px">${message(code: "notes.edit.sampleQuestion")}</a>
                             <textarea class="form-control note-editable-content" rows="3" id="noteContent${idControllSuffix}"
                                       name="noteContent"
                                       maxlength="560">${parentNote ? '@' + parentNote.author?.username + ' ' : ''}</textarea>
-                            <input type="file" name="myFile" title="Image: gif, jpeg and png only" class="pull-left" style="margin-top: 5px"/>
-                            <span class="character_counter" style="margin-left: 30px;margin-right: 30px;margin-top: 5px" id="character_counter${idControllSuffix}"></span>
-                            <div id="prewiew_tab_${idControllSuffix}" style="display: inline-block;">
-                                <button type="button" class="btn btn-default btn-xs"
-                                        id="preview_button_${idControllSuffix}">
-                                    ${message(code: "notes.edit.preview")}
-                                </button>
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-5 col-md-5 col-lg-5">
+                                    <input type="file" name="myFile" title="Image: gif, jpeg and png only" style="margin-top: 5px"/>
+                                </div>
+                                <div class="col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                                    <span class="character_counter" id="character_counter${idControllSuffix}"></span>
+                                </div>
+                                <div id="prewiew_tab_${idControllSuffix}" class="col-xs-6 col-sm-2 col-md-2 col-lg-2">
+                                    <button type="button" class="btn btn-default btn-xs"
+                                            id="preview_button_${idControllSuffix}">
+                                        ${message(code: "notes.edit.preview")}
+                                    </button>
+                                </div>
+                                <div class="col-xs-6 col-sm-2 col-md-2 col-lg-2">
+                                    <button type="submit"
+                                            class="btn btn-primary btn-xs"
+                                            id="buttonAddNote${idControllSuffix}"
+                                            disabled><span class="glyphicon glyphicon-plus"></span>${message(code: "notes.edit.add.question.button")}
+                                    </button>
+                                </div>
                             </div>
-                            <button type="submit"
-                                    class="btn btn-primary btn-xs"
-                                    id="buttonAddNote${idControllSuffix}"
-                                    disabled><span class="glyphicon glyphicon-plus"></span>${message(code: "notes.edit.add.question.button")}</button>
                         </g:form>
                     </div>
                 </div>
@@ -82,6 +91,14 @@
 <r:script>
   $(document).ready(function () {
 
+    $("#collapseOne").on('show.bs.collapse', function(){
+        $("#headingOne").attr("style","margin-bottom: 0px;");
+    });
+
+    $("#collapseOne").on('hidden.bs.collapse', function(){
+        $("#headingOne").attr("style","margin-bottom: -15px;");
+    });
+
     var contentPreview
 
     // preview management
@@ -109,8 +126,6 @@
          }
          return contentPreview
     }
-
-
 
     // set character counters
     //-----------------------

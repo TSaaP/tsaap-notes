@@ -28,29 +28,30 @@
                     <span class="input-group-btn">
                         <button class="btn btn-default" type="submit">${message(code: 'context.index.filter.button')}</button>
                     </span>
-                </div><!-- /input-group -->
-            </div><!-- /.col-lg-6 -->
-        </div><!-- /.row -->
+                </div>
+            </div>
+        </div>
 
     </g:form>
     <small>${message(code: 'context.index.scopeCount')} ${contextCount}</small>
 </div>
 
 <div class="container">
-    <div class="list-group container pull-left" style="margin-top: 40px;">
-        <g:link class="list-group-item ${params.filter == org.tsaap.notes.FilterReservedValue.__MINE__.name() ? 'active' : ''}"
-                controller="context" action="index" params="[filter: FilterReservedValue.__MINE__.name()]">
-            ${message(code: 'context.index.myScope.link')}
-        </g:link>
-        <g:link class="list-group-item ${params.filter == org.tsaap.notes.FilterReservedValue.__FOLLOWED__.name() ? 'active' : ''}"
-                controller="context" action="index" params="[filter: FilterReservedValue.__FOLLOWED__.name()]">
-            ${message(code: 'context.index.followedScope.link')}
-        </g:link>
-        <g:link class="list-group-item ${(!params.filter || params.filter == org.tsaap.notes.FilterReservedValue.__ALL__.name()) ? 'active' : ''}"
-                controller="context" action="index">${message(code: 'context.index.allScope.link')}</g:link>
-    </div>
 
-    <div id="list-context" class="container pull-right" style="width: 540px">
+    <ul class="nav nav-pills" style="margin-top: 10px;">
+        <li role="presentation"><g:link class="list-group-item ${params.filter == org.tsaap.notes.FilterReservedValue.__MINE__.name() ? 'active' : ''}"
+                                                       controller="context" action="index" params="[filter: FilterReservedValue.__MINE__.name()]">
+            ${message(code: 'context.index.myScope.link')}
+        </g:link></li>
+        <li role="presentation"><g:link class="list-group-item ${params.filter == org.tsaap.notes.FilterReservedValue.__FOLLOWED__.name() ? 'active' : ''}"
+                                        controller="context" action="index" params="[filter: FilterReservedValue.__FOLLOWED__.name()]">
+            ${message(code: 'context.index.followedScope.link')}
+        </g:link></li>
+        <li role="presentation"><g:link class="list-group-item ${(!params.filter || params.filter == org.tsaap.notes.FilterReservedValue.__ALL__.name()) ? 'active' : ''}"
+                                        controller="context" action="index">${message(code: 'context.index.allScope.link')}</g:link></li>
+    </ul>
+
+    <div id="list-context" class="container">
         <g:if test="${flash.message}">
             <div class="alert alert-info" role="status">${flash.message}</div>
         </g:if>
@@ -71,8 +72,15 @@
             <g:each in="${contextList}" status="i" var="context">
                 <tr>
 
-                    <td><strong><g:link action="show"
-                                        id="${context.id}">${fieldValue(bean: context, field: "contextName")}</g:link></strong> <small>@${context.owner}</small>
+                    <td>
+                        <strong>
+                            <g:link controller="notes"
+                                    params="[displaysAll: 'on', contextName: context.contextName, contextId: context.id, kind: 'standard']">${fieldValue(bean: context, field: "contextName")}
+                            </g:link>
+                        </strong>
+                        <small>
+                            @${context.owner}
+                        </small>
                         <g:if test="${context.url}">
                             <br/>
                             <small>${fieldValue(bean: context, field: "url")}&nbsp<a
@@ -82,9 +90,6 @@
                         <p>${fieldValue(bean: context, field: "descriptionAsNote")}</p>
 
                     </td>
-
-
-                %{--<td>${fieldValue(bean: context, field: "descriptionAsNote")}</td>--}%
 
                     <g:if test="${context.owner != user}">
                         <g:if test="${context.isFollowedByUser(user)}">
@@ -105,20 +110,29 @@
                     </g:if>
                     <g:else>
                         <td>
-                            <g:form action="duplicateContext" controller="context" id="${context.id}"><button
-                                    class="btn btn-default btn-xs" type="submit">${message(code: 'context.index.duplicate.button')}</button></g:form>
-                        </td>
-                        <td>
-                            <g:link action="statistics" controller="context" id="${context.id}"
-                                    class="btn btn-default btn-xs">${message(code: 'context.index.generateStats.button')}</g:link>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    ${message(code: 'context.index.edit.button')} <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <g:link action="show"
+                                                id="${context.id}">${message(code: 'context.index.properties.button')}</g:link>
+                                    </li>
+                                    <li>
+                                        <g:link action="statistics" controller="context" id="${context.id}">
+                                            ${message(code: 'context.index.generateStats.button')}
+                                        </g:link>
+                                    </li>
+                                    <li>
+                                        <g:form action="duplicateContext" controller="context" name="${context.id}" id="${context.id}">
+                                        </g:form>
+                                        <a onclick="submitDuplicate(${context.id})">${message(code: 'context.index.duplicate.button')}</a>
+                                    </li>
+                                </ul>
+                            </div>
                         </td>
                     </g:else>
-                    <td><g:link controller="notes"
-                                params="[displaysAll: 'on', contextName: context.contextName, contextId: context.id, kind: 'standard']"
-                                class="btn btn-default btn-xs">${message(code: 'context.index.note.button')}</g:link></td>
-                    <td><g:link controller="notes"
-                                params="[displaysAll: 'on', contextName: context.contextName, contextId: context.id, kind: 'question']"
-                                class="btn btn-default btn-xs">${message(code: 'context.index.question.button')}</g:link></td>
                 </tr>
             </g:each>
             </tbody>
@@ -138,7 +152,7 @@
     $("#mainLinkContexts").addClass('active');
 
     function updateFollowLink(followLink, text, classBtn) {
-        var finalText =""
+        var finalText ="";
         if(text == "Unfollow"){
            finalText  = "${message(code: 'context.index.unfollow.button')}"
         }
@@ -148,6 +162,11 @@
         $(followLink).text(finalText);
         $(followLink).removeClass();
         $(followLink).addClass("btn btn-xs " + classBtn);
+    }
+
+    function submitDuplicate(contextId) {
+        console.log("test");
+        $("#"+contextId).submit();
     }
 </r:script>
 </body>

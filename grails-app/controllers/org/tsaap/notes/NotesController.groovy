@@ -62,13 +62,14 @@ class NotesController {
                 fragmentTag = parentNote.fragmentTag
             }
         }
+        Note myNote
         try{
             if(params.kind && params.kind == 'question')
             {
-                Note myNote = noteService.addQuestion(user, noteContent, context, fragmentTag, parentNote)
+                myNote = noteService.addQuestion(user, noteContent, context, fragmentTag, parentNote)
             }
             else {
-                Note myNote = noteService.addStandardNote(user, noteContent, context, fragmentTag, parentNote)
+                myNote = noteService.addStandardNote(user, noteContent, context, fragmentTag, parentNote)
             }
         }catch (IsNotQuestionException e){
             params.put("error","question")

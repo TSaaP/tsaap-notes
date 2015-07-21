@@ -27,22 +27,18 @@
                             <g:set var="kind" value="question"/>
                             <a id="question_sample" style="margin-top: 15px">${message(code: "notes.edit.sampleQuestion")}</a>
                             <textarea class="form-control note-editable-content" rows="3" id="noteContent${idControllSuffix}"
-                                      name="noteContent"
-                                      maxlength="560">${parentNote ? '@' + parentNote.author?.username + ' ' : ''}</textarea>
+                                      name="noteContent">${parentNote ? '@' + parentNote.author?.username + ' ' : ''}</textarea>
                             <div class="row">
-                                <div class="col-xs-12 col-sm-5 col-md-5 col-lg-5">
+                                <div class="col-sm-7 col-md-7 col-lg-7">
                                     <input type="file" name="myFile" title="Image: gif, jpeg and png only" style="margin-top: 5px"/>
                                 </div>
-                                <div class="col-xs-12 col-sm-2 col-md-2 col-lg-2">
-                                    <span class="character_counter" id="character_counter${idControllSuffix}"></span>
-                                </div>
-                                <div id="prewiew_tab_${idControllSuffix}" class="col-xs-6 col-sm-2 col-md-2 col-lg-2">
+                                <div id="prewiew_tab_${idControllSuffix}" class="col-sm-2 col-md-2 col-lg-2">
                                     <button type="button" class="btn btn-default btn-xs"
                                             id="preview_button_${idControllSuffix}">
                                         ${message(code: "notes.edit.preview")}
                                     </button>
                                 </div>
-                                <div class="col-xs-6 col-sm-2 col-md-2 col-lg-2">
+                                <div class="col-sm-2 col-md-2 col-lg-2">
                                     <button type="submit"
                                             class="btn btn-primary btn-xs"
                                             id="buttonAddNote${idControllSuffix}"
@@ -71,18 +67,20 @@
             <textarea class="form-control note-editable-content" rows="3" id="noteContent${idControllSuffix}"
                       name="noteContent"
                       maxlength="560">${parentNote ? '@' + parentNote.author?.username + ' ' : ''}</textarea>
-            <input type="file" name="myFile" title="Image: gif, jpeg and png only" class="pull-left" style="margin-top: 5px"/>
-            <div id="prewiew_tab_${idControllSuffix}" class="pull-right">
-                <button type="button" class="btn btn-default btn-xs"
-                        id="preview_button_${idControllSuffix}">
-                    ${message(code: "notes.edit.preview")}
-                </button>
+            <div class="row">
+                <span class="character_counter pull-left" style="margin-left: 15px" id="character_counter${idControllSuffix}"></span>
             </div>
-            <button type="submit"
-                    class="btn btn-primary btn-xs pull-right"
-                    id="buttonAddNote${idControllSuffix}"
-                    disabled><span class="glyphicon glyphicon-plus"></span>${message(code: "notes.edit.add.note.button")}</button>
-            <span class="character_counter pull-right" style="margin-right: 10px;margin-top: 5px" id="character_counter${idControllSuffix}"></span>
+            <div class="row">
+                <div class="col-xs-12 col-sm-10 col-md-10 col-lg-10">
+                    <input type="file" name="myFile" title="Image: gif, jpeg and png only"/>
+                </div>
+                <div class="col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                    <button type="submit"
+                        class="btn btn-primary btn-xs"
+                        id="buttonAddNote${idControllSuffix}"
+                        disabled><span class="glyphicon glyphicon-plus"></span>${message(code: "notes.edit.add.note.button")}</button>
+                </div>
+            </div>
         </g:form>
     </g:else>
 </div>
@@ -99,7 +97,7 @@
         $("#headingOne").attr("style","margin-bottom: -15px;");
     });
 
-    var contentPreview
+    var contentPreview;
 
     // preview management
     //--------
@@ -109,11 +107,11 @@
                                  placement: 'bottom'
                                }).on('shown.bs.popover', function() {
                                  MathJax.Hub.Queue(['Typeset',MathJax.Hub,'prewiew_tab_${idControllSuffix}'])
-                               })
+                               });
 
     function getNotePreview() {
         var noteInput = $("#noteContent${idControllSuffix}").val() ;
-        contentPreview = noteInput
+        contentPreview = noteInput;
         if (noteInput.lastIndexOf('::', 0) === 0) {
             $.ajax({
                 type: "POST",
@@ -161,7 +159,7 @@
                                  placement: 'bottom'
                                }).on('shown.bs.popover', function() {
                                  MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_sample'])
-                               })
+                               });
 
     function getQuestionSample() {
         var contentQuestionSample = "" ;
@@ -186,7 +184,7 @@
         else {
             $('textarea[name="noteContent"]').val("${message(code: "notes.edit.sampleQuestion.multipleChoiceExemple")}" +"\n"+precedentText);
         }
-        $('textarea[name="noteContent"]').focus()
+        $('textarea[name="noteContent"]').focus();
         $('textarea[name="noteContent"]').blur()
     }
 

@@ -46,7 +46,6 @@ class Note {
         fragmentTag nullable: true
         parentNote nullable: true
         bookmarks nullable: true
-        content maxSize: 560
         grade nullable: true
     }
 

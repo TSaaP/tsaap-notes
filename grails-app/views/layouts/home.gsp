@@ -66,7 +66,7 @@
           <li><g:link controller="login" action="auth">${message(code: "layout.home.signIn")} &raquo;</g:link></li>
           </tsaap:ifNotLoggedIn>
           <tsaap:ifLoggedIn>
-            <li><g:link controller="notes" params="[displaysMyNotes:'on']">${message(code: "layout.home.welcome")} @<sec:username/> !</g:link></li>
+            <li><g:link controller="context" params="[filter:'__FOLLOWED__']">${message(code: "layout.home.welcome")} @<sec:username/> !</g:link></li>
           </tsaap:ifLoggedIn>
         </ul>
       </div>

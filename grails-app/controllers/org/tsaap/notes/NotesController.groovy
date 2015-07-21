@@ -18,7 +18,6 @@ package org.tsaap.notes
 
 import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
-import org.tsaap.attachement.Attachement
 import org.tsaap.attachement.AttachementService
 import org.tsaap.directory.User
 import org.tsaap.questions.Question
@@ -33,10 +32,6 @@ class NotesController {
     AttachementService attachementService
 
 
-    /**
-     *
-     * @return
-     */
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def index() {
         User user = springSecurityService.currentUser
@@ -67,9 +62,23 @@ class NotesController {
                 fragmentTag = parentNote.fragmentTag
             }
         }
-
-
-        Note myNote = noteService.addNote(user, noteContent, context, fragmentTag, parentNote)
+        try{
+            if(params.kind && params.kind == 'question')
+            {
+                Note myNote = noteService.addQuestion(user, noteContent, context, fragmentTag, parentNote)
+            }
+            else {
+                Note myNote = noteService.addStandardNote(user, noteContent, context, fragmentTag, parentNote)
+            }
+        }catch (IsNotQuestionException e){
+            params.put("error","question")
+            renderMainPage(params, user)
+            return
+        }catch (IsNotStandardNoteException e){
+            params.put("error","note")
+            renderMainPage(params, user)
+            return
+        }
 
         def file = request.getFile('myFile')
         if (file && !file.isEmpty()) {

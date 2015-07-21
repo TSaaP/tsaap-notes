@@ -31,7 +31,7 @@ class LiveSessionIntegrationSpec extends Specification {
 
     def setup() {
         bootstrapTestService.initializeTests()
-        note = noteService.addNote(bootstrapTestService.learnerPaul,"::a question:: What ? {=this ~that}")
+        note = noteService.addQuestion(bootstrapTestService.learnerPaul,"::a question:: What ? {=this ~that}")
     }
 
     void "test the creation of a new live session response"() {
@@ -121,7 +121,7 @@ class LiveSessionIntegrationSpec extends Specification {
 
     void "test the construction of the result matrix"() {
         given:"a started live session for a note"
-        def note2 = noteService.addNote(bootstrapTestService.teacherJeanne,"::a question:: What ? {~bad1 =good1 ~bad2 ~bad3}")
+        def note2 = noteService.addQuestion(bootstrapTestService.teacherJeanne,"::a question:: What ? {~bad1 =good1 ~bad2 ~bad3}")
         LiveSession liveSession = liveSessionService.createLiveSessionForNote(bootstrapTestService.teacherJeanne,note2)
         liveSession.start()
 
@@ -156,7 +156,7 @@ class LiveSessionIntegrationSpec extends Specification {
 
     void "test the construction of the result matrix in a session phase"() {
         given:"a started live session for a note"
-        def note2 = noteService.addNote(bootstrapTestService.teacherJeanne,"::a question:: What ? {~bad1 =good1 ~bad2 ~bad3}")
+        def note2 = noteService.addQuestion(bootstrapTestService.teacherJeanne,"::a question:: What ? {~bad1 =good1 ~bad2 ~bad3}")
         LiveSession liveSession = liveSessionService.createLiveSessionForNote(bootstrapTestService.teacherJeanne,note2)
         SessionPhase sessionPhase = liveSessionService.createAndStartFirstSessionPhaseForLiveSession(bootstrapTestService.teacherJeanne,liveSession)
 

@@ -55,7 +55,7 @@ class ContextServiceIntegrationSpec extends Specification {
 
     given: "a context with notes"
     Context context = contextService.saveContext(new Context(owner: bootstrapTestService.learnerPaul, contextName: "aContext"))
-    Note note = noteService.addNote(bootstrapTestService.learnerMary, "a note...", context)
+    Note note = noteService.addStandardNote(bootstrapTestService.learnerMary, "a note...", context)
 
     when: "trying to delete the context"
     contextService.deleteContext(context, context.owner)

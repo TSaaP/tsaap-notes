@@ -151,6 +151,20 @@
 
     </r:script>
 </g:if>
+
+<g:if test="${params.error}">
+    <g:hiddenField name="errorParam" id="errorParam" value="${params.error}"/>
+    <r:script>
+        if($("#errorParam").val() == 'question'){
+            alert("${message(code: "notes.edit.question.error")}");
+        }
+        else {
+            alert("${message(code: "notes.edit.note.error")}");
+        }
+
+    </r:script>
+</g:if>
+
 <r:script>
     function displaysReplyField(noteId) {
         $('#replyEdition' + noteId).toggle();
@@ -159,9 +173,6 @@
         contentElement.focus().val('').val(content);
     }
 
-    /*$(".note-content").linkify({
-     target:"_blank"
-     });*/
     if($("#noteKind").val()=='question') {
         $("#mainLinkQuestions").addClass('active');
     }

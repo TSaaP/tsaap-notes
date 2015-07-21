@@ -94,16 +94,16 @@ class BootstrapService {
         for (int i=0 ; i<10 ; i++) {
             note = Note.findByContent("goal$i")
             if (!note) {
-                note = noteService.addNote(thom, "goal$i", football, goal, null)
+                note = noteService.addStandardNote(thom, "goal$i", football, goal, null)
             }
         }
         note = Note.findByContent("goal11")
         if (!note) {
-            note = noteService.addNote(mary, "goal11", football, goal, null)
+            note = noteService.addStandardNote(mary, "goal11", football, goal, null)
         }
         note = Note.findByContent("goal12")
         if (!note) {
-            note = noteService.addNote(fsil, "goal12", football, goal, null)
+            note = noteService.addStandardNote(fsil, "goal12", football, goal, null)
         }
     }
 

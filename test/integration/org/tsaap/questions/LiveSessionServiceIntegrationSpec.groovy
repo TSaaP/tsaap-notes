@@ -35,7 +35,7 @@ class LiveSessionServiceIntegrationSpec extends Specification {
     def setup() {
         bootstrapTestService.initializeTests()
         user = bootstrapTestService.learnerPaul
-        note = noteService.addNote(user,"::a question:: What ? {=this ~that}")
+        note = noteService.addQuestion(user,"::a question:: What ? {=this ~that}")
     }
 
     void "test the creation of a first phase session"() {

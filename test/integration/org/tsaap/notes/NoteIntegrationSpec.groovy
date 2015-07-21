@@ -36,13 +36,13 @@ class NoteIntegrationSpec extends Specification {
 
     void "test the finding of the last live session for a note"() {
         when: "a note is not a question"
-        Note note = noteService.addNote(bootstrapTestService.learnerMary,"not a question")
+        Note note = noteService.addStandardNote(bootstrapTestService.learnerMary,"not a question")
 
         then: "no live session found"
         !note.liveSession
 
         when:"a note is a question but that has no live session"
-        note = noteService.addNote(bootstrapTestService.learnerMary,"::a question:: what ? {=this ~that}")
+        note = noteService.addQuestion(bootstrapTestService.learnerMary,"::a question:: what ? {=this ~that}")
 
         then:"no live session found"
         !note.liveSession
@@ -65,7 +65,7 @@ class NoteIntegrationSpec extends Specification {
 
     void "test the evaluation of the grade of a note"() {
         given: "a note without grade"
-        Note note = noteService.addNote(bootstrapTestService.learnerMary,"not a question")
+        Note note = noteService.addStandardNote(bootstrapTestService.learnerMary,"not a question")
 
         when: "trying to update the grade"
         note.updateMeanGrade()

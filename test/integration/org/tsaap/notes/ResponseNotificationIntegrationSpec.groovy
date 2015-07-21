@@ -22,13 +22,13 @@ class ResponseNotificationIntegrationSpec extends Specification {
     void "finding all responses to notify"() {
         given: "the user paul ask two questions"
         Tag tag = Tag.findOrSaveWhere(name: 'tagtest')
-        Note note1 = noteService.addNote(bootstrapTestService.learnerPaul,"paul's question 1",bootstrapTestService.context1,tag)
-        Note note2 = noteService.addNote(bootstrapTestService.learnerPaul,"paul's question 2",bootstrapTestService.context1,tag)
+        Note note1 = noteService.addStandardNote(bootstrapTestService.learnerPaul,"paul's question 1",bootstrapTestService.context1,tag)
+        Note note2 = noteService.addStandardNote(bootstrapTestService.learnerPaul,"paul's question 2",bootstrapTestService.context1,tag)
 
         and: "two other users answer to paul's questions"
-        Note note3 = noteService.addNote(bootstrapTestService.learnerMary,"mary's response 1",bootstrapTestService.context1,tag,note1)
-        Note note4 = noteService.addNote(bootstrapTestService.learnerMary,"mary's response 2",bootstrapTestService.context2,tag,note2)
-        Note note5 = noteService.addNote(bootstrapTestService.teacherJeanne,"jeanne's response 1",bootstrapTestService.context1,tag,note1)
+        Note note3 = noteService.addStandardNote(bootstrapTestService.learnerMary,"mary's response 1",bootstrapTestService.context1,tag,note1)
+        Note note4 = noteService.addStandardNote(bootstrapTestService.learnerMary,"mary's response 2",bootstrapTestService.context2,tag,note2)
+        Note note5 = noteService.addStandardNote(bootstrapTestService.teacherJeanne,"jeanne's response 1",bootstrapTestService.context1,tag,note1)
 
         when: "we want to know if someone in the five last minutes answer to an user question"
         Map result = responseNotificationService.findAllResponsesNotifications()
@@ -46,7 +46,7 @@ class ResponseNotificationIntegrationSpec extends Specification {
     void "finding all notes with an user are mentioned" () {
         given: "the user mary mention user paul in a note"
         Tag tag = Tag.findOrSaveWhere(name: 'tagtest')
-        Note note1 = noteService.addNote(bootstrapTestService.learnerMary,"mary's mention @learner_paul",bootstrapTestService.context1,tag)
+        Note note1 = noteService.addStandardNote(bootstrapTestService.learnerMary,"mary's mention @learner_paul",bootstrapTestService.context1,tag)
 
         when: "we want to know if someone in the five last minutes as mentioned someone"
         Map result = responseNotificationService.findAllMentionsNotifications()

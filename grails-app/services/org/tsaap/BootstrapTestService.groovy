@@ -51,10 +51,10 @@ class BootstrapTestService {
 
     def initializeNotes(){
         if(!Note.findByContent("content note 1")){
-            note1 = noteService.addNote(learnerPaul,"content note 1")
+            note1 = noteService.addStandardNote(learnerPaul,"content note 1")
         }
         if(!Note.findByContent("content note 2")) {
-            note2 = noteService.addNote(learnerMary,"content note 2")
+            note2 = noteService.addStandardNote(learnerMary,"content note 2")
         }
     }
 

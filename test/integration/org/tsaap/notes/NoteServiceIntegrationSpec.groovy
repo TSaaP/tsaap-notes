@@ -71,7 +71,7 @@ class NoteServiceIntegrationSpec extends Specification {
     }
 
     def "add bookmark"() {
-        Note note1 = noteService.addNote(bootstrapTestService.learnerMary, "a note 1 with #tag and @${bootstrapTestService.teacherJeanne.username}")
+        Note note1 = noteService.addStandardNote(bootstrapTestService.learnerMary, "a note 1 with #tag and @${bootstrapTestService.teacherJeanne.username}")
 
         when: "a user bookmarks a note"
         noteService.bookmarkNotebyUser(note1, bootstrapTestService.learnerPaul)
@@ -84,7 +84,7 @@ class NoteServiceIntegrationSpec extends Specification {
     }
 
     def "delete bookmark"() {
-        Note note1 = noteService.addNote(bootstrapTestService.learnerMary, "a note 1")
+        Note note1 = noteService.addStandardNote(bootstrapTestService.learnerMary, "a note 1")
         noteService.bookmarkNotebyUser(note1, bootstrapTestService.learnerPaul)
 
         when: "a user unbookmarked a note"
@@ -100,9 +100,9 @@ class NoteServiceIntegrationSpec extends Specification {
 
         given: "A note with tags, mentions, fragment tag and responses and that is bookmarked"
         Tag tag = Tag.findOrSaveWhere(name: "afragmenttag")
-        Note note1 = noteService.addNote(bootstrapTestService.learnerMary, "a note 1 with #tag and @${bootstrapTestService.teacherJeanne.username}", null, tag, null)
-        noteService.addNote(bootstrapTestService.learnerMary, "a note 2", null, null, note1)
-        noteService.addNote(bootstrapTestService.learnerPaul, 'a note 3', null, null, note1)
+        Note note1 = noteService.addStandardNote(bootstrapTestService.learnerMary, "a note 1 with #tag and @${bootstrapTestService.teacherJeanne.username}", null, tag, null)
+        noteService.addStandardNote(bootstrapTestService.learnerMary, "a note 2", null, null, note1)
+        noteService.addStandardNote(bootstrapTestService.learnerPaul, 'a note 3', null, null, note1)
         noteService.bookmarkNotebyUser(note1, bootstrapTestService.learnerPaul)
 
         when: "a note is removed"
@@ -125,7 +125,7 @@ class NoteServiceIntegrationSpec extends Specification {
     def "delete a note with attachement"() {
 
         given: "A note with an attachement"
-        Note note1 = noteService.addNote(bootstrapTestService.learnerMary, "a note with attachement", bootstrapTestService.context1)
+        Note note1 = noteService.addStandardNote(bootstrapTestService.learnerMary, "a note with attachement", bootstrapTestService.context1)
         AttachementDto attachementDto = new AttachementDto(
                 size: 6,
                 typeMime: 'image/png',
@@ -147,7 +147,7 @@ class NoteServiceIntegrationSpec extends Specification {
 
     def "attempting to delete a note by a user that is not the author"() {
 
-        Note note1 = noteService.addNote(bootstrapTestService.learnerMary, "a note 1 with #tag and @${bootstrapTestService.teacherJeanne.username}")
+        Note note1 = noteService.addStandardNote(bootstrapTestService.learnerMary, "a note 1 with #tag and @${bootstrapTestService.teacherJeanne.username}")
 
         when: "a user tries to delete a note he has not written"
         noteService.deleteNoteByAuthor(note1, bootstrapTestService.learnerPaul)
@@ -162,10 +162,10 @@ class NoteServiceIntegrationSpec extends Specification {
         Context context = contextService.saveContext(new Context(owner: bootstrapTestService.learnerPaul, contextName: "aContext"))
 
         and: "a std note"
-        Note note = noteService.addNote(bootstrapTestService.learnerPaul, "a standard note", context)
+        Note note = noteService.addStandardNote(bootstrapTestService.learnerPaul, "a standard note", context)
 
         and: "a question note"
-        Note question = noteService.addNote(bootstrapTestService.learnerPaul, "::a question:: what ? {=true~false}", context)
+        Note question = noteService.addQuestion(bootstrapTestService.learnerPaul, "::a question:: what ? {=true~false}", context)
 
         when: "finding all questions for context"
         List<Note> res = noteService.findAllNotes(bootstrapTestService.learnerPaul, false, false, true, context, null, null, 'question', '').list
@@ -182,11 +182,11 @@ class NoteServiceIntegrationSpec extends Specification {
         Context context = contextService.saveContext(new Context(owner: bootstrapTestService.learnerPaul, contextName: "aContext"))
 
         and: "two std notes"
-        Note note1 = noteService.addNote(bootstrapTestService.learnerMary, "a standard note2", context)
-        Note note = noteService.addNote(bootstrapTestService.learnerPaul, "a standard note", context)
+        Note note1 = noteService.addStandardNote(bootstrapTestService.learnerMary, "a standard note2", context)
+        Note note = noteService.addStandardNote(bootstrapTestService.learnerPaul, "a standard note", context)
 
         and: "a question note"
-        Note question = noteService.addNote(bootstrapTestService.learnerPaul, "::a question:: what ? {=true~false}", context)
+        Note question = noteService.addQuestion(bootstrapTestService.learnerPaul, "::a question:: what ? {=true~false}", context)
 
         when: "finding all notes"
         List<Note> res = noteService.findAllNotes(bootstrapTestService.learnerPaul, false, false, true, context, null, null, 'standard', 'on').list
@@ -197,17 +197,17 @@ class NoteServiceIntegrationSpec extends Specification {
         res.contains(note1)
     }
 
-    def "find all notes and good sort for notes with a fragment tag in embedded mode"() {
+    def "find all notes and good sort, for notes with a fragment tag in embedded mode"() {
         given: "a context"
         Context context = contextService.saveContext(new Context(owner: bootstrapTestService.learnerPaul, contextName: "aContext"))
 
         and: "two std notes with a fragment tag"
         Tag tag = Tag.findOrSaveWhere(name: "afragmenttag")
-        Note note1 = noteService.addNote(bootstrapTestService.learnerMary, "a standard note2", context, tag)
-        Note note = noteService.addNote(bootstrapTestService.learnerPaul, "a standard note", context, tag)
+        Note note1 = noteService.addStandardNote(bootstrapTestService.learnerMary, "a standard note2", context, tag)
+        Note note = noteService.addStandardNote(bootstrapTestService.learnerPaul, "a standard note", context, tag)
 
         and: "a question note"
-        Note question = noteService.addNote(bootstrapTestService.learnerPaul, "::a question:: what ? {=true~false}", context, tag)
+        Note question = noteService.addQuestion(bootstrapTestService.learnerPaul, "::a question:: what ? {=true~false}", context, tag)
 
         when: "finding all notes with the fragment tag"
         List<Note> res = noteService.findAllNotes(bootstrapTestService.learnerPaul, false, false, true, context, tag, null, 'standard', 'on').list
@@ -221,7 +221,7 @@ class NoteServiceIntegrationSpec extends Specification {
 
     def "test the grade of a note by a user"() {
         given: "a note and a user"
-        Note note = noteService.addNote(bootstrapTestService.learnerPaul, "a standard note")
+        Note note = noteService.addStandardNote(bootstrapTestService.learnerPaul, "a standard note")
         def user = bootstrapTestService.learnerMary
 
         when: "user grade for the first time"
@@ -243,7 +243,7 @@ class NoteServiceIntegrationSpec extends Specification {
     def "test the score of a note by a user"() {
 
         given: "a note and a user"
-        Note note = noteService.addNote(bootstrapTestService.learnerPaul, "a note", bootstrapTestService.context1)
+        Note note = noteService.addStandardNote(bootstrapTestService.learnerPaul, "a note", bootstrapTestService.context1)
         User user = bootstrapTestService.learnerMary
 
         when: "user like the note"
@@ -255,4 +255,37 @@ class NoteServiceIntegrationSpec extends Specification {
         score.note == note
     }
 
+    def "test add question failure"() {
+
+        when: "I want to a question with bad syntax"
+        noteService.addQuestion(bootstrapTestService.learnerPaul,"bad syntax",bootstrapTestService.context1)
+
+        then: "I get an IsNotQuestionException"
+        thrown(IsNotQuestionException)
+    }
+
+    def "test add standard note failure"() {
+
+        when: "I want to a standard note with bad syntax"
+        noteService.addStandardNote(bootstrapTestService.learnerPaul,"::a question:: what ? {=true~false}",bootstrapTestService.context1)
+
+        then: "I get IsNotStandardNoteException"
+        thrown(IsNotStandardNoteException)
+    }
+
+    def "test find all user notes for a context"(){
+
+        given: "two notes add by paul and one add by mary for a context"
+        Tag tag = Tag.findOrSaveByName("myTag")
+        Note note1 =  noteService.addStandardNote(bootstrapTestService.learnerPaul,"note1",bootstrapTestService.context1,tag)
+        Note note2 = noteService.addStandardNote(bootstrapTestService.learnerPaul,"note2",bootstrapTestService.context1,tag)
+
+        when: "I want to find only paul's notes"
+        List<Note> res = noteService.findAllNotes(bootstrapTestService.learnerPaul,true,true,false,bootstrapTestService.context1,tag,[sort: 'dateCreated', order: 'desc'],'standard','off').list
+
+        then: "I get only the two paul's notes"
+        res.size() == 2
+        res.contains(note1)
+        res.contains(note2)
+    }
 }

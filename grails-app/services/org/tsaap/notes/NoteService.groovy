@@ -59,19 +59,6 @@ class NoteService {
                 kind: noteKind.ordinal()
         )
 
-
-        // manage the kind of note
-        if (content?.startsWith("::")) {
-            try {
-                if (giftQuestionService.getQuestionFromGiftText(theNote.content)) {
-                    theNote.kind = NoteKind.QUESTION.ordinal()
-                }
-            } catch (Exception e) {
-                log.error(e.getStackTrace())
-            }
-        }
-
-
         // save the note
         theNote.save()
 
@@ -99,6 +86,60 @@ class NoteService {
         }
 
         // return the note
+        theNote
+    }
+
+    /**
+     * add a question note
+     * @param author the author
+     * @param content the content
+     * @param context the context
+     * @param fragmentTag the fragment tag
+     * @param parentNote the parent note
+     * @return the added question
+     */
+    @Transactional
+    @Requires({ author && content })
+    Note addQuestion(User author,
+                     String content,
+                     Context context = null,
+                     Tag fragmentTag = null,
+                     Note parentNote = null) {
+        Note theNote
+        try {
+            if(giftQuestionService.getQuestionFromGiftText(content)) {
+                theNote = addNote(author,content,context,fragmentTag,parentNote,NoteKind.QUESTION)
+            }
+        }
+        catch(Exception e) {
+            throw new IsNotQuestionException("notes.edit.question.error")
+        }
+        theNote
+    }
+
+    /**
+     * add a standard note
+     * @param author the author
+     * @param content the content
+     * @param context the context
+     * @param fragmentTag the fragment tag
+     * @param parentNote the parent note
+     * @return the added standard note
+     */
+    @Transactional
+    @Requires({ author && content })
+    Note addStandardNote(User author,
+                         String content,
+                         Context context = null,
+                         Tag fragmentTag = null,
+                         Note parentNote = null) {
+        Note theNote
+        if(content?.startsWith("::")){
+            throw new IsNotStandardNoteException("notes.edit.note.error")
+        }
+        else {
+            theNote = addNote(author,content,context,fragmentTag,parentNote,NoteKind.STANDARD)
+        }
         theNote
     }
 

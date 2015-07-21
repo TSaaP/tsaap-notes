@@ -106,4 +106,31 @@ class LmsContextHelper {
         def res = [req.lti_consumer_key,req.lti_course_id]
         res
     }
+
+    /**
+     * Add a given user to followers of a given context if this one isn't already a follower for this context
+     * @param sql
+     * @param userId user id
+     * @param contextId context id
+     */
+    def addUserToContextFollower(Sql sql, long userId, long contextId) {
+        sql.execute("INSERT INTO context_follower (context_id, date_created, follower_id, follower_is_teacher, is_no_more_subscribed, unsusbscription_date) VALUES " +
+                "($contextId,now(),$userId,0,0,null)")
+    }
+
+    /**
+     *
+     * @param sql
+     * @param userId user id
+     * @param contextId context id
+     * @return res true if user is already a follower else false
+     */
+    def checkIfUserIsAContextFollower(Sql sql, long userId, long contextId) {
+        def req = sql.firstRow("SELECT id FROM context_follower WHERE context_id = $contextId and follower_id = $userId")
+        def res = false
+        if(req != null){
+            res = true
+        }
+        res
+    }
 }

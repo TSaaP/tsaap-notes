@@ -45,6 +45,7 @@ class LmsContextServiceSpec extends Specification {
 
         then: "I get an exception"
         1*lmsContextHelper.selectLmsContext(sql,'key','3','4') >> null
+        1*lmsUserHelper.selectUserId(sql,"jdoe") >> 88
         thrown(LtiContextInitialisationException)
     }
 
@@ -53,16 +54,31 @@ class LmsContextServiceSpec extends Specification {
         given: "the collaborators"
         sql = Mock(Sql)
         lmsContextHelper = Mock(LmsContextHelper)
+        lmsUserHelper = Mock(LmsUserHelper)
         lmsContextService.lmsContextHelper = lmsContextHelper
+        lmsContextService.lmsUserHelper = lmsUserHelper
 
-        when: "I try to find a tsaap note context"
+        when: "I try to find a tsaap note context and user is a teacher"
         def res = lmsContextService.findOrCreateContext(sql,'key','3','4','Moodle Tsaap','Tsaap Teach: Tsaap',"jdoe",false)
 
         then: "a context is found and I get his id and his name"
         1*lmsContextHelper.selectLmsContext(sql,'key','3','4') >> 55
+        1*lmsUserHelper.selectUserId(sql,"jdoe") >> 88
         1*lmsContextHelper.selectContextName(sql,55) >> 'Tsaap Teach: Tsaap'
         res.get(0) == 'Tsaap Teach: Tsaap'
         res.get(1) == 55
+
+        when: "I try to find a tsaap note context and user is a teacher"
+        def res2 = lmsContextService.findOrCreateContext(sql,'key','3','4','Moodle Tsaap','Tsaap Teach: Tsaap',"jdoe",true)
+
+        then: "a context is found and I get his id and his name"
+        1*lmsContextHelper.selectLmsContext(sql,'key','3','4') >> 55
+        1*lmsUserHelper.selectUserId(sql,"jdoe") >> 88
+        1*lmsContextHelper.selectContextName(sql,55) >> 'Tsaap Teach: Tsaap'
+        1*lmsContextHelper.checkIfUserIsAContextFollower(sql,88,55) >> false
+        1*lmsContextHelper.addUserToContextFollower(sql,88,55)
+        res2.get(0) == 'Tsaap Teach: Tsaap'
+        res2.get(1) == 55
     }
 
     void "test to delete a lms context for a tsaap context"() {

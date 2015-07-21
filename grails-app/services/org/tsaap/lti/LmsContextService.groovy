@@ -22,11 +22,11 @@ class LmsContextService {
     def findOrCreateContext(Sql sql, String consumerKey, String ltiCourseId, String ltiActivityId, String consumerName, String contextTitle, String username, Boolean isLearner){
         def contextName = null
         def contextId = lmsContextHelper.selectLmsContext(sql,consumerKey,ltiCourseId,ltiActivityId)
+        def userId = lmsUserHelper.selectUserId(sql,username)
         if(contextId == null) {
             contextName = contextTitle
             // We create a new context
             if(!isLearner) {
-                def userId = lmsUserHelper.selectUserId(sql,username)
                 lmsContextHelper.insertContext(sql,contextName,"",userId,true,"",consumerName)
                 contextId = lmsContextHelper.selectContextId(sql,contextName,consumerName)
                 lmsContextHelper.insertLmsContext(sql,contextId,ltiCourseId,ltiActivityId,consumerKey,consumerName)
@@ -37,6 +37,12 @@ class LmsContextService {
         }
         else {
             contextName = lmsContextHelper.selectContextName(sql,contextId)
+            if(isLearner){
+                def isFollower = lmsContextHelper.checkIfUserIsAContextFollower(sql,userId,contextId)
+                if(!isFollower){
+                    lmsContextHelper.addUserToContextFollower(sql,userId,contextId)
+                }
+            }
         }
         [contextName,contextId]
     }

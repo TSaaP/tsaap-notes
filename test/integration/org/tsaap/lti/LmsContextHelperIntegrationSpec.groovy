@@ -207,7 +207,6 @@ class LmsContextHelperIntegrationSpec extends Specification{
     def "test select consumer key and lti course id"() {
 
         when: "I want to get consumer key and lti course id for a given context id"
-        def req = null
         def res = null
         def userId
         def contextId
@@ -218,8 +217,7 @@ class LmsContextHelperIntegrationSpec extends Specification{
                 lmsUserHelper.insertUserInDatabase(sql,"jdoe@nomail.com","john","doe","jdoe","pass", true)
                 userId = lmsUserHelper.selectUserId(sql,"jdoe")
                 lmsContextHelper.insertContext(sql,"Tsaap teach: Tsaap","",userId,true,"",'Moodle-Tsaap')
-                req = lmsContextHelper.selectContextId(sql,"Tsaap teach: Tsaap",'Moodle-Tsaap')
-                contextId = req
+                contextId = lmsContextHelper.selectContextId(sql,"Tsaap teach: Tsaap",'Moodle-Tsaap')
                 lmsContextHelper.insertLmsContext(sql,contextId,"3","4",'key','Moodle-Tsaap')
                 res = lmsContextHelper.selectConsumerKeyAndCourseId(sql,contextId)
                 throw new SQLException()
@@ -229,5 +227,60 @@ class LmsContextHelperIntegrationSpec extends Specification{
 
         then: "I get consumer key and lti course id"
         res == ["key","3"]
+    }
+
+    def "test check if an user is a context follower"() {
+
+        when: "I want to know if users are context follower or not"
+        def userId
+        def userId2
+        def contextId
+        def res = null
+        def res2 = null
+        try {
+            sql.withTransaction { ->
+                lmsUserHelper.insertUserInDatabase(sql,"jdoe@nomail.com","john","doe","jdoe","pass", true)
+                userId = lmsUserHelper.selectUserId(sql,"jdoe")
+                lmsContextHelper.insertContext(sql,"Tsaap teach: Tsaap","",userId,true,"",'Moodle-Tsaap')
+                contextId = lmsContextHelper.selectContextId(sql,"Tsaap teach: Tsaap",'Moodle-Tsaap')
+                lmsUserHelper.insertUserInDatabase(sql,"jtes@nomail.com","jess","test","jtes","pass", true)
+                userId2 = lmsUserHelper.selectUserId(sql,"jtes")
+                res = lmsContextHelper.checkIfUserIsAContextFollower(sql,userId2,contextId)
+                lmsContextHelper.addUserToContextFollower(sql,userId2,contextId)
+                res2 = lmsContextHelper.checkIfUserIsAContextFollower(sql,userId2,contextId)
+                throw new SQLException()
+            }
+        }
+        catch (SQLException e){}
+
+        then: "We got correct answer"
+        !res
+        res2
+    }
+
+    def "test add an user as a context followers"() {
+
+        when: "I want to add an user to followers of a context"
+        def userId
+        def userId2
+        def contextId
+        def res = null
+        try {
+            sql.withTransaction { ->
+                lmsUserHelper.insertUserInDatabase(sql,"jdoe@nomail.com","john","doe","jdoe","pass", true)
+                userId = lmsUserHelper.selectUserId(sql,"jdoe")
+                lmsContextHelper.insertContext(sql,"Tsaap teach: Tsaap","",userId,true,"",'Moodle-Tsaap')
+                contextId = lmsContextHelper.selectContextId(sql,"Tsaap teach: Tsaap",'Moodle-Tsaap')
+                lmsUserHelper.insertUserInDatabase(sql,"jtes@nomail.com","jess","test","jtes","pass", true)
+                userId2 = lmsUserHelper.selectUserId(sql,"jtes")
+                lmsContextHelper.addUserToContextFollower(sql,userId2,contextId)
+                res = lmsContextHelper.checkIfUserIsAContextFollower(sql,userId2,contextId)
+                throw new SQLException()
+            }
+        }
+        catch (SQLException e){}
+
+        then: "The user is correctly add to followers for this context"
+        res
     }
 }

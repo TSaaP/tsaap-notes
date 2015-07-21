@@ -48,7 +48,9 @@
             ${message(code: 'context.index.followedScope.link')}
         </g:link></li>
         <li role="presentation"><g:link class="list-group-item ${(!params.filter || params.filter == org.tsaap.notes.FilterReservedValue.__ALL__.name()) ? 'active' : ''}"
-                                        controller="context" action="index">${message(code: 'context.index.allScope.link')}</g:link></li>
+                                        controller="context" action="index">
+            ${message(code: 'context.index.allScope.link')}
+        </g:link></li>
     </ul>
 
     <div id="list-context" class="container">
@@ -165,7 +167,6 @@
     }
 
     function submitDuplicate(contextId) {
-        console.log("test");
         $("#"+contextId).submit();
     }
 </r:script>

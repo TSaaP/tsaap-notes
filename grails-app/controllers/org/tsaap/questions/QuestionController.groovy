@@ -50,7 +50,7 @@ class QuestionController {
         def liveSession = LiveSession.get(params.liveSessId)
         liveSession.stop()
         if(liveSession.note.context) {
-            if(liveSession.note.context.source != "") {
+            if(liveSession.note.context.source != null) {
                 lmsContextHelper = new LmsContextHelper()
                 Sql sql = new Sql(dataSource)
                 String consumerKey
@@ -123,7 +123,7 @@ class QuestionController {
         if (phase.stopLiveSessionWhenIsStopped()) {
             liveSessionService.closeNPhaseSubmitLiveSession(liveSession)
             if (liveSession.note.context) {
-                if (liveSession.note.context.source != "") {
+                if (liveSession.note.context.source != null) {
                     lmsContextHelper = new LmsContextHelper()
                     Sql sql = new Sql(dataSource)
                     String consumerKey

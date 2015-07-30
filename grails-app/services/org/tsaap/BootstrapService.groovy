@@ -88,7 +88,7 @@ class BootstrapService {
     def initializeDevContextWithFragment() {
         football = Context.findByContextName('football')
         if(!football) {
-            football = contextService.saveContext(new Context(owner: thom, contextName: 'football',descriptionAsNote: 'everything about #football',url: 'http://fr.wikipedia.org/wiki/Football'))
+            football = contextService.saveContext(new Context(owner: thom, contextName: 'football',descriptionAsNote: 'everything about #football',url: 'http://fr.wikipedia.org/wiki/Football', source: null))
         }
         goal = Tag.findOrSaveWhere(name: 'goal')
         for (int i=0 ; i<10 ; i++) {

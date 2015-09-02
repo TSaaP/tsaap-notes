@@ -20,6 +20,15 @@ class AttachementService {
     DataStore dataStore
 
     /**
+     * Get attachement by id
+     * @param id the id of the wanted attachement
+     * @return the corresponding attachment or null
+     */
+    Attachement getAttachementById(Long id) {
+        return Attachement.get(id)
+    }
+
+    /**
      * Create an Attachement object from a HTTP request
      * with join file
      * @param file the file from the request

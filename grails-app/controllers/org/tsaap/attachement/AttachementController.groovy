@@ -15,16 +15,10 @@ class AttachementController {
      * Action to visualize a file
      */
     def viewAttachement() {
-        Attachement attachement = Attachement.get(params.id)
-        response.setHeader("Content-disposition", "filename=${attachement.originalName}")
-        response.contentType = attachement.typeMime
+        Attachement attachement = attachementService.getAttachementById(params.id)
         def is = attachementService.getInputStreamForAttachement(attachement)
-        if (attachement.typeMime?.contains('html')) {
-            render(is.text)
-        } else {
-            response.outputStream << is
-            response.outputStream.flush()
-        }
+        def ct = attachement.typeMime
+        render(file:is,contentType:attachement.typeMime,fileName:attachement.originalName)
     }
 
 

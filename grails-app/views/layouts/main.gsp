@@ -53,7 +53,7 @@
         <ul class="nav navbar-nav">
           <tsaap:ifLoggedIn>
             <li class="dropdown">
-                      <a href="#" class="dropdown-toggle" data-toggle="dropdown">${user.fullname}
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown"><sec:username/>
                         <span class="glyphicon glyphicon-cog"></span> <b class="caret"></b></a>
                       <ul class="dropdown-menu">
                         <li><g:link controller="userAccount" action="doEdit">${message(code: "layout.main.account")}</g:link></li>

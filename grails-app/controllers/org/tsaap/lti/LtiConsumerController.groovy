@@ -1,11 +1,13 @@
 package org.tsaap.lti
 
-
+import grails.plugins.springsecurity.Secured
+import org.tsaap.directory.RoleEnum
 
 import static org.springframework.http.HttpStatus.*
 import grails.transaction.Transactional
 
 @Transactional(readOnly = true)
+@Secured(['IS_AUTHENTICATED_FULLY','ROLE_ADMIN_ROLE'])
 class LtiConsumerController {
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]

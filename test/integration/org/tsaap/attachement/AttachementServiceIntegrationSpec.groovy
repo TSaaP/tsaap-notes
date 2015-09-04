@@ -231,7 +231,7 @@ class AttachementServiceIntegrationSpec extends Specification {
                 bytes: [2, 3, 4, 5, 6, 7]
         )
         Attachement attachement1 = attachementService.createAttachement(attachementDto, 10)
-        def path = "/opt/shared/tsaap-repo/${attachement1.path.substring(0,2)}/${attachement1.path.substring(2,4)}/" +
+        def path = "${attachementService.dataStore.path}/${attachement1.path.substring(0,2)}/${attachement1.path.substring(2,4)}/" +
                 "${attachement1.path.substring(4,6)}/$attachement1.path"
         Attachement attachement2 = attachementService.createAttachement(attachementDto, 10)
 
@@ -255,7 +255,7 @@ class AttachementServiceIntegrationSpec extends Specification {
                 bytes: [2, 3, 4, 5, 6, 7]
         )
         Attachement attachement1 = attachementService.createAttachement(attachementDto, 10)
-        def path = "/opt/shared/tsaap-repo/${attachement1.path.substring(0,2)}/${attachement1.path.substring(2,4)}/" +
+        def path = "${attachementService.dataStore.path}/${attachement1.path.substring(0,2)}/${attachement1.path.substring(2,4)}/" +
                 "${attachement1.path.substring(4,6)}/$attachement1.path"
         Attachement attachement2 = attachementService.createAttachement(attachementDto, 10)
 

@@ -196,7 +196,6 @@ class AttachementService {
      */
     def deleteAttachementAndFileInSystem() {
         def attachementToRemoveList = Attachement.findAllByToDelete(true)
-        println attachementToRemoveList
         def iteratorAttachement = attachementToRemoveList.iterator()
         while(iteratorAttachement.hasNext()) {
             def attachementToDelete = iteratorAttachement.next()
@@ -206,13 +205,13 @@ class AttachementService {
                    deleteInSystem = false
                 }
                 else {
-                    attachementToRemoveList.remove(it)
+                    attachementToRemoveList.remove(it) // todo fsil : not clean, to improve
                     it.delete(flush: true)
                 }
             }
             if(deleteInSystem) {
                 String attachementPath = attachementToDelete.path
-                String finalPath = "/opt/shared/tsaap-repo/${attachementPath.substring(0,2)}/${attachementPath.substring(2,4)}/" +
+                String finalPath = "${dataStore.path}/${attachementPath.substring(0,2)}/${attachementPath.substring(2,4)}/" +
                         "${attachementPath.substring(4,6)}/$attachementPath"
                 new File(finalPath).delete()
             }

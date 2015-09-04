@@ -18,16 +18,22 @@ package org.tsaap.directory
 
 class Role {
 
-  String authority
+  String roleName
 
   static mapping = {
     cache true
     version(false)
+    roleName column:'authority'
+  }
+
+  String getAuthority() {
+    "ROLE_${this.roleName}"
   }
 
   static constraints = {
-    authority blank: false, unique: true, inList: RoleEnum.values()*.name()
+    roleName blank: false, unique: true, inList: RoleEnum.values()*.name()
   }
+
 
 }
 

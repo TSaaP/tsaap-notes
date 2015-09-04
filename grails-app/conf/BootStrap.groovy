@@ -25,7 +25,7 @@ class BootStrap {
   BootstrapService bootstrapService
 
   def init = { servletContext ->
-    bootstrapService.initializeRoles()
+    bootstrapService.initializeReferenceData()
     Environment.executeForCurrentEnvironment {
       development {
         Sql.LOG.level = Level.FINE

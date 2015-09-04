@@ -48,7 +48,7 @@ class UserAccountServiceIntegrationSpec extends Specification {
     user.email == "mary@nomail.com"
     user.language == 'en'
     !user.authorities.empty
-    user.authorities.first().authority == RoleEnum.STUDENT_ROLE.name()
+    user.authorities.first().roleName == RoleEnum.STUDENT_ROLE.name()
     user.password == springSecurityService.encodePassword("password")
 
     when: "adding a user with email checking activated"

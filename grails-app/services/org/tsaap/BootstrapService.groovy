@@ -26,6 +26,7 @@ class BootstrapService {
     User fsil
     User mary
     User thom
+    User admin
 
     Context science
     Context football
@@ -36,24 +37,33 @@ class BootstrapService {
 
     def initializeReferenceData() {
         initializeRoles()
+        initializeAdmin()
     }
 
     def initializeRoles() {
         Sql sql = new Sql(dataSource)
-        studentRole = Role.findByAuthority(RoleEnum.STUDENT_ROLE.name())
+        studentRole = Role.findByRoleName(RoleEnum.STUDENT_ROLE.name())
         if (!studentRole) {
             sql.executeInsert("insert into role (id,authority) values (2,${RoleEnum.STUDENT_ROLE.name()})")
             studentRole = RoleEnum.STUDENT_ROLE.role
         }
-        teacherRole = Role.findByAuthority(RoleEnum.TEACHER_ROLE.name())
+        teacherRole = Role.findByRoleName(RoleEnum.TEACHER_ROLE.name())
         if (!teacherRole) {
             sql.executeInsert("insert into role (id,authority) values (3,${RoleEnum.TEACHER_ROLE.name()})")
             teacherRole = RoleEnum.TEACHER_ROLE.role
         }
-        adminRole = Role.findByAuthority(RoleEnum.ADMIN_ROLE.name())
+        adminRole = Role.findByRoleName(RoleEnum.ADMIN_ROLE.name())
         if (!adminRole) {
             sql.executeInsert("insert into role (id,authority) values (1,${RoleEnum.ADMIN_ROLE.name()})")
             adminRole = RoleEnum.ADMIN_ROLE.role
+        }
+    }
+
+    def initializeAdmin() {
+        admin = User.findByUsername("admin")
+        if (!admin) {
+            def user = new User(firstName: "Admin", lastName: "Tsaap", username: "admin", password: "1234", email: 'admin@tsaap.org', language: 'en')
+            admin = userAccountService.addUser(user, adminRole, true)
         }
     }
 

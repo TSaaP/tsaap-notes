@@ -84,7 +84,7 @@ class UserAccountController {
         params.remove('password')
       }
       Role mainRole = RoleEnum.valueOf(RoleEnum, params.role).role
-      params.language = userAccountService.LANGUAGES_SUPPORTED.get(params.language)
+      //params.language = userAccountService.LANGUAGES_SUPPORTED.get(params.language)
       user.properties = params
       user = userAccountService.updateUser(user, mainRole)
     }

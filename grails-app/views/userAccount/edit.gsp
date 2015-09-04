@@ -107,7 +107,7 @@
             </div>
 
             <div class="form-group">
-            <label> ${message(code: "useraccount.form.language.label")} : <g:select name="language" from="${org.tsaap.directory.UserAccountService.LANGUAGES_SUPPORTED.keySet()}" ></g:select></label>
+            <label> ${message(code: "useraccount.form.language.label")} : <g:select name="language" from="${org.tsaap.directory.UserAccountService.LANGUAGES_SUPPORTED.values()}" value="${fieldValue(bean: user, field: 'language')}" ></g:select></label>
             </div>
 
             <button type="submit"

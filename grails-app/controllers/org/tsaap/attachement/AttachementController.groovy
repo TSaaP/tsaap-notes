@@ -15,9 +15,8 @@ class AttachementController {
      * Action to visualize a file
      */
     def viewAttachement() {
-        Attachement attachement = attachementService.getAttachementById(params.id)
+        Attachement attachement = attachementService.getAttachementById(params.id as Long)
         def is = attachementService.getInputStreamForAttachement(attachement)
-        def ct = attachement.typeMime
         render(file:is,contentType:attachement.typeMime,fileName:attachement.originalName)
     }
 

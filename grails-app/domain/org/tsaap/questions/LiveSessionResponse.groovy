@@ -3,6 +3,7 @@ package org.tsaap.questions
 import org.tsaap.directory.User
 import org.tsaap.notes.Note
 import org.tsaap.questions.impl.gift.GiftQuestionService
+import org.tsaap.questions.impl.gift.GiftUserResponseException
 
 class LiveSessionResponse {
 
@@ -46,8 +47,12 @@ class LiveSessionResponse {
                     answerBlockTextList << []
                 }
             }
-
-            userResponse = giftQuestionService.createUserResponseForQuestionAndAnswerBlockList(user.username, question, answerBlockTextList)
+            try {
+                userResponse = giftQuestionService.createUserResponseForQuestionAndAnswerBlockList(user.username, question, answerBlockTextList)
+            } catch (GiftUserResponseException e) {
+                log.error(e.message)
+                userResponse = giftQuestionService.noResponseAnswer
+            }
             if (percentCredit == null) {
                 percentCredit = userResponse.evaluatePercentCredit()
             }

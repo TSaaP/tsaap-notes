@@ -46,7 +46,7 @@ class UserAccountService {
    */
   User updateUser(User user, Role mainRole) {
     user.save()
-    if (!user.hasErrors() && !UserRole.get(user.id, mainRole.id)) {
+    if (!user.hasErrors() && !user.isAdmin() &&!UserRole.get(user.id, mainRole.id)) {
       UserRole.removeAll(user)
       UserRole.create(user, mainRole)
     }

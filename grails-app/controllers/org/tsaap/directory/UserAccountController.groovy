@@ -83,7 +83,12 @@ class UserAccountController {
       if (!params.password) {
         params.remove('password')
       }
-      Role mainRole = RoleEnum.valueOf(RoleEnum, params.role).role
+
+      Role mainRole = RoleEnum.STUDENT_ROLE.role
+      try {
+        mainRole = RoleEnum.valueOf(RoleEnum, params.role).role
+      } catch (Exception e) {}
+
       //params.language = userAccountService.LANGUAGES_SUPPORTED.get(params.language)
       user.properties = params
       user = userAccountService.updateUser(user, mainRole)

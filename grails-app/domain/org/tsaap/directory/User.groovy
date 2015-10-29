@@ -81,6 +81,14 @@ class User {
       UserRole.get(this.id, RoleEnum.TEACHER_ROLE.id)
     }
 
+  /**
+   *
+   * @return true if the user is admin
+   */
+  boolean isAdmin() {
+    UserRole.get(this.id, RoleEnum.ADMIN_ROLE.id)
+  }
+
   Set<Role> getAuthorities() {
     def res = UserRole.findAllByUser(this).collect { it.role } as Set
     res*.roleName

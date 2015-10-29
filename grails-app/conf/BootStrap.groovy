@@ -1,6 +1,8 @@
 import grails.util.Environment
+import grails.util.Holders
 import groovy.sql.Sql
 import org.tsaap.BootstrapService
+import org.tsaap.lti.Config
 
 import java.util.logging.Level
 
@@ -39,6 +41,11 @@ class BootStrap {
         bootstrapService.initializeDevContextWithFragment()
       }
     }
+    // inti config db connection for LTI
+    def conf = Holders.config
+    Config.DB_NAME = conf.dataSource.url
+    Config.DB_USERNAME = conf.dataSource.username
+    Config.DB_PASSWORD = conf.dataSource.password
   }
 
   def destroy = {}

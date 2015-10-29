@@ -7,13 +7,14 @@ public class Config {
     //
     ///  Application setting
     //
-    public static final String APP_NAME = "TsaaP-Notes";
+    public static final String APP_NAME = "Tsaap-Notes";
 
     //
     ///  Database connection settings
     //
-    public static final String DB_NAME = "jdbc:mysql://localhost:3306/tsaap-notes";
-    public static final String DB_USERNAME = "tsaap";
-    public static final String DB_PASSWORD = "tsaap";
-    public static final String DB_TABLENAME_PREFIX = "";
+    public static String DB_NAME;
+    public static String DB_USERNAME;
+    public static String DB_PASSWORD;
+    public static String DB_TABLENAME_PREFIX = "";
+
 }

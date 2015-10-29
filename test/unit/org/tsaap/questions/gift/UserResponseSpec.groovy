@@ -76,10 +76,10 @@ class UserResponseSpec extends Specification {
     thrown(GiftUserResponseAnswerBlockListSizeIsNotValidInResponse)
 
     when: "a response given by a user doesn't mach with any choice"
-    giftQuestionService.createUserResponseForQuestionAndAnswerBlockList("u1",question,[["3"]])
+    UserResponse userResponse = giftQuestionService.createUserResponseForQuestionAndAnswerBlockList("u1",question,[["3"]])
 
-    then: "the response is not valid"
-    thrown(GiftUserResponseAnswerNotFoundInChoiceList)
+    then: "the response is not valid and then credit is 0"
+    userResponse.evaluatePercentCredit() == 0f
 
   }
 

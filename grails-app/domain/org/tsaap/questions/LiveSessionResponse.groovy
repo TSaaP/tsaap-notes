@@ -47,12 +47,7 @@ class LiveSessionResponse {
                     answerBlockTextList << []
                 }
             }
-            try {
-                userResponse = giftQuestionService.createUserResponseForQuestionAndAnswerBlockList(user.username, question, answerBlockTextList)
-            } catch (GiftUserResponseException e) {
-                log.error(e.message)
-                userResponse = giftQuestionService.noResponseAnswer
-            }
+            userResponse = giftQuestionService.createUserResponseForQuestionAndAnswerBlockList(user.username, question, answerBlockTextList)
             if (percentCredit == null) {
                 percentCredit = userResponse.evaluatePercentCredit()
             }

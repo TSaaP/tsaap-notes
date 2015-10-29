@@ -98,7 +98,7 @@ public class GiftQuestionService {
                 }
             }
             if (!answerHasBeenFound) {
-                throw new GiftUserResponseAnswerNotFoundInChoiceList();
+                currentUserAnsBlock.getAnswerList().add(getNoResponseAnswer());
             }
         }
 

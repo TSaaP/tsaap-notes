@@ -20,9 +20,12 @@ import org.tsaap.attachement.Attachement
 import org.tsaap.directory.User
 import org.tsaap.questions.LiveSession
 import org.tsaap.questions.Question
+import org.tsaap.questions.TextBlock
+import org.tsaap.questions.impl.DefaultQuestion
 import org.tsaap.questions.impl.gift.GiftQuestionService
 
 class Note {
+
     Date dateCreated
     User author
     Context context
@@ -54,6 +57,10 @@ class Note {
     }
 
     static transients = ['noteUrl', 'question', 'giftQuestionService', 'liveSession', 'activeLiveSession','attachment']
+
+    private static final String QUESTION_DEFAULT_TITLE = "Question"
+    private static final String QUESTION_INVALID_DEFAULT_TITLE = "question.format.error"
+
 
     /**
      * Get the attachment of the note if any
@@ -95,7 +102,15 @@ class Note {
      * @return true if the note is an interactive question
      */
     boolean isAQuestion() {
-        kind == NoteKind.QUESTION.ordinal()
+        kind == NoteKind.QUESTION.ordinal() || kind == NoteKind.INVALID_QUESTION.ordinal()
+    }
+
+    /**
+     * Indicat if a note is an invalid interactive question
+     * @return true if the note is an invalid question
+     */
+    boolean isAnInvalidQuestion() {
+        kind == NoteKind.INVALID_QUESTION.ordinal()
     }
 
 
@@ -104,16 +119,40 @@ class Note {
      * @return the corresponding question or null
      */
     Question getQuestion() {
-        if (content?.startsWith("::") && !question) {
+        if (isAnInvalidQuestion() && !question) {
+            question = invalidQuestion()
+        } else if (!question) {
             try {
                 question = giftQuestionService.getQuestionFromGiftText(content)
+                if (question.title == null) {
+                    question.title = QUESTION_DEFAULT_TITLE
+                }
             } catch (Exception e) {
-                log.error(e.message)
+                log.error("""${e.message}
+                ${content}
+                """)
+                question = invalidQuestion()
+                kind = NoteKind.INVALID_QUESTION.ordinal()
+                save(flush: true)
             }
         }
         question
     }
 
+    /**
+     * Create and return a question with invalid content
+     * @return An object question corresponding to an invalid question
+     */
+    public DefaultQuestion invalidQuestion() {
+        question = new DefaultQuestion(title: QUESTION_INVALID_DEFAULT_TITLE)
+        question.addTextBlock(new TextBlock() {
+            @Override
+            String getText() {
+                return content
+            }
+        })
+        return question
+    }
 
     /**
      * Get the last live session for the current note if it is a question
@@ -199,5 +238,6 @@ class Note {
 enum NoteKind {
     STANDARD,
     QUESTION,
-    EXPLANATION
+    EXPLANATION,
+    INVALID_QUESTION
 }

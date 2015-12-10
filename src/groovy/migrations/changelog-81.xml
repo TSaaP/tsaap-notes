@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-  ~ Copyright 2014 Tsaap Development Group
+  ~ Copyright 2015 Tsaap Development Group
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -22,14 +22,8 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <include file="fromscratch/changelog-tsaap-notes-all.xml" relativeToChangelogFile="true"/>
-    <include file="changelog-44.xml" relativeToChangelogFile="true"/>
-    <include file="changelog-46.xml" relativeToChangelogFile="true"/>
-    <include file="changelog-47.xml" relativeToChangelogFile="true"/>
-    <include file="changelog-58.xml" relativeToChangelogFile="true"/>
-    <include file="changelog-63.xml" relativeToChangelogFile="true"/>
-    <include file="changelog-73.xml" relativeToChangelogFile="true"/>
-    <include file="changelog-76.xml" relativeToChangelogFile="true"/>
-    <include file="changelog-77.xml" relativeToChangelogFile="true"/>
-    <include file="changelog-81.xml" relativeToChangelogFile="true"/>
+    <changeSet id="1" author="fsil">
+        <modifyDataType tableName="session_phase" columnName="result_matrix_as_json" newDataType="TEXT"/>
+    </changeSet>
+
 </databaseChangeLog>

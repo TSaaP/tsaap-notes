@@ -21,7 +21,8 @@ class UserProvisionAccountService {
     }
 
     def generateUsername(Sql sql, String firstName, String lastName) {
-        def username = firstName.substring(0,1)+lastName.substring(0,3)
+        def indexLastname = Math.min(3,lastName.length())
+        def username = firstName.substring(0,1)+lastName.substring(0,indexLastname)
         // Check if the new username is not already use
         def checkUsername = lmsUserHelper.selectUsernameIfExist(sql,username)
         if(checkUsername != null) {

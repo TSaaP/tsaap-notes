@@ -38,4 +38,12 @@ class UserProvisionAccountServiceIntegrationSpec extends Specification{
         username3  == "jdoe3"
 
     }
+
+    def "test generate username with very short name"() {
+        when:"I generate a username based on a very short name"
+        def username = userProvisionAccountService.generateUsername(sql,"john","do")
+
+        then:"I got a username with the adhoc trigram"
+        username == "jdo"
+    }
 }

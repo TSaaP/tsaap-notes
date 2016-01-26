@@ -67,7 +67,7 @@ public class Launch extends HttpServlet implements Callback {
                     toolProvider.getRequest().getSession().setAttribute("resource_id", toolProvider.getResourceLink().getId());
                     toolProvider.getRequest().getSession().setAttribute("user_consumer_key",
                             toolProvider.getUser().getResourceLink().getConsumer().getKey());
-                    toolProvider.getRequest().getSession().setAttribute("user_id", toolProvider.getUser().getId());
+                    toolProvider.getRequest().getSession().setAttribute("user_id", toolProvider.getUser().getIdForDefaultScope());
                     toolProvider.getRequest().getSession().setAttribute("isStudent", toolProvider.getUser().isLearner());
                     toolProvider.getRequest().getSession().setAttribute("lti_context_id", toolProvider.getResourceLink().getLtiContextId());
 
@@ -78,7 +78,7 @@ public class Launch extends HttpServlet implements Callback {
 
                     //Check the user
                     initialiseLmsUserService();
-                    ArrayList user = (ArrayList) lmsUserService.findOrCreateUser(sql, toolProvider.getUser().getId(), toolProvider.getUser().getFirstname(), toolProvider.getUser().getLastname(),
+                    ArrayList user = (ArrayList) lmsUserService.findOrCreateUser(sql, toolProvider.getUser().getIdForDefaultScope(), toolProvider.getUser().getFirstname(), toolProvider.getUser().getLastname(),
                             toolProvider.getUser().getEmail(), consumerKey, isLearner);
                     String username = (String) user.get(0);
                     Boolean userEnable = (Boolean) user.get(1);

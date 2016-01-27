@@ -180,7 +180,9 @@ class ContextService {
         if (duplicateQuestions) {
             List<Note> notes = noteService.findAllNotesAsQuestionForContext(aContext)
             notes.each { Note note ->
-                noteService.duplicateNoteInContext(note, newContext, aUser)
+                if (note.author == aUser) {
+                    noteService.duplicateNoteInContext(note, newContext, aUser)
+                }
             }
         }
         newContext

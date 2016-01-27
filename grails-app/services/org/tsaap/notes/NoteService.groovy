@@ -366,7 +366,7 @@ class NoteService {
      */
     @Requires({ note && note.author == user })
     Note duplicateNoteInContext(Note note, Context targetContext, User user) {
-        addNote(user,note.content,targetContext,note.fragmentTag)
+        addNote(user,note.content,targetContext,note.fragmentTag, null,note.noteKind)
     }
 
     /**

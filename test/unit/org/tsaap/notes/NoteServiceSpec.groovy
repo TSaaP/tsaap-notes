@@ -45,6 +45,8 @@ class NoteServiceSpec extends Specification {
             getAuthor() >> user
             getContent() >> "a content"
             getFragmentTag() >> Mock(Tag)
+            getNoteKind() >> NoteKind.STANDARD
+            getKind() >> NoteKind.STANDARD.ordinal()
         }
         targetContext = Mock(Context)
         noteService.giftQuestionService = Mock(GiftQuestionService) {
@@ -66,7 +68,7 @@ class NoteServiceSpec extends Specification {
         thrown(PreconditionViolation)
     }
 
-    def "duplication of a note in a target context must duplicate content, author and fragment tag "() {
+    def "duplication of a note in a target context must duplicate content, author, fragment tag and kind"() {
         given:"a note"
         note
 
@@ -80,6 +82,7 @@ class NoteServiceSpec extends Specification {
         newNote.author == user
         newNote.content == note.content
         newNote.fragmentTag == note.fragmentTag
+        newNote.kind == note.kind
 
         and:"the new note has no errors"
         !newNote.hasErrors()

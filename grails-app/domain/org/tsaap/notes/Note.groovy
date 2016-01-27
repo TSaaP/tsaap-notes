@@ -56,11 +56,18 @@ class Note {
         version false
     }
 
-    static transients = ['noteUrl', 'question', 'giftQuestionService', 'liveSession', 'activeLiveSession','attachment']
+    static transients = ['noteUrl', 'question', 'giftQuestionService', 'liveSession', 'activeLiveSession','attachment','noteKind']
 
     private static final String QUESTION_DEFAULT_TITLE = "Question"
     private static final String QUESTION_INVALID_DEFAULT_TITLE = "question.format.error"
 
+    /**
+     * Get the note kind object
+     * @return the note kind
+     */
+    NoteKind getNoteKind() {
+       NoteKind.values()[kind]
+    }
 
     /**
      * Get the attachment of the note if any

@@ -79,23 +79,31 @@ class ContextServiceSpec extends Specification {
         newContext.hasErrors()
     }
 
-    def "default duplication of a context must duplicate the questions"() {
+    def "default duplication of a context must duplicate the questions of the owner of the scope"() {
         given:"a context"
         context
 
         and: "2 question notes associated with the context"
-        Note q1 = Mock(Note)
-        Note q2 = Mock(Note)
+        Note q1 = Mock(Note) {
+            getAuthor() >> user
+        }
+        Note q2 = Mock(Note) {
+            getAuthor() >> user
+        }
+        Note q3 = Mock(Note) {
+            getAuthor() >> Mock(User)
+        }
         contextService.noteService = Mock(NoteService) {
-            findAllNotesAsQuestionForContext(context) >> [q1,q2]
+            findAllNotesAsQuestionForContext(context) >> [q1,q2,q3]
         }
 
         when: "the context is duplicated"
         contextService.duplicateContext(context, user)
 
-        then:"only note as question is duplicated"
+        then:"only note as question authored by the scope owner is duplicated"
         1 * contextService.noteService.duplicateNoteInContext(q1,_,user)
         1 * contextService.noteService.duplicateNoteInContext(q2,_,user)
+        0 * contextService.noteService.duplicateNoteInContext(q3,_,user)
 
     }
 

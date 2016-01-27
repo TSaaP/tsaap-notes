@@ -34,8 +34,7 @@ class LmsContextHelper {
      * @param source lti context source
      */
     def insertContext(Sql sql, String contextName, String description, long owner, Boolean isTeacher, String url, String source) {
-        sql.execute("INSERT INTO context (context_name, date_created, description_as_note, last_updated, owner_id, owner_is_teacher, url, source) VALUES " +
-                "('$contextName',now(),'$description',now(),$owner,$isTeacher,'$url','$source')")
+        sql.execute("INSERT INTO context (context_name, date_created, description_as_note, last_updated, owner_id, owner_is_teacher, url, source) VALUES ($contextName,now(),$description,now(),$owner,$isTeacher,$url,$source)")
     }
 
     /**
@@ -114,8 +113,7 @@ class LmsContextHelper {
      * @param contextId context id
      */
     def addUserToContextFollower(Sql sql, long userId, long contextId) {
-        sql.execute("INSERT INTO context_follower (context_id, date_created, follower_id, follower_is_teacher, is_no_more_subscribed, unsusbscription_date) VALUES " +
-                "($contextId,now(),$userId,0,0,null)")
+        sql.execute("INSERT INTO context_follower (context_id, date_created, follower_id, follower_is_teacher, is_no_more_subscribed, unsusbscription_date) VALUES ($contextId,now(),$userId,0,0,null)")
     }
 
     /**

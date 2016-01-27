@@ -75,12 +75,14 @@ class LmsContextHelperIntegrationSpec extends Specification{
             sql.withTransaction { ->
                 lmsUserHelper.insertUserInDatabase(sql,"jdoe@nomail.com","john","doe","jdoe","pass", true)
                 userId = lmsUserHelper.selectUserId(sql,"jdoe")
-                lmsContextHelper.insertContext(sql,'Test',"",userId,true,"",'Source')
-                res = lmsContextHelper.selectContextId(sql,'Test','Source')
+                lmsContextHelper.insertContext(sql,"test 2 with ' special caractère","",userId,true,"",'Source')
+                res = lmsContextHelper.selectContextId(sql,"test 2 with ' special caractère",'Source')
                 throw new SQLException()
             }
         }
-        catch (SQLException e){}
+        catch (SQLException e){
+            log.error e.message
+        }
 
         then: "I get the context id"
         res != null

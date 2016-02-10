@@ -88,7 +88,7 @@ class LmsGradeServiceIntegrationSpec extends Specification {
                         "(1,'[[\"1\"]]',$liveSessionId2,0,$userId2,$sessionPhase1Id,1,null)")
                 def sessionPhase2Id = sql.firstRow("SELECT id FROM session_phase WHERE live_session_id = $liveSessionId2 and rank = 2").id
                 sql.execute("INSERT INTO live_session_response (version, answer_list_as_string, live_session_id, percent_credit, user_id, session_phase_id, confidence_degree, explanation_id) VALUES " +
-                        "(2,'[[\"0\"]]',$liveSessionId2,100,$userId1,$sessionPhase2Id,5,null)")
+                        "(2,'[[\"0\"]]',$liveSessionId2,null,$userId1,$sessionPhase2Id,5,null)")
                 sql.execute("INSERT INTO live_session_response (version, answer_list_as_string, live_session_id, percent_credit, user_id, session_phase_id, confidence_degree, explanation_id) VALUES " +
                         "(2,'[[\"0\"]]',$liveSessionId2,100,$userId2,$sessionPhase2Id,5,null)")
 
@@ -102,7 +102,7 @@ class LmsGradeServiceIntegrationSpec extends Specification {
 
         then: "I get a map with users grades"
         res != null
-        res.get("10") == 100
+        res.get("10") == 50
         res.get("11") == 50
     }
 }

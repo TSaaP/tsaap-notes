@@ -56,6 +56,9 @@ class LmsGradeService {
             }
             int finalGrade = 0
             gradesMap.each { questionGrade, credit ->
+                if (credit == null) {
+                    credit = 0
+                }
                 finalGrade += credit
             }
             finalGrade = finalGrade/questionNumber

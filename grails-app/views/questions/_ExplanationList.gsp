@@ -19,7 +19,7 @@
         <g:set var="explanation" value="${response?.explanation}"/>
         <g:if test="${explanation}">
             <div class="alert alert-info">
-                <strong><g:formatNumber number="${explanation.grade}" type="number" maxFractionDigits="2"/> /5  @${explanation.author.username}</strong> ${message(code: "questions.explanation.evaluated")} ${explanation.evaluationCount()} ${message(code: "questions.explanation.contributors")}<br/>
+                <strong><g:formatNumber number="${explanation.findOrUpdateMeanGrade()}" type="number" maxFractionDigits="2"/> /5  @${explanation.author.username}</strong> ${message(code: "questions.explanation.evaluated")} ${explanation.evaluationCount()} ${message(code: "questions.explanation.contributors")}<br/>
                 ${explanation.content}
             </div>
 
@@ -32,7 +32,7 @@
         <g:set var="explanation" value="${theResponse?.explanation}"/>
         <g:if test="${explanation}">
             <div class="alert alert-info">
-                <strong><g:formatNumber number="${explanation.grade}" type="number" maxFractionDigits="2"/> /5  @${explanation.author.username}</strong> ${message(code: "questions.explanation.evaluated")} ${explanation.evaluationCount()} ${message(code: "questions.explanation.contributors")}<br/>
+                <strong><g:formatNumber number="${explanation.findOrUpdateMeanGrade()}" type="number" maxFractionDigits="2"/> /5  @${explanation.author.username}</strong> ${message(code: "questions.explanation.evaluated")} ${explanation.evaluationCount()} ${message(code: "questions.explanation.contributors")}<br/>
                 ${explanation.content}
             </div>
         </g:if>

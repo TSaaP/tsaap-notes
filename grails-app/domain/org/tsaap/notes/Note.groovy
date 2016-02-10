@@ -230,7 +230,14 @@ class Note {
      */
     def updateMeanGrade() {
         grade = evaluateTheMeanGrade()
-        save(failOnError: true)
+        save(failOnError: true, flush: true)
+    }
+
+    Double findOrUpdateMeanGrade() {
+        if (grade == null) {
+            updateMeanGrade()
+        }
+        grade
     }
 
     boolean hasBeenAlreadyEvaluatedByUser(User user) {

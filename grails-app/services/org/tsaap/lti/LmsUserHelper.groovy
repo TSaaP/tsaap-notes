@@ -29,11 +29,9 @@ class LmsUserHelper {
      * @return an username if found else null
      */
     def selectUsernameIfExist(Sql sql, String username) {
-        def req = sql.firstRow("SELECT username FROM user WHERE username LIKE '"+username+"%' ORDER BY username DESC")
-        def res = null
-        if(req != null){
-            res = req.username
-        }
+        def userNameLike = '^'+username+'[0-9]*$'
+        def req = sql.firstRow("SELECT username FROM user WHERE username RLIKE $userNameLike ORDER BY username DESC")
+        def res = req?.username
         res
     }
 
@@ -47,9 +45,7 @@ class LmsUserHelper {
      * @param password user password
      */
     def insertUserInDatabase(Sql sql, String email, String firstname, String lastname, String username, String password, Boolean enable) {
-        sql.execute("INSERT INTO user (account_expired,account_locked,email,enabled,first_name,last_name," +
-                "normalized_username,password,password_expired,username,version,language) " +
-                "VALUES (0,0,'$email',$enable,'$firstname','$lastname','$username','$password',0,'$username',0,'en')")
+        sql.execute("INSERT INTO user (account_expired,account_locked,email,enabled,first_name,last_name,normalized_username,password,password_expired,username,version,language) VALUES (0,0,$email,$enable,$firstname,$lastname,$username,$password,0,$username,0,'en')")
     }
 
     /**

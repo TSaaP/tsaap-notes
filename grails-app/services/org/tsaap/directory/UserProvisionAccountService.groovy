@@ -25,14 +25,23 @@ class UserProvisionAccountService {
         def username = firstName.substring(0,1)+lastName.substring(0,indexLastname)
         // Check if the new username is not already use
         def checkUsername = lmsUserHelper.selectUsernameIfExist(sql,username)
-        if(checkUsername != null) {
-            int number = 2
-            if(checkUsername.length() > 4) {
-                number = Integer.parseInt(checkUsername.substring(4))
+        if(checkUsername) {
+            def matcher = checkUsername =~ /[0-9]+/
+            if (matcher.count == 0) {
+                username = username+2
+            } else {
+                int number = Integer.parseInt(matcher[0])
                 number++
+                username = username+number
             }
-            username = username+number
         }
         username
+
+//        def matcher = "jdoe14" =~ /[0-9]+/
+//        println matcher.getCount()
+//        println matcher[0]
+//
+//        matcher = "jdoe" =~ /[0-9]+/
+//        println matcher.getCount()
     }
 }

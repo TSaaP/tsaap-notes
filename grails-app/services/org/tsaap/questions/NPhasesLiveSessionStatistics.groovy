@@ -20,16 +20,10 @@ import groovy.transform.ToString
 
 
 /**
- * Created by franck on 21/03/15.
+ * Class for encapsulation of live session statistics.
  */
 @ToString(includeNames=true)
-class NPhasesLiveSessionStatistics {
-
-    Long contextId
-    String contextName
-    Long liveSessionId
-    Date liveSessionStartDate
-    Date liveSessionEndDate
+class NPhasesLiveSessionStatistics extends NPhasesLiveSessionData {
 
     Integer numberOfPresents
 

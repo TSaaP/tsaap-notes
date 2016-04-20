@@ -27,4 +27,5 @@
     <g:set var="responses" value="${liveSession.findAllGoodResponses(sessionPhase)}"/>
     <g:render template="/questions/ExplanationList" model="[responses:responses]"/>
     <g:link class="btn btn-success btn-xs" controller="question" action="statistics" id="${liveSession.id}">${message(code: "questions.author.ended.generateStats")}</g:link>
+    <g:link class="btn btn-success btn-xs" controller="question" action="results" id="${liveSession.id}">${message(code: "questions.author.ended.results")}</g:link>
 </g:if>

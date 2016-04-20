@@ -102,11 +102,21 @@ class ResultListService {
 
     Map nPhaseSessionResultListLabels() {
         [
-                contextId: "Context id",
-                contextName: "Context name",
-                liveSessionId: "Live session id",
-                liveSessionStartDate: "Start date",
-                liveSessionEndDate: "End date",
+                lastName: "Last name",
+                firstName: "First name",
+                username: "User name",
+                ltiUserId: "Lti user id",
+                ltiConsumerKey: "Lti consumer key",
+
+                firstAnswer: "First answer",
+                firstExplanation: "First explanation",
+                firstConfidenceDegree:"First confidence degree",
+                firstScore: "First score",
+
+                secondAnswer: "Second answer",
+                secondExplanation: "Second explanation",
+                secondConfidenceDegree:"Second confidence degree",
+                secondScore: "Second score"
         ]
     }
 }

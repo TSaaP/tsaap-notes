@@ -239,7 +239,7 @@ class QuestionController {
     def results() {
         User user = springSecurityService.currentUser
         LiveSession liveSession = LiveSession.get(params.id)
-        NPhasesLiveSessionResultList results = resultListService.getNPhasesLiveSessionResultListForLiveSession(liveSession)
+        NPhasesLiveSessionResultList results = resultListService.getNPhasesLiveSessionResultListForLiveSession(user,liveSession)
         Map labels = resultListService.nPhaseSessionResultListLabels()
         if(params?.format && params.format != "html"){
             response.contentType = grailsApplication.config.grails.mime.types[params.format]

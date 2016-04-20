@@ -17,9 +17,11 @@
 package org.tsaap.questions
 
 import grails.transaction.Transactional
+import org.gcontracts.annotations.Requires
 import org.hibernate.SQLQuery
 import org.hibernate.Session
 import org.hibernate.SessionFactory
+import org.tsaap.directory.User
 
 @Transactional
 class ResultListService {
@@ -28,10 +30,14 @@ class ResultListService {
 
     /**
      * Get result list on a live session
+     * @param user the user asking results
      * @param liveSession the live session
      * @return the built NPhasesLiveSessionResultList
      */
-    NPhasesLiveSessionResultList getNPhasesLiveSessionResultListForLiveSession(LiveSession liveSession) {
+    @Requires({
+        liveSession?.note?.context?.owner == user
+    })
+    NPhasesLiveSessionResultList getNPhasesLiveSessionResultListForLiveSession(User user, LiveSession liveSession) {
         NPhasesLiveSessionResultList res = new NPhasesLiveSessionResultList(
                 liveSessionId: liveSession.id,
                 contextId: liveSession?.note?.contextId,

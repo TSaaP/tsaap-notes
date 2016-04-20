@@ -21,6 +21,7 @@ class QuestionController {
     LiveSessionService liveSessionService
     NoteService noteService
     StatisticsService statisticsService
+    ResultListService resultListService
     LmsGradeService lmsGradeService
     LmsContextHelper lmsContextHelper
     DataSource dataSource
@@ -232,6 +233,28 @@ class QuestionController {
             )
         }
         render(view: '/questions/nPhasesLiveSessionStats',model: [stats:[stats], labels: labels,user:user, liveSession: liveSession])
+    }
+
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def results() {
+        User user = springSecurityService.currentUser
+        LiveSession liveSession = LiveSession.get(params.id)
+        NPhasesLiveSessionResultList results = resultListService.getNPhasesLiveSessionResultListForLiveSession(liveSession)
+        Map labels = resultListService.nPhaseSessionResultListLabels()
+        if(params?.format && params.format != "html"){
+            response.contentType = grailsApplication.config.grails.mime.types[params.format]
+            response.setHeader("Content-disposition", "attachment; filename=tsaapNotesResults.${params.extension}")
+            exportService.export(
+                    params.format,
+                    response.outputStream,
+                    [results.resultList],
+                    labels.keySet() as List,
+                    labels,
+                    [:],
+                    [:]
+            )
+        }
+        render(view: '/questions/nPhasesLiveSessionResults',model: [results:[results], labels: labels,user:user, liveSession: liveSession])
     }
 
     private String buildAnswerAsStringFromAnswers(List<String> answers) {

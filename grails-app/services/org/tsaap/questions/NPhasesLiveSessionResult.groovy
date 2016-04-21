@@ -21,6 +21,8 @@ package org.tsaap.questions
  */
 class NPhasesLiveSessionResult {
 
+    String id
+
     String lastName
     String firstName
     String username

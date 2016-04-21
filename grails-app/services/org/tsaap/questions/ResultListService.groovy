@@ -45,7 +45,9 @@ class ResultListService {
                 liveSessionStartDate: liveSession.startDate,
                 liveSessionEndDate: liveSession.endDate,
                 questionId: liveSession.noteId,
-                question: liveSession.note?.content
+                question: liveSession.note?.content,
+                title: liveSession.note?.content,
+                id: liveSession.id
         )
         // the stats
         Session currentSession = sessionFactory.currentSession
@@ -61,34 +63,58 @@ class ResultListService {
         select
         last_name, first_name, username, lti_user_id, lti_consumer_key,
         response_1.answer_list_as_string as first_answer, note_1.content as first_explanation,
-        response_1.confidence_degree as first_confidence_degree, response_1.`percent_credit` as first_score,
-        response_2.answer_list_as_string as second_answer, note_2.content as second_explanation,
-        response_2.confidence_degree as second_confidence_degree, response_2.`percent_credit` as second_score
+        response_1.confidence_degree as first_confidence_degree, response_1.`percent_credit` as first_score
         from
-        user, `lms_user`,
-        `live_session_response` as response_1, `note` as note_1,
-        `live_session_response` as response_2, `note` as note_2
+        `user`
+        left join (`live_session_response` as response_1 left join `note` as note_1 on response_1.`explanation_id` = note_1.id) on  user.`id` = response_1.`user_id`
+        left join `lms_user` on user.`id` = `lms_user`.`tsaap_user_id`
         where
-        user.id =  `lms_user`.`tsaap_user_id` and
-        user.id = response_1.`user_id` and
-        response_1.`session_phase_id` = :phase1Id and
-        note_1.id = response_1.`explanation_id` and
-        user.id = response_2.`user_id` and
-        response_2.`session_phase_id` = :phase2Id and
-        note_2.id = response_2.`explanation_id`
-        ORDER BY
-        last_name, first_name
+        response_1.`session_phase_id` = :phaseId
+        order by
+        user.last_name, user.first_name
         '''
 
 
         SQLQuery sqlQuery = currentSession.createSQLQuery(query)
-        res.resultList = sqlQuery.with {
-                    addEntity(NPhasesLiveSessionResult)
-                    setLong('phase1Id', phase1.id)
-                    setLong('phase2Id', phase2.id)
-                    list()
+        List<Object[]> raws = sqlQuery.with {
+            setLong('phaseId', phase1.id)
+            list()
         }
 
+        // build a map with results
+        def resultsByUsername = new LinkedHashMap<String,NPhasesLiveSessionResult>()
+
+        raws.each { raw ->
+            def result = new NPhasesLiveSessionResult()
+            result.lastName = raw[0]
+            result.firstName = raw[1]
+            result.username = raw[2]
+            result.id = raw[2]
+            result.ltiUserId = raw[3]
+            result.ltiConsumerKey = raw[4]
+            result.firstAnswer = raw[5]
+            result.firstExplanation = raw[6]
+            result.firstConfidenceDegree = raw[7]
+            result.firstScore = raw[8] as Float
+            resultsByUsername.put(result.username, result)
+        }
+
+        raws = sqlQuery.with {
+            setLong('phaseId', phase2.id)
+            list()
+        }
+
+        raws.each { raw ->
+            def result = resultsByUsername.get(raw[2])
+            if (result) {
+                result.secondAnswer = raw[5]
+                result.secondExplanation = raw[6]
+                result.secondConfidenceDegree = raw[7]
+                result.secondScore = raw[8] as Float
+            }
+        }
+
+        res.resultList = resultsByUsername.values() as List<NPhasesLiveSessionResult>
         //
         // return res
 
@@ -96,33 +122,23 @@ class ResultListService {
 
     }
 
-    /**
-     * Get result list on a live session id
-     * @param liveSessionId the live session id
-     * @return the built NPhasesLiveSessionResultList
-     */
-    NPhasesLiveSessionResultList getNPhasesLiveSessionResultListForLiveSessionId(Long liveSessionId) {
-        LiveSession liveSession = LiveSession.get(liveSessionId)
-        getNPhasesLiveSessionResultListForLiveSession(liveSession)
-    }
-
     Map nPhaseSessionResultListLabels() {
         [
-                lastName: "Last name",
-                firstName: "First name",
-                username: "User name",
-                ltiUserId: "Lti user id",
-                ltiConsumerKey: "Lti consumer key",
+                lastName              : "Last_name",
+                firstName             : "First_name",
+                username              : "User_name",
+                ltiUserId             : "Lti_user_id",
+                ltiConsumerKey        : "Lti_consumer_key",
 
-                firstAnswer: "First answer",
-                firstExplanation: "First explanation",
-                firstConfidenceDegree:"First confidence degree",
-                firstScore: "First score",
+                firstAnswer           : "First_answer",
+                firstExplanation      : "First_explanation",
+                firstConfidenceDegree : "First_confidence_degree",
+                firstScore            : "First_score",
 
-                secondAnswer: "Second answer",
-                secondExplanation: "Second explanation",
-                secondConfidenceDegree:"Second confidence degree",
-                secondScore: "Second score"
+                secondAnswer          : "Second_answer",
+                secondExplanation     : "Second_explanation",
+                secondConfidenceDegree: "Second_confidence_degree",
+                secondScore           : "Second_score"
         ]
     }
 }

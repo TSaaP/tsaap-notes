@@ -24,6 +24,8 @@ import groovy.transform.ToString
 @ToString(includeNames=true)
 class NPhasesLiveSessionResultList extends NPhasesLiveSessionData {
 
+    String title
+    Long id
     List<NPhasesLiveSessionResult> resultList
 
 }

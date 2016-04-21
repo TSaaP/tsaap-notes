@@ -40,12 +40,18 @@
     <export:formats params="[id: liveSession.id]" controller="question" action="results"/>
     <hr/>
     <p>
-        ${liveSession?.note?.content}
+        <strong>Scope</strong> <br/>${results.contextName}
+        </p>
+    <p>
+        <strong>Question</strong> <br/>${results.question}
+        </p>
+    <p>
+        <strong>Responses count</strong> <br/> ${results.resultList.size()}
     </p>
     <table class="table">
         <tr>
             <g:each in="${labels.keySet()}" var="propName">
-                <th style="border: medium">${propName}</th>
+                <th style="border: medium">${labels."$propName"}</th>
             </g:each>
         </tr>
     <g:each in="${results.resultList}" var="currentResult">

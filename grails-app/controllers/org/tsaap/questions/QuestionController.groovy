@@ -247,14 +247,14 @@ class QuestionController {
             exportService.export(
                     params.format,
                     response.outputStream,
-                    [results.resultList],
+                    results.resultList,
                     labels.keySet() as List,
                     labels,
                     [:],
-                    [:]
+                    [title:results.title]
             )
         }
-        render(view: '/questions/nPhasesLiveSessionResults',model: [results:[results], labels: labels,user:user, liveSession: liveSession])
+        render(view: '/questions/nPhasesLiveSessionResults',model: [results:results, labels: labels,user:user, liveSession: liveSession])
     }
 
     private String buildAnswerAsStringFromAnswers(List<String> answers) {

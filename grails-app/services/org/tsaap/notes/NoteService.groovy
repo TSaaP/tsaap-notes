@@ -208,7 +208,7 @@ class NoteService {
      * @param user the author of the note
      */
     @Transactional
-    @Requires({ note && note.author == user })
+    @Requires({ note && (note.author == user || user == note?.context?.owner)})
     def deleteNoteByAuthor(Note note, User user) {
         // detach attachment if needed
         if (note.attachment) {

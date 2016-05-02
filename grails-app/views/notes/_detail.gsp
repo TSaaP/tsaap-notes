@@ -48,7 +48,7 @@
     <g:if test="${note.isAQuestion()}">
         <g:set var="liveSession" value="${note.getLiveSession()}"/>
         <g:set var="sessionPhase" value="${liveSession ? liveSession.findCurrentPhase() : null}"/>
-        <g:set var="userType" value="${user == note.author ? 'author' : 'user'}"/>
+        <g:set var="userType" value="${(user == note.author || user ==  note?.context?.owner) ? 'author' : 'user'}"/>
 
         <g:if test="${!sessionPhase || liveSession.isStopped()}">
             <g:set var="sessionStatus" value="${liveSession ? liveSession.status : LiveSessionStatus.NotStarted.name()}"/>
@@ -82,7 +82,7 @@
             <a href="#note${note.id}" id="replyLink${note.id}"
                onclick="displaysReplyField(${note.id})"><span
                     class="glyphicon glyphicon-share"></span> ${message(code: "notes.detail.reply")}</a>
-            <g:if test="${user == note.author}">
+            <g:if test="${user == note.author || user ==  note?.context?.owner}">
                 <g:link controller="notes" action="deleteNote"
                         params="${[noteId: note.id] + displayListParamsWithPagination}"><span
                         class="glyphicon glyphicon-trash"></span> ${message(code: "notes.detail.delete")}</g:link>

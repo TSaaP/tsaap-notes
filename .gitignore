@@ -12,3 +12,4 @@ out
 .sonar
 
 cobertura.ser
+.slcache

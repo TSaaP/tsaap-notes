@@ -13,3 +13,5 @@ out
 
 cobertura.ser
 .slcache
+
+CustomConfig.groovy

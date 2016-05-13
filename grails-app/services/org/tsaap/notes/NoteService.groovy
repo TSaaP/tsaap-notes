@@ -253,6 +253,15 @@ class NoteService {
         note.delete()
     }
 
+    /**
+     * Count notes for the given search criteria
+     * @param inUser the user performing the search
+     * @param userNotes indicates if the search must find the notes the user is owner
+     * @param userFavorites indicates if the search must find the user favorite notes
+     * @param all indicates if the search must find all notes for a given context
+     * @param inContext the given context
+     * @return the number of notes corresponding to the search
+     */
     def countNotes(User inUser,
                      Boolean userNotes = true,
                      Boolean userFavorites = false,

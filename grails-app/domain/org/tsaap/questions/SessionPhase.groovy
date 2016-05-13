@@ -3,8 +3,10 @@ package org.tsaap.questions
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 import org.gcontracts.annotations.Requires
+//import org.hibernate.mapping.List
 import org.tsaap.directory.User
 import org.tsaap.ia.conflict.SocioCognitiveConflictService
+import org.tsaap.notes.NoteGrade
 
 class SessionPhase {
 
@@ -94,7 +96,9 @@ class SessionPhase {
         resultMatrixAsJson = builder.toString()
     }
 
-    /**
+    /**        if (rank == 3) {
+            liveSessionService
+        }
      * Get the response of the current session phase for a given user
      * @param user the given user
      * @return the live session response if it exists
@@ -108,7 +112,20 @@ class SessionPhase {
      * @return the count of responses
      */
     Integer responseCount() {
+        if (rank == MAX_RANK) {
+            return countSubmittedEvaluations(liveSession)
+        }
         LiveSessionResponse.countBySessionPhase(this)
+    }
+
+    private def countSubmittedEvaluations(LiveSession liveSession) {
+        def count = LiveSession.executeQuery(
+                '''
+                select count(distinct ng.user) from LiveSessionResponse lsr, NoteGrade ng
+                where lsr.liveSession = :liveSessionId and lsr.explanation = ng.note
+                ''',
+                [liveSessionId: liveSession])
+        count[0]
     }
 
     /**
@@ -187,7 +204,7 @@ class SessionPhase {
             save(flush: true)
         }
         Map<String,Long> res = parser.parseText(mappingResponseConflictResponse)
-        res
+        res        //
     }
 
     private def void updateMappingConflictResponseResponseAsJson() {

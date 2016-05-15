@@ -170,11 +170,31 @@ class NoteServiceIntegrationSpec extends Specification {
         when: "finding all questions for context"
         List<Note> res = noteService.findAllNotes(bootstrapTestService.learnerPaul, false, false, true, context, null, null, 'question', '').list
         List<Note> res2 = noteService.findAllNotesAsQuestionForContext(context)
+        def count = noteService.countNotes(bootstrapTestService.learnerPaul, false, false, true, context, null, 'question')
 
         then: "all questions are found"
         res.size() == 1
         res.contains(question)
         res == res2
+        count == 1
+    }
+
+
+    def "count  number of questions"() {
+        given: "a context"
+        Context context = contextService.saveContext(new Context(owner: bootstrapTestService.learnerPaul, contextName: "aContext"))
+
+        and: "a std note"
+        Note note = noteService.addStandardNote(bootstrapTestService.learnerPaul, "a standard note", context)
+
+
+        when: "finding all questions for context"
+
+        def count = noteService.countNotes(bootstrapTestService.learnerPaul, false, false, true, context, null, 'standard')
+
+        then: "all notes are found"
+
+        count == 1
     }
 
     def "find all notes in embedded mode"() {
@@ -190,11 +210,13 @@ class NoteServiceIntegrationSpec extends Specification {
 
         when: "finding all notes"
         List<Note> res = noteService.findAllNotes(bootstrapTestService.learnerPaul, false, false, true, context, null, null, 'standard', 'on').list
+        def count = noteService.countNotes(bootstrapTestService.learnerPaul, false, false, true, context, null, 'standard')
 
         then: "all standard notes are sort with user note in first"
         res.size() == 2
         res.contains(note)
         res.contains(note1)
+        count == 2
     }
 
     def "find all notes and good sort, for notes with a fragment tag in embedded mode"() {

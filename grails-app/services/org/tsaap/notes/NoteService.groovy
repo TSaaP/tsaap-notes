@@ -253,6 +253,72 @@ class NoteService {
         note.delete()
     }
 
+    /**
+     * Count notes for the given search criteria
+     * @param inUser the user performing the search
+     * @param userNotes indicates if the search must find the notes the user is owner
+     * @param userFavorites indicates if the search must find the user favorite notes
+     * @param all indicates if the search must find all notes for a given context
+     * @param inContext the given context
+     * @return the number of notes corresponding to the search
+     */
+    def countNotes(User inUser,
+                     Boolean userNotes = true,
+                     Boolean userFavorites = false,
+                     Boolean all = false,
+                     Context inContext = null,
+                     Tag inFragmentTag = null,
+                     String kindParam) {
+        List kindList = null
+        if(kindParam != 'question') {
+            kindList=[NoteKind.STANDARD.ordinal()]
+        }
+        else
+        {
+            kindList=[NoteKind.QUESTION.ordinal()]
+        }
+        if (!(userNotes || userFavorites || all)) {
+            return 0
+        }
+        if (!inContext) { // all is not relevant when there is no context
+            all = false
+        }
+        if (all && !inFragmentTag) { // we have a context and user want all notes on the context
+            return Note.countByContextAndKindInList(
+                    inContext, kindList)
+        }
+        if (all && inFragmentTag) {
+            return Note.countByContextAndFragmentTagAndKindInList(
+                            inContext,
+                            inFragmentTag,
+                            kindList)
+        }
+        // if not all, we use a criteria
+        def criteria = Note.createCriteria()
+        def countList = criteria.list() {
+            projections {
+                count()
+            }
+            createAlias('bookmarks', 'bmks', CriteriaSpecification.LEFT_JOIN)
+            if (inContext) { // if there is a context
+                eq 'context', inContext
+                if (inFragmentTag) { // if there is a context and a fragmentTag
+                    eq 'fragmentTag', inFragmentTag
+                }
+            }
+            // we know that one of the two filters is active
+            or {
+                if (userNotes) {
+                    eq 'author', inUser
+                }
+                if (userFavorites) {
+                    eq 'bmks.user', inUser
+                }
+            }
+            inList 'kind', kindList
+        }
+        countList[0];
+    }
 
     /**
      * Find all notes for the given search criteria
@@ -265,14 +331,14 @@ class NoteService {
      * @return the notes corresponding to the search
      */
     def findAllNotes(User inUser,
-                     Boolean userNotes = true,
-                     Boolean userFavorites = false,
-                     Boolean all = false,
-                     Context inContext = null,
-                     Tag inFragmentTag = null,
-                     Map paginationAndSorting = [sort: 'dateCreated', order: 'desc'],
-                     String kindParam,
-                     String inlineParam) {
+                   Boolean userNotes = true,
+                   Boolean userFavorites = false,
+                   Boolean all = false,
+                   Context inContext = null,
+                   Tag inFragmentTag = null,
+                   Map paginationAndSorting = [sort: 'dateCreated', order: 'desc'],
+                   String kindParam,
+                   String inlineParam) {
         List kindList = null
         List fragList = null
         def noPagination = [sort: 'dateCreated', order: 'desc']
@@ -295,9 +361,9 @@ class NoteService {
                     kindList,
                     paginationAndSorting),
                     totalCount: Note.countByContextAndKindInList(
-                    inContext, kindList,
-                    paginationAndSorting)
-                )
+                            inContext, kindList,
+                            paginationAndSorting)
+            )
         }
         if (all && inFragmentTag) {
             if(inlineParam == 'on' && kindParam != 'question') {

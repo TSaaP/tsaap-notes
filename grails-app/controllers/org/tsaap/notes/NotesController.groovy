@@ -237,8 +237,32 @@ class NotesController {
                 kindParams,
                 inlineParams)
 
+
+        def countTotal
+        def kind
+       if (kindParams == NoteKind.STANDARD.toString().toLowerCase()){
+
+           kind = NoteKind.QUESTION
+
+       } else {
+
+           kind = NoteKind.STANDARD
+       }
+
+        countTotal  = noteService.countNotes(user,
+                displaysMyNotes,
+                displaysMyFavorites,
+                displaysAll,
+                context,
+                fragmentTag,
+                kind.toString().toLowerCase()
+                )
+
+
+
             render(view: '/notes/index', model: [user: user,
                                                  notes: notes,
+                                                 countTotal:countTotal,
                                                  context: context,
                                                  fragmentTag: fragmentTag,
                                                  showDiscussion: showDiscussion])

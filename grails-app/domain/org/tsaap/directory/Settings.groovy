@@ -5,5 +5,6 @@ class Settings {
     boolean mentionNotifications
 
     static constraints = {
+
     }
 }

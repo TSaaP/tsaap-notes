@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="fsil">
+        <comment> create new table "setings" </comment>
+
+        <createTable tableName="settings">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="daily_notifications" type="boolean">
+
+            </column>
+            <column name="mention_notifications" type="boolean">
+
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="2" author="fsil">
+        <comment>Modification of user table</comment>
+        <addColumn tableName="user">
+            <column name="settings_id" type="BIGINT"/>
+        </addColumn>
+
+    </changeSet>
+
+
+</databaseChangeLog>

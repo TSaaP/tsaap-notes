@@ -50,6 +50,7 @@ class User {
     }
     password blank: false, minSize: 4
     email email: true, unique: true
+    settings nullable: true
   }
 
   static mapping = {

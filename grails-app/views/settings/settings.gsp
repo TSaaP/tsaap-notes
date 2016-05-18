@@ -25,7 +25,7 @@
         <div class="row">
 
             <div class="col-lg-6">
-                <g:form controller="userAccount" action="doUpdate">
+                <g:form controller="settings" action="doUpdate">
                     <fieldset>
                         <div class="checkbox cheked">
                             <label>

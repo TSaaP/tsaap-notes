@@ -34,6 +34,5 @@ class UrlMappings {
 		"500"(view:'/error')
 		"500"(view: '/lti/error', exception: LtiContextInitialisationException)
 		"500"(view: '/lti/error', exception: LtiUserException)
-		name settings:"/settings"(view: "/settings")
 	}
 }

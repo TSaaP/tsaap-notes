@@ -33,6 +33,8 @@ class User {
   boolean accountLocked
   boolean passwordExpired
 
+  Settings settings
+
 
   void setUsername(String val) {
     this.username = val

@@ -46,7 +46,7 @@
                         <div class="checkbox">
                             <label>
                                <!-- <input type="checkbox" checked="checked" value="dailyNotification"> -->
-                                <g:checkBox name="dailyNotification" value="true" />
+                                <g:checkBox name="dailyNotification" value="${user.settings.dailyNotifications}" />
                                 <span data-toggle="tooltip" data-html="true" title="${message(code: "settings.checkbox.dailyNotification.message")}" data-placement="top" >
                                     ${message(code: "settings.checkbox.dailyNotification.label")}
                                 </span>
@@ -55,7 +55,7 @@
                         <div class="checkbox"  >
                             <label>
                                 <!--<input type="checkbox" checked="checked" value="mentionNotification"> -->
-                                <g:checkBox name="mentionNotification" value="true" />
+                                <g:checkBox name="mentionNotification" value="${user.settings.mentionNotifications}" />
                                 <span data-toggle="tooltip" data-html="true" title="${message(code: "settings.checkbox.mentionNotification.message")}" data-placement="top">
                                     ${message(code: "settings.checkbox.mentionNotification.label")}
                                 </span>

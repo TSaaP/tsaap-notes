@@ -22,8 +22,22 @@ class SettingsController {
     def doUpdate() {
 
         User user = springSecurityService.currentUser
-        Settings settings = new Settings(params)
-        settings = settingsService.updateSettingsForUser(user, params)
+
+        def settingsMap = [:]
+        if (params.dailyNotification) {
+            settingsMap.dailyNotifications = true
+        }
+        else {
+            settingsMap.dailyNotifications = false
+        }
+        if (params.mentionNotification) {
+            settingsMap.mentionNotifications = true
+        }
+        else {
+            settingsMap.mentionNotifications = false
+        }
+
+        def settings = settingsService.updateSettingsForUser(user, settingsMap)
 
          if (settings.hasErrors()) {
             render(view: '/settings/settings')

@@ -54,8 +54,8 @@ class MailCheckingService {
     def sql = new Sql(dataSource)
     def req = """
               SELECT tuser.id as user_id, tuser.first_name, tuser.email, tuser.language, tact_key.activation_key
-              FROM `tsaap-notes`.user as tuser
-              INNER JOIN  `tsaap-notes`.activation_key as tact_key ON tact_key.user_id = tuser.id
+              FROM user as tuser
+              INNER JOIN  activation_key as tact_key ON tact_key.user_id = tuser.id
               where tact_key.activation_email_sent = false"""
     def rows = sql.rows(req)
     log.debug("Select request : $req")
@@ -78,7 +78,7 @@ class MailCheckingService {
 
     def placeholderKeys = actKeys.collect { '?' }.join( ',' )
     def sql = new Sql(dataSource)
-    def req = "update `tsaap-notes`.activation_key as tact_key set tact_key.activation_email_sent = true where tact_key.activation_key in ($placeholderKeys)"
+    def req = "update activation_key as tact_key set tact_key.activation_email_sent = true where tact_key.activation_key in ($placeholderKeys)"
     def nbUpdates = sql.executeUpdate(req, actKeys)
     log.debug("the update request : $req")
     log.debug("Nb of rows updated : $nbUpdates")

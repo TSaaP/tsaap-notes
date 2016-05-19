@@ -20,6 +20,16 @@
     </ol>
 
     <div class="body-content">
+        <g:if test="${flash.message}">
+            <div class="alert alert-info" role="status">${flash.message}</div>
+        </g:if>
+        <g:if test="${user?.hasErrors()}">
+            <div class="alert">
+                <g:eachError bean="${user}">
+                    <li><g:message error="${it}"/></li>
+                </g:eachError>
+            </div>
+        </g:if>
 
     <!-- Example row of columns -->
         <div class="row">

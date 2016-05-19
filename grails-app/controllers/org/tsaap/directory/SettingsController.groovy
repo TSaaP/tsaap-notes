@@ -1,6 +1,8 @@
 package org.tsaap.directory
 
 import grails.plugins.springsecurity.Secured
+import grails.plugins.springsecurity.SpringSecurityService
+import org.tsaap.settings.SettingsService
 
 import static org.springframework.http.HttpStatus.*
 import grails.transaction.Transactional
@@ -8,16 +10,28 @@ import grails.transaction.Transactional
 @Transactional(readOnly = true)
 class SettingsController {
 
+    SpringSecurityService springSecurityService
+    SettingsService settingsService
+
     @Secured(['IS_AUTHENTICATED_FULLY'])
     def doSettings() {
         render(view: '/settings/settings')
         //redirect(uri: '/settings/settings')
     }
+    @Transactional
     @Secured(['IS_AUTHENTICATED_FULLY'])
     def doUpdate() {
-        //render(view: '/userAccount/edit', model: [user: springSecurityService.currentUser])
-        redirect(uri: '/settings/doSettings')
 
+        User user = springSecurityService.currentUser
+        Settings settings = new Settings(params)
+        settings = settingsService.updateSrttingsForUder(user, settings)
+
+         if (settings.hasErrors()) {
+            render(view: '/settings/settings')
+        } else {
+            flash.message = message(code: 'useraccount.update.success')
+            redirect(uri: '/settings/doSettings')
+        }
     }
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]

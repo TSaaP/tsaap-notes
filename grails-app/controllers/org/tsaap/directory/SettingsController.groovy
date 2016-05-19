@@ -2,7 +2,6 @@ package org.tsaap.directory
 
 import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
-import org.tsaap.settings.SettingsService
 
 import static org.springframework.http.HttpStatus.*
 import grails.transaction.Transactional
@@ -15,7 +14,7 @@ class SettingsController {
 
     @Secured(['IS_AUTHENTICATED_FULLY'])
     def doSettings() {
-        render(view: '/settings/settings')
+        render(view: '/settings/settings',model: [user: springSecurityService.currentUser])
         //redirect(uri: '/settings/settings')
     }
     @Transactional
@@ -24,7 +23,7 @@ class SettingsController {
 
         User user = springSecurityService.currentUser
         Settings settings = new Settings(params)
-        settings = settingsService.updateSrttingsForUder(user, settings)
+        settings = settingsService.updateSettingsForUser(user, params)
 
          if (settings.hasErrors()) {
             render(view: '/settings/settings')

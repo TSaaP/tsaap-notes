@@ -31,15 +31,22 @@
             </div>
         </g:if>
 
-    <!-- Example row of columns -->
+        ${user.settings.dailyNotifications} <br>
+        ${user.settings.mentionNotifications}
+
+        <span class="glyphicon glyphicon-globe" aria-hidden="true"></span><label>&nbsp;Notifications </label>
+        <hr>
+
+        <!-- Example row of columns -->
         <div class="row">
 
             <div class="col-lg-6">
                 <g:form controller="settings" action="doUpdate">
                     <fieldset>
-                        <div class="checkbox cheked">
+                        <div class="checkbox">
                             <label>
-                                <input type="checkbox" checked="checked" value="dailyNotification">
+                               <!-- <input type="checkbox" checked="checked" value="dailyNotification"> -->
+                                <g:checkBox name="dailyNotification" value="true" />
                                 <span data-toggle="tooltip" data-html="true" title="${message(code: "settings.checkbox.dailyNotification.message")}" data-placement="top" >
                                     ${message(code: "settings.checkbox.dailyNotification.label")}
                                 </span>
@@ -47,7 +54,8 @@
                         </div>
                         <div class="checkbox"  >
                             <label>
-                                <input type="checkbox" checked="checked" value="mentionNotification">
+                                <!--<input type="checkbox" checked="checked" value="mentionNotification"> -->
+                                <g:checkBox name="mentionNotification" value="true" />
                                 <span data-toggle="tooltip" data-html="true" title="${message(code: "settings.checkbox.mentionNotification.message")}" data-placement="top">
                                     ${message(code: "settings.checkbox.mentionNotification.label")}
                                 </span>

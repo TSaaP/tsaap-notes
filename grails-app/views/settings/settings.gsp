@@ -30,10 +30,7 @@
                 </g:eachError>
             </div>
         </g:if>
-
-        ${user.settings.dailyNotifications} <br>
-        ${user.settings.mentionNotifications}
-
+        
         <span class="glyphicon glyphicon-globe" aria-hidden="true"></span><label>&nbsp;Notifications </label>
         <hr>
 

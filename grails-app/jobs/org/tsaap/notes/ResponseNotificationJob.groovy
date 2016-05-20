@@ -10,6 +10,7 @@ class ResponseNotificationJob {
     ResponseNotificationService responseNotificationService
 
     static triggers = {
+        // every 5 minutes
         simple name: 'responseNotificationTrigger', startDelay: 10000, repeatInterval: 300000
     }
 

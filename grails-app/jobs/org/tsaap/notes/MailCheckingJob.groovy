@@ -23,7 +23,7 @@ class MailCheckingJob {
   MailCheckingService mailCheckingService
 
   static triggers = {
-    // every 30 seconds
+    // every 2 minutes
     cron name: 'mailCheckingCronTrigger', startDelay: 10000, cronExpression: '0 0/2 * * * ?'
   }
 

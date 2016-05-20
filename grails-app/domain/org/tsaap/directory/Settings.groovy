@@ -1,8 +1,9 @@
 package org.tsaap.directory
 
 class Settings {
-    boolean dailyNotifications
-    boolean mentionNotifications
+    boolean dailyNotifications = true
+    boolean mentionNotifications = true
+    User user
 
     static constraints = {
 

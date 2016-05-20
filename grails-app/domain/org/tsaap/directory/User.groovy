@@ -33,8 +33,7 @@ class User {
   boolean accountLocked
   boolean passwordExpired
 
-  Settings settings
-
+  static hasOne = [settings: Settings]
 
   void setUsername(String val) {
     this.username = val

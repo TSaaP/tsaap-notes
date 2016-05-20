@@ -5,8 +5,8 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet id="1" author="fsil">
-        <comment> create new table "setings" </comment>
+    <changeSet id="1" author="alag">
+        <comment>Create new table "settings"</comment>
 
         <createTable tableName="settings">
             <column name="id" type="BIGINT" autoIncrement="true">
@@ -15,21 +15,20 @@
             <column name="version" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="daily_notifications" type="boolean">
-
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
             </column>
-            <column name="mention_notifications" type="boolean">
-
-            </column>
+            <column name="daily_notifications" type="boolean"/>
+            <column name="mention_notifications" type="boolean"/>
         </createTable>
+        <addForeignKeyConstraint baseTableName="settings" baseColumnNames="user_id"
+                                 constraintName="fk_user_id" referencedTableName="user"
+                                 referencedColumnNames="id"/>
     </changeSet>
-    <changeSet id="2" author="fsil">
-        <comment>Modification of user table</comment>
-        <addColumn tableName="user">
-            <column name="settings_id" type="BIGINT"/>
-        </addColumn>
-
+    <changeSet id="2" author="alag">
+        <sql>
+            INSERT INTO settings (user_id, version, daily_notifications, mention_notifications)
+            SELECT id, 0, true, true from user
+        </sql>
     </changeSet>
-
-
 </databaseChangeLog>

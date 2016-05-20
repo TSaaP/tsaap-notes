@@ -5,17 +5,18 @@ import grails.transaction.Transactional
 @Transactional
 class SettingsService {
 
-    def updateSettingsForUser(User user, Map settingsMap) {
-        if (user.settings) {
-            user.settings.properties = settingsMap
-            user.settings.save()
-        } else {
-            Settings settings = new Settings()
-            settings.properties = settingsMap
-            settings.save()
-            user.settings = settings
-            user.save()
-        }
+    Settings updateSettingsForUser(User user, Map settingsMap) {
+        user.settings.properties = settingsMap
+        user.settings.save()
         user.settings
+    }
+
+    Settings initializeSettingsForUser(User user) {
+        Settings settings = new Settings()
+        settings.dailyNotifications = true
+        settings.mentionNotifications = true
+        settings.user = user
+        settings.save()
+        settings
     }
 }

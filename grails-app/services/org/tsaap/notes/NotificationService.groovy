@@ -54,14 +54,18 @@ class NotificationService {
               INNER JOIN context_follower as tcontextfo ON tnote.context_id = tcontextfo.context_id
               INNER JOIN context as tcontext ON tcontextfo.context_id = tcontext.id
               INNER JOIN user as tuser ON tcontextfo.follower_id = tuser.id
+              INNER JOIN settings as tsettings ON tsettings.user_id = tuser.id
               where tnote.date_created < NOW() and tnote.date_created > concat(date_sub(curdate(),interval 1 day),' ',curtime()) and tuser.enabled = TRUE
+                and tsettings.daily_notifications = 1
               group by context_id, user_id
               UNION
               SELECT tuser.id as user_id, tuser.first_name, tuser.email, tuser.language, tcontext.id as context_id, tcontext.context_name, count(tnote.id)
               FROM note as tnote
               INNER JOIN context as tcontext ON tnote.context_id = tcontext.id
               INNER JOIN user as tuser ON tcontext.owner_id = tuser.id
+              INNER JOIN settings as tsettings ON tsettings.user_id = tuser.id
               where tnote.date_created < NOW() and tnote.date_created > concat(date_sub(curdate(),interval 1 day),' ',curtime()) and tuser.enabled = TRUE
+                and tsettings.daily_notifications = 1
               group by context_id, user_id
               order by user_id,context_name """
     def rows = sql.rows(req)

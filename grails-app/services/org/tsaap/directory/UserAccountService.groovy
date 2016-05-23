@@ -37,7 +37,7 @@ class UserAccountService {
         actKey.save()
       }
     }
-    settingsService.initializeSettingsForUser(user)
+    user.settings = settingsService.initializeSettingsForUser(user)
     user
   }
 

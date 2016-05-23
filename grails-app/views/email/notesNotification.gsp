@@ -46,6 +46,7 @@
   </g:elseif>
 </g:each>
 
+<a href = "${createLink (absolute:'true', action:'doSettings',controller:'settings')}">${message(code: "email.manage",locale: new Locale(user.language))} </a>
 
 </body>
 </html>

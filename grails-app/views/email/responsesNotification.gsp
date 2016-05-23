@@ -55,5 +55,6 @@
                                     controller="notes"/>
     </g:each>
 </g:if>
+${message(code: "email.manage",locale: new Locale(user.language))} <g:createLink absolute="true" action="doSettings" controller="settings"/>
 </body>
 </html>

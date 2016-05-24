@@ -3,7 +3,6 @@ package org.tsaap.notes
 import grails.plugin.mail.MailService
 import groovy.sql.Sql
 import org.springframework.context.MessageSource
-import org.tsaap.directory.ActivationKey
 import org.tsaap.directory.UnsubscribeKey
 import org.tsaap.directory.UnsubscribeKeyService
 import org.tsaap.directory.User
@@ -29,7 +28,12 @@ class NotificationService {
   def notifyUsersOnTodayNotes() {
     Map notifications = findAllNotifications()
     notifications.each { user, contextList ->
-      key = unsubscribeKeyService.createKeyForUser(User.findById(user.user_id))
+      def u = User.findById(user.user_id)
+      key = UnsubscribeKey.findByUser(u)
+      if (!key) {
+        key = unsubscribeKeyService.createKeyForUser(u)
+      }
+
       try {
         def sub = messageSource.getMessage("email.notes.notification.title",null,new Locale(user.language))
         mailService.sendMail {

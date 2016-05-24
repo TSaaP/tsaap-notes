@@ -5,27 +5,28 @@ import grails.transaction.Transactional
 @Transactional
 class UnsubscribeKeyController {
 
+    UnsubscribeKeyService unsubscribeKeyService
 
     def doUnsubscribeDaily() {
-        def key = params.unsubKey
-        def id = params.id
-        User user = User.get(id)
-        UnsubscribeKey = UnsubscribeKey.findByUserAndUnsubscribeKey(user, key)
+        def key = params.key
+        def idUser = UnsubscribeKey.executeQuery("SELECT user from UnsubscribeKey where unsubscribe_key = :var" ,[var : key] )
 
-        // TODO Call service method
+        Settings.executeUpdate("""
+                UPDATE Settings
+                SET dailyNotifications = 0
+                where user = :idUser
+                """, [idUser: idUser[0]])
 
-        redirect (uri:'/directory/dailyNotifUnsubscribe')
+        render (view:'/directory/dailyNotifUnsubscribe')
     }
 
     def doUnsubscribeMention() {
-        def key = params.unsubKey
-        def id = params.id
-        User user = User.get(id)
-        UnsubscribeKey = UnsubscribeKey.findByUserAndUnsubscribeKey(user, key)
+        def key = params.key
+
 
         // TODO Call service method
 
-        redirect (uri:'/directory/mentionNotifUnsubscribe')
+        render (view:'/directory/mentionNotifUnsubscribe')
     }
 
 }

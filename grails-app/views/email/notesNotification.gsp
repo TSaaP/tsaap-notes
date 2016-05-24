@@ -49,7 +49,7 @@
 <a href = "${createLink (absolute:'true', action:'doSettings',controller:'settings')}">${message(code: "email.manage",locale: new Locale(user.language))} </a>
 <br>
 <g:createLink absolute="true"
-              params='[key: "${key}", id:"${user.user_id}"]' action="doEnableUser"
-              controller="userAccount"/>
+              params='[key: "${key}"]' action="doUnsubscribeDaily"
+              controller="UnsubscribeKey"/>
 </body>
 </html>

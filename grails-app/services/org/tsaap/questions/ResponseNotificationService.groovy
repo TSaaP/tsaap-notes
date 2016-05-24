@@ -4,6 +4,9 @@ import grails.plugin.mail.MailService
 import groovy.sql.Sql
 import org.hibernate.SessionFactory
 import org.springframework.context.MessageSource
+import org.tsaap.directory.UnsubscribeKey
+import org.tsaap.directory.UnsubscribeKeyService
+import org.tsaap.directory.User
 
 import javax.sql.DataSource
 
@@ -15,6 +18,8 @@ class ResponseNotificationService {
     DataSource dataSource
     SessionFactory sessionFactory
     MessageSource messageSource
+    UnsubscribeKeyService unsubscribeKeyService
+    UnsubscribeKey key
 
     def notififyUsersOnResponsesAndMentions() {
         Map notifications = findAllResponsesNotifications()
@@ -42,6 +47,12 @@ class ResponseNotificationService {
         if(notificationsMentions.size()>0) {
             def questionMap = null
             notificationsMentions.each { user, mentionsList ->
+                def u = User.findById(user.user_id)
+                key = UnsubscribeKey.findByUser(u)
+                if (!key) {
+                    key = unsubscribeKeyService.createKeyForUser(u)
+                }
+
                 def sub = messageSource.getMessage("email.mention.notification.title",null,new Locale(user.language))
                 try {
                     mailService.sendMail {
@@ -49,7 +60,8 @@ class ResponseNotificationService {
                         subject sub
                         html view: "/email/responsesNotification", model: [user       : user,
                                                                            questionMap: questionMap,
-                                                                           mentionsList: mentionsList]
+                                                                           mentionsList: mentionsList,
+                                                                           key: key.unsubscribeKey]
                     }
                 } catch (Exception e) {
                     log.error("Error with ${user.email} : ${e.message}")

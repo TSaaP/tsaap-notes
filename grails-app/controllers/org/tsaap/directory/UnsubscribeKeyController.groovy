@@ -22,9 +22,15 @@ class UnsubscribeKeyController {
 
     def doUnsubscribeMention() {
         def key = params.key
+        def idUser = UnsubscribeKey.executeQuery("SELECT user from UnsubscribeKey where unsubscribe_key = :var" ,[var : key] )
+
+        Settings.executeUpdate("""
+                UPDATE Settings
+                SET mentionNotifications = 0
+                where user = :idUser
+                """, [idUser: idUser[0]])
 
 
-        // TODO Call service method
 
         render (view:'/directory/mentionNotifUnsubscribe')
     }

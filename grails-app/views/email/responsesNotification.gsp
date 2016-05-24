@@ -55,6 +55,11 @@
                                     controller="notes"/>
     </g:each>
 </g:if>
-${message(code: "email.manage",locale: new Locale(user.language))} <g:createLink absolute="true" action="doSettings" controller="settings"/>
+<br>
+<a href = "${createLink (absolute:'true', action:'doSettings',controller:'settings')}">${message(code: "email.manage",locale: new Locale(user.language))} </a>
+<br>
+<g:createLink absolute="true"
+              params='[key: "${key}"]' action="doUnsubscribeMention"
+              controller="UnsubscribeKey"/>
 </body>
 </html>

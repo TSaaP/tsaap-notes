@@ -3,6 +3,10 @@ package org.tsaap.notes
 import grails.plugin.mail.MailService
 import groovy.sql.Sql
 import org.springframework.context.MessageSource
+import org.tsaap.directory.ActivationKey
+import org.tsaap.directory.UnsubscribeKey
+import org.tsaap.directory.UnsubscribeKeyService
+import org.tsaap.directory.User
 
 import javax.sql.DataSource
 
@@ -14,6 +18,8 @@ class NotificationService {
   ContextService contextService
   DataSource dataSource
   MessageSource messageSource
+  UnsubscribeKeyService unsubscribeKeyService
+  UnsubscribeKey key
 
   /**
    * Notify the given user on  notes of the day coming from the context the user
@@ -23,13 +29,14 @@ class NotificationService {
   def notifyUsersOnTodayNotes() {
     Map notifications = findAllNotifications()
     notifications.each { user, contextList ->
+      key = unsubscribeKeyService.createKeyForUser(User.findById(user.user_id))
       try {
         def sub = messageSource.getMessage("email.notes.notification.title",null,new Locale(user.language))
         mailService.sendMail {
           to user.email
           subject sub
           html view: "/email/notesNotification", model: [user: user,
-                  contextList: contextList]
+                  contextList: contextList, key:key.unsubscribeKey]
         }
       } catch (Exception e) {
         log.error("Error with ${user.email} : ${e.message}")

@@ -33,6 +33,7 @@ class User {
   boolean accountLocked
   boolean passwordExpired
 
+  static hasOne = [settings: Settings]
 
   void setUsername(String val) {
     this.username = val
@@ -48,6 +49,7 @@ class User {
     }
     password blank: false, minSize: 4
     email email: true, unique: true
+    settings nullable: true
   }
 
   static mapping = {

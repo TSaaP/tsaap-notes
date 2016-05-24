@@ -66,8 +66,7 @@ class ResponseNotificationService {
               tnote1.id as question_id, tnote1.content as question, tuser2.username as response_author,
               tnote2.id as response_id, tnote2.content as response
               FROM note as tnote1, context as tcontext, note as tnote2, user as tuser1, user as tuser2, tag as ttag
-              WHERE tnote2.date_created <= NOW()
-              AND tnote2.date_created > date_sub(now(),interval 5 minute)
+              WHERE tnote2.date_created > date_sub(now(),interval 5 minute)
               AND tnote1.author_id = tuser1.id
               AND tnote1.context_id = tcontext.id
               AND tnote1.id = tnote2.parent_note_id
@@ -79,8 +78,7 @@ class ResponseNotificationService {
               tnote1.id as question_id, tnote1.content as question, tuser2.username as response_author,
               tnote2.id as response_id, tnote2.content as response
               FROM note as tnote1, context as tcontext, note as tnote2, user as tuser1, user as tuser2, tag as ttag
-              WHERE tnote2.date_created <= NOW()
-              AND tnote2.date_created > date_sub(now(),interval 5 minute)
+              WHERE  tnote2.date_created > date_sub(now(),interval 5 minute)
               AND tnote1.author_id = tuser1.id
               AND tnote1.context_id = tcontext.id
               AND tnote1.id = tnote2.parent_note_id
@@ -112,7 +110,7 @@ class ResponseNotificationService {
         def sql = new Sql(sessionFactory.currentSession.connection())
         def req = """SELECT tmention.mention_id as receiver_id, tuser1.first_name, tuser1.email, tuser1.language, tcontext.id as context_id,
                      tcontext.context_name, tnote.fragment_tag_id as tag_id, if((tnote.fragment_tag_id is null),null,ttag.name) tag_name, tuser2.username as author, tnote.content
-                     FROM note_mention as tmention, note as tnote, context as tcontext, user as tuser1, user as tuser2, tag as ttag
+                     FROM note_mention as tmention, note as tnote, context as tcontext, user as tuser1, user as tuser2, tag as ttag, settings tsettings
                      WHERE tnote.date_created > date_sub(now(),interval 5 minute) and tnote.date_created <= NOW()
                      and tnote.id = tmention.note_id
                      AND tnote.context_id = tcontext.id
@@ -121,10 +119,12 @@ class ResponseNotificationService {
                      and tnote.author_id = tuser2.id
                      and tnote.parent_note_id is null
                     and ttag.id = tnote.fragment_tag_id
+                    and tuser1.id = tsettings.user_id
+                    and tsettings.mention_notifications = 1
                     union
                     SELECT tmention.mention_id as receiver_id, tuser1.first_name, tuser1.email, tuser1.language, tcontext.id as context_id,
                     tcontext.context_name, tnote.fragment_tag_id as tag_id, if((tnote.fragment_tag_id is null),null,ttag.name) tag_name, tuser2.username as author, tnote.content
-                    FROM note_mention as tmention, note as tnote, context as tcontext, user as tuser1, user as tuser2, tag as ttag
+                    FROM note_mention as tmention, note as tnote, context as tcontext, user as tuser1, user as tuser2, tag as ttag, settings tsettings
                     WHERE tnote.date_created > date_sub(now(),interval 5 minute) and tnote.date_created <= NOW()
                     and tnote.id = tmention.note_id
                     AND tnote.context_id = tcontext.id
@@ -133,6 +133,8 @@ class ResponseNotificationService {
                     and tnote.author_id = tuser2.id
                     and tnote.parent_note_id is null
                     and tnote.fragment_tag_id is null
+                    and tuser1.id = tsettings.user_id
+                    and tsettings.mention_notifications = 1
                     order by receiver_id;"""
         def rows = sql.rows(req)
         def notifications = [:]

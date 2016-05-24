@@ -4,6 +4,8 @@ import org.gcontracts.annotations.Requires
 
 class UserAccountService {
 
+  SettingsService settingsService
+
   private static final HashMap<String,String> LANGUAGES_SUPPORTED = [
           'English':'en',
           'Français':'fr'
@@ -35,6 +37,7 @@ class UserAccountService {
         actKey.save()
       }
     }
+    user.settings = settingsService.initializeSettingsForUser(user)
     user
   }
 

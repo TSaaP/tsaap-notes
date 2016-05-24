@@ -65,21 +65,21 @@
                     <input type="text" class="form-control" id="firstName"
                            name="firstName"
                            value="${fieldValue(bean: user, field: 'firstName')}"
-                           placeholder=${message(code: "index.signUp.form.firstName.placeholder")}>
+                           placeholder="${message(code: "index.signUp.form.firstName.placeholder")}">
                   </div>
 
                   <div class="col-lg-5">
                     <input type="text" class="form-control" id="lastName"
                            name="lastName"
                            value="${fieldValue(bean: user, field: 'lastName')}"
-                           placeholder=${message(code: "index.signUp.form.lastName.placeholder")}>
+                           placeholder="${message(code: "index.signUp.form.lastName.placeholder")}">
                   </div>
                 </div>
               </div>
 
               <div class="form-group">
                 <input type="text" class="form-control" id="email" name="email"
-                       placeholder=${message(code: "index.signUp.form.email.placeholder")}
+                       placeholder="${message(code: "index.signUp.form.email.placeholder")}"
                        value="${fieldValue(bean: user, field: 'email')}">
               </div>
 
@@ -97,7 +97,7 @@
 
               <div class="form-group">
                 <input type="text" class="form-control"
-                       id="username" placeholder=${message(code: "index.signUp.form.username.placeholder")}
+                       id="username" placeholder="${message(code: "index.signUp.form.username.placeholder")}"
                        name="username"
                        value="${fieldValue(bean: user, field: 'username')}">
               </div>
@@ -105,12 +105,12 @@
 
               <div class="form-group">
                 <input type="password" class="form-control"
-                       id="password" placeholder=${message(code: "index.signUp.form.password.placeholder")} name="password">
+                       id="password" placeholder="${message(code: "index.signUp.form.password.placeholder")}" name="password">
               </div>
 
               <div class="form-group">
                 <input type="password" class="form-control"
-                       id="password2" placeholder=${message(code: "index.signUp.form.confirmPassword.placeholder")}
+                       id="password2" placeholder="${message(code: "index.signUp.form.confirmPassword.placeholder")}"
                        name="password2">
               </div>
 

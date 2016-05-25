@@ -4,8 +4,6 @@ import grails.plugin.mail.MailService
 import groovy.sql.Sql
 import org.springframework.context.MessageSource
 import org.tsaap.directory.UnsubscribeKey
-import org.tsaap.directory.UnsubscribeKeyService
-import org.tsaap.directory.User
 
 import javax.sql.DataSource
 
@@ -17,7 +15,6 @@ class NotificationService {
   ContextService contextService
   DataSource dataSource
   MessageSource messageSource
-  UnsubscribeKeyService unsubscribeKeyService
   UnsubscribeKey key
 
   /**
@@ -36,7 +33,7 @@ class NotificationService {
           to user.email
           subject sub
           html view: "/email/notesNotification", model: [user: user,
-                  contextList: contextList, key:contextList.key]
+                  contextList: contextList, key: contextList.key]
         }
       } catch (Exception e) {
         log.error("Error with ${user.email} : ${e.message}")

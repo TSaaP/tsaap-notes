@@ -5,9 +5,6 @@ import groovy.sql.Sql
 import org.hibernate.SessionFactory
 import org.springframework.context.MessageSource
 import org.tsaap.directory.UnsubscribeKey
-import org.tsaap.directory.UnsubscribeKeyService
-import org.tsaap.directory.User
-
 import javax.sql.DataSource
 
 class ResponseNotificationService {
@@ -18,7 +15,6 @@ class ResponseNotificationService {
     DataSource dataSource
     SessionFactory sessionFactory
     MessageSource messageSource
-    UnsubscribeKeyService unsubscribeKeyService
     UnsubscribeKey key
 
     def notififyUsersOnResponsesAndMentions() {
@@ -37,7 +33,8 @@ class ResponseNotificationService {
                     subject sub
                     html view: "/email/responsesNotification", model: [user: user,
                                                                    questionMap: questionMap,
-                                                                   mentionsList: mentionsList]
+                                                                   mentionsList: mentionsList,
+                                                                   key: mentionsList.key]
                 }
                 notificationsMentions.remove(user)
             } catch (Exception e) {

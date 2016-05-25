@@ -36,8 +36,10 @@ class UserAccountService {
         ActivationKey actKey = new ActivationKey(activationKey: UUID.randomUUID().toString() ,user:user)
         actKey.save()
       }
+      UnsubscribeKey unsubKey = new UnsubscribeKey(unsubscribeKey: UUID.randomUUID().toString(), user:user)
+      unsubKey.save()
+      user.settings = settingsService.initializeSettingsForUser(user)
     }
-    user.settings = settingsService.initializeSettingsForUser(user)
     user
   }
 

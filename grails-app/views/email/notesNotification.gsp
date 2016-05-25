@@ -44,14 +44,20 @@
                                    controller="notes"/>
     </p>
   </g:elseif>
+
+  <g:set var="userKey" value="${context.key}"/>
+  <hr>
 </g:each>
 
 <a href="${createLink (absolute:'true', action:'doSettings',controller:'settings')}">
   ${message(code: "email.manage",locale: new Locale(user.language))}
 </a>
 <br>
-<a href="${createLink (absolute:'true', action:'doUnsubscribeDaily', controller:'unsubscribeKey', params: [key: key])}">
+<a href="${createLink (absolute:'true', action:'doUnsubscribeDaily', controller:'unsubscribeKey', params: [key: userKey])}">
   ${message(code: "email.unsubscribeDaily.label",locale: new Locale(user.language))}
 </a>
+
+
+
 </body>
 </html>

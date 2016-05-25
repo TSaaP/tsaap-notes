@@ -47,11 +47,11 @@ class ResponseNotificationService {
         if(notificationsMentions.size()>0) {
             def questionMap = null
             notificationsMentions.each { user, mentionsList ->
-                def u = User.findById(user.user_id)
+                /*def u = User.findById(user.user_id)
                 key = UnsubscribeKey.findByUser(u)
                 if (!key) {
                     key = unsubscribeKeyService.createKeyForUser(u)
-                }
+                }*/
 
                 def sub = messageSource.getMessage("email.mention.notification.title",null,new Locale(user.language))
                 try {
@@ -61,7 +61,7 @@ class ResponseNotificationService {
                         html view: "/email/responsesNotification", model: [user       : user,
                                                                            questionMap: questionMap,
                                                                            mentionsList: mentionsList,
-                                                                           key: key.unsubscribeKey]
+                                                                           key: mentionsList.key]
                     }
                 } catch (Exception e) {
                     log.error("Error with ${user.email} : ${e.message}")
@@ -121,8 +121,8 @@ class ResponseNotificationService {
     Map findAllMentionsNotifications() {
         def sql = new Sql(sessionFactory.currentSession.connection())
         def req = """SELECT tmention.mention_id as receiver_id, tuser1.first_name, tuser1.email, tuser1.language, tcontext.id as context_id,
-                     tcontext.context_name, tnote.fragment_tag_id as tag_id, if((tnote.fragment_tag_id is null),null,ttag.name) tag_name, tuser2.username as author, tnote.content
-                     FROM note_mention as tmention, note as tnote, context as tcontext, user as tuser1, user as tuser2, tag as ttag, settings tsettings
+                     tcontext.context_name, tnote.fragment_tag_id as tag_id, if((tnote.fragment_tag_id is null),null,ttag.name) tag_name, tuser2.username as author, tnote.content,tkey.unsubscribe_key as ukey
+                     FROM note_mention as tmention, note as tnote, context as tcontext, user as tuser1, user as tuser2, tag as ttag, settings as tsettings, unsubscribe_key as tkey
                      WHERE tnote.date_created > date_sub(now(),interval 5 minute) and tnote.date_created <= NOW()
                      and tnote.id = tmention.note_id
                      AND tnote.context_id = tcontext.id
@@ -133,10 +133,11 @@ class ResponseNotificationService {
                     and ttag.id = tnote.fragment_tag_id
                     and tuser1.id = tsettings.user_id
                     and tsettings.mention_notifications = 1
+                    and tkey.user_id = tuser1.id
                     union
                     SELECT tmention.mention_id as receiver_id, tuser1.first_name, tuser1.email, tuser1.language, tcontext.id as context_id,
-                    tcontext.context_name, tnote.fragment_tag_id as tag_id, if((tnote.fragment_tag_id is null),null,ttag.name) tag_name, tuser2.username as author, tnote.content
-                    FROM note_mention as tmention, note as tnote, context as tcontext, user as tuser1, user as tuser2, tag as ttag, settings tsettings
+                    tcontext.context_name, tnote.fragment_tag_id as tag_id, if((tnote.fragment_tag_id is null),null,ttag.name) tag_name, tuser2.username as author, tnote.content, tkey.unsubscribe_key as ukey
+                    FROM note_mention as tmention, note as tnote, context as tcontext, user as tuser1, user as tuser2, tag as ttag, settings as tsettings, unsubscribe_key as tkey
                     WHERE tnote.date_created > date_sub(now(),interval 5 minute) and tnote.date_created <= NOW()
                     and tnote.id = tmention.note_id
                     AND tnote.context_id = tcontext.id
@@ -147,6 +148,7 @@ class ResponseNotificationService {
                     and tnote.fragment_tag_id is null
                     and tuser1.id = tsettings.user_id
                     and tsettings.mention_notifications = 1
+                    and tkey.user_id = tuser1.id
                     order by receiver_id;"""
         def rows = sql.rows(req)
         def notifications = [:]
@@ -155,7 +157,8 @@ class ResponseNotificationService {
             if (notifications[key] == null) {
                 notifications[key] = []
             }
-            notifications[key] << [context_id: it.context_id, context_name: it.context_name, fragment_tag: it.tag_id, fragment_tag_name: it.tag_name, mention_author: it.author, mention_content: it.content]
+            notifications[key] << [context_id: it.context_id, context_name: it.context_name, fragment_tag: it.tag_id, fragment_tag_name: it.tag_name, mention_author: it.author, mention_content: it.content
+            , key: it.ukey]
         }
         sql.close()
         notifications

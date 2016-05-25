@@ -46,10 +46,12 @@
   </g:elseif>
 </g:each>
 
-<a href = "${createLink (absolute:'true', action:'doSettings',controller:'settings')}">${message(code: "email.manage",locale: new Locale(user.language))} </a>
+<a href="${createLink (absolute:'true', action:'doSettings',controller:'settings')}">
+  ${message(code: "email.manage",locale: new Locale(user.language))}
+</a>
 <br>
-<g:createLink absolute="true"
-              params='[key: "${key}"]' action="doUnsubscribeDaily"
-              controller="UnsubscribeKey"/>
+<a href="${createLink (absolute:'true', action:'doUnsubscribeDaily', controller:'unsubscribeKey', params: [key: key])}">
+  ${message(code: "email.unsubscribeDaily.label",locale: new Locale(user.language))}
+</a>
 </body>
 </html>

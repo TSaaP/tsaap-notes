@@ -53,13 +53,12 @@
         ${message(code: "email.notification.beforeLink",locale: new Locale(user.language))} <g:createLink absolute="true"
                                     params="[displaysAll: 'on', contextName: mention.context_name, contextId: mention.context_id, fragmentTagId: mention.fragment_tag]"
                                     controller="notes"/>
-        <g:set var="userKey" value="${mention.key}"/>
     </g:each>
 </g:if>
 <br>
 <a href = "${createLink (absolute:'true', action:'doSettings',controller:'settings')}">${message(code: "email.manage",locale: new Locale(user.language))} </a>
 <br>
-<a href="${createLink (absolute:'true', action:'doUnsubscribeMention', controller:'unsubscribeKey', params: [key: userKey])}">
+<a href="${createLink (absolute:'true', action:'doUnsubscribeMention', controller:'unsubscribeKey', params: [key: key])}">
     ${message(code: "email.unsubscribeMention.label",locale: new Locale(user.language))}
 </a>
 </body>

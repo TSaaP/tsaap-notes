@@ -44,11 +44,6 @@ class ResponseNotificationService {
         if(notificationsMentions.size()>0) {
             def questionMap = null
             notificationsMentions.each { user, mentionsList ->
-                /*def u = User.findById(user.user_id)
-                key = UnsubscribeKey.findByUser(u)
-                if (!key) {
-                    key = unsubscribeKeyService.createKeyForUser(u)
-                }*/
 
                 def sub = messageSource.getMessage("email.mention.notification.title",null,new Locale(user.language))
                 try {
@@ -58,7 +53,7 @@ class ResponseNotificationService {
                         html view: "/email/responsesNotification", model: [user       : user,
                                                                            questionMap: questionMap,
                                                                            mentionsList: mentionsList,
-                                                                           key: mentionsList.key]
+                                                                           key: mentionsList.find().key]
                     }
                 } catch (Exception e) {
                     log.error("Error with ${user.email} : ${e.message}")

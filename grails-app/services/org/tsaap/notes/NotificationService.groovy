@@ -33,7 +33,7 @@ class NotificationService {
           to user.email
           subject sub
           html view: "/email/notesNotification", model: [user: user,
-                  contextList: contextList, key: contextList.key]
+                  contextList: contextList, key: contextList.find().key]
         }
       } catch (Exception e) {
         log.error("Error with ${user.email} : ${e.message}")

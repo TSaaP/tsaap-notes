@@ -170,5 +170,3 @@ environments {
         tsaap.auth.check_user_email = true
     }
 }
-
-tsaap.auth.activation_key.lifetime_in_hours = 3

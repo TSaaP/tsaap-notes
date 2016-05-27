@@ -21,7 +21,9 @@ class ActivationKeyService {
         def users = User.findAllByIdInListAndEnabled(keys.user.id, false)
         def settings = Settings.findAllByUserInList(users)
         def roles = UserRole.findAllByUserInList(users)
+        def unsubKeys = UnsubscribeKey.findAllByUserInList(users)
 
+        UnsubscribeKey.deleteAll(unsubKeys)
         UserRole.deleteAll(roles)
         Settings.deleteAll(settings)
         User.deleteAll(users)

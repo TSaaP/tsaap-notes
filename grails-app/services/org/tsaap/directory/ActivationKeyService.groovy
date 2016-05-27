@@ -1,11 +1,19 @@
 package org.tsaap.directory
 
+import grails.transaction.Transactional
 import org.apache.commons.lang.time.DateUtils
 
+@Transactional
 class ActivationKeyService {
 
     def grailsApplication
 
+    /**
+     * Remove all activationKeys older than 3 (or custom value) hours and corresponding user who didn't activate their
+     * accounts
+     * The maximum lifetime is expressed in the parameter tsaap.auth.activation_key.lifetime_in_hours
+     * @return
+     */
     def removeOldActivationKeys() {
         def lifetime = grailsApplication.config.tsaap.auth.activation_key.lifetime_in_hours ?: 3
         def keys = ActivationKey.findAllByDateCreatedLessThan(DateUtils.addHours(new Date(), -lifetime))
@@ -17,24 +25,5 @@ class ActivationKeyService {
         UserRole.deleteAll(roles)
         Settings.deleteAll(settings)
         User.deleteAll(users)
-
-        /*UserRole.executeUpdate('''
-                delete from UserRole ur
-                where ur.user in (
-                    select u.id from User u
-                    where u.enabled = false and u.id not in (
-                        select ak.user.id from ActivationKey ak))
-                ''')
-        Settings.executeUpdate('''
-                delete from Settings s
-                where s.user in (
-                    select u.id from User u
-                    where u.enabled = false and u.id not in (
-                        select ak.user.id from ActivationKey ak))
-                ''')
-        User.executeUpdate('''
-                delete from User u
-                where u.enabled = false and u.id not in (select ak.user from ActivationKey ak)
-                ''')*/
     }
 }

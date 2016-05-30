@@ -43,20 +43,20 @@ class ResponseNotificationService {
         }
         if (notificationsMentions.size() > 0) {
             def questionMap = null
-            notificationsMentions.each { user, mentionsList ->
+            notificationsMentions.each { user, map ->
 
-                def sub = messageSource.getMessage("email.mention.notification.title", null, new Locale(user.language))
+                def sub = messageSource.getMessage("email.mention.notification.title", null, new Locale(map.language))
                 try {
                     mailService.sendMail {
-                        to user.email
+                        to map.email
                         subject sub
-                        html view: "/email/responsesNotification", model: [user        : user,
+                        html view: "/email/responsesNotification", model: [user        : [user: map.user, language: map.language, first_name: map.first_name, email: map.email],
                                                                            questionMap : questionMap,
-                                                                           mentionsList: mentionsList,
-                                                                           key         : mentionsList.find().key]
+                                                                           mentionsList: map.mentionsList,
+                                                                           key         : map.key]
                     }
                 } catch (Exception e) {
-                    log.error("Error with ${user.email} : ${e.message}")
+                    log.error("Error with ${map.email} : ${e.message}")
                 }
             }
         }
@@ -105,7 +105,7 @@ class ResponseNotificationService {
                 SELECT distinct tmention.mention_id as receiver_id, tuser1.first_name, tuser1.email, tuser1.language, tcontext.id as context_id,
                 tcontext.context_name, tnote.fragment_tag_id as tag_id, if((tnote.fragment_tag_id is null),null,ttag.name) tag_name, tuser2.username as author, tnote.content, tkey.unsubscribe_key as ukey
                 FROM note_mention as tmention, note as tnote, context as tcontext, user as tuser1, user as tuser2, tag as ttag, settings as tsettings, unsubscribe_key as tkey
-                WHERE tnote.date_created > date_sub(now(),interval 1 hour) and tnote.date_created <= NOW()
+                WHERE tnote.date_created > date_sub(now(),interval 1 hour)
                 and tnote.id = tmention.note_id
                 AND tnote.context_id = tcontext.id
                 and tnote.author_id != tmention.mention_id
@@ -122,12 +122,12 @@ class ResponseNotificationService {
         def rows = sql.rows(req)
         def notifications = [:]
         rows.each {
-            def key = [user_id: it.receiver_id, first_name: it.first_name, email: it.email, language: it.language]
+            def key = it.receiver_id
             if (notifications[key] == null) {
-                notifications[key] = []
+                notifications[key] = [key: it.ukey, first_name: it.first_name, email: it.email, language: it.language, mentionsList: []]
             }
-            notifications[key] << [context_id: it.context_id, context_name: it.context_name, fragment_tag: it.tag_id, fragment_tag_name: it.tag_name, mention_author: it.author, mention_content: it.content
-                                   , key     : it.ukey]
+            notifications[key].mentionsList << [context_id       : it.context_id, context_name: it.context_name, fragment_tag: it.tag_id,
+                                                fragment_tag_name: it.tag_name, mention_author: it.author, mention_content: it.content]
         }
         sql.close()
         notifications

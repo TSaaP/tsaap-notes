@@ -46,14 +46,17 @@ class ResponseNotificationIntegrationSpec extends Specification {
     void "finding all notes with an user are mentioned" () {
         given: "the user mary mention user paul in a note"
         Tag tag = Tag.findOrSaveWhere(name: 'tagtest')
-        Note note1 = noteService.addStandardNote(bootstrapTestService.learnerMary,"mary's mention @learner_paul",bootstrapTestService.context1,tag)
+        Note note1 = noteService.addNote(bootstrapTestService.learnerMary,"mary's mention @learner_paul",bootstrapTestService.context1,tag)
 
         when: "we want to know if someone in the five last minutes as mentioned someone"
         Map result = responseNotificationService.findAllMentionsNotifications()
 
         then: "we got a map with one notification for Paul"
-        result.containsKey([user_id: bootstrapTestService.learnerPaul.id, first_name: bootstrapTestService.learnerPaul.firstName, email: bootstrapTestService.learnerPaul.email, language: bootstrapTestService.learnerPaul.language])
-        def res = result.get([user_id: bootstrapTestService.learnerPaul.id, first_name: bootstrapTestService.learnerPaul.firstName, email: bootstrapTestService.learnerPaul.email, language: bootstrapTestService.learnerPaul.language])
-        res.contains([context_id: bootstrapTestService.context1.id, context_name: bootstrapTestService.context1.contextName, fragment_tag: tag.id, fragment_tag_name: tag.name, mention_author: bootstrapTestService.learnerMary.username, mention_content: note1.content])
+        result.containsKey(bootstrapTestService.learnerPaul.id)
+        def res = result.get(bootstrapTestService.learnerPaul.id)
+        res.contains([context_id: bootstrapTestService.context1.id, context_name: bootstrapTestService.context1.contextName,
+                      fragment_tag: tag.id, fragment_tag_name: tag.name, mention_author: bootstrapTestService.learnerMary.username,
+                      mention_content: note1.content, first_name: bootstrapTestService.learnerPaul.firstName,
+                      email: bootstrapTestService.learnerPaul.email, language: bootstrapTestService.learnerPaul.language])
     }
 }

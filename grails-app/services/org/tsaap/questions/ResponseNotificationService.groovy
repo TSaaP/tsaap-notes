@@ -17,8 +17,13 @@ class ResponseNotificationService {
     MessageSource messageSource
     UnsubscribeKey key
 
-    def notififyUsersOnResponsesAndMentions() {
-        Map notificationsMentions = findAllMentionsNotificationsAndResponses()
+    /**
+     * Send mails to users mentioned in the last 5 minutes
+     *
+     * @return
+     */
+    def notifyUsersOnResponsesAndMentions() {
+        Map notificationsMentions = findAllMentionsAndResponsesNotifications()
 
         if (notificationsMentions.size() > 0) {
             def questionMap = null
@@ -40,8 +45,12 @@ class ResponseNotificationService {
         }
     }
 
-
-    Map findAllMentionsNotificationsAndResponses() {
+    /**
+     * Find notifications of users mentioned in the last 5 minutes
+     *
+     * @return a map with the user as key, and information and all notifications about the user as value
+     */
+    Map findAllMentionsAndResponsesNotifications() {
         def sql = new Sql(sessionFactory.currentSession.connection())
         def req = """
                 SELECT distinct tmention.mention_id as receiver_id, tuser1.first_name, tuser1.email, tuser1.language, tcontext.id as context_id,

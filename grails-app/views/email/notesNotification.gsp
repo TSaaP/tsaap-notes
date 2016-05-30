@@ -44,7 +44,18 @@
                                    controller="notes"/>
     </p>
   </g:elseif>
+
+  <hr>
 </g:each>
+
+<a href="${createLink (absolute:'true', action:'doSettings',controller:'settings')}">
+  ${message(code: "email.manage",locale: new Locale(user.language))}
+</a>
+<br>
+<a href="${createLink (absolute:'true', action:'doUnsubscribeDaily', controller:'unsubscribeKey', params: [key: key])}">
+  ${message(code: "email.unsubscribeDaily.label",locale: new Locale(user.language))}
+</a>
+
 
 
 </body>

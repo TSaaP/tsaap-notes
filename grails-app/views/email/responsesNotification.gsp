@@ -41,9 +41,9 @@
 </g:if>
 <g:if test="${mentionsList != null}">
     <p>${message(code: "email.mention.notification.message",locale: new Locale(user.language))}</p>
-
+    <hr>
     <g:each in="${mentionsList}" var="mention">
-        <hr>
+
         <p> ${message(code: "email.response.notification.note",locale: new Locale(user.language))}<br>
         ${message(code: "email.response.notification.author",locale: new Locale(user.language))} ${mention.mention_author}<br>
         ${message(code: "email.response.notification.context",locale: new Locale(user.language))} ${mention.context_name}<br>
@@ -53,6 +53,7 @@
         ${message(code: "email.notification.beforeLink",locale: new Locale(user.language))} <g:createLink absolute="true"
                                     params="[displaysAll: 'on', contextName: mention.context_name, contextId: mention.context_id, fragmentTagId: mention.fragment_tag]"
                                     controller="notes"/>
+        <hr>
     </g:each>
 </g:if>
 <br>

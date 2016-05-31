@@ -37,6 +37,7 @@ class SettingsController {
             settingsMap.mentionNotifications = false
         }
 
+        settingsMap.language = params.language
         def settings = settingsService.updateSettingsForUser(user, settingsMap)
 
          if (settings.hasErrors()) {

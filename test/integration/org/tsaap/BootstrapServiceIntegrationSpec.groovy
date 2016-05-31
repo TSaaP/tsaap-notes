@@ -48,13 +48,13 @@ class BootstrapServiceIntegrationSpec extends Specification {
     then: "we have 3 users"
     bootstrapService.fsil != null
     bootstrapService.fsil.username == "fsil"
-    bootstrapService.fsil.language == 'fr'
+    bootstrapService.fsil.settings.language == 'fr'
     bootstrapService.mary != null
     bootstrapService.mary.username == "mary"
-    bootstrapService.mary.language == 'fr'
+    bootstrapService.mary.settings.language == 'fr'
     bootstrapService.thom != null
     bootstrapService.thom.username == "thom"
-    bootstrapService.thom.language == 'fr'
+    bootstrapService.thom.settings.language == 'fr'
   }
 
   def "context initialization"() {

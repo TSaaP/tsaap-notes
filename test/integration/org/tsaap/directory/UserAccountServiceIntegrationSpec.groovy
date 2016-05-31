@@ -35,9 +35,8 @@ class UserAccountServiceIntegrationSpec extends Specification {
     def u = userAccountService.addUser(new User(firstName: "Mary", lastName: "S",
                                                 username: "Mary_test",
                                                 email: "mary@nomail.com",
-                                                password: "password",
-                                                language: 'en'),
-                                       RoleEnum.STUDENT_ROLE.role)
+                                                password: "password"),
+                                       RoleEnum.STUDENT_ROLE.role, false, 'en')
     println "${u.errors}"
 
     then: "the user is persisted in the datastore"
@@ -46,7 +45,7 @@ class UserAccountServiceIntegrationSpec extends Specification {
     !user.enabled
     user.normalizedUsername == "mary_test"
     user.email == "mary@nomail.com"
-    user.language == 'en'
+    user.settings.language == 'en'
     !user.authorities.empty
     user.authorities.first().roleName == RoleEnum.STUDENT_ROLE.name()
     user.password == springSecurityService.encodePassword("password")
@@ -55,9 +54,8 @@ class UserAccountServiceIntegrationSpec extends Specification {
     def user2 = userAccountService.addUser(new User(firstName: "Mary", lastName: "G",
                                                     username: "Mary_test_g",
                                                     email: "mary@mary.com",
-                                                    password: "password",
-                                                    language: 'en'),
-                                           RoleEnum.STUDENT_ROLE.role, false, true)
+                                                    password: "password"),
+                                           RoleEnum.STUDENT_ROLE.role, false, 'en', true)
 
     then: "the activation key is generated"
     !user2.hasErrors()
@@ -73,9 +71,8 @@ class UserAccountServiceIntegrationSpec extends Specification {
     def mary = userAccountService.addUser(new User(firstName: "Mary", lastName: "S",
                                                    username: "Mary_test",
                                                    email: "mary@nomail.com",
-                                                   password: "password",
-                                                   language: 'en'),
-                                          RoleEnum.STUDENT_ROLE.role)
+                                                   password: "password"),
+                                          RoleEnum.STUDENT_ROLE.role, false, 'en')
     userAccountService.enableUser(mary)
 
     then: User user = User.findByUsername("Mary_test")
@@ -90,9 +87,8 @@ class UserAccountServiceIntegrationSpec extends Specification {
     def mary = userAccountService.addUser(new User(firstName: "Mary", lastName: "S",
                                                    username: "Mary_test",
                                                    email: "mary@nomail.com",
-                                                   password: "password",
-                                                   language: 'en'),
-                                          RoleEnum.STUDENT_ROLE.role)
+                                                   password: "password"),
+                                          RoleEnum.STUDENT_ROLE.role, false, 'en')
     userAccountService.enableUser(mary)
 
     when: 'the user account is asking to be disabled'
@@ -112,14 +108,13 @@ class UserAccountServiceIntegrationSpec extends Specification {
     def mary = userAccountService.addUser(new User(firstName: "Mary", lastName: "S",
                                                    username: "Mary_test",
                                                    email: "mary@nomail.com",
-                                                   password: "password",
-                                                   language: 'en'),
-                                          RoleEnum.STUDENT_ROLE.role)
+                                                   password: "password"),
+                                          RoleEnum.STUDENT_ROLE.role, false, 'en')
 
     when: 'modifying properties of the user and ask for an update'
     mary.firstName = newFirstName
     mary.email = newEmail
-    mary.language = newLanguage
+    mary.settings.language = newLanguage
     Role mainRole = RoleEnum.valueOf(newRoleName).role
     userAccountService.updateUser(mary, mainRole)
 

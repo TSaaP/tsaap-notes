@@ -48,7 +48,7 @@
   <hr>
 </g:each>
 
-<a href="${createLink (absolute:'true', action:'doSettings',controller:'settings')}">
+<a href="${createLink (absolute:'true', action:'doSettings',controller:'settings', params: [key: key])}">
   ${message(code: "email.manage",locale: new Locale(user.language))}
 </a>
 <br>

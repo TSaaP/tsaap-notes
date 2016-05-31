@@ -2,6 +2,7 @@ package org.tsaap.directory
 
 import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
+import org.gcontracts.annotations.Requires
 
 import static org.springframework.http.HttpStatus.*
 import grails.transaction.Transactional
@@ -13,6 +14,11 @@ class SettingsController {
     SettingsService settingsService
 
     @Secured(['IS_AUTHENTICATED_FULLY'])
+    @Requires({
+        !params.key || springSecurityService.currentUser == UnsubscribeKey.executeQuery(
+                    "SELECT user from UnsubscribeKey where unsubscribe_key = :var",
+                    [var: params.key])[0]
+    })
     def doSettings() {
         render(view: '/settings/settings',model: [user: springSecurityService.currentUser])
         //redirect(uri: '/settings/settings')

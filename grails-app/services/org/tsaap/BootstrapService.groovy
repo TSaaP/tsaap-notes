@@ -62,27 +62,27 @@ class BootstrapService {
     def initializeAdmin() {
         admin = User.findByUsername("admin")
         if (!admin) {
-            def user = new User(firstName: "Admin", lastName: "Tsaap", username: "admin", password: "1234", email: 'admin@tsaap.org', language: 'en')
-            admin = userAccountService.addUser(user, adminRole, true)
+            def user = new User(firstName: "Admin", lastName: "Tsaap", username: "admin", password: "1234", email: 'admin@tsaap.org')
+            admin = userAccountService.addUser(user, adminRole, true, 'en')
         }
     }
 
     def inializeDevUsers() {
         fsil = User.findByUsername("fsil")
         if (!fsil) {
-            def user = new User(firstName: "Franck", lastName: "Sil", username: "fsil", password: "1234", email: 'fsil@fsil.com', language: 'fr')
-            fsil = userAccountService.addUser(user, studentRole, true)
+            def user = new User(firstName: "Franck", lastName: "Sil", username: "fsil", password: "1234", email: 'fsil@fsil.com')
+            fsil = userAccountService.addUser(user, studentRole, true, 'fr')
 
         }
         mary = User.findByUsername("mary")
         if (!mary) {
-            def user = new User(firstName: "Mary", lastName: "Sil", username: "mary", password: "1234", email: 'mary@mary.com', language: 'fr')
-            mary = userAccountService.addUser(user, teacherRole, true)
+            def user = new User(firstName: "Mary", lastName: "Sil", username: "mary", password: "1234", email: 'mary@mary.com')
+            mary = userAccountService.addUser(user, teacherRole, true, 'fr')
         }
         thom = User.findByUsername("thom")
         if (!thom) {
-            def user = new User(firstName: "Thom", lastName: "Thom", username: "thom", password: "1234", email: 'thom@thom.com', language: 'fr')
-            thom = userAccountService.addUser(user, studentRole, true)
+            def user = new User(firstName: "Thom", lastName: "Thom", username: "thom", password: "1234", email: 'thom@thom.com')
+            thom = userAccountService.addUser(user, studentRole, true, 'fr')
         }
     }
 

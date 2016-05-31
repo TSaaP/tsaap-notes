@@ -53,7 +53,7 @@ class NotificationService {
   private Map findAllNotifications() {
     def sql = new Sql(dataSource)
     def req = """
-              SELECT tuser.id as user_id, tuser.first_name, tuser.email, tuser.language, tcontext.id as context_id, tcontext.context_name, count(tnote.id) as count_notes, tkey.unsubscribe_key as ukey
+              SELECT tuser.id as user_id, tuser.first_name, tuser.email, tsettings.language, tcontext.id as context_id, tcontext.context_name, count(tnote.id) as count_notes, tkey.unsubscribe_key as ukey
               FROM note as tnote
               INNER JOIN context_follower as tcontextfo ON tnote.context_id = tcontextfo.context_id
               INNER JOIN context as tcontext ON tcontextfo.context_id = tcontext.id
@@ -64,7 +64,7 @@ class NotificationService {
                 and tsettings.daily_notifications = 1
               group by context_id, user_id, tkey.id
               UNION
-              SELECT tuser.id as user_id, tuser.first_name, tuser.email, tuser.language, tcontext.id as context_id, tcontext.context_name, count(tnote.id), tkey.unsubscribe_key as ukey
+              SELECT tuser.id as user_id, tuser.first_name, tuser.email, tsettings.language, tcontext.id as context_id, tcontext.context_name, count(tnote.id), tkey.unsubscribe_key as ukey
               FROM note as tnote
               INNER JOIN context as tcontext ON tnote.context_id = tcontext.id
               INNER JOIN user as tuser ON tcontext.owner_id = tuser.id

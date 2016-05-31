@@ -53,9 +53,10 @@ class MailCheckingService {
   private Map findAllNotifications() {
     def sql = new Sql(dataSource)
     def req = """
-              SELECT tuser.id as user_id, tuser.first_name, tuser.email, tuser.language, tact_key.activation_key
+              SELECT tuser.id as user_id, tuser.first_name, tuser.email, tsettings.language, tact_key.activation_key
               FROM user as tuser
               INNER JOIN  activation_key as tact_key ON tact_key.user_id = tuser.id
+              INNER JOIN settings as tsettings ON tsettings.user_id = tuser.id
               where tact_key.activation_email_sent = false"""
     def rows = sql.rows(req)
     log.debug("Select request : $req")

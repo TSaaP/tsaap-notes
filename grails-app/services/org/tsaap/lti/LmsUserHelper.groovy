@@ -45,7 +45,7 @@ class LmsUserHelper {
      * @param password user password
      */
     def insertUserInDatabase(Sql sql, String email, String firstname, String lastname, String username, String password, Boolean enable) {
-        sql.execute("INSERT INTO user (account_expired,account_locked,email,enabled,first_name,last_name,normalized_username,password,password_expired,username,version,language) VALUES (0,0,$email,$enable,$firstname,$lastname,$username,$password,0,$username,0,'en')")
+        sql.execute("INSERT INTO user (account_expired,account_locked,email,enabled,first_name,last_name,normalized_username,password,password_expired,username,version) VALUES (0,0,$email,$enable,$firstname,$lastname,$username,$password,0,$username,0)")
     }
 
     /**

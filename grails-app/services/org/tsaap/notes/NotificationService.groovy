@@ -62,7 +62,7 @@ class NotificationService {
               INNER JOIN unsubscribe_key as tkey ON tkey.user_id = tuser.id
               where tnote.date_created < NOW() and tnote.date_created > concat(date_sub(curdate(),interval 1 day),' ',curtime()) and tuser.enabled = TRUE
                 and tsettings.daily_notifications = 1
-              group by context_id, user_id, tkey.id
+              group by context_id, user_id, tkey.id, tsettings.language
               UNION
               SELECT tuser.id as user_id, tuser.first_name, tuser.email, tsettings.language, tcontext.id as context_id, tcontext.context_name, count(tnote.id), tkey.unsubscribe_key as ukey
               FROM note as tnote
@@ -72,7 +72,7 @@ class NotificationService {
               INNER JOIN unsubscribe_key as tkey ON tkey.user_id = tuser.id
               where tnote.date_created < NOW() and tnote.date_created > concat(date_sub(curdate(),interval 1 day),' ',curtime()) and tuser.enabled = TRUE
                 and tsettings.daily_notifications = 1
-              group by context_id, user_id, tkey.id
+              group by context_id, user_id, tkey.id, tsettings.language
               order by user_id,context_name """
     def rows = sql.rows(req)
     def notifications = [:]

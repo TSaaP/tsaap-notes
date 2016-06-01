@@ -9,7 +9,7 @@
 <html lang="en">
 <head>
     <title>${message(code: "settings.unsubscribedDaily.page.title")}</title>
-    <meta name='layout' content='unsubscribe'/>
+    <meta name='layout' content='anonymous'/>
     <r:require module="tsaap_ui_signin"/>
 </head>
 

@@ -29,7 +29,7 @@ class UserSpec extends Specification {
   @Unroll
   def "'#username' is valid username is #usernameIsOK"() {
     when:
-      User user = new User(firstName: "franck", lastName: "s", username: username, email: "mail@mail.com", password: "password", language: 'en')
+      User user = new User(firstName: "franck", lastName: "s", username: username, email: "mail@mail.com", password: "password")
     then:
       println "-${user.username}-"
       user.validate() == usernameIsOK
@@ -51,7 +51,7 @@ class UserSpec extends Specification {
   def "user get full name string"() {
 
     given: "a user"
-    User user = new User(firstName: "franck", lastName: "s", username: "fs", email: "mail@mail.com", password: "password", language: 'en')
+    User user = new User(firstName: "franck", lastName: "s", username: "fs", email: "mail@mail.com", password: "password")
 
     when: "I want a string with this user fullname"
     def res = user.getFullname()

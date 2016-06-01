@@ -48,7 +48,7 @@ class Context {
    **/
   String descriptionAsNote
 
-  Boolean noteTakingEnabled = true
+  Boolean noteTakingEnabled = false
 
   static constraints = {
     contextName blank: false, maxSize: 1024

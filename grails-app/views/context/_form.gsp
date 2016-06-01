@@ -35,8 +35,8 @@
   <g:message code="context.form.teach.checkbox" default="You teach on this context"/>
 </div>
 
-<div class="checkbox fieldcontain ">
-  <g:checkBox name="ownerIsTeacher"/>
+<div class="checkbox fieldcontain ${hasErrors(bean: context, field: 'noteTakingEnabled', 'error')}">
+  <g:checkBox name="noteTakingEnabled" value="${context?.noteTakingEnabled}"/>
   <g:message code="context.form.notes.checkbox"/>
 </div>
 

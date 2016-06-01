@@ -5,8 +5,7 @@ class ActivationKeyGarbageCollectorJob {
     ActivationKeyService activationKeyService
 
     static triggers = {
-        //cron name: 'garbageActKeyCronTrigger', startDelay: 10000, cronExpression: '0 0 0/1 * * ?'
-        cron name: 'garbageActKeyCronTrigger', startDelay: 10000, cronExpression: '0 0/1 * * * ?'
+        cron name: 'garbageActKeyCronTrigger', startDelay: 10000, cronExpression: '0 0 0/1 * * ?'
     }
 
     def execute() {

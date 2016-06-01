@@ -27,7 +27,7 @@ class UserAccountService {
    * @param user the user to be added
    * @return the created user
    */
-  User addUser(User user, Role mainRole, Boolean enabled = false, boolean checkEmailAccount = false) {
+  User addUser(User user, Role mainRole, Boolean enabled = false, String language='fr', boolean checkEmailAccount = false) {
     user.enabled = enabled
     user.save()
     if (!user.hasErrors()) {
@@ -38,7 +38,7 @@ class UserAccountService {
       }
       UnsubscribeKey unsubKey = new UnsubscribeKey(unsubscribeKey: UUID.randomUUID().toString(), user:user)
       unsubKey.save()
-      user.settings = settingsService.initializeSettingsForUser(user)
+      user.settings = settingsService.initializeSettingsForUser(user,language)
     }
     user
   }

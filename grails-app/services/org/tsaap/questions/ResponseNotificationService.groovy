@@ -53,7 +53,7 @@ class ResponseNotificationService {
     Map findAllMentionsAndResponsesNotifications() {
         def sql = new Sql(sessionFactory.currentSession.connection())
         def req = """
-                SELECT distinct tmention.mention_id as receiver_id, tuser1.first_name, tuser1.email, tuser1.language, tcontext.id as context_id,
+                SELECT distinct tmention.mention_id as receiver_id, tuser1.first_name, tuser1.email, tsettings.language, tcontext.id as context_id,
                 tcontext.context_name, tnote.fragment_tag_id as tag_id, if((tnote.fragment_tag_id is null),null,ttag.name) tag_name, tuser2.username as author, tnote.content, tkey.unsubscribe_key as ukey
                 FROM note_mention as tmention, note as tnote, context as tcontext, user as tuser1, user as tuser2, tag as ttag, settings as tsettings, unsubscribe_key as tkey
                 WHERE tnote.date_created > date_sub(now(),interval 5 minute)

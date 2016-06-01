@@ -36,14 +36,14 @@ class BootstrapTestServiceIntegrationSpec extends Specification {
         then:
         bootstrapTestService.learnerPaul != null
         bootstrapTestService.learnerPaul.username == "learner_paul"
-        bootstrapTestService.learnerPaul.language == 'fr'
+        bootstrapTestService.learnerPaul.settings.language == 'fr'
         bootstrapTestService.teacherJeanne != null
         bootstrapTestService.teacherJeanne.normalizedUsername == "teacher_jeanne"
-        bootstrapTestService.teacherJeanne.language == 'fr'
+        bootstrapTestService.teacherJeanne.settings.language == 'fr'
         bootstrapTestService.learnerMary != null
         bootstrapTestService.learnerMary.username == "learner_Mary"
         bootstrapTestService.learnerMary.normalizedUsername == "learner_mary"
-        bootstrapTestService.learnerMary.language == 'fr'
+        bootstrapTestService.learnerMary.settings.language == 'fr'
 
     }
 

@@ -27,7 +27,6 @@ class User {
   String email
   String password
   String fullname
-  String language
   boolean enabled
   boolean accountExpired
   boolean accountLocked

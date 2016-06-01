@@ -8,16 +8,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>${message(code: "springSecurity.login.page.title")}</title>
-    <meta name='layout' content='home'/>
+    <title>${message(code: "settings.unsubscribedMention.page.title")}</title>
+    <meta name='layout' content='anonymous'/>
     <r:require module="tsaap_ui_signin"/>
 </head>
 
 <body>
 <div class="container">
-    <div class="jumbotron">
-        <h1>${message(code: "settings.unsubscribedDaily.title")}</h1>
-        <p>${message(code: "settings.unsubscribedDaily.message")}</p>
+    <div class="body-content">
+        <div class="row">
+            <div class="col-lg-6">
+
+                <p>${message(code: "settings.unsubscribedDaily.message")}</p>
+            </div>
+        </div>
     </div>
 </div>
 

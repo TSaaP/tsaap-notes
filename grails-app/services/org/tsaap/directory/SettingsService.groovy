@@ -22,11 +22,12 @@ class SettingsService {
      * @param user
      * @return the processed user
      */
-    Settings initializeSettingsForUser(User user) {
+    Settings initializeSettingsForUser(User user, String language) {
         Settings settings = new Settings()
         settings.dailyNotifications = true
         settings.mentionNotifications = true
         settings.user = user
+        settings.language = language
         settings.save()
         settings
     }

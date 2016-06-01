@@ -25,15 +25,15 @@ class SessionPhaseIntegrationSpec extends Specification {
 
         user1 = User.findByUsername("user1")
         if (!user1) {
-            user1 = new User(firstName: "user1", lastName: "u1", username: "user1", password: "password", email: "user1@nomail.com", language: 'fr').save()
+            user1 = new User(firstName: "user1", lastName: "u1", username: "user1", password: "password", email: "user1@nomail.com").save()
         }
         user2 = User.findByUsername("user2")
         if (!user2) {
-            user2 = new User(firstName: "user1", lastName: "u2", username: "user2", password: "password", email: "user2@nomail.com",language: 'fr').save()
+            user2 = new User(firstName: "user1", lastName: "u2", username: "user2", password: "password", email: "user2@nomail.com").save()
         }
         user3 = User.findByUsername("user3")
         if (!user3) {
-            user3 = new User(firstName: "user3", lastName: "u3", username: "user3", password: "password", email: "user3@nomail.com",language: 'fr').save()
+            user3 = new User(firstName: "user3", lastName: "u3", username: "user3", password: "password", email: "user3@nomail.com").save()
         }
     }
     def setup() {

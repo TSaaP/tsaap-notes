@@ -35,6 +35,11 @@
   <g:message code="context.form.teach.checkbox" default="You teach on this context"/>
 </div>
 
+<div class="checkbox fieldcontain ">
+  <g:checkBox name="ownerIsTeacher"/>
+  <g:message code="context.form.notes.checkbox"/>
+</div>
+
 <g:hiddenField name="owner" value="${context?.owner?.id}"/>
 
 <r:script>

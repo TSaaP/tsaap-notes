@@ -48,6 +48,8 @@ class Context {
    **/
   String descriptionAsNote
 
+  Boolean noteTakingEnabled = true
+
   static constraints = {
     contextName blank: false, maxSize: 1024
     url url: true, nullable: true

@@ -64,7 +64,15 @@ class Context {
   Boolean hasNotes() {
     Note.countByContext(this)
   }
+  /**
+   * Check if the current context has notes
+   * Of kind Standard
+   * @return true if the current context has standard notes
+     */
 
+  Boolean hasStandardNotes() {
+    Note.countByContextAndKind(this, NoteKind.STANDARD.ordinal())
+  }
   /**
    * Check if the current context has new notes since yesterday
    * @return true if the current context has notes

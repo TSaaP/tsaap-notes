@@ -80,15 +80,22 @@
                 <td><g:formatDate
                         date="${context.lastUpdated}"/></td>
             </tr>
-            <tr>
+            <g:if test="${context.noteTakingEnabled || context.hasStandardNotes()}">
+
+                <tr>
+                    <td>
+                        ${message(code: 'context.show.notes')}
+                    </td>
                 <td>
-                    ${message(code: 'context.show.notes')}
+                        <g:link controller="notes"
+                                params="[displaysAll: 'on', contextName: context?.contextName, contextId: context.id, kind: 'standard']"><g:createLink
+                                absolute="true" controller="notes"
+                                params="[displaysAll: 'on', contextName: context?.contextName, contextId: context.id, kind: 'standard']"/></g:link>
+
                 </td>
-                <td><g:link controller="notes"
-                            params="[displaysAll: 'on', contextName: context?.contextName, contextId: context.id, kind: 'standard']"><g:createLink
-                            absolute="true" controller="notes"
-                            params="[displaysAll: 'on', contextName: context?.contextName, contextId: context.id, kind: 'standard']"/></g:link></td>
-            </tr>
+                </tr>
+            </g:if>
+
             <tr>
                 <td>
                     ${message(code: 'context.show.questions')}

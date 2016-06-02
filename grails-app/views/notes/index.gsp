@@ -78,6 +78,33 @@
     </ul>
 </g:if>
 
+<g:else>
+    <ul class="nav nav-tabs pull-right">
+        <g:if test="${params.kind != 'question' && notes.totalCount}">
+            <li role="presentation" class="active"><a>${message(code: "notes.disabled.link")} (${notes.totalCount})</a></li>
+            <li role="presentation">
+                <g:link controller="notes"
+                        params='[contextId: "${params.contextId}", contextName: "${params.contextName}", displaysMyNotes: "${params.displaysMyNotes}", displaysMyFavorites: "${params.displaysMyFavorites}", displaysAll: "${params.displaysAll}", fragmentTagId: "${params.fragmentTagId}", kind: "question", inline: "${params.inline}"]'>
+                    ${message(code: "notes.question.link")} (${countTotal})
+                </g:link>
+            </li>
+        </g:if>
+        <g:elseif test="${params.kind == 'question' && countTotal}">
+            <li role="presentation">
+                <g:link controller="notes"
+                        params='[contextId: "${params.contextId}", contextName: "${params.contextName}", displaysMyNotes: "${params.displaysMyNotes}", displaysMyFavorites: "${params.displaysMyFavorites}", displaysAll: "${params.displaysAll}", fragmentTagId: "${params.fragmentTagId}", kind: "standard", inline: "${params.inline}"]'>
+                    ${message(code: "notes.disabled.link")} (${countTotal})
+                </g:link>
+            </li>
+            <li role="presentation" class="active"><a>${message(code: "notes.question.link")} (${notes.totalCount})</a>
+            </li>
+        </g:elseif>
+    </ul>
+</g:else>
+
+
+
+
     </div>
 
 <g:if test="${context.noteTakingEnabled || params.kind == 'question'}">

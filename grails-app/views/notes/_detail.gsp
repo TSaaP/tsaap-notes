@@ -79,9 +79,12 @@
                     <span class="glyphicon glyphicon-circle-arrow-right"></span> ${message(code: "notes.detail.hideDiscussion")}
                 </g:link>
             </g:if>
-            <a href="#note${note.id}" id="replyLink${note.id}"
-               onclick="displaysReplyField(${note.id})"><span
-                    class="glyphicon glyphicon-share"></span> ${message(code: "notes.detail.reply")}</a>
+            <g:if test = "${context.noteTakingEnabled}">
+                <a href="#note${note.id}" id="replyLink${note.id}"
+                   onclick="displaysReplyField(${note.id})"><span
+                        class="glyphicon glyphicon-share"></span> ${message(code: "notes.detail.reply")}</a>
+            </g:if>
+
             <g:if test="${user == note.author || user ==  note?.context?.owner}">
                 <g:link controller="notes" action="deleteNote"
                         params="${[noteId: note.id] + displayListParamsWithPagination}"><span

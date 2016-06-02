@@ -81,7 +81,10 @@
 <g:else>
     <ul class="nav nav-tabs pull-right">
         <g:if test="${params.kind != 'question' && notes.totalCount}">
-            <li role="presentation" class="active"><a>${message(code: "notes.disabled.link")} (${notes.totalCount})</a></li>
+
+                <li role="presentation" class="active" data-toggle="tooltip" data-html="true" title="${message(code: "notes.disabled.link.message")}" data-placement="bottom">
+                    <a class="text-muted">${message(code: "notes.link")} (${notes.totalCount})</a>
+                </li>
             <li role="presentation">
                 <g:link controller="notes"
                         params='[contextId: "${params.contextId}", contextName: "${params.contextName}", displaysMyNotes: "${params.displaysMyNotes}", displaysMyFavorites: "${params.displaysMyFavorites}", displaysAll: "${params.displaysAll}", fragmentTagId: "${params.fragmentTagId}", kind: "question", inline: "${params.inline}"]'>
@@ -90,14 +93,13 @@
             </li>
         </g:if>
         <g:elseif test="${params.kind == 'question' && countTotal}">
-            <li role="presentation">
-                <g:link controller="notes"
-                        params='[contextId: "${params.contextId}", contextName: "${params.contextName}", displaysMyNotes: "${params.displaysMyNotes}", displaysMyFavorites: "${params.displaysMyFavorites}", displaysAll: "${params.displaysAll}", fragmentTagId: "${params.fragmentTagId}", kind: "standard", inline: "${params.inline}"]'>
-                    ${message(code: "notes.disabled.link")} (${countTotal})
-                </g:link>
-            </li>
-            <li role="presentation" class="active"><a>${message(code: "notes.question.link")} (${notes.totalCount})</a>
-            </li>
+                <li role="presentation" data-toggle="tooltip" data-html="true" title="${message(code: "notes.disabled.link.message")}" data-placement="bottom">
+                    <g:link controller="notes" class="text-muted"
+                            params='[contextId: "${params.contextId}", contextName: "${params.contextName}", displaysMyNotes: "${params.displaysMyNotes}", displaysMyFavorites: "${params.displaysMyFavorites}", displaysAll: "${params.displaysAll}", fragmentTagId: "${params.fragmentTagId}", kind: "standard", inline: "${params.inline}"]'>
+                        ${message(code: "notes.link")} (${countTotal})
+                    </g:link>
+                </li>
+            <li role="presentation" class="active"><a>${message(code: "notes.question.link")} (${notes.totalCount})</a></li>
         </g:elseif>
     </ul>
 </g:else>
@@ -215,5 +217,10 @@
         $("#mainLinkNotes").addClass('active');
     }
 </r:script>
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
 </body>
 </html>

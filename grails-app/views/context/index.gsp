@@ -76,8 +76,9 @@
 
                     <td>
                         <strong>
+
                             <g:link controller="notes"
-                                    params="[displaysAll: 'on', contextName: context.contextName, contextId: context.id, kind: 'standard']">${fieldValue(bean: context, field: "contextName")}
+                                    params="[displaysAll: 'on', contextName: context.contextName, contextId: context.id, kind: context.noteTakingEnabled ? 'standard':'question']">${fieldValue(bean: context, field: "contextName")}
                             </g:link>
                         </strong>
                         <small>

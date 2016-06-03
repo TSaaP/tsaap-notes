@@ -132,6 +132,19 @@
                                         </g:form>
                                         <a onclick="submitDuplicate(${context.id})">${message(code: 'context.index.duplicate.button')}</a>
                                     </li>
+                                    <li>
+                                        <g:if test="${!context.closed}">
+                                            <g:link action="closeContext" controller="context" id="${context.id}">
+                                                ${message(code: 'context.index.close.button')}
+                                            </g:link>
+                                        </g:if>
+                                        <g:else>
+                                            <g:link action="openeContext" controller="context" id="${context.id}">
+                                                ${message(code: 'context.index.open.button')}
+                                            </g:link>
+                                        </g:else>
+
+                                    </li>
                                 </ul>
                             </div>
                         </td>

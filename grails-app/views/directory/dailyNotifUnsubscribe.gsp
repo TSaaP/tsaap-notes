@@ -16,12 +16,9 @@
 <body>
 <div class="container">
     <div class="body-content">
-        <div class="row">
-            <div class="col-lg-6">
-
-                <p>${message(code: "settings.unsubscribedDaily.message")}</p>
-            </div>
-        </div>
+                <div class="alert alert-info" role="alert">
+                    <p>${message(code: "settings.unsubscribedDaily.message")}</p>
+                </div>
     </div>
 </div>
 

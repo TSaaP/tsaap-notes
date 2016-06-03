@@ -136,7 +136,7 @@
             $("#language").val(navigator.browserLanguage);
         }
         else {
-            $("#language").val(navigator.languages[0]);
+            $("#language").val(navigator.languages[0].slice(0,2));
         }
         console.log($("#language").val());
     });

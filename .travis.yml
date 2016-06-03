@@ -1,0 +1,11 @@
+# first version : launch unit tests only
+
+language: groovy
+jdk:
+  - oraclejdk7
+services:
+  - mysql
+before_script:
+  - mysql -e 'create database tsaap_notes_travis;'
+  - mkdir -p ./tsaap-repo
+script: "./grailsw refresh-dependencies && ./grailsw test-app unit: && ./grailsw -Dgrails.env=travis_ci test-app integration:"

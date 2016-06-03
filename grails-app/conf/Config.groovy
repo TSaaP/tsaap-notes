@@ -153,6 +153,10 @@ environments {
         // hack : in test environment, the bcrypt is not considered
         grails.plugins.springsecurity.password.algorithm = 'SHA-1'
     }
+    travis_ci {
+        // hack : in test environment, the bcrypt is not considered
+        grails.plugins.springsecurity.password.algorithm = 'SHA-1'
+    }
 }
 
 // email checking on subscription
@@ -165,6 +169,10 @@ environments {
     test {
         tsaap.auth.check_user_email = false
         tsaap.datastore.path = '/opt/shared/tsaap-repo'
+    }
+    travis_ci {
+        tsaap.auth.check_user_email = false
+        tsaap.datastore.path = './tsaap-repo'
     }
     prod {
         tsaap.auth.check_user_email = true

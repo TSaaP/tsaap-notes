@@ -57,6 +57,11 @@ grails.project.dependency.resolution = {
         compile 'commons-httpclient:commons-httpclient:3.1'
         compile 'commons-codec:commons-codec:1.8'
         compile 'org.springframework.security:spring-security-crypto:3.2.3.RELEASE'
+
+        // Latest httpcore and httpmime for Coveralls plugin
+        build 'org.apache.httpcomponents:httpcore:4.3.2'
+        build 'org.apache.httpcomponents:httpclient:4.3.2'
+        build 'org.apache.httpcomponents:httpmime:4.3.3'
     }
 
     plugins {
@@ -75,14 +80,24 @@ grails.project.dependency.resolution = {
         runtime ":jquery:1.10.2.2"
         runtime ":resources:1.2.1"
 
-        test ":code-coverage:1.2.7"
-
         compile ":mail:1.0.1"
         compile ":quartz:1.0"
 
         compile ":export:1.6"
 
+        // Coveralls plugin
+        build(':coveralls:0.1.3', ':rest-client-builder:1.0.3') {
+            export = false
+        }
+        test(':code-coverage:1.2.7') {
+            export = false
+        }
+
     }
+}
+
+coverage {
+    exclusions = ["CustomConfig*"]
 }
 
 codenarc.properties = {

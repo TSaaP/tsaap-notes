@@ -205,15 +205,13 @@ class ContextService {
 
     }
 
-    def openScope(long scopeId) {
-
-        Context.executeUpdate("update Context set closed = 0 where id=:idscope",[idscope:scopeId])
-
+    def openScope(Context context) {
+        context.closed = false
+        context.save()
     }
 
-    def closeScope(long scopeId) {
-
-        Context.executeUpdate("update Context set closed = 1 where id=:idscope",[idscope:scopeId])
-
+    def closeScope(Context context) {
+        context.closed = true
+        context.save()
     }
 }

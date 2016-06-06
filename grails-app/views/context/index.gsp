@@ -134,12 +134,12 @@
                                     </li>
                                     <li>
                                         <g:if test="${!context.closed}">
-                                            <g:link action="closeContext" controller="context" id="${context.id}">
+                                            <g:link action="closeContext" controller="context" params="[id: context.id, filter: params.filter]">
                                                 ${message(code: 'context.index.close.button')}
                                             </g:link>
                                         </g:if>
                                         <g:else>
-                                            <g:link action="openeContext" controller="context" id="${context.id}">
+                                            <g:link action="openContext" controller="context" params="[id: context.id, filter: params.filter]">
                                                 ${message(code: 'context.index.open.button')}
                                             </g:link>
                                         </g:else>

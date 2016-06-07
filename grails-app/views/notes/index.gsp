@@ -112,7 +112,7 @@
 
 </div>
 
-<g:if test="${context.noteTakingEnabled || params.kind == 'question'}">
+<g:if test="${(context.noteTakingEnabled || params.kind == 'question') && !context.closed}">
     <div class="container note-edition">
         <g:render template="edit" model='[context: context, fragmentTag: fragmentTag]'/>
     </div>

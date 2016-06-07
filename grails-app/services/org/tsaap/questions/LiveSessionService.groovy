@@ -24,7 +24,7 @@ class LiveSessionService {
      * @param note the note the live session is associated with
      * @return the live session
      */
-    @Requires({user == note.author && note.isAQuestion() && !note.activeLiveSession && !note.context.closed})
+    @Requires({user == note.author && note.isAQuestion() && !note.activeLiveSession && !note.context?.closed})
     LiveSession createLiveSessionForNote(User user, Note note) {
         LiveSession liveSession = new LiveSession(note:note)
         liveSession.save(flush: true)
@@ -120,7 +120,7 @@ class LiveSessionService {
      * @param liveSession the live session
      * @return the first phase
      */
-    @Requires({user == liveSession.note.author && !liveSession.hasStartedSessionPhase() && !liveSession.note.context.closed})
+    @Requires({user == liveSession.note.author && !liveSession.hasStartedSessionPhase() && !liveSession.note.context?.closed})
     SessionPhase createAndStartFirstSessionPhaseForLiveSession(User user, LiveSession liveSession) {
         if (liveSession.isNotStarted()) {
             liveSession.start()
@@ -134,7 +134,7 @@ class LiveSessionService {
      * @param liveSession the live session
      * @return the third phase
      */
-    @Requires({user == liveSession.note.author && !liveSession.hasStartedSessionPhase() && !liveSession.note.context.closed})
+    @Requires({user == liveSession.note.author && !liveSession.hasStartedSessionPhase() && !liveSession.note.context?.closed})
     SessionPhase createAndStartSessionPhaseForLiveSessionWithRank(User user, LiveSession liveSession,Integer rank) {
         createSessionPhaseForLiveSessionWithRank(liveSession,rank).start()
     }

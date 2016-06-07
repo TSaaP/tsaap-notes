@@ -13,6 +13,7 @@
 
 <body>
 
+
 <div class="container context-nav" role="navigation">
     <ol class="breadcrumb">
         <li><g:link class="list" action="index"><g:message code="default.list.label"
@@ -125,6 +126,17 @@
                             id="${context.id}" target="_blank">${message(code: 'context.show.export.link')}</g:link>
                     <g:link class="btn btn-primary" controller="context" action="exportQuestionsAsGiftWithFeedbacks"
                             id="${context.id}" target="_blank">${message(code: 'context.show.exportFeedback.link')}</g:link>
+
+                    <g:if test="${!context.closed}">
+                        <g:link class="btn btn-primary" controller="context" action="closeContext"
+                                params="[id: context.id, show: 1]" >${message(code: 'context.index.close.button')}</g:link>
+                    </g:if>
+                    <g:elseif test="${context.closed}" >
+                        <g:link class="btn btn-primary" controller="context" action="openContext"
+                                params="[id: context.id, show: 1]">${message(code: 'context.index.open.button')}</g:link>
+
+
+                    </g:elseif>
                 </fieldset>
             </g:form>
         </g:if>

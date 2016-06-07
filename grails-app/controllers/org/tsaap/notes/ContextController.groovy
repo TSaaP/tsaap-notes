@@ -109,7 +109,7 @@ class ContextController {
 
         request.withFormat {
             form {
-                flash.message = message(code: 'default.updated.message', args: [message(code: 'Context.label', default: 'Context'), context.id])
+                flash.message = message(code: 'default.updated.message', args: [message(code: 'context.label', default: 'Context'), context.id])
                 redirect context
             }
             '*' { respond context, [status: OK] }
@@ -129,7 +129,7 @@ class ContextController {
 
         request.withFormat {
             form {
-                flash.message = message(code: 'default.deleted.message', args: [message(code: 'Context.label', default: 'Context'), context.id])
+                flash.message = message(code: 'default.deleted.message', args: [message(code: 'context.label', default: 'Context'), context.id])
                 redirect action: "index", method: "GET"
             }
             '*' { render status: NO_CONTENT }
@@ -250,7 +250,11 @@ class ContextController {
         contextService.closeScope(Context.findById(params.id))
         def contextList
         def contextCount = 0
-        if (!params.filter || params.filter == FilterReservedValue.__ALL__.name()) {
+        if (params.show) {
+            flash.message = message(code: 'default.updated.message', args: [message(code: 'context.label', default: 'Context'), params.id])
+            redirect(uri:'/scope/show/'+params.id)
+        }
+        if ((!params.filter || params.filter == FilterReservedValue.__ALL__.name()) && (!params.show)) {
             contextList = Context.list(params)
             contextCount = Context.count()
             redirect(uri: '/scope/index', params: [contextList: contextList, contextCount: contextCount, user: user])
@@ -274,10 +278,14 @@ class ContextController {
         contextService.openScope(Context.findById(params.id))
         def contextList
         def contextCount = 0
-        if (!params.filter || params.filter == FilterReservedValue.__ALL__.name()) {
+        if (params.show) {
+            flash.message = message(code: 'default.updated.message', args: [message(code: 'context.label', default: 'Context'), params.id])
+            redirect(uri:'/scope/show/'+params.id)
+        }
+        if ((!params.filter || params.filter == FilterReservedValue.__ALL__.name()) && (!params.show)) {
             contextList = Context.list(params)
             contextCount = Context.count()
-            redirect(uri: '/scope/index', params: [contextList: contextList, contextCount: contextCount, user: user])
+           redirect(uri: '/scope/index', params: [contextList: contextList, contextCount: contextCount, user: user])
         } else if (params.filter == FilterReservedValue.__MINE__.name()) {
             contextList = contextService.contextsForOwner(user, params)
             contextCount = Context.countByOwner(user)

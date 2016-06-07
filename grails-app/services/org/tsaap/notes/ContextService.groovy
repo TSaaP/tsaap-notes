@@ -204,14 +204,24 @@ class ContextService {
         queryResults
 
     }
-
+    /**
+     * Close a context
+     * @param context the context
+     * @return the new context
+     */
     def openScope(Context context) {
         context.closed = false
         context.save()
+        context
     }
-
+    /**
+     * Open a context
+     * @param context the context
+     * @return the new context
+     */
     def closeScope(Context context) {
         context.closed = true
         context.save()
+        context
     }
 }

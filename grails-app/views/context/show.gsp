@@ -24,7 +24,10 @@
 
 <div id="show-context" class="container" role="main">
     <g:if test="${flash.message}">
-        <div class="alert alert-info" role="status">${flash.message}</div>
+        <div class="alert alert-info" role="status">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            ${flash.message}
+        </div>
     </g:if>
 
     <g:if test="${context}">
@@ -39,6 +42,20 @@
                     <g:message code="context.scopeName.label" default="Scope Name"/>
                 </td>
                 <td>${context.contextName}</td>
+            </tr>
+            <tr>
+                <td>
+                    <g:message code="context.scopeStatus.label" default="Scope Status"/>
+                </td>
+                <td>
+                    <g:if test="${!context.closed}">
+                        <g:set var="status" value= "${message(code: 'context.scopeStatus.open')}"/>
+                    </g:if>
+                    <g:else>
+                        <g:set var="status" value="${message(code: 'context.scopeStatus.close')}"/>
+                    </g:else>
+                    <span class="label label-info">${status}</span>
+                </td>
             </tr>
             <tr>
                 <td>

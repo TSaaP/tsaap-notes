@@ -5,6 +5,7 @@ import grails.transaction.Transactional
 import org.gcontracts.annotations.Requires
 import org.tsaap.directory.User
 import org.tsaap.notes.Bookmark
+import org.tsaap.notes.Context
 import org.tsaap.notes.Note
 import org.tsaap.notes.NoteGrade
 import org.tsaap.notes.NoteKind
@@ -23,7 +24,7 @@ class LiveSessionService {
      * @param note the note the live session is associated with
      * @return the live session
      */
-    @Requires({user == note.author && note.isAQuestion() && !note.activeLiveSession})
+    @Requires({user == note.author && note.isAQuestion() && !note.activeLiveSession && !note.context.closed})
     LiveSession createLiveSessionForNote(User user, Note note) {
         LiveSession liveSession = new LiveSession(note:note)
         liveSession.save(flush: true)
@@ -119,7 +120,7 @@ class LiveSessionService {
      * @param liveSession the live session
      * @return the first phase
      */
-    @Requires({user == liveSession.note.author && !liveSession.hasStartedSessionPhase()})
+    @Requires({user == liveSession.note.author && !liveSession.hasStartedSessionPhase() && !liveSession.note.context.closed})
     SessionPhase createAndStartFirstSessionPhaseForLiveSession(User user, LiveSession liveSession) {
         if (liveSession.isNotStarted()) {
             liveSession.start()
@@ -133,7 +134,7 @@ class LiveSessionService {
      * @param liveSession the live session
      * @return the third phase
      */
-    @Requires({user == liveSession.note.author && !liveSession.hasStartedSessionPhase()})
+    @Requires({user == liveSession.note.author && !liveSession.hasStartedSessionPhase() && !liveSession.note.context.closed})
     SessionPhase createAndStartSessionPhaseForLiveSessionWithRank(User user, LiveSession liveSession,Integer rank) {
         createSessionPhaseForLiveSessionWithRank(liveSession,rank).start()
     }
@@ -197,6 +198,12 @@ class LiveSessionService {
             if (expl) {
                 expl.updateMeanGrade()
             }
+        }
+    }
+
+    def closeAllLiveSessionForContext(Context context) {
+        LiveSession.findAllByNoteInList(noteService.findAllNotesAsQuestionForContext(context)).each {
+            closeNPhaseSubmitLiveSession(it)
         }
     }
 

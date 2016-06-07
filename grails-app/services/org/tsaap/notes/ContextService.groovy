@@ -211,7 +211,8 @@ class ContextService {
      * @param context the context
      * @return the new context
      */
-    def openScope(Context context) {
+    @Requires({ user && context?.owner == user })
+    Context openScope(Context context, User user) {
         context.closed = false
         context.save()
         context
@@ -219,9 +220,11 @@ class ContextService {
     /**
      * Open a context
      * @param context the context
+     * @param user the user closing the context
      * @return the new context
      */
-    def closeScope(Context context) {
+    @Requires({ user && context?.owner == user })
+    Context closeScope(Context context, User user) {
         liveSessionService.closeAllLiveSessionForContext(context)
         context.closed = true
         context.save()

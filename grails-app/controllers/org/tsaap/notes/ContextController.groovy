@@ -247,7 +247,7 @@ class ContextController {
         params.sort = params.sort ?: 'dateCreated'
         params.order = params.order ?: 'desc'
         User user = springSecurityService.currentUser
-        contextService.closeScope(Context.findById(params.id))
+        contextService.closeScope(Context.findById(params.id), user)
         def contextList
         def contextCount = 0
         if (params.show) {
@@ -275,7 +275,7 @@ class ContextController {
         params.sort = params.sort ?: 'dateCreated'
         params.order = params.order ?: 'desc'
         User user = springSecurityService.currentUser
-        contextService.openScope(Context.findById(params.id))
+        contextService.openScope(Context.findById(params.id),user)
         def contextList
         def contextCount = 0
         if (params.show) {

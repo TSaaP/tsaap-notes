@@ -441,7 +441,7 @@ class NoteService {
      * @return the list of questions
      */
     List<Note> findAllNotesAsQuestionForContext(Context context) {
-        Note.findAllByContext(context).findAll { it.isAQuestion() }
+        Note.findAllByContext(context){ it.isAQuestion }
     }
 }
 

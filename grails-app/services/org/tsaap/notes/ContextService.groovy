@@ -12,6 +12,7 @@ import org.tsaap.directory.User
 import org.tsaap.lti.LmsContextHelper
 import org.tsaap.lti.LmsContextService
 import org.tsaap.questions.LiveSession
+import org.tsaap.questions.LiveSessionService
 
 import javax.sql.DataSource
 
@@ -27,6 +28,7 @@ class ContextService {
     LmsContextService lmsContextService
     LmsContextHelper lmsContextHelper
     Sql sql
+    LiveSessionService liveSessionService
 
     /**
      * Add a new context
@@ -220,6 +222,7 @@ class ContextService {
      * @return the new context
      */
     def closeScope(Context context) {
+        liveSessionService.closeAllLiveSessionForContext(context)
         context.closed = true
         context.save()
         context

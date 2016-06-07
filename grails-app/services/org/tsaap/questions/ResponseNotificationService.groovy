@@ -66,6 +66,7 @@ class ResponseNotificationService {
                 and tuser1.id = tsettings.user_id
                 and tsettings.mention_notifications = 1
                 and tkey.user_id = tuser1.id
+                and tcontext.closed = FALSE
                 order by receiver_id
                 """
 

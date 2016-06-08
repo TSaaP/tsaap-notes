@@ -42,7 +42,7 @@ class NoteService {
      * @return the added note
      */
     @Transactional
-    @Requires({ author && content && (!context || !context.closed)})
+    @Requires({ author && content && (!context || context.isOpen())})
     Note addNote(User author,
                  String content,
                  Context context = null,

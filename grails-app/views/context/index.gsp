@@ -133,7 +133,7 @@
                                         <a onclick="submitDuplicate(${context.id})">${message(code: 'context.index.duplicate.button')}</a>
                                     </li>
                                     <li>
-                                        <g:if test="${!context.closed}">
+                                        <g:if test="${context.isOpen()}">
                                             <g:link action="closeContext" controller="context" params="[id: context.id, filter: params.filter]">
                                                 ${message(code: 'context.index.close.button')}
                                             </g:link>

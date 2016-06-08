@@ -98,6 +98,23 @@ class Context {
     contextFollower && !contextFollower.isNoMoreSubscribed
   }
 
+    /**
+     * Check if the current context is open
+     * @return true if the context is open false otherwise
+     */
+  Boolean isOpen() {
+    closed == false
+  }
+
+  /**
+   * Check if the current context is closed
+   * @return true if the context is closed false otherwise
+   */
+  Boolean isClosed() {
+    closed == true
+  }
+
+
   static mapping = {
     version(false)
   }

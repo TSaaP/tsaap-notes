@@ -134,20 +134,22 @@ class ContextServiceIntegrationSpec extends Specification {
     Context context = contextService.saveContext(new Context(owner: bootstrapTestService.learnerPaul, contextName: "contexteName", url: "http://www.irit.fr", descriptionAsNote: "Description", closed: false))
 
     expect: "The context is open"
+    context.isOpen()
     context.closed == false
 
     when: "trynig to close the context"
     contextService.closeScope(context, context.owner)
 
-    then:"closed attribute  must equal to true"
-    Context.findById(context.id).closed == true
+    then:"the scope is closed"
+    def fetchContext = Context.findById(context.id)
+    fetchContext.isClosed()
+    fetchContext.closed == true
 
     when: "trying to open the context"
     contextService.openScope(context, context.owner)
 
     then:"closed attribute must equal to false"
-    Context.findById(context.id).closed == false
-
+    Context.findById(context.id).isOpen()
 
   }
 

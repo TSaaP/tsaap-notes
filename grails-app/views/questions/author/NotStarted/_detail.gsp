@@ -13,7 +13,7 @@
             </g:else>
         </p>
     </g:each>
-    <g:if test="${!note.context.closed}">
+    <g:if test="${note.context.isOpen()}">
         <g:remoteLink action="startLiveSession" controller="question" params="[liveSessId:liveSession?.id,noteId:note.id]"
                 class="btn btn-success btn-xs" update="question_${note.id}" onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])">
             <span class="glyphicon glyphicon-play"></span> ${message(code: "questions.author.notStarted.simpleSession.start")}</g:remoteLink>

@@ -48,7 +48,7 @@
                     <g:message code="context.scopeStatus.label" default="Scope Status"/>
                 </td>
                 <td>
-                    <g:if test="${!context.closed}">
+                    <g:if test="${context.isOpen()}">
                         <g:set var="status" value= "${message(code: 'context.scopeStatus.open')}"/>
                     </g:if>
                     <g:else>
@@ -144,11 +144,11 @@
                     <g:link class="btn btn-primary" controller="context" action="exportQuestionsAsGiftWithFeedbacks"
                             id="${context.id}" target="_blank">${message(code: 'context.show.exportFeedback.link')}</g:link>
 
-                    <g:if test="${!context.closed}">
+                    <g:if test="${context.isOpen()}">
                         <g:link class="btn btn-primary" controller="context" action="closeContext"
                                 params="[id: context.id, show: 1]" >${message(code: 'context.index.close.button')}</g:link>
                     </g:if>
-                    <g:elseif test="${context.closed}" >
+                    <g:elseif test="${context.isClosed()}" >
                         <g:link class="btn btn-primary" controller="context" action="openContext"
                                 params="[id: context.id, show: 1]">${message(code: 'context.index.open.button')}</g:link>
 

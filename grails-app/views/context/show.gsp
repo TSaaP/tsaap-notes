@@ -41,20 +41,10 @@
                 <td>
                     <g:message code="context.scopeName.label" default="Scope Name"/>
                 </td>
-                <td>${context.contextName}</td>
-            </tr>
-            <tr>
-                <td>
-                    <g:message code="context.scopeStatus.label" default="Scope Status"/>
-                </td>
-                <td>
-                    <g:if test="${context.isOpen()}">
-                        <g:set var="status" value= "${message(code: 'context.scopeStatus.open')}"/>
-                    </g:if>
-                    <g:else>
-                        <g:set var="status" value="${message(code: 'context.scopeStatus.close')}"/>
-                    </g:else>
-                    <span class="label label-info">${status}</span>
+                <td>${context.contextName}
+                    <span class="label ${context.isOpen() ? 'label-info' : 'label-danger'}">
+                        ${message(code: context.isOpen() ? 'context.scopeStatus.open' : 'context.scopeStatus.close')}
+                    </span>
                 </td>
             </tr>
             <tr>

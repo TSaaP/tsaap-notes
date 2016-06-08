@@ -81,6 +81,11 @@
                                     params="[displaysAll: 'on', contextName: context.contextName, contextId: context.id, kind: context.noteTakingEnabled ? 'standard':'question']">${fieldValue(bean: context, field: "contextName")}
                             </g:link>
                         </strong>
+                        <g:if test="${context.isClosed()}">
+                        <span class="label label-danger">
+                            ${message(code: 'context.scopeStatus.close')}
+                        </span>&nbsp;
+                        </g:if>
                         <small>
                             @${context.owner}
                         </small>
@@ -115,7 +120,7 @@
                         <td>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    ${message(code: 'context.index.edit.button')} <span class="caret"></span>
+                                    <span class="glyphicon glyphicon-cog"></span> <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li>

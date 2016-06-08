@@ -50,7 +50,9 @@
                 <li class="active">
                     ${context.contextName}
                     <g:if test="${context.isClosed()}">
-                        (${message(code:'context.information')})
+                        <span class="label label-danger">
+                            ${message(code:'context.scopeStatus.close')}
+                        </span>
                     </g:if>
                 </li>
             </g:else>

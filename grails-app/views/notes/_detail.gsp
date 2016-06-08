@@ -79,7 +79,7 @@
                     <span class="glyphicon glyphicon-circle-arrow-right"></span> ${message(code: "notes.detail.hideDiscussion")}
                 </g:link>
             </g:if>
-            <g:if test = "${context.noteTakingEnabled}">
+            <g:if test = "${context.noteTakingEnabled && context.isOpen()}">
                 <a href="#note${note.id}" id="replyLink${note.id}"
                    onclick="displaysReplyField(${note.id})"><span
                         class="glyphicon glyphicon-share"></span> ${message(code: "notes.detail.reply")}</a>

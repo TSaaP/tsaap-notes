@@ -1,10 +1,7 @@
 package org.tsaap.notes
 
-import org.tsaap.questions.ResponseNotificationService
 
-/**
- * Created by dorian on 26/05/15.
- */
+
 class CloseContextNotificationJob {
 
     ContextNotificationService contextNotificationService

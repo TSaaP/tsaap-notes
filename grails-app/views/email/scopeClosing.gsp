@@ -8,10 +8,12 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-    <title></title>
+    <title>${message(code: "email.closingContext.page.title", locale: new Locale(user.language))}</title>
 </head>
 <body>
 
-<p> Hey ${user.first_name} le scope :  ${context_name} est férmé </p>
+<p>${message(code: "email.hi", locale: new Locale(user.language))} ${user.first_name}</p>
+
+<p>${message(code: 'email.closingContext.message', args: [context_name], locale: new Locale(user.language))}</p>
 </body>
 </html>

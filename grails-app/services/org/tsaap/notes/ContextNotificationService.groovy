@@ -2,9 +2,6 @@ package org.tsaap.notes
 
 import grails.plugin.mail.MailService
 import groovy.sql.Sql
-import org.springframework.context.MessageSource
-import org.tsaap.directory.UnsubscribeKey
-
 import javax.sql.DataSource
 
 class ContextNotificationService {
@@ -14,9 +11,11 @@ class ContextNotificationService {
   MailService mailService
   ContextService contextService
   DataSource dataSource
-  MessageSource messageSource
-  UnsubscribeKey key
 
+  /**
+   * Notify users about the closure of a scope
+   * @return
+   */
 
   def sendScopeClosingEmailMessages() {
     Map notifications = findNotifications()
@@ -37,19 +36,24 @@ class ContextNotificationService {
 
   }
 
-
+  /**
+   * Find users who follow a closed scope in the last 5 minutes
+   * @return a map with the context_name as key, and  informations about the user as value
+   */
   private Map findNotifications() {
     def sql = new Sql(dataSource)
     def req = """
-               select tuser.id, tuser.email, tuser.first_name, tcontext.context_name
-               from context as tcontext, context_follower as tfollower, user as tuser
-                where tcontext.closed = TRUE and tcontext.id = tfollower.context_id and tfollower.follower_id = tuser.id and tcontext.last_updated > date_sub(now(),interval 5 minute)
+                select tuser.id, tuser.email, tuser.first_name, tcontext.context_name, tsettings.language
+                from context as tcontext, context_follower as tfollower, user as tuser, settings as tsettings
+                where tcontext.closed = TRUE and tcontext.id = tfollower.context_id and
+                tfollower.follower_id = tuser.id and tcontext.last_updated > date_sub(now(),interval 5 minute) and
+                tsettings.user_id = tuser.id
               """
     def rows = sql.rows(req)
     def notifications = [:]
     rows.each {
       def key = it.context_name
-      notifications[key] = [user_id: it.id, first_name: it.first_name, email: it.email]
+      notifications[key] = [user_id: it.id, first_name: it.first_name, email: it.email, language: it.language]
     }
     sql.close()
     notifications

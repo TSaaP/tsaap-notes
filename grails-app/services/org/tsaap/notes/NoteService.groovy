@@ -42,7 +42,7 @@ class NoteService {
      * @return the added note
      */
     @Transactional
-    @Requires({ author && content })
+    @Requires({ author && content && (!context || context.isOpen())})
     Note addNote(User author,
                  String content,
                  Context context = null,
@@ -441,7 +441,9 @@ class NoteService {
      * @return the list of questions
      */
     List<Note> findAllNotesAsQuestionForContext(Context context) {
-        Note.findAllByContext(context).findAll { it.isAQuestion() }
+        Note.findAllByContext(context).findAll{
+            it.isAQuestion()
+        }
     }
 }
 

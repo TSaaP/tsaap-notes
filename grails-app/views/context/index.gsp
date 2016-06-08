@@ -81,6 +81,11 @@
                                     params="[displaysAll: 'on', contextName: context.contextName, contextId: context.id, kind: context.noteTakingEnabled ? 'standard':'question']">${fieldValue(bean: context, field: "contextName")}
                             </g:link>
                         </strong>
+                        <g:if test="${context.isClosed()}">
+                        <span class="label label-danger">
+                            ${message(code: 'context.scopeStatus.close')}
+                        </span>&nbsp;
+                        </g:if>
                         <small>
                             @${context.owner}
                         </small>
@@ -115,7 +120,7 @@
                         <td>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    ${message(code: 'context.index.edit.button')} <span class="caret"></span>
+                                    <span class="glyphicon glyphicon-cog"></span> <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li>
@@ -131,6 +136,19 @@
                                         <g:form action="duplicateContext" controller="context" name="${context.id}" id="${context.id}">
                                         </g:form>
                                         <a onclick="submitDuplicate(${context.id})">${message(code: 'context.index.duplicate.button')}</a>
+                                    </li>
+                                    <li>
+                                        <g:if test="${context.isOpen()}">
+                                            <g:link action="closeContext" controller="context" params="[id: context.id, filter: params.filter]">
+                                                ${message(code: 'context.index.close.button')}
+                                            </g:link>
+                                        </g:if>
+                                        <g:else>
+                                            <g:link action="openContext" controller="context" params="[id: context.id, filter: params.filter]">
+                                                ${message(code: 'context.index.open.button')}
+                                            </g:link>
+                                        </g:else>
+
                                     </li>
                                 </ul>
                             </div>

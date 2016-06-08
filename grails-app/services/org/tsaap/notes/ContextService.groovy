@@ -12,6 +12,7 @@ import org.tsaap.directory.User
 import org.tsaap.lti.LmsContextHelper
 import org.tsaap.lti.LmsContextService
 import org.tsaap.questions.LiveSession
+import org.tsaap.questions.LiveSessionService
 
 import javax.sql.DataSource
 
@@ -27,6 +28,7 @@ class ContextService {
     LmsContextService lmsContextService
     LmsContextHelper lmsContextHelper
     Sql sql
+    LiveSessionService liveSessionService
 
     /**
      * Add a new context
@@ -203,5 +205,29 @@ class ContextService {
         }
         queryResults
 
+    }
+    /**
+     * Close a context
+     * @param context the context
+     * @return the new context
+     */
+    @Requires({ user && context?.owner == user })
+    Context openScope(Context context, User user) {
+        context.closed = false
+        context.save()
+        context
+    }
+    /**
+     * Open a context
+     * @param context the context
+     * @param user the user closing the context
+     * @return the new context
+     */
+    @Requires({ user && context?.owner == user })
+    Context closeScope(Context context, User user) {
+        liveSessionService.closeAllLiveSessionForContext(context)
+        context.closed = true
+        context.save()
+        context
     }
 }

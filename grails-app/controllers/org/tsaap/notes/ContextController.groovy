@@ -109,7 +109,7 @@ class ContextController {
 
         request.withFormat {
             form {
-                flash.message = message(code: 'default.updated.message', args: [message(code: 'Context.label', default: 'Context'), context.id])
+                flash.message = message(code: 'default.updated.message', args: [message(code: 'context.label', default: 'Context'), context.id])
                 redirect context
             }
             '*' { respond context, [status: OK] }
@@ -129,7 +129,7 @@ class ContextController {
 
         request.withFormat {
             form {
-                flash.message = message(code: 'default.deleted.message', args: [message(code: 'Context.label', default: 'Context'), context.id])
+                flash.message = message(code: 'default.deleted.message', args: [message(code: 'context.label', default: 'Context'), context.id])
                 redirect action: "index", method: "GET"
             }
             '*' { render status: NO_CONTENT }
@@ -237,6 +237,62 @@ class ContextController {
             }
             '*' { render status: NOT_FOUND }
         }
+    }
+
+    @Transactional
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def closeContext(Integer max){
+
+        params.max = Math.min(max ?: 10, 100)
+        params.sort = params.sort ?: 'dateCreated'
+        params.order = params.order ?: 'desc'
+        User user = springSecurityService.currentUser
+        contextService.closeScope(Context.findById(params.id), user)
+        def contextList
+        def contextCount = 0
+        if (params.show) {
+            flash.message = message(code: 'default.updated.message', args: [message(code: 'context.label', default: 'Context'), params.id])
+            redirect(uri:'/scope/show/'+params.id)
+        }
+        if ((!params.filter || params.filter == FilterReservedValue.__ALL__.name()) && (!params.show)) {
+            contextList = Context.list(params)
+            contextCount = Context.count()
+            redirect(uri: '/scope/index', params: [contextList: contextList, contextCount: contextCount, user: user])
+        } else if (params.filter == FilterReservedValue.__MINE__.name()) {
+            contextList = contextService.contextsForOwner(user, params)
+            contextCount = Context.countByOwner(user)
+            redirect(uri: '/scope/index?filter=__MINE__', params: [contextList: contextList, contextCount: contextCount, user: user])
+        }
+
+
+    }
+
+    @Transactional
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def openContext(Integer max ){
+
+        params.max = Math.min(max ?: 10, 100)
+        params.sort = params.sort ?: 'dateCreated'
+        params.order = params.order ?: 'desc'
+        User user = springSecurityService.currentUser
+        contextService.openScope(Context.findById(params.id),user)
+        def contextList
+        def contextCount = 0
+        if (params.show) {
+            flash.message = message(code: 'default.updated.message', args: [message(code: 'context.label', default: 'Context'), params.id])
+            redirect(uri:'/scope/show/'+params.id)
+        }
+        if ((!params.filter || params.filter == FilterReservedValue.__ALL__.name()) && (!params.show)) {
+            contextList = Context.list(params)
+            contextCount = Context.count()
+           redirect(uri: '/scope/index', params: [contextList: contextList, contextCount: contextCount, user: user])
+        } else if (params.filter == FilterReservedValue.__MINE__.name()) {
+            contextList = contextService.contextsForOwner(user, params)
+            contextCount = Context.countByOwner(user)
+            redirect(uri: '/scope/index?filter=__MINE__', params: [contextList: contextList, contextCount: contextCount, user: user])
+        }
+
+
     }
 }
 

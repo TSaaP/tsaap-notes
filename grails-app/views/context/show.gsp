@@ -13,6 +13,7 @@
 
 <body>
 
+
 <div class="container context-nav" role="navigation">
     <ol class="breadcrumb">
         <li><g:link class="list" action="index"><g:message code="default.list.label"
@@ -23,7 +24,10 @@
 
 <div id="show-context" class="container" role="main">
     <g:if test="${flash.message}">
-        <div class="alert alert-info" role="status">${flash.message}</div>
+        <div class="alert alert-info" role="status">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            ${flash.message}
+        </div>
     </g:if>
 
     <g:if test="${context}">
@@ -37,7 +41,11 @@
                 <td>
                     <g:message code="context.scopeName.label" default="Scope Name"/>
                 </td>
-                <td>${context.contextName}</td>
+                <td>${context.contextName}
+                    <span class="label ${context.isOpen() ? 'label-info' : 'label-danger'}">
+                        ${message(code: context.isOpen() ? 'context.scopeStatus.open' : 'context.scopeStatus.close')}
+                    </span>
+                </td>
             </tr>
             <tr>
                 <td>
@@ -125,6 +133,17 @@
                             id="${context.id}" target="_blank">${message(code: 'context.show.export.link')}</g:link>
                     <g:link class="btn btn-primary" controller="context" action="exportQuestionsAsGiftWithFeedbacks"
                             id="${context.id}" target="_blank">${message(code: 'context.show.exportFeedback.link')}</g:link>
+
+                    <g:if test="${context.isOpen()}">
+                        <g:link class="btn btn-primary" controller="context" action="closeContext"
+                                params="[id: context.id, show: 1]" >${message(code: 'context.index.close.button')}</g:link>
+                    </g:if>
+                    <g:elseif test="${context.isClosed()}" >
+                        <g:link class="btn btn-primary" controller="context" action="openContext"
+                                params="[id: context.id, show: 1]">${message(code: 'context.index.open.button')}</g:link>
+
+
+                    </g:elseif>
                 </fieldset>
             </g:form>
         </g:if>

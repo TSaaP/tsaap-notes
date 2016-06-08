@@ -49,6 +49,11 @@
             <g:else>
                 <li class="active">
                     ${context.contextName}
+                    <g:if test="${context.isClosed()}">
+                        <span class="label label-danger">
+                            ${message(code:'context.scopeStatus.close')}
+                        </span>
+                    </g:if>
                 </li>
             </g:else>
         </g:if>
@@ -112,7 +117,7 @@
 
 </div>
 
-<g:if test="${context.noteTakingEnabled || params.kind == 'question'}">
+<g:if test="${(context.noteTakingEnabled || params.kind == 'question') && context.isOpen()}">
     <div class="container note-edition">
         <g:render template="edit" model='[context: context, fragmentTag: fragmentTag]'/>
     </div>

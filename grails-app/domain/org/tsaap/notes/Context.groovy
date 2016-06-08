@@ -49,12 +49,14 @@ class Context {
   String descriptionAsNote
 
   Boolean noteTakingEnabled = false
+  Boolean closed = false
 
   static constraints = {
     contextName blank: false, maxSize: 1024
     url url: true, nullable: true
     descriptionAsNote nullable: true, maxSize: 280
     source nullable: true, editable: false
+    closed nullable: true
   }
 
   /**
@@ -95,6 +97,23 @@ class Context {
     ContextFollower contextFollower = ContextFollower.findByFollowerAndContext(user, this)
     contextFollower && !contextFollower.isNoMoreSubscribed
   }
+
+    /**
+     * Check if the current context is open
+     * @return true if the context is open false otherwise
+     */
+  Boolean isOpen() {
+    closed == false
+  }
+
+  /**
+   * Check if the current context is closed
+   * @return true if the context is closed false otherwise
+   */
+  Boolean isClosed() {
+    closed == true
+  }
+
 
   static mapping = {
     version(false)

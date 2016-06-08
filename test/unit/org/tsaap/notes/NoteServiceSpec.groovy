@@ -48,7 +48,9 @@ class NoteServiceSpec extends Specification {
             getNoteKind() >> NoteKind.STANDARD
             getKind() >> NoteKind.STANDARD.ordinal()
         }
-        targetContext = Mock(Context)
+        targetContext = Mock(Context) {
+            isOpen() >> true
+        }
         noteService.giftQuestionService = Mock(GiftQuestionService) {
             getQuestionFromGiftText(note.content) >> null
         }

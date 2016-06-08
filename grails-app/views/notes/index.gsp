@@ -49,6 +49,9 @@
             <g:else>
                 <li class="active">
                     ${context.contextName}
+                    <g:if test="${context.isClosed()}">
+                        (${message(code:'context.information')})
+                    </g:if>
                 </li>
             </g:else>
         </g:if>

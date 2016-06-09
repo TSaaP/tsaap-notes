@@ -42,6 +42,7 @@ grails.project.dependency.resolution = {
         mavenLocal()
         mavenCentral()
         mavenRepo "http://repo.grails.org/grails/core"
+        mavenRepo "https://jitpack.io"
         // uncomment the below to enable remote dependency resolution
         // from public Maven repositories
         //mavenRepo "http://repository.codehaus.org"
@@ -58,6 +59,8 @@ grails.project.dependency.resolution = {
         compile 'commons-httpclient:commons-httpclient:3.1'
         compile 'commons-codec:commons-codec:1.8'
         compile 'org.springframework.security:spring-security-crypto:3.2.3.RELEASE'
+
+        compile 'com.github.TSaaP:tsaap-questions:1.0'
 
         // Latest httpcore and httpmime for Coveralls plugin
         build 'org.apache.httpcomponents:httpcore:4.3.2'

@@ -1,17 +1,18 @@
 %{--
-  - Copyright 2015 Tsaap Development Group
+  - Copyright (C) 2013-2016 Université Toulouse 3 Paul Sabatier
   -
-  - Licensed under the Apache License, Version 2.0 (the "License");
-  - you may not use this file except in compliance with the License.
-  - You may obtain a copy of the License at
+  -     This program is free software: you can redistribute it and/or modify
+  -     it under the terms of the GNU Affero General Public License as published by
+  -     the Free Software Foundation, either version 3 of the License, or
+  -     (at your option) any later version.
   -
-  -    http://www.apache.org/licenses/LICENSE-2.0
+  -     This program is distributed in the hope that it will be useful,
+  -     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  -     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  -     GNU Affero General Public License for more details.
   -
-  - Unless required by applicable law or agreed to in writing, software
-  - distributed under the License is distributed on an "AS IS" BASIS,
-  - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  - See the License for the specific language governing permissions and
-  - limitations under the License.
+  -     You should have received a copy of the GNU Affero General Public License
+  -     along with this program.  If not, see <http://www.gnu.org/licenses/>.
   --}%
 
 <%@ page import="org.tsaap.questions.LiveSessionResponse; org.tsaap.questions.TextBlock" %>
@@ -21,7 +22,11 @@
     <g:if test="${sessionPhase.getResponseForUser(user)}">
         <div class="alert alert-success">
             ${message(code: "questions.user.phase2.started.wait")} &quot;<strong>${question.title}</strong>&quot;...
-            <g:remoteLink action="refreshPhase" controller="question" params="[noteId:note.id,phaseId:sessionPhase.id]" title="Refresh" update="question_${note.id}" onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"><span class="glyphicon glyphicon-refresh">&nbsp;</span></g:remoteLink>
+            <g:remoteLink action="refreshPhase" controller="question"
+                          params="[noteId: note.id, phaseId: sessionPhase.id]" title="Refresh"
+                          update="question_${note.id}"
+                          onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"><span
+                    class="glyphicon glyphicon-refresh">&nbsp;</span></g:remoteLink>
             (${message(code: "questions.responseCount")} :${sessionPhase.responseCount()})
         </div>
     </g:if>
@@ -31,6 +36,7 @@
         <g:set var="altResponse" value="${firstPhase.findConflictResponseForResponse(firstResponse)}"/>
         <g:if test="${altResponse}">
             <p>${message(code: "questions.user.phase2.started.alternative")}</p>
+
             <div class="alert alert-info">
                 <p>
                     <g:each in="${altResponse?.userResponse?.userAnswerBlockList}" var="answerBlock">
@@ -38,14 +44,15 @@
                             ${answer.textValue}<br/>
                         </g:each>
                     </g:each>
+
                 <p>${altResponse?.explanation?.content}</p>
             </div>
             <hr/>
         </g:if>
         <g:else>
-           <p>${message(code: "questions.user.phase2.started.newChance")}</p>
+            <p>${message(code: "questions.user.phase2.started.newChance")}</p>
         </g:else>
-        <g:form >
+        <g:form>
             <g:hiddenField name="phaseId" value="${sessionPhase.id}"/>
             <g:hiddenField name="noteId" value="${note.id}"/>
 
@@ -57,15 +64,19 @@
                         ${block.text}
                     </g:if>
                     <g:else>
-                        <g:render template="/questions/${question.questionType.name()}AnswerBlock" model="[block: block,userAnswerBlock:firstResponse?.userResponse?.userAnswerBlockList?.get(indexAnswerBlock++)]"/>
+                        <g:render template="/questions/${question.questionType.name()}AnswerBlock"
+                                  model="[block: block, userAnswerBlock: firstResponse?.userResponse?.userAnswerBlockList?.get(indexAnswerBlock++)]"/>
                     </g:else>
                 </p>
             </g:each>
             <p>${message(code: "questions.explanation")}</p>
-            <g:textArea class="form-control note-editable-content" rows="3" name="explanation" value="${firstResponse?.explanation?.content}"/>
-            <p>${message(code: "questions.confidenceDegree")} <g:select name="confidenceDegree" from="[1,2,3,4,5]" value="${firstResponse?.confidenceDegree}"/></p>
+            <g:textArea class="form-control note-editable-content" rows="3" name="explanation"
+                        value="${firstResponse?.explanation?.content}"/>
+            <p>${message(code: "questions.confidenceDegree")} <g:select name="confidenceDegree" from="[1, 2, 3, 4, 5]"
+                                                                        value="${firstResponse?.confidenceDegree}"/></p>
             <g:submitToRemote action="submitResponseInAPhase" controller="question" update="question_${note.id}"
-                              class="btn btn-primary btn-xs" value="${message(code: "questions.user.submit")}" onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"/>
+                              class="btn btn-primary btn-xs" value="${message(code: "questions.user.submit")}"
+                              onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"/>
         </g:form>
     </g:else>
 </div>

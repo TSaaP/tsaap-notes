@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2013-2016 Université Toulouse 3 Paul Sabatier
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.tsaap.lti
 
 import groovy.sql.Sql
@@ -36,12 +53,12 @@ class LmsGradeService {
         def grade = [:]
         rows.each {
             def key = it.user_id
-            if(grades[key] == null){
+            if (grades[key] == null) {
                 grades[key] = [:]
                 grade = [:]
             }
             def grade_key = it.session_id
-            if(grade[grade_key] == null){
+            if (grade[grade_key] == null) {
                 grade[grade_key] = 0
             }
             grade[grade_key] = it.percent_credit
@@ -51,7 +68,7 @@ class LmsGradeService {
         def finalGrades = [:]
         grades.each { user, gradesMap ->
             def finalKey = user
-            if(finalGrades[finalKey] == null){
+            if (finalGrades[finalKey] == null) {
                 finalGrades[finalKey] = 0
             }
             int finalGrade = 0
@@ -61,7 +78,7 @@ class LmsGradeService {
                 }
                 finalGrade += credit
             }
-            finalGrade = finalGrade/questionNumber
+            finalGrade = finalGrade / questionNumber
             finalGrades[finalKey] = finalGrade
         }
         finalGrades
@@ -73,9 +90,9 @@ class LmsGradeService {
      * @param user lti user
      * @param grade user grade to send
      */
-    def sendUserGradeToLms(ResourceLink resourceLink,User user,int grade) {
-        Float finalGrade = grade/100
+    def sendUserGradeToLms(ResourceLink resourceLink, User user, int grade) {
+        Float finalGrade = grade / 100
         Outcome outcome = new Outcome("$finalGrade")
-        resourceLink.doOutcomesService(resourceLink.EXT_WRITE,outcome,user)
+        resourceLink.doOutcomesService(resourceLink.EXT_WRITE, outcome, user)
     }
 }

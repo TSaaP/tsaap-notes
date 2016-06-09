@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2013-2016 Université Toulouse 3 Paul Sabatier
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.tsaap.attachement
 
 import org.springframework.mock.web.MockMultipartFile
@@ -22,7 +39,7 @@ class AttachementServiceIntegrationSpec extends Specification {
     def "test create attachment for multipart file"() {
         given: "some multipart files"
         byte[] content = "Attachment".getBytes()
-        MultipartFile multipartFile = new MockMultipartFile("grails","grails","text/plain",content)
+        MultipartFile multipartFile = new MockMultipartFile("grails", "grails", "text/plain", content)
         MultipartFile multipartFile2 = null
 
         when: "I want to create attachment for this multipart file"
@@ -108,10 +125,10 @@ class AttachementServiceIntegrationSpec extends Specification {
         given: "a note and a multipart file"
         Note note = bootstrapTestService.note1
         byte[] content = "Attachment".getBytes()
-        MultipartFile multipartFile = new MockMultipartFile("grails","grails","text/plain",content)
+        MultipartFile multipartFile = new MockMultipartFile("grails", "grails", "text/plain", content)
 
         when: "I want to add multipart file to note"
-        Attachement attachement = attachementService.addFileToNote(multipartFile,note)
+        Attachement attachement = attachementService.addFileToNote(multipartFile, note)
 
         then: "The file is correctly add to note"
         attachement != null
@@ -162,13 +179,13 @@ class AttachementServiceIntegrationSpec extends Specification {
         Attachement myAttachement = attachementService.createAttachement(attachementDto, 10)
 
         and: "the attachement bind to the note"
-        myAttachement = attachementService.addNoteToAttachement(bootstrapTestService.note1,myAttachement)
+        myAttachement = attachementService.addNoteToAttachement(bootstrapTestService.note1, myAttachement)
 
-        when:"i want all the attachement bind with notes"
-        Map<Note,Attachement> myMap
+        when: "i want all the attachement bind with notes"
+        Map<Note, Attachement> myMap
         myMap = attachementService.searchAttachementInNoteList(noteList)
 
-        then:"we get the map with attachement and note"
+        then: "we get the map with attachement and note"
         myMap.containsKey(bootstrapTestService.note1)
         myMap.containsValue(myAttachement)
         !myMap.containsKey(bootstrapTestService.note2)
@@ -231,8 +248,8 @@ class AttachementServiceIntegrationSpec extends Specification {
                 bytes: [2, 3, 4, 5, 6, 7]
         )
         Attachement attachement1 = attachementService.createAttachement(attachementDto, 10)
-        def path = "${attachementService.dataStore.path}/${attachement1.path.substring(0,2)}/${attachement1.path.substring(2,4)}/" +
-                "${attachement1.path.substring(4,6)}/$attachement1.path"
+        def path = "${attachementService.dataStore.path}/${attachement1.path.substring(0, 2)}/${attachement1.path.substring(2, 4)}/" +
+                "${attachement1.path.substring(4, 6)}/$attachement1.path"
         Attachement attachement2 = attachementService.createAttachement(attachementDto, 10)
 
         when: "the garbage collector is running and the two attachments are to delete"
@@ -255,13 +272,13 @@ class AttachementServiceIntegrationSpec extends Specification {
                 bytes: [2, 3, 4, 5, 6, 7]
         )
         Attachement attachement1 = attachementService.createAttachement(attachementDto, 10)
-        def path = "${attachementService.dataStore.path}/${attachement1.path.substring(0,2)}/${attachement1.path.substring(2,4)}/" +
-                "${attachement1.path.substring(4,6)}/$attachement1.path"
+        def path = "${attachementService.dataStore.path}/${attachement1.path.substring(0, 2)}/${attachement1.path.substring(2, 4)}/" +
+                "${attachement1.path.substring(4, 6)}/$attachement1.path"
         Attachement attachement2 = attachementService.createAttachement(attachementDto, 10)
 
         and: "one of them is attach to a note"
         Note myNote = bootstrapTestService.note2
-        attachementService.addNoteToAttachement(myNote,attachement2)
+        attachementService.addNoteToAttachement(myNote, attachement2)
 
         when: "the garbage collector is running"
         attachementService.deleteAttachementAndFileInSystem()

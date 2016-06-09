@@ -30,16 +30,16 @@ package org.tsaap.lti.tp;
  * Interface to represent a callback to the tool provider when processing a valid
  * launch request.
  *
- * @author      Stephen P Vickers
- * @version     1.1.01 (18-Jun-13)
+ * @author Stephen P Vickers
+ * @version 1.1.01 (18-Jun-13)
  */
 public abstract interface Callback {
 
-/**
- * Method to be called when a launch request has been validated.
- *
- * @param toolProvider  the tool provider used to process the request
- */
-  public abstract boolean execute(ToolProvider toolProvider);
+    /**
+     * Method to be called when a launch request has been validated.
+     *
+     * @param toolProvider the tool provider used to process the request
+     */
+    public abstract boolean execute(ToolProvider toolProvider);
 
 }

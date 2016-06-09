@@ -173,6 +173,7 @@ public class User {
 
     /**
      * Get the "raw" id of the current user
+     *
      * @return the "raw" id of the current user
      */
     public String getId() {

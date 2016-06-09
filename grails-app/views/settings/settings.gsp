@@ -1,3 +1,20 @@
+%{--
+  - Copyright (C) 2013-2016 Université Toulouse 3 Paul Sabatier
+  -
+  -     This program is free software: you can redistribute it and/or modify
+  -     it under the terms of the GNU Affero General Public License as published by
+  -     the Free Software Foundation, either version 3 of the License, or
+  -     (at your option) any later version.
+  -
+  -     This program is distributed in the hope that it will be useful,
+  -     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  -     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  -     GNU Affero General Public License for more details.
+  -
+  -     You should have received a copy of the GNU Affero General Public License
+  -     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  --}%
+
 <%--
   Created by IntelliJ IDEA.
   User: akacimi
@@ -30,8 +47,8 @@
                 </g:eachError>
             </div>
         </g:if>
-        
-        <span class="glyphicon glyphicon-globe" aria-hidden="true"></span><label>&nbsp;Notifications </label>
+
+        <span class="glyphicon glyphicon-globe" aria-hidden="true"></span><label>&nbsp;Notifications</label>
         <hr>
 
         <!-- Example row of columns -->
@@ -42,24 +59,32 @@
                     <fieldset>
                         <div class="checkbox">
                             <label>
-                               <!-- <input type="checkbox" checked="checked" value="dailyNotification"> -->
-                                <g:checkBox name="dailyNotification" value="${user.settings.dailyNotifications}" />
-                                <span data-toggle="tooltip" data-html="true" title="${message(code: "settings.checkbox.dailyNotification.message")}" data-placement="top" >
+                                <!-- <input type="checkbox" checked="checked" value="dailyNotification"> -->
+                                <g:checkBox name="dailyNotification" value="${user.settings.dailyNotifications}"/>
+                                <span data-toggle="tooltip" data-html="true"
+                                      title="${message(code: "settings.checkbox.dailyNotification.message")}"
+                                      data-placement="top">
                                     ${message(code: "settings.checkbox.dailyNotification.label")}
                                 </span>
                             </label>
                         </div>
-                        <div class="checkbox"  >
+
+                        <div class="checkbox">
                             <label>
                                 <!--<input type="checkbox" checked="checked" value="mentionNotification"> -->
-                                <g:checkBox name="mentionNotification" value="${user.settings.mentionNotifications}" />
-                                <span data-toggle="tooltip" data-html="true" title="${message(code: "settings.checkbox.mentionNotification.message")}" data-placement="top">
+                                <g:checkBox name="mentionNotification" value="${user.settings.mentionNotifications}"/>
+                                <span data-toggle="tooltip" data-html="true"
+                                      title="${message(code: "settings.checkbox.mentionNotification.message")}"
+                                      data-placement="top">
                                     ${message(code: "settings.checkbox.mentionNotification.label")}
                                 </span>
                             </label>
                         </div>
+
                         <div class="form-group">
-                            <label> ${message(code: "useraccount.form.language.label")} : <g:select name="language" from="${org.tsaap.directory.UserAccountService.LANGUAGES_SUPPORTED.values()}" value="${fieldValue(bean: user.settings, field: 'language')}" ></g:select></label>
+                            <label>${message(code: "useraccount.form.language.label")} : <g:select name="language"
+                                                                                                   from="${org.tsaap.directory.UserAccountService.LANGUAGES_SUPPORTED.values()}"
+                                                                                                   value="${fieldValue(bean: user.settings, field: 'language')}"></g:select></label>
                         </div>
 
                         <button type="submit"

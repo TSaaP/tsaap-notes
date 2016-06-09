@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2013-2016 Université Toulouse 3 Paul Sabatier
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.tsaap.lti;
 
 import javax.servlet.http.HttpSession;
@@ -10,9 +27,8 @@ public class Utils {
     /**
      * Initialises the application session and database connection.
      *
-     * @param session user session
+     * @param session      user session
      * @param checkSession <code>true</code> to check the session for a valid connection
-     *
      * @return database object
      */
     public static Db initialise(HttpSession session, Boolean checkSession) {
@@ -36,7 +52,7 @@ public class Utils {
             } catch (SQLException e) {
                 ok = false;
                 if ((checkSession != null) && checkSession) {
-                // Display a more user-friendly error message to LTI users
+                    // Display a more user-friendly error message to LTI users
                     session.setAttribute("error_message", "Unable to open database.");
                 } else {
                     session.setAttribute("error_message", e.getMessage());

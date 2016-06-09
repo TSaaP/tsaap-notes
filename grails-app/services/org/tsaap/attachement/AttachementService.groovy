@@ -1,9 +1,25 @@
+/*
+ * Copyright (C) 2013-2016 Université Toulouse 3 Paul Sabatier
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.tsaap.attachement
 
 import groovy.transform.ToString
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
-import org.tsaap.notes.Context
 import org.tsaap.notes.Note
 import org.tsaap.uploadImage.DataIdentifier
 import org.tsaap.uploadImage.DataRecord
@@ -12,7 +28,6 @@ import org.tsaap.uploadImage.DataStore
 import javax.imageio.ImageIO
 import javax.imageio.ImageReader
 import javax.imageio.stream.MemoryCacheImageInputStream
-import javax.mail.internet.MimeUtility
 
 class AttachementService {
 
@@ -138,7 +153,6 @@ class AttachementService {
         }
     }
 
-
     /**
      * Add file to attachment
      * @param file the file to attach
@@ -147,7 +161,7 @@ class AttachementService {
      */
     Attachement addFileToNote(MultipartFile file, Note note) {
         Attachement attachement = createAttachementForMultipartFile(file)
-        addNoteToAttachement(note,attachement)
+        addNoteToAttachement(note, attachement)
         attachement
     }
 
@@ -197,22 +211,21 @@ class AttachementService {
     def deleteAttachementAndFileInSystem() {
         def attachementToRemoveList = Attachement.findAllByToDelete(true)
         def iteratorAttachement = attachementToRemoveList.iterator()
-        while(iteratorAttachement.hasNext()) {
+        while (iteratorAttachement.hasNext()) {
             def attachementToDelete = iteratorAttachement.next()
             boolean deleteInSystem = true
-            Attachement.findAllByPathAndIdNotEqual(attachementToDelete.path,attachementToDelete.id).each {
-                if(!it.toDelete) {
-                   deleteInSystem = false
-                }
-                else {
+            Attachement.findAllByPathAndIdNotEqual(attachementToDelete.path, attachementToDelete.id).each {
+                if (!it.toDelete) {
+                    deleteInSystem = false
+                } else {
                     attachementToRemoveList.remove(it) // todo fsil : not clean, to improve
                     it.delete(flush: true)
                 }
             }
-            if(deleteInSystem) {
+            if (deleteInSystem) {
                 String attachementPath = attachementToDelete.path
-                String finalPath = "${dataStore.path}/${attachementPath.substring(0,2)}/${attachementPath.substring(2,4)}/" +
-                        "${attachementPath.substring(4,6)}/$attachementPath"
+                String finalPath = "${dataStore.path}/${attachementPath.substring(0, 2)}/${attachementPath.substring(2, 4)}/" +
+                        "${attachementPath.substring(4, 6)}/$attachementPath"
                 new File(finalPath).delete()
             }
             attachementToDelete.delete(flush: true)

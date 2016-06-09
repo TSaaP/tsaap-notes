@@ -1,31 +1,32 @@
 %{--
-  - Copyright 2013 Tsaap Development Group
+  - Copyright (C) 2013-2016 Université Toulouse 3 Paul Sabatier
   -
-  - Licensed under the Apache License, Version 2.0 (the "License");
-  - you may not use this file except in compliance with the License.
-  - You may obtain a copy of the License at
+  -     This program is free software: you can redistribute it and/or modify
+  -     it under the terms of the GNU Affero General Public License as published by
+  -     the Free Software Foundation, either version 3 of the License, or
+  -     (at your option) any later version.
   -
-  -    http://www.apache.org/licenses/LICENSE-2.0
+  -     This program is distributed in the hope that it will be useful,
+  -     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  -     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  -     GNU Affero General Public License for more details.
   -
-  - Unless required by applicable law or agreed to in writing, software
-  - distributed under the License is distributed on an "AS IS" BASIS,
-  - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  - See the License for the specific language governing permissions and
-  - limitations under the License.
+  -     You should have received a copy of the GNU Affero General Public License
+  -     along with this program.  If not, see <http://www.gnu.org/licenses/>.
   --}%
 
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description"
-        content="Tsaap Notes - microblogging for learners and teachers">
-  <meta name="author" content="Tsaap Development Group">
-  <link rel="shortcut icon" href="${resource(dir: 'images', file: 'favicon.ico')}" type="image/x-icon">
-  <title><g:layoutTitle default="TsaaP-Notes"/></title>
-  <r:layoutResources/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+          content="Tsaap Notes - microblogging for learners and teachers">
+    <meta name="author" content="Tsaap Development Group">
+    <link rel="shortcut icon" href="${resource(dir: 'images', file: 'favicon.ico')}" type="image/x-icon">
+    <title><g:layoutTitle default="TsaaP-Notes"/></title>
+    <r:layoutResources/>
     <script type="text/javascript"
             src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     </script>
@@ -33,14 +34,15 @@
 
 <body style="padding-top: 10px;">
 <div class="container">
-  @<sec:username/> - <g:link controller="notes" params="[displaysMyNotes:'on']" target="_blank">Tsaap-Notes</g:link>
+    @<sec:username/> - <g:link controller="notes" params="[displaysMyNotes: 'on']" target="_blank">Tsaap-Notes</g:link>
 </div>
 
 <g:layoutBody/>
 
 <r:layoutResources/>
 <footer class="container">
-    <p>&copy; Tsaap Development Group 2013 - Tsaap-Notes version <g:meta name="app.version"/> - <a href="${grailsApplication.config.grails.serverURL}/terms">Mentions</a></p>
+    <p>&copy; Tsaap Development Group 2013 - Tsaap-Notes version <g:meta name="app.version"/> - <a
+            href="${grailsApplication.config.grails.serverURL}/terms">Mentions</a></p>
 </footer>
 </body>
 </html>

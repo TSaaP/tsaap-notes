@@ -1,17 +1,18 @@
 /*
- * Copyright 2007 Netflix, Inc.
+ * Copyright (C) 2013-2016 Université Toulouse 3 Paul Sabatier
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.tsaap.lti.tp.net.oauth;
@@ -35,17 +36,29 @@ import java.util.Map;
 public class OAuthProblemException extends OAuthException {
 
     public static final String OAUTH_PROBLEM = "oauth_problem";
-    /** The name of a parameter whose value is the HTTP request. */
+    /**
+     * The name of a parameter whose value is the HTTP request.
+     */
     public static final String HTTP_REQUEST = "HTTP request";
-    /** The name of a parameter whose value is the HTTP response. */
+    /**
+     * The name of a parameter whose value is the HTTP response.
+     */
     public static final String HTTP_RESPONSE = "HTTP response";
-    /** The name of a parameter whose value is the HTTP resopnse status code. */
+    /**
+     * The name of a parameter whose value is the HTTP resopnse status code.
+     */
     public static final String HTTP_STATUS_CODE = "HTTP status";
-    /** The name of a parameter whose value is the response Location header. */
+    /**
+     * The name of a parameter whose value is the response Location header.
+     */
     public static final String HTTP_LOCATION = "Location";
-    /** The name of a parameter whose value is the OAuth signature base string. */
+    /**
+     * The name of a parameter whose value is the OAuth signature base string.
+     */
     public static final String SIGNATURE_BASE_STRING = OAuth.OAUTH_SIGNATURE + " base string";
-    /** The name of a parameter whose value is the request URL. */
+    /**
+     * The name of a parameter whose value is the request URL.
+     */
     public static final String URL = "URL";
 
     public OAuthProblemException() {
@@ -119,8 +132,8 @@ public class OAuthProblemException extends OAuthException {
         try {
             final String eol = System.getProperty("line.separator", "\n");
             final Map<String, Object> parameters = getParameters();
-            for (String key : new String[] { OAuth.Problems.OAUTH_PROBLEM_ADVICE, URL,
-                    SIGNATURE_BASE_STRING }) {
+            for (String key : new String[]{OAuth.Problems.OAUTH_PROBLEM_ADVICE, URL,
+                    SIGNATURE_BASE_STRING}) {
                 Object value = parameters.get(key);
                 if (value != null)
                     s.append(eol + key + ": " + value);

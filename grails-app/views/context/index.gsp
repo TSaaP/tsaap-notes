@@ -1,3 +1,20 @@
+%{--
+  - Copyright (C) 2013-2016 Université Toulouse 3 Paul Sabatier
+  -
+  -     This program is free software: you can redistribute it and/or modify
+  -     it under the terms of the GNU Affero General Public License as published by
+  -     the Free Software Foundation, either version 3 of the License, or
+  -     (at your option) any later version.
+  -
+  -     This program is distributed in the hope that it will be useful,
+  -     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  -     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  -     GNU Affero General Public License for more details.
+  -
+  -     You should have received a copy of the GNU Affero General Public License
+  -     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  --}%
+
 <%@ page import="org.tsaap.notes.FilterReservedValue; org.tsaap.notes.Context" %>
 <!DOCTYPE html>
 <html>
@@ -22,11 +39,13 @@
         <div class="row">
             <div class="col-lg-6">
                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder=${message(code: 'context.index.filter.placeholder')}
+                    <input type="text" class="form-control"
+                           placeholder=${message(code: 'context.index.filter.placeholder')}
                            name="filter"
                            value="${!(params.filter in org.tsaap.notes.FilterReservedValue.values()*.name()) ? params.filter : ''}">
                     <span class="input-group-btn">
-                        <button class="btn btn-default" type="submit">${message(code: 'context.index.filter.button')}</button>
+                        <button class="btn btn-default"
+                                type="submit">${message(code: 'context.index.filter.button')}</button>
                     </span>
                 </div>
             </div>
@@ -39,16 +58,19 @@
 <div class="container">
 
     <ul class="nav nav-pills" style="margin-top: 10px;">
-        <li role="presentation"><g:link class="list-group-item ${params.filter == org.tsaap.notes.FilterReservedValue.__MINE__.name() ? 'active' : ''}"
-                                                       controller="context" action="index" params="[filter: FilterReservedValue.__MINE__.name()]">
+        <li role="presentation"><g:link
+                class="list-group-item ${params.filter == org.tsaap.notes.FilterReservedValue.__MINE__.name() ? 'active' : ''}"
+                controller="context" action="index" params="[filter: FilterReservedValue.__MINE__.name()]">
             ${message(code: 'context.index.myScope.link')}
         </g:link></li>
-        <li role="presentation"><g:link class="list-group-item ${params.filter == org.tsaap.notes.FilterReservedValue.__FOLLOWED__.name() ? 'active' : ''}"
-                                        controller="context" action="index" params="[filter: FilterReservedValue.__FOLLOWED__.name()]">
+        <li role="presentation"><g:link
+                class="list-group-item ${params.filter == org.tsaap.notes.FilterReservedValue.__FOLLOWED__.name() ? 'active' : ''}"
+                controller="context" action="index" params="[filter: FilterReservedValue.__FOLLOWED__.name()]">
             ${message(code: 'context.index.followedScope.link')}
         </g:link></li>
-        <li role="presentation"><g:link class="list-group-item ${(!params.filter || params.filter == org.tsaap.notes.FilterReservedValue.__ALL__.name()) ? 'active' : ''}"
-                                        controller="context" action="index">
+        <li role="presentation"><g:link
+                class="list-group-item ${(!params.filter || params.filter == org.tsaap.notes.FilterReservedValue.__ALL__.name()) ? 'active' : ''}"
+                controller="context" action="index">
             ${message(code: 'context.index.allScope.link')}
         </g:link></li>
     </ul>
@@ -78,13 +100,13 @@
                         <strong>
 
                             <g:link controller="notes"
-                                    params="[displaysAll: 'on', contextName: context.contextName, contextId: context.id, kind: context.noteTakingEnabled ? 'standard':'question']">${fieldValue(bean: context, field: "contextName")}
+                                    params="[displaysAll: 'on', contextName: context.contextName, contextId: context.id, kind: context.noteTakingEnabled ? 'standard' : 'question']">${fieldValue(bean: context, field: "contextName")}
                             </g:link>
                         </strong>
                         <g:if test="${context.isClosed()}">
-                        <span class="label label-danger">
-                            ${message(code: 'context.scopeStatus.close')}
-                        </span>&nbsp;
+                            <span class="label label-danger">
+                                ${message(code: 'context.scopeStatus.close')}
+                            </span>&nbsp;
                         </g:if>
                         <small>
                             @${context.owner}
@@ -104,8 +126,8 @@
                             <td><g:link controller="context" action="unfollowContext" id="${context.id}"
                                         style="width: 90px;"
                                         class="btn btn-info btn-xs"
-                                        onmouseover='updateFollowLink( $ (this),"Unfollow","btn-danger")'
-                                        onmouseout='updateFollowLink( $ (this),"Following","btn-info")'
+                                        onmouseover='updateFollowLink(  $  (this),"Unfollow","btn-danger")'
+                                        onmouseout='updateFollowLink(  $  (this),"Following","btn-info")'
                                         params="${[filter: params.filter ?: '']}">${message(code: 'context.index.following.button')}</g:link></td>
                         </g:if>
                         <g:else>
@@ -119,7 +141,8 @@
                     <g:else>
                         <td>
                             <div class="btn-group">
-                                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <button type="button" class="btn btn-default btn-xs dropdown-toggle"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <span class="glyphicon glyphicon-cog"></span> <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu">
@@ -133,18 +156,21 @@
                                         </g:link>
                                     </li>
                                     <li>
-                                        <g:form action="duplicateContext" controller="context" name="${context.id}" id="${context.id}">
+                                        <g:form action="duplicateContext" controller="context" name="${context.id}"
+                                                id="${context.id}">
                                         </g:form>
                                         <a onclick="submitDuplicate(${context.id})">${message(code: 'context.index.duplicate.button')}</a>
                                     </li>
                                     <li>
                                         <g:if test="${context.isOpen()}">
-                                            <g:link action="closeContext" controller="context" params="[id: context.id, filter: params.filter]">
+                                            <g:link action="closeContext" controller="context"
+                                                    params="[id: context.id, filter: params.filter]">
                                                 ${message(code: 'context.index.close.button')}
                                             </g:link>
                                         </g:if>
                                         <g:else>
-                                            <g:link action="openContext" controller="context" params="[id: context.id, filter: params.filter]">
+                                            <g:link action="openContext" controller="context"
+                                                    params="[id: context.id, filter: params.filter]">
                                                 ${message(code: 'context.index.open.button')}
                                             </g:link>
                                         </g:else>

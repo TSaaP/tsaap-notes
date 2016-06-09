@@ -34,208 +34,192 @@ import java.util.Map;
  * <p>
  * A data connector provides methods to load and save LTI objects.
  *
- * @author      Stephen P Vickers
- * @version     1.1.01 (18-Jun-13)
+ * @author Stephen P Vickers
+ * @version 1.1.01 (18-Jun-13)
  */
 public abstract class DataConnector {
 
-/**
- * Default name for database table used to store tool consumers.
- */
-  public static final String CONSUMER_TABLE_NAME = "lti_consumer";
-/**
- * Default name for database table used to store resource links.
- */
-  public static final String RESOURCE_LINK_TABLE_NAME = "lti_context";
-/**
- * Default name for database table used to store users.
- */
-  public static final String USER_TABLE_NAME = "lti_user";
-/**
- * Default name for database table used to store resource link share keys.
- */
-  public static final String RESOURCE_LINK_SHARE_KEY_TABLE_NAME = "lti_share_key";
-/**
- * Default name for database table used to store nonce values.
- */
-  public static final String NONCE_TABLE_NAME = "lti_nonce";
+    /**
+     * Default name for database table used to store tool consumers.
+     */
+    public static final String CONSUMER_TABLE_NAME = "lti_consumer";
+    /**
+     * Default name for database table used to store resource links.
+     */
+    public static final String RESOURCE_LINK_TABLE_NAME = "lti_context";
+    /**
+     * Default name for database table used to store users.
+     */
+    public static final String USER_TABLE_NAME = "lti_user";
+    /**
+     * Default name for database table used to store resource link share keys.
+     */
+    public static final String RESOURCE_LINK_SHARE_KEY_TABLE_NAME = "lti_share_key";
+    /**
+     * Default name for database table used to store nonce values.
+     */
+    public static final String NONCE_TABLE_NAME = "lti_nonce";
 
 
 ///
 ///  ToolConsumer methods
 ///
 
-/**
- * Load tool consumer object.
- *
- * @param consumer  ToolConsumer object
- *
- * @return <code>true</code> if the tool consumer object was successfully loaded
- */
-  public abstract boolean loadToolConsumer(ToolConsumer consumer);
+    /**
+     * Load tool consumer object.
+     *
+     * @param consumer ToolConsumer object
+     * @return <code>true</code> if the tool consumer object was successfully loaded
+     */
+    public abstract boolean loadToolConsumer(ToolConsumer consumer);
 
-/**
- * Save tool consumer object.
- *
- * @param consumer  ToolConsumer object
- *
- * @return <code>true</code> if the tool consumer object was successfully saved
- */
-  public abstract boolean saveToolConsumer(ToolConsumer consumer);
+    /**
+     * Save tool consumer object.
+     *
+     * @param consumer ToolConsumer object
+     * @return <code>true</code> if the tool consumer object was successfully saved
+     */
+    public abstract boolean saveToolConsumer(ToolConsumer consumer);
 
-/**
- * Delete tool consumer object.
- *
- * @param consumer  ToolConsumer object
- *
- * @return <code>true</code> if the tool consumer object was successfully deleted
- */
-  public abstract boolean deleteToolConsumer(ToolConsumer consumer);
+    /**
+     * Delete tool consumer object.
+     *
+     * @param consumer ToolConsumer object
+     * @return <code>true</code> if the tool consumer object was successfully deleted
+     */
+    public abstract boolean deleteToolConsumer(ToolConsumer consumer);
 
-/**
- * Load tool consumer objects.
- *
- * @return array of all defined ToolConsumer objects
- */
-  public abstract List<ToolConsumer> getToolConsumers();
+    /**
+     * Load tool consumer objects.
+     *
+     * @return array of all defined ToolConsumer objects
+     */
+    public abstract List<ToolConsumer> getToolConsumers();
 
 
 ///
 ///  ResourceLink methods
 ///
 
-/**
- * Load resource link object.
- *
- * @param resourceLink  ResourceLink object
- *
- * @return <code>true</code> if the resource link object was successfully loaded
- */
-  public abstract boolean loadResourceLink(ResourceLink resourceLink);
+    /**
+     * Load resource link object.
+     *
+     * @param resourceLink ResourceLink object
+     * @return <code>true</code> if the resource link object was successfully loaded
+     */
+    public abstract boolean loadResourceLink(ResourceLink resourceLink);
 
-/**
- * Save resource link object.
- *
- * @param resourceLink  ResourceLink object
- *
- * @return <code>true</code> if the resource link object was successfully saved
- */
-  public abstract boolean saveResourceLink(ResourceLink resourceLink);
+    /**
+     * Save resource link object.
+     *
+     * @param resourceLink ResourceLink object
+     * @return <code>true</code> if the resource link object was successfully saved
+     */
+    public abstract boolean saveResourceLink(ResourceLink resourceLink);
 
-/**
- * Delete resource link object.
- *
- * @param resourceLink  ResourceLink object
- *
- * @return <code>true</code> if the resourceLink object was successfully deleted
- */
-  public abstract boolean deleteResourceLink(ResourceLink resourceLink);
+    /**
+     * Delete resource link object.
+     *
+     * @param resourceLink ResourceLink object
+     * @return <code>true</code> if the resourceLink object was successfully deleted
+     */
+    public abstract boolean deleteResourceLink(ResourceLink resourceLink);
 
-/**
- * Get array of user objects.
- *
- * @param resourceLink  ResourceLink object
- * @param localOnly     <code>true</code> if only users for the resource link are to be returned (excluding users sharing this resource link)
- * @param scope         Scope value to use for user IDs
- *
- * @return array of User objects
- */
-  public abstract Map<String,User> getUserResultSourcedIDs(ResourceLink resourceLink, boolean localOnly, int scope);
+    /**
+     * Get array of user objects.
+     *
+     * @param resourceLink ResourceLink object
+     * @param localOnly    <code>true</code> if only users for the resource link are to be returned (excluding users sharing this resource link)
+     * @param scope        Scope value to use for user IDs
+     * @return array of User objects
+     */
+    public abstract Map<String, User> getUserResultSourcedIDs(ResourceLink resourceLink, boolean localOnly, int scope);
 
-/**
- * Get shares defined for a resource link.
- *
- * @param resourceLink  ResourceLink object
- *
- * @return array of resourceLinkShare objects
- */
-  public abstract List<ResourceLinkShare> getShares(ResourceLink resourceLink);
+    /**
+     * Get shares defined for a resource link.
+     *
+     * @param resourceLink ResourceLink object
+     * @return array of resourceLinkShare objects
+     */
+    public abstract List<ResourceLinkShare> getShares(ResourceLink resourceLink);
 
 
 ///
 ///  Nonce methods
 ///
 
-/**
- * Load nonce object.
- *
- * @param nonce  Nonce object
- *
- * @return <code>true</code> if the nonce object was successfully loaded
- */
-  public abstract boolean loadConsumerNonce(Nonce nonce);
+    /**
+     * Load nonce object.
+     *
+     * @param nonce Nonce object
+     * @return <code>true</code> if the nonce object was successfully loaded
+     */
+    public abstract boolean loadConsumerNonce(Nonce nonce);
 
-/**
- * Save nonce object.
- *
- * @param nonce  Nonce object
- *
- * @return <code>true</code> if the nonce object was successfully saved
- */
-  public abstract boolean saveConsumerNonce(Nonce nonce);
+    /**
+     * Save nonce object.
+     *
+     * @param nonce Nonce object
+     * @return <code>true</code> if the nonce object was successfully saved
+     */
+    public abstract boolean saveConsumerNonce(Nonce nonce);
 
 
 ///
 ///  ResourceLinkShareKey methods
 ///
 
-/**
- * Load resource link share key object.
- *
- * @param shareKey Resource link share key object
- *
- * @return <code>true</code> if the resource link share key object was successfully loaded
- */
-  public abstract boolean loadResourceLinkShareKey(ResourceLinkShareKey shareKey);
+    /**
+     * Load resource link share key object.
+     *
+     * @param shareKey Resource link share key object
+     * @return <code>true</code> if the resource link share key object was successfully loaded
+     */
+    public abstract boolean loadResourceLinkShareKey(ResourceLinkShareKey shareKey);
 
-/**
- * Save resource link share key object.
- *
- * @param shareKey  Resource link share key object
- *
- * @return <code>true</code> if the resource link share key object was successfully saved
- */
-  public abstract boolean saveResourceLinkShareKey(ResourceLinkShareKey shareKey);
+    /**
+     * Save resource link share key object.
+     *
+     * @param shareKey Resource link share key object
+     * @return <code>true</code> if the resource link share key object was successfully saved
+     */
+    public abstract boolean saveResourceLinkShareKey(ResourceLinkShareKey shareKey);
 
-/**
- * Delete resource link share key object.
- *
- * @param  shareKey  Resource link share key object
- *
- * @return <code>true</code> if the resource link share key object was successfully deleted
- */
-  public abstract boolean deleteResourceLinkShareKey(ResourceLinkShareKey shareKey);
+    /**
+     * Delete resource link share key object.
+     *
+     * @param shareKey Resource link share key object
+     * @return <code>true</code> if the resource link share key object was successfully deleted
+     */
+    public abstract boolean deleteResourceLinkShareKey(ResourceLinkShareKey shareKey);
 
 
 ///
 ///  User methods
 ///
 
-/**
- * Load user object.
- *
- * @param user  User object
- *
- * @return <code>true</code> if the user object was successfully loaded
- */
-  public abstract boolean loadUser(User user);
+    /**
+     * Load user object.
+     *
+     * @param user User object
+     * @return <code>true</code> if the user object was successfully loaded
+     */
+    public abstract boolean loadUser(User user);
 
-/**
- * Save user object.
- *
- * @param user  User object
- *
- * @return <code>true</code> if the user object was successfully saved
- */
-  public abstract boolean saveUser(User user);
+    /**
+     * Save user object.
+     *
+     * @param user User object
+     * @return <code>true</code> if the user object was successfully saved
+     */
+    public abstract boolean saveUser(User user);
 
-/**
- * Delete user object.
- *
- * @param user  User object
- *
- * @return <code>true</code> if the user object was successfully deleted
- */
-  public abstract boolean deleteUser(User user);
+    /**
+     * Delete user object.
+     *
+     * @param user User object
+     * @return <code>true</code> if the user object was successfully deleted
+     */
+    public abstract boolean deleteUser(User user);
 
 }

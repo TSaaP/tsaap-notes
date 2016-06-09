@@ -1,17 +1,18 @@
 /*
- * Copyright 2013 Tsaap Development Group
+ * Copyright (C) 2013-2016 Université Toulouse 3 Paul Sabatier
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.tsaap.notes
@@ -60,13 +61,13 @@ class NoteServiceIntegrationSpec extends Specification {
 
 
         where: "all these data are tested"
-        content | tags | mentions
-        "@teacher_jeanne : a simple #content, with no #spaces in the content" | ["content", "spaces"] | ["teacher_jeanne"]
-        "a simple #content with no #spaces in the content but with #content a copy" | ["content", "spaces"] | []
-        "a simple #content\n #another\r #tag3\n with #spaces\t in the content" | ["content", "another", "tag3", "spaces"] | []
-        "a simple with no tags @teacher_jeanne" | [] | ["teacher_jeanne"]
-        "a simple with no @tags @teacher_jeanne" | [] | ["teacher_jeanne"]
-        "Is it #LOWERCASE ?" | ["lowercase"] | []
+        content                                                                     | tags                                     | mentions
+        "@teacher_jeanne : a simple #content, with no #spaces in the content"       | ["content", "spaces"]                    | ["teacher_jeanne"]
+        "a simple #content with no #spaces in the content but with #content a copy" | ["content", "spaces"]                    | []
+        "a simple #content\n #another\r #tag3\n with #spaces\t in the content"      | ["content", "another", "tag3", "spaces"] | []
+        "a simple with no tags @teacher_jeanne"                                     | []                                       | ["teacher_jeanne"]
+        "a simple with no @tags @teacher_jeanne"                                    | []                                       | ["teacher_jeanne"]
+        "Is it #LOWERCASE ?"                                                        | ["lowercase"]                            | []
 
     }
 
@@ -134,10 +135,10 @@ class NoteServiceIntegrationSpec extends Specification {
                 bytes: [2, 3, 4, 5, 6, 7]
         )
         Attachement myAttachement = attachementService.createAttachement(attachementDto, 10)
-        myAttachement = attachementService.addNoteToAttachement(note1,myAttachement)
+        myAttachement = attachementService.addNoteToAttachement(note1, myAttachement)
 
         when: "I want to delete this note"
-        noteService.deleteNoteByAuthor(note1,bootstrapTestService.learnerMary)
+        noteService.deleteNoteByAuthor(note1, bootstrapTestService.learnerMary)
 
         then: "The note is delete"
         Note.get(note1.id) == null
@@ -269,7 +270,7 @@ class NoteServiceIntegrationSpec extends Specification {
         User user = bootstrapTestService.learnerMary
 
         when: "user like the note"
-        noteService.scoreNotebyUser(note,user)
+        noteService.scoreNotebyUser(note, user)
 
         then: "the note get score"
         note.score != null
@@ -280,7 +281,7 @@ class NoteServiceIntegrationSpec extends Specification {
     def "test add question failure"() {
 
         when: "I want to a question with bad syntax"
-        noteService.addQuestion(bootstrapTestService.learnerPaul,"bad syntax",bootstrapTestService.context1)
+        noteService.addQuestion(bootstrapTestService.learnerPaul, "bad syntax", bootstrapTestService.context1)
 
         then: "I get an IsNotQuestionException"
         thrown(IsNotQuestionException)
@@ -289,21 +290,21 @@ class NoteServiceIntegrationSpec extends Specification {
     def "test add standard note failure"() {
 
         when: "I want to a standard note with bad syntax"
-        noteService.addStandardNote(bootstrapTestService.learnerPaul,"::a question:: what ? {=true~false}",bootstrapTestService.context1)
+        noteService.addStandardNote(bootstrapTestService.learnerPaul, "::a question:: what ? {=true~false}", bootstrapTestService.context1)
 
         then: "I get IsNotStandardNoteException"
         thrown(IsNotStandardNoteException)
     }
 
-    def "test find all user notes for a context"(){
+    def "test find all user notes for a context"() {
 
         given: "two notes add by paul and one add by mary for a context"
         Tag tag = Tag.findOrSaveByName("myTag")
-        Note note1 =  noteService.addStandardNote(bootstrapTestService.learnerPaul,"note1",bootstrapTestService.context1,tag)
-        Note note2 = noteService.addStandardNote(bootstrapTestService.learnerPaul,"note2",bootstrapTestService.context1,tag)
+        Note note1 = noteService.addStandardNote(bootstrapTestService.learnerPaul, "note1", bootstrapTestService.context1, tag)
+        Note note2 = noteService.addStandardNote(bootstrapTestService.learnerPaul, "note2", bootstrapTestService.context1, tag)
 
         when: "I want to find only paul's notes"
-        List<Note> res = noteService.findAllNotes(bootstrapTestService.learnerPaul,true,true,false,bootstrapTestService.context1,tag,[sort: 'dateCreated', order: 'desc'],'standard','off').list
+        List<Note> res = noteService.findAllNotes(bootstrapTestService.learnerPaul, true, true, false, bootstrapTestService.context1, tag, [sort: 'dateCreated', order: 'desc'], 'standard', 'off').list
 
         then: "I get only the two paul's notes"
         res.size() == 2

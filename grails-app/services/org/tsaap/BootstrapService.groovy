@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2013-2016 Université Toulouse 3 Paul Sabatier
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.tsaap
 
 import groovy.sql.Sql
@@ -5,11 +22,7 @@ import org.tsaap.directory.Role
 import org.tsaap.directory.RoleEnum
 import org.tsaap.directory.User
 import org.tsaap.directory.UserAccountService
-import org.tsaap.notes.Context
-import org.tsaap.notes.ContextService
-import org.tsaap.notes.Note
-import org.tsaap.notes.NoteService
-import org.tsaap.notes.Tag
+import org.tsaap.notes.*
 
 class BootstrapService {
 
@@ -97,11 +110,11 @@ class BootstrapService {
 
     def initializeDevContextWithFragment() {
         football = Context.findByContextName('football')
-        if(!football) {
-            football = contextService.saveContext(new Context(owner: thom, contextName: 'football',descriptionAsNote: 'everything about #football',url: 'http://fr.wikipedia.org/wiki/Football', source: null))
+        if (!football) {
+            football = contextService.saveContext(new Context(owner: thom, contextName: 'football', descriptionAsNote: 'everything about #football', url: 'http://fr.wikipedia.org/wiki/Football', source: null))
         }
         goal = Tag.findOrSaveWhere(name: 'goal')
-        for (int i=0 ; i<10 ; i++) {
+        for (int i = 0; i < 10; i++) {
             note = Note.findByContent("goal$i")
             if (!note) {
                 note = noteService.addStandardNote(thom, "goal$i", football, goal, null)

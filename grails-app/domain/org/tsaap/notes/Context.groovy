@@ -1,23 +1,25 @@
 /*
- * Copyright 2013 Tsaap Development Group
+ * Copyright (C) 2013-2016 Université Toulouse 3 Paul Sabatier
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.tsaap.notes
 
 import org.gcontracts.annotations.Requires
 import org.tsaap.directory.User
+
 /**
  * The context describes the context which the learner take notes in.
  * Typically the context references a resource and a description that allows
@@ -25,97 +27,97 @@ import org.tsaap.directory.User
  * */
 class Context {
 
-  static transients = ['hasNotes']
+    static transients = ['hasNotes']
 
-  Date dateCreated
-  Date lastUpdated
+    Date dateCreated
+    Date lastUpdated
 
-  String contextName
-  String url
-  String source
+    String contextName
+    String url
+    String source
 
-  /**
-   * The owner is most probably the teacher in a learning context
-   **/
-  User owner
-  Boolean ownerIsTeacher = true
+    /**
+     * The owner is most probably the teacher in a learning context
+     **/
+    User owner
+    Boolean ownerIsTeacher = true
 
-  /**
-   * The description note allows the description of the context with tags and
-   * mentions following the way they are used in a note (# or @ prefix).
-   * All mentions and tags on the context will be automatically bind to each
-   * note taken by a user on this resource
-   **/
-  String descriptionAsNote
+    /**
+     * The description note allows the description of the context with tags and
+     * mentions following the way they are used in a note (# or @ prefix).
+     * All mentions and tags on the context will be automatically bind to each
+     * note taken by a user on this resource
+     **/
+    String descriptionAsNote
 
-  Boolean noteTakingEnabled = false
-  Boolean closed = false
+    Boolean noteTakingEnabled = false
+    Boolean closed = false
 
-  static constraints = {
-    contextName blank: false, maxSize: 1024
-    url url: true, nullable: true
-    descriptionAsNote nullable: true, maxSize: 280
-    source nullable: true, editable: false
-    closed nullable: true
-  }
+    static constraints = {
+        contextName blank: false, maxSize: 1024
+        url url: true, nullable: true
+        descriptionAsNote nullable: true, maxSize: 280
+        source nullable: true, editable: false
+        closed nullable: true
+    }
 
-  /**
-   * Check if the current context has notes
-   * @return true if the current context has notes
-   */
-  Boolean hasNotes() {
-    Note.countByContext(this)
-  }
-  /**
-   * Check if the current context has notes
-   * Of kind Standard
-   * @return true if the current context has standard notes
+    /**
+     * Check if the current context has notes
+     * @return true if the current context has notes
+     */
+    Boolean hasNotes() {
+        Note.countByContext(this)
+    }
+    /**
+     * Check if the current context has notes
+     * Of kind Standard
+     * @return true if the current context has standard notes
      */
 
-  Boolean hasStandardNotes() {
-    Note.countByContextAndKind(this, NoteKind.STANDARD.ordinal())
-  }
-  /**
-   * Check if the current context has new notes since yesterday
-   * @return true if the current context has notes
-   */
-  Integer newNotesCountSinceYesterday() {
-    def today = new Date()
-    Note.countByContextAndDateCreatedBetween(this, today - 1, today)
-  }
-
-  /**
-   * Check if a context is followed by a user
-   * @param user
-   * @return
-   */
-  @Requires({ user })
-  Boolean isFollowedByUser(User user) {
-    if (owner == user) {
-      return true
+    Boolean hasStandardNotes() {
+        Note.countByContextAndKind(this, NoteKind.STANDARD.ordinal())
     }
-    ContextFollower contextFollower = ContextFollower.findByFollowerAndContext(user, this)
-    contextFollower && !contextFollower.isNoMoreSubscribed
-  }
+    /**
+     * Check if the current context has new notes since yesterday
+     * @return true if the current context has notes
+     */
+    Integer newNotesCountSinceYesterday() {
+        def today = new Date()
+        Note.countByContextAndDateCreatedBetween(this, today - 1, today)
+    }
+
+    /**
+     * Check if a context is followed by a user
+     * @param user
+     * @return
+     */
+    @Requires({ user })
+    Boolean isFollowedByUser(User user) {
+        if (owner == user) {
+            return true
+        }
+        ContextFollower contextFollower = ContextFollower.findByFollowerAndContext(user, this)
+        contextFollower && !contextFollower.isNoMoreSubscribed
+    }
 
     /**
      * Check if the current context is open
      * @return true if the context is open false otherwise
      */
-  Boolean isOpen() {
-    closed == false
-  }
+    Boolean isOpen() {
+        closed == false
+    }
 
-  /**
-   * Check if the current context is closed
-   * @return true if the context is closed false otherwise
-   */
-  Boolean isClosed() {
-    closed == true
-  }
+    /**
+     * Check if the current context is closed
+     * @return true if the context is closed false otherwise
+     */
+    Boolean isClosed() {
+        closed == true
+    }
 
 
-  static mapping = {
-    version(false)
-  }
+    static mapping = {
+        version(false)
+    }
 }

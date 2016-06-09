@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2013-2016 Université Toulouse 3 Paul Sabatier
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.tsaap.questions.export
 
 import org.gcontracts.annotations.Requires
@@ -24,7 +41,7 @@ class ExportAsGiftService {
         def questions = findAllQuestionsForContext(context)
         def res = []
         questions.each {
-            def notesOnQuestion = Note.findAllByParentNoteAndGradeGreaterThanEquals(it, MIN_GRADE_FOR_FEEDBACK,[sort:"grade", order:"desc"])
+            def notesOnQuestion = Note.findAllByParentNoteAndGradeGreaterThanEquals(it, MIN_GRADE_FOR_FEEDBACK, [sort: "grade", order: "desc"])
             if (notesOnQuestion) {
                 def generalFeedback = buildGeneralFeedback(notesOnQuestion, feedbackPrefix)
                 res.add(questionHelper.insertGeneralFeedbackInGiftQuestion(generalFeedback, it.content))
@@ -45,7 +62,7 @@ class ExportAsGiftService {
         def questions = findAllQuestionsForContext(context)
         def res = []
         questions.each {
-          res.add(it.content)
+            res.add(it.content)
         }
         res
     }
@@ -53,8 +70,8 @@ class ExportAsGiftService {
     private def findAllQuestionsForContext(Context context) {
         def criteria = Note.createCriteria()
         def questions = criteria.list {
-            eq('context',context)
-            like('content',"::%")
+            eq('context', context)
+            like('content', "::%")
         }
         questions
     }

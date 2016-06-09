@@ -1,17 +1,27 @@
+/*
+ * Copyright (C) 2013-2016 Université Toulouse 3 Paul Sabatier
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.tsaap.questions
 
 import grails.transaction.NotTransactional
 import grails.transaction.Transactional
 import org.gcontracts.annotations.Requires
 import org.tsaap.directory.User
-import org.tsaap.notes.Bookmark
-import org.tsaap.notes.Context
-import org.tsaap.notes.Note
-import org.tsaap.notes.NoteGrade
-import org.tsaap.notes.NoteKind
-import org.tsaap.notes.NoteMention
-import org.tsaap.notes.NoteService
-import org.tsaap.notes.NoteTag
+import org.tsaap.notes.*
 
 @Transactional
 class LiveSessionService {
@@ -24,9 +34,9 @@ class LiveSessionService {
      * @param note the note the live session is associated with
      * @return the live session
      */
-    @Requires({user == note.author && note.isAQuestion() && !note.activeLiveSession && !note.context?.closed})
+    @Requires({ user == note.author && note.isAQuestion() && !note.activeLiveSession && !note.context?.closed })
     LiveSession createLiveSessionForNote(User user, Note note) {
-        LiveSession liveSession = new LiveSession(note:note)
+        LiveSession liveSession = new LiveSession(note: note)
         liveSession.save(flush: true)
         note.liveSession = liveSession
         liveSession
@@ -39,7 +49,7 @@ class LiveSessionService {
      * @return the started live session
      */
     LiveSession createAndStartLiveSessionForNote(User user, Note note) {
-        createLiveSessionForNote(user,note).start()
+        createLiveSessionForNote(user, note).start()
     }
 
     /**
@@ -50,9 +60,9 @@ class LiveSessionService {
      * @return the live session response
      */
     @Requires({ liveSession.isStarted() && !liveSession.isStopped() && !liveSession.getResponseForUser(user) })
-    LiveSessionResponse createResponseForLiveSessionAndUser(LiveSession liveSession,User user, String value) {
+    LiveSessionResponse createResponseForLiveSessionAndUser(LiveSession liveSession, User user, String value) {
         LiveSessionResponse liveSessionResponse = new LiveSessionResponse(
-                liveSession:liveSession,
+                liveSession: liveSession,
                 user: user,
                 answerListAsString: value)
         liveSessionResponse.save()
@@ -75,17 +85,17 @@ class LiveSessionService {
         List<Note> noteList = new ArrayList<Note>()
         def notes = liveResponse.findAll()
         notes.each {
-            if(it.explanationId != null){
+            if (it.explanationId != null) {
                 def theNote = Note.findById(it.explanationId)
                 // delete note tag part
-                if(NoteTag.findAllByNote(theNote)){
+                if (NoteTag.findAllByNote(theNote)) {
                     def noteTagList = NoteTag.findAllByNote(theNote)
                     noteTagList.each {
                         it.delete()
                     }
                 }
                 // delete note grade part
-                if(NoteGrade.findAllByNote(theNote)){
+                if (NoteGrade.findAllByNote(theNote)) {
                     def noteGradeList = NoteGrade.findAllByNote(theNote)
                     noteGradeList.each {
                         it.delete()
@@ -120,12 +130,14 @@ class LiveSessionService {
      * @param liveSession the live session
      * @return the first phase
      */
-    @Requires({user == liveSession.note.author && !liveSession.hasStartedSessionPhase() && !liveSession.note.context?.closed})
+    @Requires({
+        user == liveSession.note.author && !liveSession.hasStartedSessionPhase() && !liveSession.note.context?.closed
+    })
     SessionPhase createAndStartFirstSessionPhaseForLiveSession(User user, LiveSession liveSession) {
         if (liveSession.isNotStarted()) {
             liveSession.start()
         }
-        createSessionPhaseForLiveSessionWithRank(liveSession,1).start()
+        createSessionPhaseForLiveSessionWithRank(liveSession, 1).start()
     }
 
     /**
@@ -134,9 +146,11 @@ class LiveSessionService {
      * @param liveSession the live session
      * @return the third phase
      */
-    @Requires({user == liveSession.note.author && !liveSession.hasStartedSessionPhase() && !liveSession.note.context?.closed})
-    SessionPhase createAndStartSessionPhaseForLiveSessionWithRank(User user, LiveSession liveSession,Integer rank) {
-        createSessionPhaseForLiveSessionWithRank(liveSession,rank).start()
+    @Requires({
+        user == liveSession.note.author && !liveSession.hasStartedSessionPhase() && !liveSession.note.context?.closed
+    })
+    SessionPhase createAndStartSessionPhaseForLiveSessionWithRank(User user, LiveSession liveSession, Integer rank) {
+        createSessionPhaseForLiveSessionWithRank(liveSession, rank).start()
     }
 
     private SessionPhase createSessionPhaseForLiveSessionWithRank(LiveSession liveSession, Integer rank) {
@@ -155,11 +169,11 @@ class LiveSessionService {
      * @return the live session response
      */
     @Requires({ sessionPhase.isStarted() && !sessionPhase.isStopped() && !sessionPhase.getResponseForUser(user) })
-    LiveSessionResponse createResponseForSessionPhaseAndUser(SessionPhase sessionPhase,User user, String value,
+    LiveSessionResponse createResponseForSessionPhaseAndUser(SessionPhase sessionPhase, User user, String value,
                                                              String explanation, Integer confidenceDegree) {
         LiveSession liveSession = sessionPhase.liveSession
         LiveSessionResponse liveSessionResponse = new LiveSessionResponse(
-                liveSession:liveSession,
+                liveSession: liveSession,
                 sessionPhase: sessionPhase,
                 user: user,
                 answerListAsString: value,
@@ -167,7 +181,7 @@ class LiveSessionService {
         )
         Note note = liveSession.note
         if (explanation) {
-            liveSessionResponse.explanation = noteService.addNote(user,explanation,note.context,note.fragmentTag,note,NoteKind.EXPLANATION)
+            liveSessionResponse.explanation = noteService.addNote(user, explanation, note.context, note.fragmentTag, note, NoteKind.EXPLANATION)
         }
         liveSessionResponse.save()
         liveSessionResponse
@@ -192,7 +206,7 @@ class LiveSessionService {
         }
         // evaluate grades for all explanations
         SessionPhase secondPhase = liveSession.findSecondPhase()
-        List<LiveSessionResponse> responseList = LiveSessionResponse.findAllBySessionPhase(secondPhase,[fetch: [explanation: 'join']])
+        List<LiveSessionResponse> responseList = LiveSessionResponse.findAllBySessionPhase(secondPhase, [fetch: [explanation: 'join']])
         responseList.each { LiveSessionResponse response ->
             Note expl = response.explanation
             if (expl) {

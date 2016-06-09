@@ -1,3 +1,20 @@
+%{--
+  - Copyright (C) 2013-2016 Université Toulouse 3 Paul Sabatier
+  -
+  -     This program is free software: you can redistribute it and/or modify
+  -     it under the terms of the GNU Affero General Public License as published by
+  -     the Free Software Foundation, either version 3 of the License, or
+  -     (at your option) any later version.
+  -
+  -     This program is distributed in the hope that it will be useful,
+  -     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  -     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  -     GNU Affero General Public License for more details.
+  -
+  -     You should have received a copy of the GNU Affero General Public License
+  -     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  --}%
+
 <%@ page import="org.tsaap.notes.Context" %>
 <!DOCTYPE html>
 <html>
@@ -12,7 +29,6 @@
 </head>
 
 <body>
-
 
 <div class="container context-nav" role="navigation">
     <ol class="breadcrumb">
@@ -94,13 +110,13 @@
                     <td>
                         ${message(code: 'context.show.notes')}
                     </td>
-                <td>
+                    <td>
                         <g:link controller="notes"
                                 params="[displaysAll: 'on', contextName: context?.contextName, contextId: context.id, kind: 'standard']"><g:createLink
                                 absolute="true" controller="notes"
                                 params="[displaysAll: 'on', contextName: context?.contextName, contextId: context.id, kind: 'standard']"/></g:link>
 
-                </td>
+                    </td>
                 </tr>
             </g:if>
 
@@ -132,16 +148,16 @@
                     <g:link class="btn btn-primary" controller="context" action="exportQuestionsAsGift"
                             id="${context.id}" target="_blank">${message(code: 'context.show.export.link')}</g:link>
                     <g:link class="btn btn-primary" controller="context" action="exportQuestionsAsGiftWithFeedbacks"
-                            id="${context.id}" target="_blank">${message(code: 'context.show.exportFeedback.link')}</g:link>
+                            id="${context.id}"
+                            target="_blank">${message(code: 'context.show.exportFeedback.link')}</g:link>
 
                     <g:if test="${context.isOpen()}">
                         <g:link class="btn btn-primary" controller="context" action="closeContext"
-                                params="[id: context.id, show: 1]" >${message(code: 'context.index.close.button')}</g:link>
+                                params="[id: context.id, show: 1]">${message(code: 'context.index.close.button')}</g:link>
                     </g:if>
-                    <g:elseif test="${context.isClosed()}" >
+                    <g:elseif test="${context.isClosed()}">
                         <g:link class="btn btn-primary" controller="context" action="openContext"
                                 params="[id: context.id, show: 1]">${message(code: 'context.index.open.button')}</g:link>
-
 
                     </g:elseif>
                 </fieldset>

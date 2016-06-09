@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2013-2016 Université Toulouse 3 Paul Sabatier
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.tsaap.questions
 
 import grails.plugins.springsecurity.Secured
@@ -50,8 +67,8 @@ class QuestionController {
         def note = Note.get(params.noteId)
         def liveSession = LiveSession.get(params.liveSessId)
         liveSession.stop()
-        if(liveSession.note.context) {
-            if(liveSession.note.context.source != null) {
+        if (liveSession.note.context) {
+            if (liveSession.note.context.source != null) {
                 lmsContextHelper = new LmsContextHelper()
                 Sql sql = new Sql(dataSource)
                 String consumerKey
@@ -219,7 +236,7 @@ class QuestionController {
         LiveSession liveSession = LiveSession.get(params.id)
         NPhasesLiveSessionStatistics stats = statisticsService.getNPhasesLiveSessionStatisticsForLiveSession(liveSession)
         Map labels = statisticsService.nPhaseSessionStatsLabels()
-        if(params?.format && params.format != "html"){
+        if (params?.format && params.format != "html") {
             response.contentType = grailsApplication.config.grails.mime.types[params.format]
             response.setHeader("Content-disposition", "attachment; filename=tsaapNotesStats.${params.extension}")
             exportService.export(
@@ -232,16 +249,16 @@ class QuestionController {
                     [:]
             )
         }
-        render(view: '/questions/nPhasesLiveSessionStats',model: [stats:[stats], labels: labels,user:user, liveSession: liveSession])
+        render(view: '/questions/nPhasesLiveSessionStats', model: [stats: [stats], labels: labels, user: user, liveSession: liveSession])
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def results() {
         User user = springSecurityService.currentUser
         LiveSession liveSession = LiveSession.get(params.id)
-        NPhasesLiveSessionResultList results = resultListService.getNPhasesLiveSessionResultListForLiveSession(user,liveSession)
+        NPhasesLiveSessionResultList results = resultListService.getNPhasesLiveSessionResultListForLiveSession(user, liveSession)
         Map labels = resultListService.nPhaseSessionResultListLabels()
-        if(params?.format && params.format != "html"){
+        if (params?.format && params.format != "html") {
             response.contentType = grailsApplication.config.grails.mime.types[params.format]
             response.setHeader("Content-disposition", "attachment; filename=tsaapNotesResults.${params.extension}")
             exportService.export(
@@ -251,10 +268,10 @@ class QuestionController {
                     labels.keySet() as List,
                     labels,
                     [:],
-                    [title:results.title]
+                    [title: results.title]
             )
         }
-        render(view: '/questions/nPhasesLiveSessionResults',model: [results:results, labels: labels,user:user, liveSession: liveSession])
+        render(view: '/questions/nPhasesLiveSessionResults', model: [results: results, labels: labels, user: user, liveSession: liveSession])
     }
 
     private String buildAnswerAsStringFromAnswers(List<String> answers) {

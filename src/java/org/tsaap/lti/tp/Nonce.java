@@ -31,122 +31,122 @@ import java.util.Calendar;
 /**
  * Class to represent a Nonce value.
  *
- * @author      Stephen P Vickers
- * @version     1.1.01 (18-Jun-13)
+ * @author Stephen P Vickers
+ * @version 1.1.01 (18-Jun-13)
  */
 public class Nonce {
 
-/**
- * Maximum age nonce values will be retained for (in minutes).
- */
-  private static final int MAX_NONCE_AGE = 5;  // in minutes (matches default timestamp window used by OAuth library)
-/**
- * Date/time when the nonce value expires.
- */
-  private Calendar expires = null;
-/**
- * ToolConsumer object to which this nonce applies.
- */
-  private ToolConsumer consumer = null;
-/**
- * Nonce value.
- */
-  private String value = null;
+    /**
+     * Maximum age nonce values will be retained for (in minutes).
+     */
+    private static final int MAX_NONCE_AGE = 5;  // in minutes (matches default timestamp window used by OAuth library)
+    /**
+     * Date/time when the nonce value expires.
+     */
+    private Calendar expires = null;
+    /**
+     * ToolConsumer object to which this nonce applies.
+     */
+    private ToolConsumer consumer = null;
+    /**
+     * Nonce value.
+     */
+    private String value = null;
 
-/**
- * Construct a nonce value for a tool consumer with the specified value.
- *
- * @param consumer Tool Consumer object
- * @param value    Nonce value
- */
-  public Nonce(ToolConsumer consumer, String value) {
+    /**
+     * Construct a nonce value for a tool consumer with the specified value.
+     *
+     * @param consumer Tool Consumer object
+     * @param value    Nonce value
+     */
+    public Nonce(ToolConsumer consumer, String value) {
 
-    this(consumer, value, MAX_NONCE_AGE);
+        this(consumer, value, MAX_NONCE_AGE);
 
-  }
-
-/**
- * Construct a nonce value for a tool consumer with the specified value and maximum life.
- *
- * @param consumer Tool Consumer object
- * @param value    Nonce value
- * @param life     Maximum life of nonce value
- */
-  public Nonce(ToolConsumer consumer, String value, int life) {
-
-    this.consumer = consumer;
-    this.value = value;
-    this.expires = Calendar.getInstance();
-    this.expires.add(Calendar.MINUTE, life);
-
-  }
-
-/**
- * Load a nonce value from the database.
- *
- * @return <code>true</code> if the nonce value was successfully loaded
- */
-  public boolean load() {
-
-    return this.consumer.getDataConnector().loadConsumerNonce(this);
-
-  }
-
-/**
- * Save a nonce value in the database.
- *
- * @return <code>true</code> if the nonce value was successfully saved
- */
-  public boolean save() {
-
-    return this.consumer.getDataConnector().saveConsumerNonce(this);
-
-  }
-
-/**
- * Returns the tool consumer.
- *
- * @return tool consumer object for this nonce
- */
-  public ToolConsumer getConsumer() {
-
-    return this.consumer;
-
-  }
-
-/**
- * Returns the tool consumer key.
- *
- * @return tool consumer key value
- */
-  public String getKey() {
-
-    return this.consumer.getKey();
-
-  }
-
-/**
- * Returns the outcome value.
- *
- * @return outcome value
- */
-  public String getValue() {
-
-    return this.value;
-
-  }
-
-/**
- * Returns the date/time when the nonce value is due to expire.
- *
- * @return expiry date/time
- */
-  public Calendar getExpires() {
-    Calendar calendar = null;
-    if (this.expires != null) {
-      calendar = (Calendar)this.expires.clone();
     }
-    return calendar;
-  }
+
+    /**
+     * Construct a nonce value for a tool consumer with the specified value and maximum life.
+     *
+     * @param consumer Tool Consumer object
+     * @param value    Nonce value
+     * @param life     Maximum life of nonce value
+     */
+    public Nonce(ToolConsumer consumer, String value, int life) {
+
+        this.consumer = consumer;
+        this.value = value;
+        this.expires = Calendar.getInstance();
+        this.expires.add(Calendar.MINUTE, life);
+
+    }
+
+    /**
+     * Load a nonce value from the database.
+     *
+     * @return <code>true</code> if the nonce value was successfully loaded
+     */
+    public boolean load() {
+
+        return this.consumer.getDataConnector().loadConsumerNonce(this);
+
+    }
+
+    /**
+     * Save a nonce value in the database.
+     *
+     * @return <code>true</code> if the nonce value was successfully saved
+     */
+    public boolean save() {
+
+        return this.consumer.getDataConnector().saveConsumerNonce(this);
+
+    }
+
+    /**
+     * Returns the tool consumer.
+     *
+     * @return tool consumer object for this nonce
+     */
+    public ToolConsumer getConsumer() {
+
+        return this.consumer;
+
+    }
+
+    /**
+     * Returns the tool consumer key.
+     *
+     * @return tool consumer key value
+     */
+    public String getKey() {
+
+        return this.consumer.getKey();
+
+    }
+
+    /**
+     * Returns the outcome value.
+     *
+     * @return outcome value
+     */
+    public String getValue() {
+
+        return this.value;
+
+    }
+
+    /**
+     * Returns the date/time when the nonce value is due to expire.
+     *
+     * @return expiry date/time
+     */
+    public Calendar getExpires() {
+        Calendar calendar = null;
+        if (this.expires != null) {
+            calendar = (Calendar) this.expires.clone();
+        }
+        return calendar;
+    }
 
 }

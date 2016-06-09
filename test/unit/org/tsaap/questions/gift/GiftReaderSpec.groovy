@@ -1,17 +1,18 @@
 /*
- * Copyright 2013 Tsaap Development Group
+ * Copyright (C) 2013-2016 Université Toulouse 3 Paul Sabatier
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.tsaap.questions.gift
@@ -20,7 +21,6 @@ import org.tsaap.questions.Answer
 import org.tsaap.questions.AnswerBlock
 import org.tsaap.questions.Question
 import org.tsaap.questions.QuestionType
-import org.tsaap.questions.impl.DefaultQuestion
 import org.tsaap.questions.impl.gift.GiftQuizContentHandler
 import org.tsaap.questions.impl.gift.GiftReader
 import org.tsaap.questions.impl.gift.GiftReaderNotEscapedCharacterException
@@ -164,31 +164,40 @@ class GiftReaderSpec extends Specification {
 
     }
 
-    @Shared // basic EC question without feedback
+    @Shared
+    // basic EC question without feedback
     def ec_q1_ok = '::Question 1:: What\'s between orange and green in the spectrum ? \n { =yellow ~red  ~blue }'
 
-    @Shared // EC question with feedback
+    @Shared
+    // EC question with feedback
     def ec_q2_ok = '::Question 2:: What\'s between orange and green in the spectrum ? \n { =yellow # congrats ! ~red # try again  ~blue #not yet }'
 
-    @Shared // EC Question with escape characters
+    @Shared
+    // EC Question with escape characters
     def ec_q3_ok = '::Question \\: 3:: What\'s between orange and green in the \\#spectrum ? \n { =yellow # congrats ! ~red #not \\= ~blue # try again }'
 
-    @Shared // basic EC question without no left bracket
+    @Shared
+    // basic EC question without no left bracket
     def ec_q1_ko = '::Question 1:: What\'s between orange and green in the spectrum ? \n  =yellow ~red  ~blue }'
 
-    @Shared // EC question with feedback  but without right bracket
+    @Shared
+    // EC question with feedback  but without right bracket
     def ec_q2_ko = '::Question 2:: What\'s between orange and green in the spectrum ? \n { =yellow # congrats ! ~red # try again  ~blue #not yet '
 
-    @Shared // EC Question with one  character not escaped  in the title
+    @Shared
+    // EC Question with one  character not escaped  in the title
     def ec_q3_ko = '::Question : 3:: What\'s between orange and green in the \\#spectrum ? \n { =yellow # congrats ! ~red #not \\= ~blue # try again }'
 
-    @Shared // basic MC question without feedback
+    @Shared
+    // basic MC question without feedback
     def mc_q1_ok = '::Question 1:: What\'are fruits  ? \n { ~%50%tomatoes  ~%-50%potatoes ~%50%apple ~%-50%pepper}'
 
-    @Shared // MC question with feedback
+    @Shared
+    // MC question with feedback
     def mc_q2_ok = '::Question 2:: What\'are fruits  ? \n { ~%50%tomatoes #yep !  ~%-50%potatoes #bad ! ~%50%apple#yop ! ~%-50%pepper#null!}'
 
-    @Shared // MC Question with escape characters
+    @Shared
+    // MC Question with escape characters
     def mc_q3_ok = '::Question \\: 3:: What\'are fruits  ? \n { ~%50%tomatoes #yep !  ~%-50%potatoes #bad ! ~%50%apple#yop ! ~%-50%pepper#null!}'
 
 

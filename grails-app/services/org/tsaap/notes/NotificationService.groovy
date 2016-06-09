@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2013-2016 Université Toulouse 3 Paul Sabatier
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.tsaap.notes
 
 import grails.plugin.mail.MailService
@@ -9,37 +26,37 @@ import javax.sql.DataSource
 
 class NotificationService {
 
-  static transactional = false
+    static transactional = false
 
-  MailService mailService
-  ContextService contextService
-  DataSource dataSource
-  MessageSource messageSource
-  UnsubscribeKey key
+    MailService mailService
+    ContextService contextService
+    DataSource dataSource
+    MessageSource messageSource
+    UnsubscribeKey key
 
-  /**
-   * Notify the given user on  notes of the day coming from the context the user
-   * follows
-   * @param user the user
-   */
-  def notifyUsersOnTodayNotes() {
-    Map notifications = findAllNotifications()
-    notifications.each { user, contextList ->
+    /**
+     * Notify the given user on  notes of the day coming from the context the user
+     * follows
+     * @param user the user
+     */
+    def notifyUsersOnTodayNotes() {
+        Map notifications = findAllNotifications()
+        notifications.each { user, contextList ->
 
 
-      try {
-        def sub = messageSource.getMessage("email.notes.notification.title",null,new Locale(user.language))
-        mailService.sendMail {
-          to user.email
-          subject sub
-          html view: "/email/notesNotification", model: [user: user,
-                  contextList: contextList, key: contextList.find().key]
+            try {
+                def sub = messageSource.getMessage("email.notes.notification.title", null, new Locale(user.language))
+                mailService.sendMail {
+                    to user.email
+                    subject sub
+                    html view: "/email/notesNotification", model: [user       : user,
+                                                                   contextList: contextList, key: contextList.find().key]
+                }
+            } catch (Exception e) {
+                log.error("Error with ${user.email} : ${e.message}")
+            }
         }
-      } catch (Exception e) {
-        log.error("Error with ${user.email} : ${e.message}")
-      }
     }
-  }
 
 /**
  * The notifications is a map :<br>
@@ -50,9 +67,9 @@ class NotificationService {
  * The count_notes is the count of new notes in the current context since yesterday same time.
  * @return the notifications as a map
  */
-  private Map findAllNotifications() {
-    def sql = new Sql(dataSource)
-    def req = """
+    private Map findAllNotifications() {
+        def sql = new Sql(dataSource)
+        def req = """
               SELECT tuser.id as user_id, tuser.first_name, tuser.email, tsettings.language, tcontext.id as context_id, tcontext.context_name, count(tnote.id) as count_notes, tkey.unsubscribe_key as ukey
               FROM note as tnote
               INNER JOIN context_follower as tcontextfo ON tnote.context_id = tcontextfo.context_id
@@ -74,18 +91,18 @@ class NotificationService {
                 and tsettings.daily_notifications = 1 and tcontext.closed = FALSE
               group by context_id, user_id, tkey.id, tsettings.language
               order by user_id,context_name """
-    def rows = sql.rows(req)
-    def notifications = [:]
-    rows.each {
-      def key = [user_id: it.user_id, first_name: it.first_name, email: it.email, language: it.language]
-      if (notifications[key] == null) {
-        notifications[key] = []
-      }
-      notifications[key] << [context_id: it.context_id, context_name: it.context_name, count_notes: it.count_notes, key: it.ukey]
+        def rows = sql.rows(req)
+        def notifications = [:]
+        rows.each {
+            def key = [user_id: it.user_id, first_name: it.first_name, email: it.email, language: it.language]
+            if (notifications[key] == null) {
+                notifications[key] = []
+            }
+            notifications[key] << [context_id: it.context_id, context_name: it.context_name, count_notes: it.count_notes, key: it.ukey]
+        }
+        sql.close()
+        notifications
     }
-    sql.close()
-    notifications
-  }
 
 }
 

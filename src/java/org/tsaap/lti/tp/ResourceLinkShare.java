@@ -31,104 +31,104 @@ package org.tsaap.lti.tp;
  * <p>
  * A resource link may approve one or more other resource links to share with.
  *
- * @author      Stephen P Vickers
- * @version     1.1.01 (18-Jun-13)
+ * @author Stephen P Vickers
+ * @version 1.1.01 (18-Jun-13)
  */
 public class ResourceLinkShare {
 
-/**
- * Consumer key value.
- */
-  private String consumerKey = null;
-/**
- * Resource link ID value.
- */
-  private String resourceLinkId = null;
-/**
- * Title of sharing context.
- */
-  private String title = null;
-/**
- * True if sharing request is to be automatically approved on first use.
- */
-  private Boolean approved = null;
+    /**
+     * Consumer key value.
+     */
+    private String consumerKey = null;
+    /**
+     * Resource link ID value.
+     */
+    private String resourceLinkId = null;
+    /**
+     * Title of sharing context.
+     */
+    private String title = null;
+    /**
+     * True if sharing request is to be automatically approved on first use.
+     */
+    private Boolean approved = null;
 
-/**
- * Constructs an empty context share.
- */
-  public ResourceLinkShare() {
-  }
+    /**
+     * Constructs an empty context share.
+     */
+    public ResourceLinkShare() {
+    }
 
-/**
- * Returns the consumer key for the sharing resource link.
- *
- * @return primary consumer key
- */
-  public String getConsumerKey() {
-    return this.consumerKey;
-  }
+    /**
+     * Returns the consumer key for the sharing resource link.
+     *
+     * @return primary consumer key
+     */
+    public String getConsumerKey() {
+        return this.consumerKey;
+    }
 
-/**
- * Set consumer key for the sharing resource link.
- *
- * @param consumerKey primary consumer key
- */
-  public void setConsumerKey(String consumerKey) {
-    this.consumerKey = consumerKey;
-  }
+    /**
+     * Set consumer key for the sharing resource link.
+     *
+     * @param consumerKey primary consumer key
+     */
+    public void setConsumerKey(String consumerKey) {
+        this.consumerKey = consumerKey;
+    }
 
-/**
- * Returns the sharing resource link ID.
- *
- * @return primary resource link ID
- */
-  public String getResourceLinkId() {
-    return this.resourceLinkId;
-  }
+    /**
+     * Returns the sharing resource link ID.
+     *
+     * @return primary resource link ID
+     */
+    public String getResourceLinkId() {
+        return this.resourceLinkId;
+    }
 
-/**
- * Set resource ink ID for the sharing resource link.
- *
- * @param resourceLinkId primary resource link ID
- */
-  public void setResourceLinkId(String resourceLinkId) {
-    this.resourceLinkId = resourceLinkId;
-  }
+    /**
+     * Set resource ink ID for the sharing resource link.
+     *
+     * @param resourceLinkId primary resource link ID
+     */
+    public void setResourceLinkId(String resourceLinkId) {
+        this.resourceLinkId = resourceLinkId;
+    }
 
-/**
- * Returns the sharing resource title.
- *
- * @return title
- */
-  public String getTitle() {
-    return this.title;
-  }
+    /**
+     * Returns the sharing resource title.
+     *
+     * @return title
+     */
+    public String getTitle() {
+        return this.title;
+    }
 
-/**
- * Set title for the sharing resource link.
- *
- * @param title  title of sharing resource link
- */
-  public void setTitle(String title) {
-    this.title = title;
-  }
+    /**
+     * Set title for the sharing resource link.
+     *
+     * @param title title of sharing resource link
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-/**
- * Returns <code>true</code> if the share has been approved.
- *
- * @return <code>true</code> if the share key is approved
- */
-  public Boolean getApproved() {
-    return this.approved;
-  }
+    /**
+     * Returns <code>true</code> if the share has been approved.
+     *
+     * @return <code>true</code> if the share key is approved
+     */
+    public Boolean getApproved() {
+        return this.approved;
+    }
 
-/**
- * Sets whether the share key has been approved.
- *
- * @param approved  <code>true</code> if the share key is approved
- */
-  public void setApproved(Boolean approved) {
-    this.approved = approved;
-  }
+    /**
+     * Sets whether the share key has been approved.
+     *
+     * @param approved <code>true</code> if the share key is approved
+     */
+    public void setApproved(Boolean approved) {
+        this.approved = approved;
+    }
 
 }

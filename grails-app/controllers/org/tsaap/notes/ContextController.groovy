@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2013-2016 Université Toulouse 3 Paul Sabatier
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.tsaap.notes
 
 import grails.plugins.springsecurity.Secured
@@ -12,7 +29,7 @@ import static org.springframework.http.HttpStatus.*
 @Transactional(readOnly = true)
 class ContextController {
 
-    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE",duplicateContext: "POST"]
+    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE", duplicateContext: "POST"]
 
     SpringSecurityService springSecurityService
     ContextService contextService
@@ -164,7 +181,7 @@ class ContextController {
         contextService.unsuscribeUserOnContext(springSecurityService.currentUser, context)
         request.withFormat {
             html {
-                redirect action: "index", method: "GET",params: params
+                redirect action: "index", method: "GET", params: params
             }
             '*' { respond context, [status: OK] }
         }
@@ -176,9 +193,9 @@ class ContextController {
             notFound()
             return
         }
-        def questions = exportAsGiftService.findAllGiftQuestionsWithNotesAsFeedbackForContext(springSecurityService.currentUser, context,message(code:"questions.export.feedback.prefix"))
+        def questions = exportAsGiftService.findAllGiftQuestionsWithNotesAsFeedbackForContext(springSecurityService.currentUser, context, message(code: "questions.export.feedback.prefix"))
         response.setHeader "Content-disposition", "attachment; filename=ExportMoodleGift.txt"
-        render(template:"/questions/export/QuestionsAsGift", contentType: "text/plain", encoding: "UTF-8", model: [questions:questions])
+        render(template: "/questions/export/QuestionsAsGift", contentType: "text/plain", encoding: "UTF-8", model: [questions: questions])
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
@@ -189,7 +206,7 @@ class ContextController {
         }
         def questions = exportAsGiftService.findAllGiftQuestionsForContext(springSecurityService.currentUser, context)
         response.setHeader "Content-disposition", "attachment; filename=ExportMoodleGift.txt"
-        render(template:"/questions/export/QuestionsAsGift", contentType: "text/plain", encoding: "UTF-8", model: [questions:questions])
+        render(template: "/questions/export/QuestionsAsGift", contentType: "text/plain", encoding: "UTF-8", model: [questions: questions])
     }
 
     @Transactional
@@ -199,7 +216,7 @@ class ContextController {
             notFound()
             return
         }
-        def newContext = contextService.duplicateContext(context,springSecurityService.currentUser)
+        def newContext = contextService.duplicateContext(context, springSecurityService.currentUser)
         redirect action: "edit", controller: "context", id: newContext.id
     }
 
@@ -213,7 +230,7 @@ class ContextController {
             statsList << statisticsService.getNPhasesLiveSessionStatisticsForLiveSessionId(it as Long)
         }
         Map labels = statisticsService.nPhaseSessionStatsLabels()
-        if(params?.format && params.format != "html"){
+        if (params?.format && params.format != "html") {
             response.contentType = grailsApplication.config.grails.mime.types[params.format]
             response.setHeader("Content-disposition", "attachment; filename=tsaapNotesStats.${params.extension}")
             exportService.export(
@@ -226,7 +243,7 @@ class ContextController {
                     [:]
             )
         }
-        render(view: '/context/contextNPhaseSessionsStats',model: [stats:statsList, labels: labels,user:user, context: context])
+        render(view: '/context/contextNPhaseSessionsStats', model: [stats: statsList, labels: labels, user: user, context: context])
     }
 
     protected void notFound() {
@@ -241,7 +258,7 @@ class ContextController {
 
     @Transactional
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def closeContext(Integer max){
+    def closeContext(Integer max) {
 
         params.max = Math.min(max ?: 10, 100)
         params.sort = params.sort ?: 'dateCreated'
@@ -252,7 +269,7 @@ class ContextController {
         def contextCount = 0
         if (params.show) {
             flash.message = message(code: 'default.updated.message', args: [message(code: 'context.label', default: 'Context'), params.id])
-            redirect(uri:'/scope/show/'+params.id)
+            redirect(uri: '/scope/show/' + params.id)
         }
         if ((!params.filter || params.filter == FilterReservedValue.__ALL__.name()) && (!params.show)) {
             contextList = Context.list(params)
@@ -269,23 +286,23 @@ class ContextController {
 
     @Transactional
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def openContext(Integer max ){
+    def openContext(Integer max) {
 
         params.max = Math.min(max ?: 10, 100)
         params.sort = params.sort ?: 'dateCreated'
         params.order = params.order ?: 'desc'
         User user = springSecurityService.currentUser
-        contextService.openScope(Context.findById(params.id),user)
+        contextService.openScope(Context.findById(params.id), user)
         def contextList
         def contextCount = 0
         if (params.show) {
             flash.message = message(code: 'default.updated.message', args: [message(code: 'context.label', default: 'Context'), params.id])
-            redirect(uri:'/scope/show/'+params.id)
+            redirect(uri: '/scope/show/' + params.id)
         }
         if ((!params.filter || params.filter == FilterReservedValue.__ALL__.name()) && (!params.show)) {
             contextList = Context.list(params)
             contextCount = Context.count()
-           redirect(uri: '/scope/index', params: [contextList: contextList, contextCount: contextCount, user: user])
+            redirect(uri: '/scope/index', params: [contextList: contextList, contextCount: contextCount, user: user])
         } else if (params.filter == FilterReservedValue.__MINE__.name()) {
             contextList = contextService.contextsForOwner(user, params)
             contextCount = Context.countByOwner(user)

@@ -1,19 +1,19 @@
 /*
- * Copyright 2013 Tsaap Development Group
+ * Copyright (C) 2013-2016 Université Toulouse 3 Paul Sabatier
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 
 
 package org.tsaap.directory
@@ -21,42 +21,43 @@ package org.tsaap.directory
 import grails.test.mixin.TestFor
 import spock.lang.Specification
 import spock.lang.Unroll
+
 /**
  * See the API for {@link grails.test.mixin.domain.DomainClassUnitTestMixin} for usage instructions*/
 @TestFor(User)
 class UserSpec extends Specification {
 
-  @Unroll
-  def "'#username' is valid username is #usernameIsOK"() {
-    when:
-      User user = new User(firstName: "franck", lastName: "s", username: username, email: "mail@mail.com", password: "password")
-    then:
-      println "-${user.username}-"
-      user.validate() == usernameIsOK
-      user.normalizedUsername == username.toLowerCase()
-    where:
-      username                | usernameIsOK
-      "is not a word"         | false
-      "franck"                | true
-      "Mary"                  | true
-      "franck-s"              | false
-      "Mary_s"                | true
-      "fr@nck"                | false
-      "Mar%"                  | false
-      "éric"                  | false
-      "69"                    | true
-      "thisusernameistoolong" | false
-  }
+    @Unroll
+    def "'#username' is valid username is #usernameIsOK"() {
+        when:
+        User user = new User(firstName: "franck", lastName: "s", username: username, email: "mail@mail.com", password: "password")
+        then:
+        println "-${user.username}-"
+        user.validate() == usernameIsOK
+        user.normalizedUsername == username.toLowerCase()
+        where:
+        username                | usernameIsOK
+        "is not a word"         | false
+        "franck"                | true
+        "Mary"                  | true
+        "franck-s"              | false
+        "Mary_s"                | true
+        "fr@nck"                | false
+        "Mar%"                  | false
+        "éric"                  | false
+        "69"                    | true
+        "thisusernameistoolong" | false
+    }
 
-  def "user get full name string"() {
+    def "user get full name string"() {
 
-    given: "a user"
-    User user = new User(firstName: "franck", lastName: "s", username: "fs", email: "mail@mail.com", password: "password")
+        given: "a user"
+        User user = new User(firstName: "franck", lastName: "s", username: "fs", email: "mail@mail.com", password: "password")
 
-    when: "I want a string with this user fullname"
-    def res = user.getFullname()
+        when: "I want a string with this user fullname"
+        def res = user.getFullname()
 
-    then: "I get a string with this user fullname"
-    res == "franck s"
-  }
+        then: "I get a string with this user fullname"
+        res == "franck s"
+    }
 }

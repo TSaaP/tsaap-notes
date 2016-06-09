@@ -1,17 +1,18 @@
 /*
- * Copyright 2013 Tsaap Development Group
+ * Copyright (C) 2013-2016 Université Toulouse 3 Paul Sabatier
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.tsaap.notes
@@ -63,20 +64,18 @@ class NotesController {
             }
         }
         Note myNote
-        try{
-            if(params.kind && params.kind == 'question')
-            {
+        try {
+            if (params.kind && params.kind == 'question') {
                 myNote = noteService.addQuestion(user, noteContent, context, fragmentTag, parentNote)
-            }
-            else {
+            } else {
                 myNote = noteService.addStandardNote(user, noteContent, context, fragmentTag, parentNote)
             }
-        }catch (IsNotQuestionException e){
-            params.put("error","question")
+        } catch (IsNotQuestionException e) {
+            params.put("error", "question")
             renderMainPage(params, user)
             return
-        }catch (IsNotStandardNoteException e){
-            params.put("error","note")
+        } catch (IsNotStandardNoteException e) {
+            params.put("error", "note")
             renderMainPage(params, user)
             return
         }
@@ -150,12 +149,12 @@ class NotesController {
         if (noteInput?.startsWith('::')) {
             try {
                 Question question = giftQuestionService.getQuestionFromGiftText(noteInput)
-                render(template: '/questions/preview/detail',model: [question: question])
-            }catch (Exception e) {
+                render(template: '/questions/preview/detail', model: [question: question])
+            } catch (Exception e) {
                 render("${e.message}")
             }
         } else {
-          render(noteInput ?: '')
+            render(noteInput ?: '')
         }
     }
 
@@ -171,19 +170,23 @@ class NotesController {
 
         Question singleChoice = giftQuestionService.getQuestionFromGiftText("${message(code: "notes.edit.sampleQuestion.singleChoiceExemple")}")
 
-        def singlelink = """<a class="sampleLink" id="singleQuestionSample" onClick="sampleLink(0)">${message(code: "notes.edit.sampleQuestion.link")}</a><br><br>"""
+        def singlelink = """<a class="sampleLink" id="singleQuestionSample" onClick="sampleLink(0)">${
+            message(code: "notes.edit.sampleQuestion.link")
+        }</a><br><br>"""
         def multiple = "${message(code: "notes.edit.sampleQuestion.multipleChoice")}"
 
         Question multipleChoice = giftQuestionService.getQuestionFromGiftText("${message(code: "notes.edit.sampleQuestion.multipleChoiceExemple")}")
 
-        def multiplelink ="""<a class="sampleLink" id="singleQuestionSample" onClick="sampleLink(1)">${message(code: "notes.edit.sampleQuestion.link")}</a>"""
+        def multiplelink = """<a class="sampleLink" id="singleQuestionSample" onClick="sampleLink(1)">${
+            message(code: "notes.edit.sampleQuestion.link")
+        }</a>"""
 
         render(content)
         render(single)
-        render(template: '/questions/preview/detail',model: [question: singleChoice])
+        render(template: '/questions/preview/detail', model: [question: singleChoice])
         render(singlelink)
         render(multiple)
-        render(template: '/questions/preview/detail',model: [question: multipleChoice])
+        render(template: '/questions/preview/detail', model: [question: multipleChoice])
         render(multiplelink)
 
     }
@@ -240,32 +243,32 @@ class NotesController {
 
         def countTotal
         def kind
-       if (kindParams == NoteKind.STANDARD.toString().toLowerCase()){
+        if (kindParams == NoteKind.STANDARD.toString().toLowerCase()) {
 
-           kind = NoteKind.QUESTION
+            kind = NoteKind.QUESTION
 
-       } else {
+        } else {
 
-           kind = NoteKind.STANDARD
-       }
+            kind = NoteKind.STANDARD
+        }
 
-        countTotal  = noteService.countNotes(user,
+        countTotal = noteService.countNotes(user,
                 displaysMyNotes,
                 displaysMyFavorites,
                 displaysAll,
                 context,
                 fragmentTag,
                 kind.toString().toLowerCase()
-                )
+        )
 
 
 
-            render(view: '/notes/index', model: [user: user,
-                                                 notes: notes,
-                                                 countTotal:countTotal,
-                                                 context: context,
-                                                 fragmentTag: fragmentTag,
-                                                 showDiscussion: showDiscussion])
+        render(view: '/notes/index', model: [user          : user,
+                                             notes         : notes,
+                                             countTotal    : countTotal,
+                                             context       : context,
+                                             fragmentTag   : fragmentTag,
+                                             showDiscussion: showDiscussion])
     }
 
 }

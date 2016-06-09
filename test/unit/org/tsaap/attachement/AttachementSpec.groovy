@@ -1,7 +1,23 @@
+/*
+ * Copyright (C) 2013-2016 Université Toulouse 3 Paul Sabatier
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.tsaap.attachement
 
 import grails.test.mixin.TestFor
-import org.tsaap.attachement.Attachement
 import org.tsaap.notes.Context
 import org.tsaap.notes.Note
 import spock.lang.Shared
@@ -29,21 +45,21 @@ class AttachementSpec extends Specification {
 
 
         expect: "the attachement is valid"
-        if(!myAttachement.validate()){
+        if (!myAttachement.validate()) {
             println myAttachement.getErrors()
         }
         myAttachement.validate() == true
 
         where:
 
-        aPath           | aName        | anOriginalName | aSize | aDimension     | aTypeMime    | aNote     | aContext
-        "/home/dorian"  | "grails.png" | "grails.png"   | 1     | myDimension    | "image/png"  | Mock(Note)| Mock(Context)
-        "/home/dorian"  | "grails.png" | "grails.png"   | null  | myDimension    | "image/png"  | Mock(Note)| Mock(Context)
-        "/home/dorian"  | "grails.png" | null           | 1     | myDimension    | "image/png"  | Mock(Note)| Mock(Context)
-        "/home/dorian"  | "grails.png" | "grails.png"   | 1     | myDimension    | null         | Mock(Note)| Mock(Context)
-        "/home/dorian"  | "grails.png" | "grails.png"   | 1     | null           | "image/png"  | Mock(Note)| Mock(Context)
-        "/home/dorian"  | "grails.png" | "grails.png"   | 1     | myDimension    | "image/png"  | Mock(Note)| null
-        "/home/dorian"  | "grails.png" | "grails.png"   | 1     | myDimension    | "image/png"  | null      | Mock(Context)
+        aPath          | aName        | anOriginalName | aSize | aDimension  | aTypeMime   | aNote      | aContext
+        "/home/dorian" | "grails.png" | "grails.png"   | 1     | myDimension | "image/png" | Mock(Note) | Mock(Context)
+        "/home/dorian" | "grails.png" | "grails.png"   | null  | myDimension | "image/png" | Mock(Note) | Mock(Context)
+        "/home/dorian" | "grails.png" | null           | 1     | myDimension | "image/png" | Mock(Note) | Mock(Context)
+        "/home/dorian" | "grails.png" | "grails.png"   | 1     | myDimension | null        | Mock(Note) | Mock(Context)
+        "/home/dorian" | "grails.png" | "grails.png"   | 1     | null        | "image/png" | Mock(Note) | Mock(Context)
+        "/home/dorian" | "grails.png" | "grails.png"   | 1     | myDimension | "image/png" | Mock(Note) | null
+        "/home/dorian" | "grails.png" | "grails.png"   | 1     | myDimension | "image/png" | null       | Mock(Context)
 
     }
 

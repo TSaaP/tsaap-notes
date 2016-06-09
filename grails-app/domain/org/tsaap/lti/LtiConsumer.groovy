@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2013-2016 Université Toulouse 3 Paul Sabatier
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.tsaap.lti
 
 import groovy.transform.ToString
@@ -37,14 +54,14 @@ class LtiConsumer {
 
     static mapping = {
         version false
-        id column:'consumer_key', generator:'assigned', type:'string', name:'id'
+        id column: 'consumer_key', generator: 'assigned', type: 'string', name: 'id'
         consumerName column: 'name'
         productName column: 'consumer_name'
         productVersion column: 'consumer_version'
-        productGuid column:'consumer_guid'
-        isProtected column:'protected'
-        isEnabled column:'enabled'
-        dateCreated column:'created'
-        lastUpdated column:'updated'
+        productGuid column: 'consumer_guid'
+        isProtected column: 'protected'
+        isEnabled column: 'enabled'
+        dateCreated column: 'created'
+        lastUpdated column: 'updated'
     }
 }

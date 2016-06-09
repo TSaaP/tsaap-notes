@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-  ~ Copyright 2015 Tsaap Development Group
+  ~ Copyright (C) 2013-2016 Université Toulouse 3 Paul Sabatier
   ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
+  ~     This program is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU Affero General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
   ~
-  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~     This program is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU Affero General Public License for more details.
   ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
+  ~     You should have received a copy of the GNU Affero General Public License
+  ~     along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
 <databaseChangeLog
@@ -114,7 +115,7 @@
             </column>
         </createTable>
     </changeSet>
-    
+
     <changeSet id="5" author="drol">
         <createTable tableName="lti_share_key">
             <column name="share_key_id" type="varchar(32)">
@@ -150,9 +151,11 @@
     </changeSet>
 
     <changeSet id="7" author="drol">
-        <addForeignKeyConstraint baseTableName="lms_user" baseColumnNames="tsaap_user_id" constraintName="lms_user_fk1" referencedTableName="user"
+        <addForeignKeyConstraint baseTableName="lms_user" baseColumnNames="tsaap_user_id" constraintName="lms_user_fk1"
+                                 referencedTableName="user"
                                  referencedColumnNames="id"/>
-        <addForeignKeyConstraint baseTableName="lms_user" baseColumnNames="lti_consumer_key" constraintName="lms_user_fk2" referencedTableName="lti_consumer"
+        <addForeignKeyConstraint baseTableName="lms_user" baseColumnNames="lti_consumer_key"
+                                 constraintName="lms_user_fk2" referencedTableName="lti_consumer"
                                  referencedColumnNames="consumer_key"/>
     </changeSet>
 
@@ -160,7 +163,8 @@
         <createIndex tableName="lti_user" indexName="user_id_index">
             <column name="user_id"></column>
         </createIndex>
-        <addForeignKeyConstraint baseTableName="lms_user" baseColumnNames="lti_user_id" constraintName="lms_user_fk3" referencedTableName="lti_user"
+        <addForeignKeyConstraint baseTableName="lms_user" baseColumnNames="lti_user_id" constraintName="lms_user_fk3"
+                                 referencedTableName="lti_user"
                                  referencedColumnNames="user_id"/>
     </changeSet>
 
@@ -185,22 +189,26 @@
     </changeSet>
 
     <changeSet id="10" author="drol">
-        <addForeignKeyConstraint baseTableName="lms_context" baseColumnNames="tsaap_context_id" constraintName="lms_context_fk1" referencedTableName="context"
+        <addForeignKeyConstraint baseTableName="lms_context" baseColumnNames="tsaap_context_id"
+                                 constraintName="lms_context_fk1" referencedTableName="context"
                                  referencedColumnNames="id"/>
         <createIndex tableName="lti_context" indexName="context_id_index">
             <column name="context_id"></column>
         </createIndex>
-        <addForeignKeyConstraint baseTableName="lms_context" baseColumnNames="lti_course_id" constraintName="lms_context_fk2" referencedTableName="lti_context"
+        <addForeignKeyConstraint baseTableName="lms_context" baseColumnNames="lti_course_id"
+                                 constraintName="lms_context_fk2" referencedTableName="lti_context"
                                  referencedColumnNames="context_id"/>
         <createIndex tableName="lti_context" indexName="lti_context_id_index">
             <column name="lti_context_id"></column>
         </createIndex>
-        <addForeignKeyConstraint baseTableName="lms_context" baseColumnNames="lti_activity_id" constraintName="lms_context_fk3" referencedTableName="lti_context"
+        <addForeignKeyConstraint baseTableName="lms_context" baseColumnNames="lti_activity_id"
+                                 constraintName="lms_context_fk3" referencedTableName="lti_context"
                                  referencedColumnNames="lti_context_id"/>
         <createIndex tableName="lti_context" indexName="lti_context_consumer_key_index">
             <column name="consumer_key"></column>
         </createIndex>
-        <addForeignKeyConstraint baseTableName="lms_context" baseColumnNames="lti_consumer_key" constraintName="lms_context_fk4" referencedTableName="lti_context"
+        <addForeignKeyConstraint baseTableName="lms_context" baseColumnNames="lti_consumer_key"
+                                 constraintName="lms_context_fk4" referencedTableName="lti_context"
                                  referencedColumnNames="consumer_key"/>
     </changeSet>
 

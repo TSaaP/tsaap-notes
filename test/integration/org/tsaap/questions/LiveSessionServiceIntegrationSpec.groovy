@@ -1,17 +1,18 @@
 /*
- * Copyright 2015 Tsaap Development Group
+ * Copyright (C) 2013-2016 Université Toulouse 3 Paul Sabatier
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.tsaap.questions
@@ -22,7 +23,6 @@ import org.tsaap.directory.User
 import org.tsaap.notes.Note
 import org.tsaap.notes.NoteKind
 import org.tsaap.notes.NoteService
-import org.tsaap.questions.impl.gift.GiftQuestionService
 import spock.lang.Specification
 
 class LiveSessionServiceIntegrationSpec extends Specification {
@@ -35,22 +35,22 @@ class LiveSessionServiceIntegrationSpec extends Specification {
     def setup() {
         bootstrapTestService.initializeTests()
         user = bootstrapTestService.learnerPaul
-        note = noteService.addQuestion(user,"::a question:: What ? {=this ~that}")
+        note = noteService.addQuestion(user, "::a question:: What ? {=this ~that}")
     }
 
     void "test the creation of a first phase session"() {
-        given:"a live session and a user"
+        given: "a live session and a user"
         LiveSession liveSession = liveSessionService.createLiveSessionForNote(user, note)
 
-        when:"trying to create a first phase"
-        SessionPhase firstPhase = liveSessionService.createAndStartFirstSessionPhaseForLiveSession(user,liveSession)
+        when: "trying to create a first phase"
+        SessionPhase firstPhase = liveSessionService.createAndStartFirstSessionPhaseForLiveSession(user, liveSession)
 
         then: "the first phase is created without errors"
         !firstPhase.hasErrors()
         firstPhase.rank == 1
         firstPhase.liveSession == liveSession
 
-        and:"both live session and session phase are started"
+        and: "both live session and session phase are started"
         liveSession.isStarted()
         firstPhase.isStarted()
 
@@ -63,21 +63,21 @@ class LiveSessionServiceIntegrationSpec extends Specification {
     }
 
     void "test the creation of a second phase session"() {
-        given:"a live session and a user and the first phase started"
+        given: "a live session and a user and the first phase started"
         LiveSession liveSession = liveSessionService.createLiveSessionForNote(user, note)
-        SessionPhase firstPhase = liveSessionService.createAndStartFirstSessionPhaseForLiveSession(user,liveSession)
+        SessionPhase firstPhase = liveSessionService.createAndStartFirstSessionPhaseForLiveSession(user, liveSession)
 
         when: "trying to create the second phase"
-        liveSessionService.createAndStartSessionPhaseForLiveSessionWithRank(user, liveSession,2)
+        liveSessionService.createAndStartSessionPhaseForLiveSessionWithRank(user, liveSession, 2)
 
         then: "a precondition is violated"
         thrown(PreconditionViolation)
 
-        when:"the first phase is stopped"
+        when: "the first phase is stopped"
         firstPhase.stop()
 
-        and:"trying again"
-        SessionPhase secondPhase = liveSessionService.createAndStartSessionPhaseForLiveSessionWithRank(user, liveSession,2)
+        and: "trying again"
+        SessionPhase secondPhase = liveSessionService.createAndStartSessionPhaseForLiveSessionWithRank(user, liveSession, 2)
 
         then: "the second phase is created without errors"
         !secondPhase.hasErrors()
@@ -88,21 +88,21 @@ class LiveSessionServiceIntegrationSpec extends Specification {
     }
 
     void "test the creation of a third phase session"() {
-        given:"a live session and a user and the first phase started"
+        given: "a live session and a user and the first phase started"
         LiveSession liveSession = liveSessionService.createLiveSessionForNote(user, note)
-        SessionPhase firstPhase = liveSessionService.createAndStartFirstSessionPhaseForLiveSession(user,liveSession)
+        SessionPhase firstPhase = liveSessionService.createAndStartFirstSessionPhaseForLiveSession(user, liveSession)
 
         when: "trying to create the second phase"
-        SessionPhase thirdPhase = liveSessionService.createAndStartSessionPhaseForLiveSessionWithRank(user, liveSession,3)
+        SessionPhase thirdPhase = liveSessionService.createAndStartSessionPhaseForLiveSessionWithRank(user, liveSession, 3)
 
         then: "a precondition is violated"
         thrown(PreconditionViolation)
 
-        when:"the first phase is stopped"
+        when: "the first phase is stopped"
         firstPhase.stop()
 
-        and:"trying again"
-        thirdPhase = liveSessionService.createAndStartSessionPhaseForLiveSessionWithRank(user, liveSession,3)
+        and: "trying again"
+        thirdPhase = liveSessionService.createAndStartSessionPhaseForLiveSessionWithRank(user, liveSession, 3)
 
         then: "the second phase is created without errors"
         !thirdPhase.hasErrors()
@@ -113,15 +113,15 @@ class LiveSessionServiceIntegrationSpec extends Specification {
 
     void "test the creation of a response for a given phase"() {
 
-        given:"a live session and a user and the first phase started"
+        given: "a live session and a user and the first phase started"
         LiveSession liveSession = liveSessionService.createLiveSessionForNote(user, note)
-        SessionPhase firstPhase = liveSessionService.createAndStartFirstSessionPhaseForLiveSession(user,liveSession)
+        SessionPhase firstPhase = liveSessionService.createAndStartFirstSessionPhaseForLiveSession(user, liveSession)
 
         and: "a learner"
         def learner = bootstrapTestService.learnerMary
 
         when: "trying to create a response for that learner for this session"
-        LiveSessionResponse response = liveSessionService.createResponseForSessionPhaseAndUser(firstPhase,learner,'[["1"]]',"an explanation",5)
+        LiveSessionResponse response = liveSessionService.createResponseForSessionPhaseAndUser(firstPhase, learner, '[["1"]]', "an explanation", 5)
 
         then: "the response is created without errors"
         !response.hasErrors()
@@ -131,25 +131,25 @@ class LiveSessionServiceIntegrationSpec extends Specification {
         response.explanation.kind == NoteKind.EXPLANATION.ordinal()
         response.confidenceDegree == 5
 
-        when:"trying again"
-        liveSessionService.createResponseForSessionPhaseAndUser(firstPhase,learner,'[["1"]]',"an explanation",5)
+        when: "trying again"
+        liveSessionService.createResponseForSessionPhaseAndUser(firstPhase, learner, '[["1"]]', "an explanation", 5)
 
-        then:"a precondition is violated"
+        then: "a precondition is violated"
         thrown(PreconditionViolation)
 
     }
 
     void "test the creation of a response for a given phase with empty explanation"() {
 
-        given:"a live session and a user and the first phase started"
+        given: "a live session and a user and the first phase started"
         LiveSession liveSession = liveSessionService.createLiveSessionForNote(user, note)
-        SessionPhase firstPhase = liveSessionService.createAndStartFirstSessionPhaseForLiveSession(user,liveSession)
+        SessionPhase firstPhase = liveSessionService.createAndStartFirstSessionPhaseForLiveSession(user, liveSession)
 
         and: "a learner"
         def learner = bootstrapTestService.learnerMary
 
         when: "trying to create a response with null explanation for that learner for this session"
-        LiveSessionResponse response = liveSessionService.createResponseForSessionPhaseAndUser(firstPhase,learner,'[["1"]]',null,5)
+        LiveSessionResponse response = liveSessionService.createResponseForSessionPhaseAndUser(firstPhase, learner, '[["1"]]', null, 5)
 
         then: "the response is created without errors"
         !response.hasErrors()
@@ -157,10 +157,10 @@ class LiveSessionServiceIntegrationSpec extends Specification {
 
         when: "creating the second phase"
         firstPhase.stop()
-        SessionPhase secondPhase = liveSessionService.createAndStartSessionPhaseForLiveSessionWithRank(user,liveSession,2)
+        SessionPhase secondPhase = liveSessionService.createAndStartSessionPhaseForLiveSessionWithRank(user, liveSession, 2)
 
-        and:"creating In the second phase the explanation is empty"
-        response = liveSessionService.createResponseForSessionPhaseAndUser(secondPhase,learner,'[["1"]]',"",5)
+        and: "creating In the second phase the explanation is empty"
+        response = liveSessionService.createResponseForSessionPhaseAndUser(secondPhase, learner, '[["1"]]', "", 5)
 
         then: "the response is created without errors"
         !response.hasErrors()
@@ -170,15 +170,15 @@ class LiveSessionServiceIntegrationSpec extends Specification {
 
     void "test the creation of a response for a given phase with no degree of confidence"() {
 
-        given:"a live session and a user and the first phase started"
+        given: "a live session and a user and the first phase started"
         LiveSession liveSession = liveSessionService.createLiveSessionForNote(user, note)
-        SessionPhase firstPhase = liveSessionService.createAndStartFirstSessionPhaseForLiveSession(user,liveSession)
+        SessionPhase firstPhase = liveSessionService.createAndStartFirstSessionPhaseForLiveSession(user, liveSession)
 
         and: "a learner"
         def learner = bootstrapTestService.learnerMary
 
         when: "trying to create a response with null explanation for that learner for this session"
-        LiveSessionResponse response = liveSessionService.createResponseForSessionPhaseAndUser(firstPhase,learner,'[["1"]]',"an exxpl",null)
+        LiveSessionResponse response = liveSessionService.createResponseForSessionPhaseAndUser(firstPhase, learner, '[["1"]]', "an exxpl", null)
 
         then: "the response is created without errors"
         !response.hasErrors()

@@ -1,17 +1,18 @@
 /*
- * Copyright 2007 Netflix, Inc.
+ * Copyright (C) 2013-2016 Université Toulouse 3 Paul Sabatier
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.tsaap.lti.tp.net.oauth.server;
@@ -40,8 +41,7 @@ public class OAuthServlet {
      * parameters come first, followed by the rest in the order they came from
      * request.getParameterMap().
      *
-     * @param URL
-     *            the official URL of this service; that is the URL a legitimate
+     * @param URL the official URL of this service; that is the URL a legitimate
      *            client would use to compute the digital signature. If this
      *            parameter is null, this method will try to reconstruct the URL
      *            from the HTTP request; which may be wrong in some cases.
@@ -59,7 +59,9 @@ public class OAuthServlet {
         return new HttpRequestMessage(request, URL);
     }
 
-    /** Reconstruct the requested URL, complete with query string (if any). */
+    /**
+     * Reconstruct the requested URL, complete with query string (if any).
+     */
     public static String getRequestURL(HttpServletRequest request) {
         StringBuffer url = request.getRequestURL();
         String queryString = request.getQueryString();
@@ -111,7 +113,9 @@ public class OAuthServlet {
 
     private static final Map<String, Integer> PROBLEM_TO_HTTP_CODE = OAuth.Problems.TO_HTTP_CODE;
 
-    /** Send the given parameters as a form-encoded response body. */
+    /**
+     * Send the given parameters as a form-encoded response body.
+     */
     public static void sendForm(HttpServletResponse response,
                                 Iterable<? extends Map.Entry> parameters) throws IOException {
         response.resetBuffer();

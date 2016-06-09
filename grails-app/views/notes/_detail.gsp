@@ -99,7 +99,7 @@
                     <span class="glyphicon glyphicon-circle-arrow-right"></span> ${message(code: "notes.detail.hideDiscussion")}
                 </g:link>
             </g:if>
-            <g:if test="${context.noteTakingEnabled && context.isOpen()}">
+            <g:if test="${context.noteTakingEnabled && context.isOpen() && !note.isAQuestion()}">
                 <a href="#note${note.id}" id="replyLink${note.id}"
                    onclick="displaysReplyField(${note.id})"><span
                         class="glyphicon glyphicon-share"></span> ${message(code: "notes.detail.reply")}</a>
@@ -147,9 +147,10 @@
         </div>
     </g:if>
 
-
-    <div id="replyEdition${note.id}" style="display:none; padding-top:20px">
+    <g:if test="${context.noteTakingEnabled && context.isOpen() && !note.isAQuestion()}">
+        <div id="replyEdition${note.id}" style="display:none; padding-top:20px">
         <g:render template="edit"
                   model="[context: context, parentNote: note]"/>
-    </div>
+        </div>
+    </g:if>
 </li>

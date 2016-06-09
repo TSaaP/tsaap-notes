@@ -35,12 +35,12 @@
     </ol>
     <g:link class="btn btn-primary btn-sm pull-right" action="create"><span
             class="glyphicon glyphicon-plus"></span>${message(code: 'context.index.addScope.button')}</g:link>
-    <g:form controller="context" method="get" role="form">
+    <g:form controller="context"  action="index" method="post" role="form">
         <div class="row">
             <div class="col-lg-6">
                 <div class="input-group">
                     <input type="text" class="form-control"
-                           placeholder=${message(code: 'context.index.filter.placeholder')}
+                           placeholder="${message(code: 'context.index.filter.placeholder')}"
                            name="filter"
                            value="${!(params.filter in org.tsaap.notes.FilterReservedValue.values()*.name()) ? params.filter : ''}">
                     <span class="input-group-btn">

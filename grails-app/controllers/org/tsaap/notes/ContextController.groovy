@@ -45,6 +45,7 @@ class ContextController {
         params.max = Math.min(max ?: 10, 100)
         params.sort = params.sort ?: 'dateCreated'
         params.order = params.order ?: 'desc'
+
         User user = springSecurityService.currentUser
         def contextList
         def contextCount = 0
@@ -310,6 +311,27 @@ class ContextController {
         }
 
 
+    }
+
+    @Transactional
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def deleteContext(Context context) {
+
+        if (context == null) {
+            notFound()
+            return
+        }
+        if(!context.hasNotes())
+            contextService.deleteContext(context, springSecurityService.currentUser, true)
+        else
+            context.removed = true
+        request.withFormat {
+            form {
+                flash.message = message(code: 'default.deleted.message', args: [message(code: 'context.label', default: 'Context'), context.id])
+                redirect action: "index", method: "GET"
+            }
+            '*' { render status: NO_CONTENT }
+        }
     }
 }
 

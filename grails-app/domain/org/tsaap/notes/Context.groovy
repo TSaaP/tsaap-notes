@@ -117,6 +117,13 @@ class Context {
     Boolean isClosed() {
         closed == true
     }
+    /**
+     * check if the current context is removed
+     * @return true if the context is removed false otherwise
+     */
+    Boolean isRemoved() {
+        removed == true
+    }
 
 
     static mapping = {

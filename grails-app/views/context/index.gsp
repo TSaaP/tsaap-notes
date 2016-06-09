@@ -94,6 +94,7 @@
             </thead>
             <tbody>
             <g:each in="${contextList}" status="i" var="context">
+                <g:if test="${!context.isRemoved()}">
                 <tr>
 
                     <td>
@@ -176,11 +177,18 @@
                                         </g:else>
 
                                     </li>
+                                    <li>
+                                            <g:link  action="deleteContext" resource="${context}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
+                                                ${message(code: 'default.button.delete.label')}
+                                            </g:link>
+
+                                    </li>
                                 </ul>
                             </div>
                         </td>
                     </g:else>
                 </tr>
+                </g:if>
             </g:each>
             </tbody>
         </table>

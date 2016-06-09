@@ -15,167 +15,167 @@ import javax.sql.DataSource
 @Mock([Context, User, Note, ContextService, ContextFollower])
 class ContextControllerSpec extends Specification {
 
-  User user
-  SpringSecurityService springSecurityService = Mock(SpringSecurityService)
-  DataSource dataSource = Mock(DataSource)
-  Sql sql = Mock(Sql)
-  LmsContextService lmsContextService = Mock(LmsContextService)
-  LmsContextHelper lmsContextHelper = Mock(LmsContextHelper)
+    User user
+    SpringSecurityService springSecurityService = Mock(SpringSecurityService)
+    DataSource dataSource = Mock(DataSource)
+    Sql sql = Mock(Sql)
+    LmsContextService lmsContextService = Mock(LmsContextService)
+    LmsContextHelper lmsContextHelper = Mock(LmsContextHelper)
 
-  def setup() {
-    controller.springSecurityService = springSecurityService
-    user = new User(firstName: "franck", lastName: "s", username: "fsil", email: "mail@mail.com", password: "password")
-    user.springSecurityService = springSecurityService
-    controller.contextService.dataSource = dataSource
-    controller.contextService.sql = sql
-    controller.contextService.lmsContextService = lmsContextService
-    controller.contextService.lmsContextHelper = lmsContextHelper
-    springSecurityService.encodePassword(user.password) >> user.password
-    user.save()
-  }
-
-
-  def populateValidParams(params) {
-    assert params != null
-    params["contextName"] = 'science'
-    params["url"] = 'http://www.w3.org'
-    params["owner"] = user
-    params["descriptionAsNote"] = "a description"
-
-  }
-
-  void "Test the index action returns the correct model"() {
-
-
-    when: "The index action is executed"
-    controller.index()
-
-    then: "The model is correct"
-    model.contextList == []
-    model.contextCount == 0
-  }
-
-  void "Test the create action returns the correct model"() {
-
-    when: "The create action is executed"
-    springSecurityService.currentUser >> user
-    controller.create()
-
-    then: "The model is correctly created"
-    model.contextInstance != null
-  }
-
-  void "Test the save action correctly persists an instance"() {
-
-    when: "The save action is executed with an invalid instance"
-    def context = new Context()
-    context.validate()
-    controller.save(context)
-
-    then: "The create view is rendered again with the correct model"
-    model.contextInstance != null
-    view == 'create'
-
-    when: "The save action is executed with a valid instance"
-    response.reset()
-    populateValidParams(params)
-    context = new Context(params)
-    if (context.hasErrors()) {
-      println context.errors
+    def setup() {
+        controller.springSecurityService = springSecurityService
+        user = new User(firstName: "franck", lastName: "s", username: "fsil", email: "mail@mail.com", password: "password")
+        user.springSecurityService = springSecurityService
+        controller.contextService.dataSource = dataSource
+        controller.contextService.sql = sql
+        controller.contextService.lmsContextService = lmsContextService
+        controller.contextService.lmsContextHelper = lmsContextHelper
+        springSecurityService.encodePassword(user.password) >> user.password
+        user.save()
     }
 
-    controller.save(context)
 
-    then: "A redirect is issued to the show action"
-    response.redirectedUrl == '/context/show/1'
-    controller.flash.message != null
-    Context.count() == 1
-  }
+    def populateValidParams(params) {
+        assert params != null
+        params["contextName"] = 'science'
+        params["url"] = 'http://www.w3.org'
+        params["owner"] = user
+        params["descriptionAsNote"] = "a description"
 
-  void "Test that the show action returns the correct model"() {
+    }
 
-    when: "The show action is executed with a null domain"
-    controller.show(null)
+    void "Test the index action returns the correct model"() {
 
-    then: "A 404 error is returned"
-    response.status == 404
 
-    when: "A domain instance is passed to the show action"
-    populateValidParams(params)
-    def context = new Context(params)
-    controller.show(context)
+        when: "The index action is executed"
+        controller.index()
 
-    then: "A model is populated containing the domain instance"
-    model.context == context
-  }
+        then: "The model is correct"
+        model.contextList == []
+        model.contextCount == 0
+    }
 
-  void "Test that the edit action returns the correct model"() {
-    when: "The edit action is executed with a null domain"
-    controller.edit(null)
+    void "Test the create action returns the correct model"() {
 
-    then: "A 404 error is returned"
-    response.status == 404
+        when: "The create action is executed"
+        springSecurityService.currentUser >> user
+        controller.create()
 
-    when: "A domain instance is passed to the edit action"
-    populateValidParams(params)
-    def context = new Context(params)
-    controller.edit(context)
+        then: "The model is correctly created"
+        model.contextInstance != null
+    }
 
-    then: "A model is populated containing the domain instance"
-    model.context == context
-  }
+    void "Test the save action correctly persists an instance"() {
 
-  void "Test the update action performs an update on a valid domain instance"() {
-    when: "Update is called for a domain instance that doesn't exist"
-    controller.update(null)
+        when: "The save action is executed with an invalid instance"
+        def context = new Context()
+        context.validate()
+        controller.save(context)
 
-    then: "A redirect error is returned"
-    status == 302
+        then: "The create view is rendered again with the correct model"
+        model.contextInstance != null
+        view == 'create'
 
-    when: "An invalid domain instance is passed to the update action"
-    response.reset()
-    def context = new Context()
-    context.validate()
-    controller.update(context)
+        when: "The save action is executed with a valid instance"
+        response.reset()
+        populateValidParams(params)
+        context = new Context(params)
+        if (context.hasErrors()) {
+            println context.errors
+        }
 
-    then: "The edit view is rendered again with the invalid instance"
-    view == 'edit'
-    model.contextInstance == context
+        controller.save(context)
 
-    when: "A valid domain instance is passed to the update action"
-    response.reset()
-    populateValidParams(params)
-    context = new Context(params).save(flush: true)
-    springSecurityService.currentUser >> user
-    controller.update(context)
+        then: "A redirect is issued to the show action"
+        response.redirectedUrl == '/context/show/1'
+        controller.flash.message != null
+        Context.count() == 1
+    }
 
-    then: "A redirect is issues to the show action"
-    response.redirectedUrl == "/context/show/$context.id"
-    flash.message != null
-  }
+    void "Test that the show action returns the correct model"() {
 
-  void "Test that the delete action deletes an instance if it exists"() {
-    when: "The delete action is called for a null instance"
-    controller.delete(null)
+        when: "The show action is executed with a null domain"
+        controller.show(null)
 
-    then: "A redirect is returned"
-    status == 302
+        then: "A 404 error is returned"
+        response.status == 404
 
-    when: "A domain instance is created"
-    response.reset()
-    populateValidParams(params)
-    def context = new Context(params).save(flush: true)
+        when: "A domain instance is passed to the show action"
+        populateValidParams(params)
+        def context = new Context(params)
+        controller.show(context)
 
-    then: "It exists"
-    Context.count() == 1
+        then: "A model is populated containing the domain instance"
+        model.context == context
+    }
 
-    when: "The domain instance is passed to the delete action"
-    springSecurityService.currentUser >> context.owner
-    controller.delete(context)
+    void "Test that the edit action returns the correct model"() {
+        when: "The edit action is executed with a null domain"
+        controller.edit(null)
 
-    then: "The instance is deleted"
-    Context.count() == 0
-    response.redirectedUrl == '/context/index'
-    flash.message != null
-  }
+        then: "A 404 error is returned"
+        response.status == 404
+
+        when: "A domain instance is passed to the edit action"
+        populateValidParams(params)
+        def context = new Context(params)
+        controller.edit(context)
+
+        then: "A model is populated containing the domain instance"
+        model.context == context
+    }
+
+    void "Test the update action performs an update on a valid domain instance"() {
+        when: "Update is called for a domain instance that doesn't exist"
+        controller.update(null)
+
+        then: "A redirect error is returned"
+        status == 302
+
+        when: "An invalid domain instance is passed to the update action"
+        response.reset()
+        def context = new Context()
+        context.validate()
+        controller.update(context)
+
+        then: "The edit view is rendered again with the invalid instance"
+        view == 'edit'
+        model.contextInstance == context
+
+        when: "A valid domain instance is passed to the update action"
+        response.reset()
+        populateValidParams(params)
+        context = new Context(params).save(flush: true)
+        springSecurityService.currentUser >> user
+        controller.update(context)
+
+        then: "A redirect is issues to the show action"
+        response.redirectedUrl == "/context/show/$context.id"
+        flash.message != null
+    }
+
+    void "Test that the delete action deletes an instance if it exists"() {
+        when: "The delete action is called for a null instance"
+        controller.delete(null)
+
+        then: "A redirect is returned"
+        status == 302
+
+        when: "A domain instance is created"
+        response.reset()
+        populateValidParams(params)
+        def context = new Context(params).save(flush: true)
+
+        then: "It exists"
+        Context.count() == 1
+
+        when: "The domain instance is passed to the delete action"
+        springSecurityService.currentUser >> context.owner
+        controller.delete(context)
+
+        then: "The instance is deleted"
+        Context.count() == 0
+        response.redirectedUrl == '/context/index'
+        flash.message != null
+    }
 }

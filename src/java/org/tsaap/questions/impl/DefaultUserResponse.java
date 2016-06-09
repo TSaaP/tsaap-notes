@@ -63,6 +63,7 @@ public class DefaultUserResponse implements UserResponse {
 
     /**
      * Set the user identifier
+     *
      * @param userIdentifier the user identifier
      */
     public void setUserIdentifier(String userIdentifier) {
@@ -71,12 +72,12 @@ public class DefaultUserResponse implements UserResponse {
 
     /**
      * Set the question
+     *
      * @param question the question
      */
     public void setQuestion(Question question) {
         this.question = question;
     }
-
 
 
     /**
@@ -86,8 +87,8 @@ public class DefaultUserResponse implements UserResponse {
      */
     public Float evaluatePercentCredit() {
         Float res = 0f;
-        for(UserAnswerBlock userAnswerBlock : userAnswerBlockList) {
-          res += userAnswerBlock.evaluatePercentCredit();
+        for (UserAnswerBlock userAnswerBlock : userAnswerBlockList) {
+            res += userAnswerBlock.evaluatePercentCredit();
         }
         return res;
     }

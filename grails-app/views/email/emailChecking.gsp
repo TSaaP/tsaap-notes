@@ -24,17 +24,17 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-  <title>${message(code: "email.checking.page.title",locale: new Locale(user.language))}</title>
+    <title>${message(code: "email.checking.page.title", locale: new Locale(user.language))}</title>
 </head>
 
 <body>
-<p>${message(code: "email.hi",locale: new Locale(user.language))} ${user.first_name}</p>
+<p>${message(code: "email.hi", locale: new Locale(user.language))} ${user.first_name}</p>
 
 <p>
-  ${message(code: "email.checking.message",locale: new Locale(user.language))}<br><br>
-  <g:createLink absolute="true"
-                params='[actKey: "${actKey}", id:"${user.user_id}"]' action="doEnableUser"
-                controller="userAccount"/>
+    ${message(code: "email.checking.message", locale: new Locale(user.language))}<br><br>
+    <g:createLink absolute="true"
+                  params='[actKey: "${actKey}", id: "${user.user_id}"]' action="doEnableUser"
+                  controller="userAccount"/>
 </p>
 </body>
 </html>

@@ -21,7 +21,11 @@
     <g:if test="${sessionPhase.getResponseForUser(user)}">
         <div class="alert alert-success">
             ${message(code: "questions.user.phase2.started.wait")} &quot;<strong>${question.title}</strong>&quot;...
-            <g:remoteLink action="refreshPhase" controller="question" params="[noteId:note.id,phaseId:sessionPhase.id]" title="Refresh" update="question_${note.id}" onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"><span class="glyphicon glyphicon-refresh">&nbsp;</span></g:remoteLink>
+            <g:remoteLink action="refreshPhase" controller="question"
+                          params="[noteId: note.id, phaseId: sessionPhase.id]" title="Refresh"
+                          update="question_${note.id}"
+                          onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"><span
+                    class="glyphicon glyphicon-refresh">&nbsp;</span></g:remoteLink>
             (${message(code: "questions.responseCount")} :${sessionPhase.responseCount()})
         </div>
     </g:if>
@@ -31,6 +35,7 @@
         <g:set var="altResponse" value="${firstPhase.findConflictResponseForResponse(firstResponse)}"/>
         <g:if test="${altResponse}">
             <p>${message(code: "questions.user.phase2.started.alternative")}</p>
+
             <div class="alert alert-info">
                 <p>
                     <g:each in="${altResponse?.userResponse?.userAnswerBlockList}" var="answerBlock">
@@ -38,14 +43,15 @@
                             ${answer.textValue}<br/>
                         </g:each>
                     </g:each>
+
                 <p>${altResponse?.explanation?.content}</p>
             </div>
             <hr/>
         </g:if>
         <g:else>
-           <p>${message(code: "questions.user.phase2.started.newChance")}</p>
+            <p>${message(code: "questions.user.phase2.started.newChance")}</p>
         </g:else>
-        <g:form >
+        <g:form>
             <g:hiddenField name="phaseId" value="${sessionPhase.id}"/>
             <g:hiddenField name="noteId" value="${note.id}"/>
 
@@ -57,15 +63,19 @@
                         ${block.text}
                     </g:if>
                     <g:else>
-                        <g:render template="/questions/${question.questionType.name()}AnswerBlock" model="[block: block,userAnswerBlock:firstResponse?.userResponse?.userAnswerBlockList?.get(indexAnswerBlock++)]"/>
+                        <g:render template="/questions/${question.questionType.name()}AnswerBlock"
+                                  model="[block: block, userAnswerBlock: firstResponse?.userResponse?.userAnswerBlockList?.get(indexAnswerBlock++)]"/>
                     </g:else>
                 </p>
             </g:each>
             <p>${message(code: "questions.explanation")}</p>
-            <g:textArea class="form-control note-editable-content" rows="3" name="explanation" value="${firstResponse?.explanation?.content}"/>
-            <p>${message(code: "questions.confidenceDegree")} <g:select name="confidenceDegree" from="[1,2,3,4,5]" value="${firstResponse?.confidenceDegree}"/></p>
+            <g:textArea class="form-control note-editable-content" rows="3" name="explanation"
+                        value="${firstResponse?.explanation?.content}"/>
+            <p>${message(code: "questions.confidenceDegree")} <g:select name="confidenceDegree" from="[1, 2, 3, 4, 5]"
+                                                                        value="${firstResponse?.confidenceDegree}"/></p>
             <g:submitToRemote action="submitResponseInAPhase" controller="question" update="question_${note.id}"
-                              class="btn btn-primary btn-xs" value="${message(code: "questions.user.submit")}" onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"/>
+                              class="btn btn-primary btn-xs" value="${message(code: "questions.user.submit")}"
+                              onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"/>
         </g:form>
     </g:else>
 </div>

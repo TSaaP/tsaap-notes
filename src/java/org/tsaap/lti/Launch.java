@@ -4,7 +4,6 @@ import grails.plugins.springsecurity.BCryptPasswordEncoder;
 import grails.plugins.springsecurity.SpringSecurityService;
 import groovy.sql.Sql;
 import org.apache.log4j.Logger;
-
 import org.tsaap.directory.UserProvisionAccountService;
 import org.tsaap.lti.tp.Callback;
 import org.tsaap.lti.tp.DataConnector;
@@ -58,58 +57,56 @@ public class Launch extends HttpServlet implements Callback {
 
     @Override
     public boolean execute(ToolProvider toolProvider) {
-            // Check the user has an appropriate role
-            boolean isAnUser = toolProvider.getUser().isLearner() || toolProvider.getUser().isStaff();
-            if (isAnUser) {
+        // Check the user has an appropriate role
+        boolean isAnUser = toolProvider.getUser().isLearner() || toolProvider.getUser().isStaff();
+        if (isAnUser) {
+            try {
+                // Initialise the user session
+                toolProvider.getRequest().getSession().setAttribute("consumer_key", toolProvider.getConsumer().getKey());
+                toolProvider.getRequest().getSession().setAttribute("resource_id", toolProvider.getResourceLink().getId());
+                toolProvider.getRequest().getSession().setAttribute("user_consumer_key",
+                        toolProvider.getUser().getResourceLink().getConsumer().getKey());
+                toolProvider.getRequest().getSession().setAttribute("user_id", toolProvider.getUser().getIdForDefaultScope());
+                toolProvider.getRequest().getSession().setAttribute("isStudent", toolProvider.getUser().isLearner());
+                toolProvider.getRequest().getSession().setAttribute("lti_context_id", toolProvider.getResourceLink().getLtiContextId());
+
+                Connection connection = db.getConnection();
+                Sql sql = new Sql(connection);
+                String consumerKey = toolProvider.getConsumer().getKey();
+                Boolean isLearner = toolProvider.getUser().isLearner();
+
+                //Check the user
+                initialiseLmsUserService();
+                ArrayList user = (ArrayList) lmsUserService.findOrCreateUser(sql, toolProvider.getUser().getIdForDefaultScope(), toolProvider.getUser().getFirstname(), toolProvider.getUser().getLastname(),
+                        toolProvider.getUser().getEmail(), consumerKey, isLearner);
+                String username = (String) user.get(0);
+                Boolean userEnable = (Boolean) user.get(1);
+
+                String serverUrl = toolProvider.getRequest().getRequestURL().toString();
+                serverUrl = serverUrl.substring(0, serverUrl.lastIndexOf("/"));
+
+                //Check the context
+                initialiseLmsContextService();
+                ArrayList context = (ArrayList) lmsContextService.findOrCreateContext(sql, consumerKey, toolProvider.getResourceLink().getId(), toolProvider.getResourceLink().getLtiContextId(), toolProvider.getConsumer().getConsumerName(),
+                        toolProvider.getResourceLink().getTitle(), username, isLearner);
+
+                // Give redirect url
+                if (userEnable) {
+                    serverUrl = serverUrl + "/notes/index?displaysAll=on&contextName=" + context.get(0) + "&contextId=" + context.get(1) + "&kind=standard";
+                } else {
+                    serverUrl = serverUrl + "/lti/terms?username=" + username + "&contextName=" + context.get(0) + "&contextId=" + context.get(1);
+                }
+                toolProvider.setRedirectUrl(serverUrl);
+            } finally {
                 try {
-                    // Initialise the user session
-                    toolProvider.getRequest().getSession().setAttribute("consumer_key", toolProvider.getConsumer().getKey());
-                    toolProvider.getRequest().getSession().setAttribute("resource_id", toolProvider.getResourceLink().getId());
-                    toolProvider.getRequest().getSession().setAttribute("user_consumer_key",
-                            toolProvider.getUser().getResourceLink().getConsumer().getKey());
-                    toolProvider.getRequest().getSession().setAttribute("user_id", toolProvider.getUser().getIdForDefaultScope());
-                    toolProvider.getRequest().getSession().setAttribute("isStudent", toolProvider.getUser().isLearner());
-                    toolProvider.getRequest().getSession().setAttribute("lti_context_id", toolProvider.getResourceLink().getLtiContextId());
-
-                    Connection connection = db.getConnection();
-                    Sql sql = new Sql(connection);
-                    String consumerKey = toolProvider.getConsumer().getKey();
-                    Boolean isLearner = toolProvider.getUser().isLearner();
-
-                    //Check the user
-                    initialiseLmsUserService();
-                    ArrayList user = (ArrayList) lmsUserService.findOrCreateUser(sql, toolProvider.getUser().getIdForDefaultScope(), toolProvider.getUser().getFirstname(), toolProvider.getUser().getLastname(),
-                            toolProvider.getUser().getEmail(), consumerKey, isLearner);
-                    String username = (String) user.get(0);
-                    Boolean userEnable = (Boolean) user.get(1);
-
-                    String serverUrl = toolProvider.getRequest().getRequestURL().toString();
-                    serverUrl = serverUrl.substring(0, serverUrl.lastIndexOf("/"));
-
-                    //Check the context
-                    initialiseLmsContextService();
-                    ArrayList context = (ArrayList) lmsContextService.findOrCreateContext(sql, consumerKey, toolProvider.getResourceLink().getId(), toolProvider.getResourceLink().getLtiContextId(), toolProvider.getConsumer().getConsumerName(),
-                            toolProvider.getResourceLink().getTitle(), username, isLearner);
-
-                    // Give redirect url
-                    if(userEnable){
-                        serverUrl = serverUrl + "/notes/index?displaysAll=on&contextName=" + context.get(0) + "&contextId=" + context.get(1) + "&kind=standard";
-                    }
-                    else {
-                        serverUrl = serverUrl + "/lti/terms?username="+username+"&contextName=" + context.get(0) + "&contextId=" + context.get(1);
-                    }
-                    toolProvider.setRedirectUrl(serverUrl);
+                    db.closeConnection();
+                } catch (SQLException e) {
+                    logger.error(e.getMessage());
                 }
-                finally {
-                    try {
-                        db.closeConnection();
-                    } catch (SQLException e) {
-                        logger.error(e.getMessage());
-                    }
-                }
-            } else {
-                toolProvider.setReason("Invalid role.");
             }
+        } else {
+            toolProvider.setReason("Invalid role.");
+        }
         return isAnUser;
 
     }

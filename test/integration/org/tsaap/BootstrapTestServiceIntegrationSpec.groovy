@@ -16,7 +16,6 @@
 
 package org.tsaap
 
-import org.tsaap.BootstrapTestService
 import spock.lang.Specification
 
 /**

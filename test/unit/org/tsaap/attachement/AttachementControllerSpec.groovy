@@ -2,14 +2,11 @@ package org.tsaap.attachement
 
 import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
-import spock.lang.*
+import spock.lang.Specification
 
 @TestFor(AttachementController)
 @Mock(Attachement)
 class AttachementControllerSpec extends Specification {
-
-
-
 
 
     void "test view attachement"() {
@@ -21,14 +18,14 @@ class AttachementControllerSpec extends Specification {
                 typeMime: 'image/png',
                 name: 'grails.png',
                 originalName: 'grails.png',
-                id:1,
+                id: 1,
                 toDelete: true
         )
-       controller.params.id = attachement.id
+        controller.params.id = attachement.id
 
-        and:"the the needed collaborators"
+        and: "the the needed collaborators"
         controller.attachementService = Mock(AttachementService) {
-            getInputStreamForAttachement(attachement) >> new ByteArrayInputStream([0,1,2] as byte[])
+            getInputStreamForAttachement(attachement) >> new ByteArrayInputStream([0, 1, 2] as byte[])
             getAttachementById(attachement.id) >> attachement
         }
 

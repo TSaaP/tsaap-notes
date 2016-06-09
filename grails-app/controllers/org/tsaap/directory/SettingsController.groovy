@@ -2,10 +2,8 @@ package org.tsaap.directory
 
 import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
-import org.gcontracts.annotations.Requires
-
-import static org.springframework.http.HttpStatus.*
 import grails.transaction.Transactional
+import org.gcontracts.annotations.Requires
 
 @Transactional(readOnly = true)
 class SettingsController {
@@ -16,13 +14,14 @@ class SettingsController {
     @Secured(['IS_AUTHENTICATED_FULLY'])
     @Requires({
         !params.key || springSecurityService.currentUser == UnsubscribeKey.executeQuery(
-                    "SELECT user from UnsubscribeKey where unsubscribe_key = :var",
-                    [var: params.key])[0]
+                "SELECT user from UnsubscribeKey where unsubscribe_key = :var",
+                [var: params.key])[0]
     })
     def doSettings() {
-        render(view: '/settings/settings',model: [user: springSecurityService.currentUser])
+        render(view: '/settings/settings', model: [user: springSecurityService.currentUser])
         //redirect(uri: '/settings/settings')
     }
+
     @Transactional
     @Secured(['IS_AUTHENTICATED_FULLY'])
     def doUpdate() {
@@ -32,21 +31,19 @@ class SettingsController {
         def settingsMap = [:]
         if (params.dailyNotification) {
             settingsMap.dailyNotifications = true
-        }
-        else {
+        } else {
             settingsMap.dailyNotifications = false
         }
         if (params.mentionNotification) {
             settingsMap.mentionNotifications = true
-        }
-        else {
+        } else {
             settingsMap.mentionNotifications = false
         }
 
         settingsMap.language = params.language
         def settings = settingsService.updateSettingsForUser(user, settingsMap)
 
-         if (settings.hasErrors()) {
+        if (settings.hasErrors()) {
             render(view: '/settings/settings')
         } else {
             flash.message = message(code: 'useraccount.update.success')

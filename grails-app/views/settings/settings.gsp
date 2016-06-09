@@ -30,8 +30,8 @@
                 </g:eachError>
             </div>
         </g:if>
-        
-        <span class="glyphicon glyphicon-globe" aria-hidden="true"></span><label>&nbsp;Notifications </label>
+
+        <span class="glyphicon glyphicon-globe" aria-hidden="true"></span><label>&nbsp;Notifications</label>
         <hr>
 
         <!-- Example row of columns -->
@@ -42,24 +42,32 @@
                     <fieldset>
                         <div class="checkbox">
                             <label>
-                               <!-- <input type="checkbox" checked="checked" value="dailyNotification"> -->
-                                <g:checkBox name="dailyNotification" value="${user.settings.dailyNotifications}" />
-                                <span data-toggle="tooltip" data-html="true" title="${message(code: "settings.checkbox.dailyNotification.message")}" data-placement="top" >
+                                <!-- <input type="checkbox" checked="checked" value="dailyNotification"> -->
+                                <g:checkBox name="dailyNotification" value="${user.settings.dailyNotifications}"/>
+                                <span data-toggle="tooltip" data-html="true"
+                                      title="${message(code: "settings.checkbox.dailyNotification.message")}"
+                                      data-placement="top">
                                     ${message(code: "settings.checkbox.dailyNotification.label")}
                                 </span>
                             </label>
                         </div>
-                        <div class="checkbox"  >
+
+                        <div class="checkbox">
                             <label>
                                 <!--<input type="checkbox" checked="checked" value="mentionNotification"> -->
-                                <g:checkBox name="mentionNotification" value="${user.settings.mentionNotifications}" />
-                                <span data-toggle="tooltip" data-html="true" title="${message(code: "settings.checkbox.mentionNotification.message")}" data-placement="top">
+                                <g:checkBox name="mentionNotification" value="${user.settings.mentionNotifications}"/>
+                                <span data-toggle="tooltip" data-html="true"
+                                      title="${message(code: "settings.checkbox.mentionNotification.message")}"
+                                      data-placement="top">
                                     ${message(code: "settings.checkbox.mentionNotification.label")}
                                 </span>
                             </label>
                         </div>
+
                         <div class="form-group">
-                            <label> ${message(code: "useraccount.form.language.label")} : <g:select name="language" from="${org.tsaap.directory.UserAccountService.LANGUAGES_SUPPORTED.values()}" value="${fieldValue(bean: user.settings, field: 'language')}" ></g:select></label>
+                            <label>${message(code: "useraccount.form.language.label")} : <g:select name="language"
+                                                                                                   from="${org.tsaap.directory.UserAccountService.LANGUAGES_SUPPORTED.values()}"
+                                                                                                   value="${fieldValue(bean: user.settings, field: 'language')}"></g:select></label>
                         </div>
 
                         <button type="submit"

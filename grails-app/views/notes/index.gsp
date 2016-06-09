@@ -51,7 +51,7 @@
                     ${context.contextName}
                     <g:if test="${context.isClosed()}">
                         <span class="label label-danger">
-                            ${message(code:'context.scopeStatus.close')}
+                            ${message(code: 'context.scopeStatus.close')}
                         </span>
                     </g:if>
                 </li>
@@ -62,7 +62,8 @@
         <ul class="nav nav-tabs pull-right">
 
             <g:if test="${params.kind != 'question'}">
-                <li role="presentation" class="active"><a>${message(code: "notes.link")} <span class="badge">${notes.totalCount}</span> </a></li>
+                <li role="presentation" class="active"><a>${message(code: "notes.link")} <span
+                        class="badge">${notes.totalCount}</span></a></li>
                 <li role="presentation">
                     <g:link controller="notes"
                             params='[contextId: "${params.contextId}", contextName: "${params.contextName}", displaysMyNotes: "${params.displaysMyNotes}", displaysMyFavorites: "${params.displaysMyFavorites}", displaysAll: "${params.displaysAll}", fragmentTagId: "${params.fragmentTagId}", kind: "question", inline: "${params.inline}"]'>
@@ -78,7 +79,8 @@
                     </g:link>
                 </li>
                 <li role="presentation"
-                    class="active"><a>${message(code: "notes.question.link")} <span class="badge">${notes.totalCount}</span> </a>
+                    class="active"><a>${message(code: "notes.question.link")} <span
+                        class="badge">${notes.totalCount}</span></a>
                 </li>
             </g:else>
         </ul>

@@ -38,8 +38,8 @@ class StatisticsService {
 
         SQLQuery sqlQuery = currentSession.createSQLQuery(queryNumberOfAnswersOnPhase)
         def queryResults = sqlQuery.with {
-                    setLong('phaseId', phase1.id)
-                    list()
+            setLong('phaseId', phase1.id)
+            list()
         }
         res.numberOfAnswersOnPhase1 = queryResults.get(0)
 
@@ -51,7 +51,7 @@ class StatisticsService {
         res.numberOfAnswersOnPhase2 = queryResults.get(0)
 
         sqlQuery = currentSession.createSQLQuery(queryNumberOfGoodAnswersOnPhase)
-       queryResults = sqlQuery.with {
+        queryResults = sqlQuery.with {
             setLong('phaseId', phase1.id)
             list()
         }
@@ -155,36 +155,36 @@ class StatisticsService {
 
     Map nPhaseSessionStatsLabels() {
         [
-                contextId: "Context id",
-                contextName: "Context name",
-                liveSessionId: "Live session id",
-                liveSessionStartDate: "Start date",
-                liveSessionEndDate: "End date",
+                contextId                            : "Context id",
+                contextName                          : "Context name",
+                liveSessionId                        : "Live session id",
+                liveSessionStartDate                 : "Start date",
+                liveSessionEndDate                   : "End date",
 
-                numberOfPresents: "Number of presents",
+                numberOfPresents                     : "Number of presents",
 
-                numberOfAnswersOnPhase1 : "Phase 1: number of answers",
-                numberOfAnswersOnPhase2 : "Phase 2: number of answers",
+                numberOfAnswersOnPhase1              : "Phase 1: number of answers",
+                numberOfAnswersOnPhase2              : "Phase 2: number of answers",
 
-                numberOfGoodAnswersOnPhase1: "Phase 1: number of good answers",
-                numberOfGoodAnswersOnPhase2: "Phase 2: number of good answers",
+                numberOfGoodAnswersOnPhase1          : "Phase 1: number of good answers",
+                numberOfGoodAnswersOnPhase2          : "Phase 2: number of good answers",
 
-                numberOfBadAnswersOnPhase1: "Phase 1: number of bad answers",
-                numberOfBadAnswersOnPhase2: "Phase 2: number of bad answers",
+                numberOfBadAnswersOnPhase1           : "Phase 1: number of bad answers",
+                numberOfBadAnswersOnPhase2           : "Phase 2: number of bad answers",
 
-                numberOfExplanationsOnPhase1:"Phase 1: number of explanations",
-                numberOfExplanationsOnPhase2:"Phase 2: number of explanations",
+                numberOfExplanationsOnPhase1         : "Phase 1: number of explanations",
+                numberOfExplanationsOnPhase2         : "Phase 2: number of explanations",
 
-                numberOfGoodExplanationsOnPhase1:"Phase 1: number of good explanations",
-                numberOfGoodExplanationsOnPhase2:"Phase 2: number of good explanations",
+                numberOfGoodExplanationsOnPhase1     : "Phase 1: number of good explanations",
+                numberOfGoodExplanationsOnPhase2     : "Phase 2: number of good explanations",
 
-                numberOfBadExplanationsOnPhase1:"Phase 1: number of bad explanations",
-                numberOfBadExplanationsOnPhase2:"Phase 2: number of bad explanations",
+                numberOfBadExplanationsOnPhase1      : "Phase 1: number of bad explanations",
+                numberOfBadExplanationsOnPhase2      : "Phase 2: number of bad explanations",
 
-                numberOfEvaluatedExplanations:"Phase 3: number of evaluated explanations",
-                numberOfUserHavingGivenAnEvaluation:"Phase 3: number of evaluators",
-                meanOfEvaluationPerExplanations:"Phase 3: avg evaluations per explanations",
-                meanOfExplanationPerEvaluator: "Phase 3: avg explanations per evaluator",
+                numberOfEvaluatedExplanations        : "Phase 3: number of evaluated explanations",
+                numberOfUserHavingGivenAnEvaluation  : "Phase 3: number of evaluators",
+                meanOfEvaluationPerExplanations      : "Phase 3: avg evaluations per explanations",
+                meanOfExplanationPerEvaluator        : "Phase 3: avg explanations per evaluator",
                 meanOfStandardDeviationOnEvalutations: "Phase 3: avg standard deviation"
 
 

@@ -16,11 +16,13 @@
 
 package org.tsaap.questions.impl;
 
-import org.tsaap.questions.*;
+import org.tsaap.questions.AnswerBlock;
+import org.tsaap.questions.Question;
+import org.tsaap.questions.QuestionBlock;
+import org.tsaap.questions.TextBlock;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author franck Silvestre
@@ -54,6 +56,7 @@ public class DefaultQuestion implements Question {
 
     /**
      * Set the question type
+     *
      * @param questionType the question type
      */
     public void setQuestionType(QuestionType questionType) {
@@ -123,6 +126,7 @@ public class DefaultQuestion implements Question {
 
     /**
      * Set the general feedback
+     *
      * @param generalFeedback
      */
     public void setGeneralFeedback(String generalFeedback) {

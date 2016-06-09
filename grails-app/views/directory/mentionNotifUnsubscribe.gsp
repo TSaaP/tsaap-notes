@@ -17,7 +17,7 @@
 <div class="container">
     <div class="body-content">
         <div class="alert alert-info" role="alert">
-             <p>${message(code: "settings.unsubscribedMention.message")}</p>
+            <p>${message(code: "settings.unsubscribedMention.message")}</p>
         </div>
     </div>
 </div>

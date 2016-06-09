@@ -18,13 +18,13 @@ package org.tsaap.notes
 
 class NoteTag {
 
-  Note note
-  Tag tag
+    Note note
+    Tag tag
 
-  static constraints = {}
+    static constraints = {}
 
-  static mapping = {
-    cache 'read-write'
-    version(false)
-  }
+    static mapping = {
+        cache 'read-write'
+        version(false)
+    }
 }

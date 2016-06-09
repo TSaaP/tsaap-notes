@@ -3,32 +3,23 @@ package org.tsaap.uploadImage;
 /**
  * Created by dylan on 11/05/15.
  */
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.RandomAccessFile;
-import java.lang.ref.WeakReference;
-import java.security.DigestOutputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.*;
+import java.lang.ref.WeakReference;
+import java.security.DigestOutputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
+import java.util.*;
+
 /**
  * Simple file-based data store. Data records are stored as normal files
  * named using a message digest of the contained binary stream.
- *
+ * <p>
  * Configuration:
  * <pre>
  * &lt;DataStore class="org.lilie.services.eliot.tice.jackrabbit.core.data.version_2_4_0.FileDataStore">
@@ -128,7 +119,7 @@ public class FileDataStore implements DataStore {
      * If the verify flag is set and the file doesn't exist, the method returns null.
      *
      * @param identifier the identifier
-     * @param verify whether to check if the file exists
+     * @param verify     whether to check if the file exists
      * @return the data record or null
      */
     private DataRecord getRecord(DataIdentifier identifier, boolean verify) throws DataStoreException {
@@ -313,7 +304,7 @@ public class FileDataStore implements DataStore {
         } else if (file.isDirectory()) {
             File[] list = file.listFiles();
             if (list != null) {
-                for (File f: list) {
+                for (File f : list) {
                     count += deleteOlderRecursive(f, min);
                 }
             }
@@ -349,7 +340,7 @@ public class FileDataStore implements DataStore {
         ArrayList<File> files = new ArrayList<File>();
         listRecursive(files, directory);
         ArrayList<DataIdentifier> identifiers = new ArrayList<DataIdentifier>();
-        for (File f: files) {
+        for (File f : files) {
             String name = f.getName();
             if (!name.startsWith(TMP)) {
                 DataIdentifier id = new DataIdentifier(name);

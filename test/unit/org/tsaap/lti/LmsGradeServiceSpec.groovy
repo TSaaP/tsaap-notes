@@ -23,10 +23,10 @@ class LmsGradeServiceSpec extends Specification {
         user = Mock(User)
 
         when: "I want to send users grade for a given context"
-        lmsGradeService.sendUserGradeToLms(resourceLink,user,66)
+        lmsGradeService.sendUserGradeToLms(resourceLink, user, 66)
 
         then: "the grades are correctly sent"
-        1*resourceLink.doOutcomesService(resourceLink.EXT_WRITE,_,user) >> true
+        1 * resourceLink.doOutcomesService(resourceLink.EXT_WRITE, _, user) >> true
 
     }
 }

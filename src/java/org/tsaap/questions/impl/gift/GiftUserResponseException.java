@@ -21,7 +21,7 @@ import org.tsaap.questions.UserResponseException;
 /**
  * @author franck Silvestre
  */
-public class GiftUserResponseException extends UserResponseException{
+public class GiftUserResponseException extends UserResponseException {
 
     public GiftUserResponseException(String message) {
         super(message);

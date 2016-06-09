@@ -20,7 +20,6 @@ import org.tsaap.questions.Answer
 import org.tsaap.questions.AnswerBlock
 import org.tsaap.questions.Question
 import org.tsaap.questions.QuestionType
-import org.tsaap.questions.impl.DefaultQuestion
 import org.tsaap.questions.impl.gift.GiftQuizContentHandler
 import org.tsaap.questions.impl.gift.GiftReader
 import org.tsaap.questions.impl.gift.GiftReaderNotEscapedCharacterException
@@ -164,31 +163,40 @@ class GiftReaderSpec extends Specification {
 
     }
 
-    @Shared // basic EC question without feedback
+    @Shared
+    // basic EC question without feedback
     def ec_q1_ok = '::Question 1:: What\'s between orange and green in the spectrum ? \n { =yellow ~red  ~blue }'
 
-    @Shared // EC question with feedback
+    @Shared
+    // EC question with feedback
     def ec_q2_ok = '::Question 2:: What\'s between orange and green in the spectrum ? \n { =yellow # congrats ! ~red # try again  ~blue #not yet }'
 
-    @Shared // EC Question with escape characters
+    @Shared
+    // EC Question with escape characters
     def ec_q3_ok = '::Question \\: 3:: What\'s between orange and green in the \\#spectrum ? \n { =yellow # congrats ! ~red #not \\= ~blue # try again }'
 
-    @Shared // basic EC question without no left bracket
+    @Shared
+    // basic EC question without no left bracket
     def ec_q1_ko = '::Question 1:: What\'s between orange and green in the spectrum ? \n  =yellow ~red  ~blue }'
 
-    @Shared // EC question with feedback  but without right bracket
+    @Shared
+    // EC question with feedback  but without right bracket
     def ec_q2_ko = '::Question 2:: What\'s between orange and green in the spectrum ? \n { =yellow # congrats ! ~red # try again  ~blue #not yet '
 
-    @Shared // EC Question with one  character not escaped  in the title
+    @Shared
+    // EC Question with one  character not escaped  in the title
     def ec_q3_ko = '::Question : 3:: What\'s between orange and green in the \\#spectrum ? \n { =yellow # congrats ! ~red #not \\= ~blue # try again }'
 
-    @Shared // basic MC question without feedback
+    @Shared
+    // basic MC question without feedback
     def mc_q1_ok = '::Question 1:: What\'are fruits  ? \n { ~%50%tomatoes  ~%-50%potatoes ~%50%apple ~%-50%pepper}'
 
-    @Shared // MC question with feedback
+    @Shared
+    // MC question with feedback
     def mc_q2_ok = '::Question 2:: What\'are fruits  ? \n { ~%50%tomatoes #yep !  ~%-50%potatoes #bad ! ~%50%apple#yop ! ~%-50%pepper#null!}'
 
-    @Shared // MC Question with escape characters
+    @Shared
+    // MC Question with escape characters
     def mc_q3_ok = '::Question \\: 3:: What\'are fruits  ? \n { ~%50%tomatoes #yep !  ~%-50%potatoes #bad ! ~%50%apple#yop ! ~%-50%pepper#null!}'
 
 

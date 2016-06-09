@@ -16,9 +16,8 @@ class LmsContextHelper {
     def selectLmsContext(Sql sql, String consumerKey, String ltiCourseId, String ltiActivityId) {
         def req = sql.firstRow("SELECT tsaap_context_id FROM lms_context WHERE lti_consumer_key = $consumerKey and lti_activity_id = $ltiActivityId and lti_course_id = $ltiCourseId")
         def res = null
-        if(req != null)
-        {
-            res= req.tsaap_context_id
+        if (req != null) {
+            res = req.tsaap_context_id
         }
         res
     }
@@ -80,7 +79,7 @@ class LmsContextHelper {
      * @param sql
      * @param contextId tsaap context id
      */
-    def selectLmsContextForContextId(Sql sql,long contextId) {
+    def selectLmsContextForContextId(Sql sql, long contextId) {
         def res = sql.firstRow("SELECT tsaap_context_id FROM lms_context WHERE tsaap_context_id = $contextId")
         res
     }
@@ -102,7 +101,7 @@ class LmsContextHelper {
      */
     def selectConsumerKeyAndCourseId(Sql sql, long contextId) {
         def req = sql.firstRow("SELECT lti_consumer_key,lti_course_id from lms_context WHERE tsaap_context_id = $contextId")
-        def res = [req.lti_consumer_key,req.lti_course_id]
+        def res = [req.lti_consumer_key, req.lti_course_id]
         res
     }
 
@@ -126,7 +125,7 @@ class LmsContextHelper {
     def checkIfUserIsAContextFollower(Sql sql, long userId, long contextId) {
         def req = sql.firstRow("SELECT id FROM context_follower WHERE context_id = $contextId and follower_id = $userId")
         def res = false
-        if(req != null){
+        if (req != null) {
             res = true
         }
         res

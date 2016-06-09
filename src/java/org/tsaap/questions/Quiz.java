@@ -25,7 +25,8 @@ public interface Quiz {
 
     /**
      * Get the question list of the quiz
-     * @return  the question list
+     *
+     * @return the question list
      */
     public List<Question> getQuestionList();
 }

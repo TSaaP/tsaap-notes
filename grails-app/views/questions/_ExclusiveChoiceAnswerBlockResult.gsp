@@ -9,16 +9,20 @@
         </g:if>
         ${answer.textValue}
     </div>
+
     <div class="progress">
-        <div class="progress-bar progress-bar-${answerStatus}" role="progressbar" aria-valuenow="${percentResult}" aria-valuemin="0" aria-valuemax="100" style="width: ${percentResult}%">
-            <span><g:formatNumber number="${percentResult}" type="number" maxFractionDigits="2" />%</span>
+        <div class="progress-bar progress-bar-${answerStatus}" role="progressbar" aria-valuenow="${percentResult}"
+             aria-valuemin="0" aria-valuemax="100" style="width: ${percentResult}%">
+            <span><g:formatNumber number="${percentResult}" type="number" maxFractionDigits="2"/>%</span>
         </div>
     </div>
 </g:each>
 <g:set var="percentResult" value="${resultMap[GiftQuestionService.NO_RESPONSE]}"/>
 <div class="label label-warning">${message(code: "questions.exclusive.result.doNotKnow")}</div>
+
 <div class="progress">
-    <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="${percentResult}" aria-valuemin="0" aria-valuemax="100" style="width: ${percentResult}%">
-        <span><g:formatNumber number="${percentResult}" type="number" maxFractionDigits="2" />%</span>
+    <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="${percentResult}" aria-valuemin="0"
+         aria-valuemax="100" style="width: ${percentResult}%">
+        <span><g:formatNumber number="${percentResult}" type="number" maxFractionDigits="2"/>%</span>
     </div>
 </div>

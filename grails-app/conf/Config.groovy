@@ -43,7 +43,7 @@ grails.mime.types = [all          : '*/*',
                      rtf          : 'application/rtf',
                      excel        : 'application/vnd.ms-excel',
                      ods          : 'application/vnd.oasis.opendocument.spreadsheet',
-                    ]
+]
 
 // URL Mapping Cache Max Size, defaults to 5000
 //grails.urlmapping.cache.maxsize = 1000

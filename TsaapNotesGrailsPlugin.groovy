@@ -21,7 +21,7 @@ class TsaapNotesGrailsPlugin {
     def grailsVersion = "2.3 > *"
     // resources that are excluded from plugin packaging
     def pluginExcludes = [
-        "grails-app/views/error.gsp"
+            "grails-app/views/error.gsp"
     ]
 
     // TODO Fill in these fields
@@ -41,10 +41,10 @@ Brief summary/description of the plugin.
     def license = "APACHE"
 
     // Details of company behind the plugin (if there is one)
-    def organization = [ name: "Irit", url: "http://www.irit.fr/" ]
+    def organization = [name: "Irit", url: "http://www.irit.fr/"]
 
     // Any additional developers beyond the author specified above.
-    def developers = [ [ name: "Franck Silvestre", email: "franck.silvestre at irit.fr" ]]
+    def developers = [[name: "Franck Silvestre", email: "franck.silvestre at irit.fr"]]
 
     // Location of the plugin's issue tracker.
 //    def issueManagement = [ system: "JIRA", url: "http://jira.grails.org/browse/GPMYPLUGIN" ]

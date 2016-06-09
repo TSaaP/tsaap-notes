@@ -22,7 +22,8 @@
 <g:set var="sessionResponse" value="${secondPhase.getResponseForUser(user)}"/>
 <g:set var="indexAnsBlock" value="${0}"/>
 <div class="question" id="question_${note.id}">
-    <p>${message(code: "questions.results")} <strong>${question.title}</strong> - (${message(code: "questions.responseCount")} : ${secondPhase.responseCount()})</p>
+    <p>${message(code: "questions.results")} <strong>${question.title}</strong> - (${message(code: "questions.responseCount")} : ${secondPhase.responseCount()})
+    </p>
     <g:each var="block" in="${question.blockList}">
         <g:if test="${block instanceof TextBlock}">
             <p>${block.text}</p>

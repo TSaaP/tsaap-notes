@@ -17,7 +17,6 @@
 package org.tsaap.questions.impl;
 
 import org.tsaap.questions.Answer;
-import org.tsaap.questions.AnswerBlock;
 import org.tsaap.questions.UserAnswerBlock;
 
 import java.util.ArrayList;

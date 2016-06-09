@@ -27,6 +27,7 @@
     <title><g:layoutTitle default="TsaaP-Notes"/></title>
     <r:layoutResources/>
 </head>
+
 <body>
 <g:layoutBody/>
 <div class="navbar navbar-inverse navbar-fixed-top">
@@ -37,7 +38,8 @@
 <r:layoutResources/>
 
 <footer class="container">
-    <p>&copy; Tsaap Development Group 2013 - Tsaap-Notes version <g:meta name="app.version"/> - <a href="${grailsApplication.config.grails.serverURL}/terms">Mentions</a></p>
+    <p>&copy; Tsaap Development Group 2013 - Tsaap-Notes version <g:meta name="app.version"/> - <a
+            href="${grailsApplication.config.grails.serverURL}/terms">Mentions</a></p>
 </footer>
 </body>
 </html>

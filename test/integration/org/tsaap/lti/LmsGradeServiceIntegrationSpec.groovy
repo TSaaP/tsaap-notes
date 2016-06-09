@@ -1,12 +1,6 @@
 package org.tsaap.lti
 
 import groovy.sql.Sql
-import org.tsaap.BootstrapTestService
-import org.tsaap.notes.Note
-import org.tsaap.notes.NoteService
-import org.tsaap.questions.LiveSession
-import org.tsaap.questions.LiveSessionService
-import org.tsaap.questions.SessionPhase
 import spock.lang.Specification
 
 import javax.sql.DataSource
@@ -37,26 +31,26 @@ class LmsGradeServiceIntegrationSpec extends Specification {
         try {
             sql.withTransaction { ->
                 // Create users, roles and context for test
-                lmsUserHelper.insertUserInDatabase(sql,'test@mail.com','tea','cher','tche','pass',true)
-                lmsUserHelper.insertUserInDatabase(sql,'test2@mail.com','john','doe','jdoe','pass',true)
-                lmsUserHelper.insertUserInDatabase(sql,'test3@mail.com','jane','did','jdid','pass',true)
-                long userId1 = lmsUserHelper.selectUserId(sql,"jdoe")
-                long userId2 = lmsUserHelper.selectUserId(sql,"jdid")
-                long userId3 = lmsUserHelper.selectUserId(sql,"tche")
-                lmsUserHelper.insertUserRoleInDatabase(sql,2,userId1)
-                lmsUserHelper.insertUserRoleInDatabase(sql,2,userId2)
-                lmsUserHelper.insertUserRoleInDatabase(sql,3,userId3)
-                lmsContextHelper.insertContext(sql,"context1","description",userId3,true,"url","test")
-                long contextId = lmsContextHelper.selectContextId(sql,"context1","test")
+                lmsUserHelper.insertUserInDatabase(sql, 'test@mail.com', 'tea', 'cher', 'tche', 'pass', true)
+                lmsUserHelper.insertUserInDatabase(sql, 'test2@mail.com', 'john', 'doe', 'jdoe', 'pass', true)
+                lmsUserHelper.insertUserInDatabase(sql, 'test3@mail.com', 'jane', 'did', 'jdid', 'pass', true)
+                long userId1 = lmsUserHelper.selectUserId(sql, "jdoe")
+                long userId2 = lmsUserHelper.selectUserId(sql, "jdid")
+                long userId3 = lmsUserHelper.selectUserId(sql, "tche")
+                lmsUserHelper.insertUserRoleInDatabase(sql, 2, userId1)
+                lmsUserHelper.insertUserRoleInDatabase(sql, 2, userId2)
+                lmsUserHelper.insertUserRoleInDatabase(sql, 3, userId3)
+                lmsContextHelper.insertContext(sql, "context1", "description", userId3, true, "url", "test")
+                long contextId = lmsContextHelper.selectContextId(sql, "context1", "test")
 
                 // Create lti consumer, context, users and lms context and users for test
-                lmsUserHelper.insertLtiConsumerInDatabase(sql,'key', 'Moodle', 'azer', 'LTI-1p0', 'Moodle-Tsaap', 'moodle-2015051100.06', '130.120.214.80', null, 0, 1, null, null)
-                lmsUserHelper.insertLtiContextInDatabase(sql,"key","3", "4", "3", "Tsaap teach: Tsaap", "{\"lis_outcome_service_url\":\"http://130.120.214.80/moodle/mod/lti/service.php\",\"lis_result_sourcedid\":\"{\\\"data\\\":{\\\"instanceid\\\":\\\"3\\\",\\\"userid\\\":\\\"5\\\",\\\"typeid\\\":\\\"1\\\",\\\"launchid\\\":827256523},\\\"hash\\\":\\\"26cdb9af21a105ee3c7d9211ca7809d6a43f34489f32cfc715ff9718a7193da5\\\"}\"}")
+                lmsUserHelper.insertLtiConsumerInDatabase(sql, 'key', 'Moodle', 'azer', 'LTI-1p0', 'Moodle-Tsaap', 'moodle-2015051100.06', '130.120.214.80', null, 0, 1, null, null)
+                lmsUserHelper.insertLtiContextInDatabase(sql, "key", "3", "4", "3", "Tsaap teach: Tsaap", "{\"lis_outcome_service_url\":\"http://130.120.214.80/moodle/mod/lti/service.php\",\"lis_result_sourcedid\":\"{\\\"data\\\":{\\\"instanceid\\\":\\\"3\\\",\\\"userid\\\":\\\"5\\\",\\\"typeid\\\":\\\"1\\\",\\\"launchid\\\":827256523},\\\"hash\\\":\\\"26cdb9af21a105ee3c7d9211ca7809d6a43f34489f32cfc715ff9718a7193da5\\\"}\"}")
                 lmsUserHelper.insertLtiUserInDatabase(sql, "key", "3", "10", "{\"data\":{\"instanceid\":\"3\",\"userid\":\"10\",\"typeid\":\"1\",\"launchid\":1369810096},\"hash\":\"e6e30cc48a52c8344c0f5be4ffc3ea2194490a86cf42aa811d843f375c5e1cea\"}")
-                lmsUserHelper.insertLtiUserInDatabase(sql,"key","3","11","{\"data\":{\"instanceid\":\"3\",\"userid\":\"11\",\"typeid\":\"1\",\"launchid\":1369810096},\"hash\":\"e6e30cc48a52c8344c0f5be4ffc3ea2194490a86cf42aa811d843f375c5e1cea\"}")
-                lmsContextHelper.insertLmsContext(sql,contextId,"3","4","key","Moodle")
-                lmsUserHelper.insertLmsUserInDatabase(sql,userId1,"key","10")
-                lmsUserHelper.insertLmsUserInDatabase(sql,userId2,"key","11")
+                lmsUserHelper.insertLtiUserInDatabase(sql, "key", "3", "11", "{\"data\":{\"instanceid\":\"3\",\"userid\":\"11\",\"typeid\":\"1\",\"launchid\":1369810096},\"hash\":\"e6e30cc48a52c8344c0f5be4ffc3ea2194490a86cf42aa811d843f375c5e1cea\"}")
+                lmsContextHelper.insertLmsContext(sql, contextId, "3", "4", "key", "Moodle")
+                lmsUserHelper.insertLmsUserInDatabase(sql, userId1, "key", "10")
+                lmsUserHelper.insertLmsUserInDatabase(sql, userId2, "key", "11")
 
                 // Create notes as question for test
                 sql.execute("INSERT INTO note (author_id, content, context_id, date_created, parent_note_id, fragment_tag_id, score, grade, kind) VALUES " +
@@ -93,12 +87,13 @@ class LmsGradeServiceIntegrationSpec extends Specification {
                         "(2,'[[\"0\"]]',$liveSessionId2,100,$userId2,$sessionPhase2Id,5,null)")
 
                 // Get users grade
-                res = lmsGradeService.getUsersGradeForContext(sql,contextId)
+                res = lmsGradeService.getUsersGradeForContext(sql, contextId)
 
                 throw new SQLException()
             }
         }
-        catch (SQLException e){}
+        catch (SQLException e) {
+        }
 
         then: "I get a map with users grades"
         res != null

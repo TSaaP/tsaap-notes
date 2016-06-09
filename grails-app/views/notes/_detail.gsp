@@ -48,14 +48,17 @@
     <g:if test="${note.isAQuestion()}">
         <g:set var="liveSession" value="${note.getLiveSession()}"/>
         <g:set var="sessionPhase" value="${liveSession ? liveSession.findCurrentPhase() : null}"/>
-        <g:set var="userType" value="${(user == note.author || user ==  note?.context?.owner) ? 'author' : 'user'}"/>
+        <g:set var="userType" value="${(user == note.author || user == note?.context?.owner) ? 'author' : 'user'}"/>
 
         <g:if test="${!sessionPhase || liveSession.isStopped()}">
-            <g:set var="sessionStatus" value="${liveSession ? liveSession.status : LiveSessionStatus.NotStarted.name()}"/>
-            <g:render template="/questions/${userType}/${sessionStatus}/detail" model="[note: note,liveSession:liveSession,user:user]"/>
+            <g:set var="sessionStatus"
+                   value="${liveSession ? liveSession.status : LiveSessionStatus.NotStarted.name()}"/>
+            <g:render template="/questions/${userType}/${sessionStatus}/detail"
+                      model="[note: note, liveSession: liveSession, user: user]"/>
         </g:if>
         <g:else>
-            <g:render template="/questions/${userType}/Phase${sessionPhase.rank}/${sessionPhase.status}/detail" model="[note: note,sessionPhase:sessionPhase,user:user]"/>
+            <g:render template="/questions/${userType}/Phase${sessionPhase.rank}/${sessionPhase.status}/detail"
+                      model="[note: note, sessionPhase: sessionPhase, user: user]"/>
         </g:else>
     </g:if>
     <g:else>
@@ -79,13 +82,13 @@
                     <span class="glyphicon glyphicon-circle-arrow-right"></span> ${message(code: "notes.detail.hideDiscussion")}
                 </g:link>
             </g:if>
-            <g:if test = "${context.noteTakingEnabled && context.isOpen()}">
+            <g:if test="${context.noteTakingEnabled && context.isOpen()}">
                 <a href="#note${note.id}" id="replyLink${note.id}"
                    onclick="displaysReplyField(${note.id})"><span
                         class="glyphicon glyphicon-share"></span> ${message(code: "notes.detail.reply")}</a>
             </g:if>
 
-            <g:if test="${user == note.author || user ==  note?.context?.owner}">
+            <g:if test="${user == note.author || user == note?.context?.owner}">
                 <g:link controller="notes" action="deleteNote"
                         params="${[noteId: note.id] + displayListParamsWithPagination}"><span
                         class="glyphicon glyphicon-trash"></span> ${message(code: "notes.detail.delete")}</g:link>
@@ -104,16 +107,17 @@
             </g:else>
             <g:if test="${noteIsScored}">
                 <span style="color: orange"
-                        class="glyphicon glyphicon-thumbs-up"> ${message(code: "notes.detail.learn")}</span>
+                      class="glyphicon glyphicon-thumbs-up">${message(code: "notes.detail.learn")}</span>
             </g:if>
             <g:else>
-            <g:link controller="notes" action="markAsLikedNote"
-                params="${[noteId: note.id] + displayListParamsWithPagination}"
-                fragment="note${note.id}"><span
-                class="glyphicon glyphicon-thumbs-up"></span> ${message(code: "notes.detail.learn")}</g:link>
+                <g:link controller="notes" action="markAsLikedNote"
+                        params="${[noteId: note.id] + displayListParamsWithPagination}"
+                        fragment="note${note.id}"><span
+                        class="glyphicon glyphicon-thumbs-up"></span> ${message(code: "notes.detail.learn")}</g:link>
             </g:else>
         </small>
     </div>
+
     <div>&nbsp;</div>
     <g:if test="${note.score > 1}">
         <div>

@@ -3,6 +3,7 @@ package org.tsaap.uploadImage;
 /**
  * Created by dorian on 11/05/15.
  */
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,7 +22,7 @@ public class FileDataRecord extends AbstractDataRecord {
      * Creates a data record based on the given identifier and file.
      *
      * @param identifier data identifier
-     * @param file file that contains the binary stream
+     * @param file       file that contains the binary stream
      */
     public FileDataRecord(DataIdentifier identifier, File file) {
         super(identifier);

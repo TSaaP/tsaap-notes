@@ -16,8 +16,6 @@
 
 package org.tsaap.questions.impl.gift;
 
-import org.tsaap.questions.QuizReaderException;
-
 /**
  * @author franck Silvestre
  */

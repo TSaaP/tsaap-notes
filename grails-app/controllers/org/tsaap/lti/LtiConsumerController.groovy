@@ -1,20 +1,19 @@
 package org.tsaap.lti
 
 import grails.plugins.springsecurity.Secured
-import org.tsaap.directory.RoleEnum
-
-import static org.springframework.http.HttpStatus.*
 import grails.transaction.Transactional
 
+import static org.springframework.http.HttpStatus.*
+
 @Transactional(readOnly = true)
-@Secured(['IS_AUTHENTICATED_FULLY','ROLE_ADMIN_ROLE'])
+@Secured(['IS_AUTHENTICATED_FULLY', 'ROLE_ADMIN_ROLE'])
 class LtiConsumerController {
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        respond LtiConsumer.list(params), model:[ltiConsumerInstanceCount: LtiConsumer.count()]
+        respond LtiConsumer.list(params), model: [ltiConsumerInstanceCount: LtiConsumer.count()]
     }
 
     def show(LtiConsumer ltiConsumerInstance) {
@@ -35,11 +34,11 @@ class LtiConsumerController {
 
 
         if (ltiConsumerInstance.hasErrors()) {
-            respond ltiConsumerInstance.errors, view:'create'
+            respond ltiConsumerInstance.errors, view: 'create'
             return
         }
 
-        ltiConsumerInstance.save flush:true
+        ltiConsumerInstance.save flush: true
 
         request.withFormat {
             form {
@@ -63,18 +62,18 @@ class LtiConsumerController {
         }
 
         if (ltiConsumerInstance.hasErrors()) {
-            respond ltiConsumerInstance.errors, view:'edit'
+            respond ltiConsumerInstance.errors, view: 'edit'
             return
         }
 
-        ltiConsumerInstance.save flush:true
+        ltiConsumerInstance.save flush: true
 
         request.withFormat {
             form {
                 flash.message = message(code: 'default.updated.message', args: [message(code: 'LtiConsumer.label', default: 'LtiConsumer'), ltiConsumerInstance.id])
                 redirect ltiConsumerInstance
             }
-            '*'{ respond ltiConsumerInstance, [status: OK] }
+            '*' { respond ltiConsumerInstance, [status: OK] }
         }
     }
 
@@ -86,14 +85,14 @@ class LtiConsumerController {
             return
         }
 
-        ltiConsumerInstance.delete flush:true
+        ltiConsumerInstance.delete flush: true
 
         request.withFormat {
             form {
                 flash.message = message(code: 'default.deleted.message', args: [message(code: 'LtiConsumer.label', default: 'LtiConsumer'), ltiConsumerInstance.id])
-                redirect action:"index", method:"GET"
+                redirect action: "index", method: "GET"
             }
-            '*'{ render status: NO_CONTENT }
+            '*' { render status: NO_CONTENT }
         }
     }
 
@@ -103,7 +102,7 @@ class LtiConsumerController {
                 flash.message = message(code: 'default.not.found.message', args: [message(code: 'ltiConsumerInstance.label', default: 'LtiConsumer'), params.id])
                 redirect action: "index", method: "GET"
             }
-            '*'{ render status: NOT_FOUND }
+            '*' { render status: NOT_FOUND }
         }
     }
 }

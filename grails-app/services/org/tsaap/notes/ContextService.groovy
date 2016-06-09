@@ -1,9 +1,8 @@
 package org.tsaap.notes
 
-import grails.gorm.PagedResultList
 import groovy.sql.Sql
-import org.gcontracts.annotations.Requires
 import org.gcontracts.annotations.Ensures
+import org.gcontracts.annotations.Requires
 import org.hibernate.SQLQuery
 import org.hibernate.Session
 import org.hibernate.SessionFactory
@@ -11,13 +10,11 @@ import org.tsaap.CustomPagedResultList
 import org.tsaap.directory.User
 import org.tsaap.lti.LmsContextHelper
 import org.tsaap.lti.LmsContextService
-import org.tsaap.questions.LiveSession
 import org.tsaap.questions.LiveSessionService
 
 import javax.sql.DataSource
 
 class ContextService {
-
 
 
     public static final String SUFFIXE_COPY = "-copy"
@@ -114,7 +111,7 @@ class ContextService {
         sql = new Sql(dataSource)
         lmsContextHelper = new LmsContextHelper()
         lmsContextService.lmsContextHelper = lmsContextHelper
-        lmsContextService.deleteLmsContextForContext(sql,context.id)
+        lmsContextService.deleteLmsContextForContext(sql, context.id)
         context.delete(flush: flush)
     }
 
@@ -178,7 +175,7 @@ class ContextService {
                 url: aContext.url,
                 descriptionAsNote: aContext.descriptionAsNote
         )
-        saveContext(newContext,true)
+        saveContext(newContext, true)
         if (duplicateQuestions) {
             List<Note> notes = noteService.findAllNotesAsQuestionForContext(aContext)
             notes.each { Note note ->

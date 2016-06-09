@@ -56,7 +56,7 @@ class Note {
         version false
     }
 
-    static transients = ['noteUrl', 'question', 'giftQuestionService', 'liveSession', 'activeLiveSession','attachment','noteKind']
+    static transients = ['noteUrl', 'question', 'giftQuestionService', 'liveSession', 'activeLiveSession', 'attachment', 'noteKind']
 
     private static final String QUESTION_DEFAULT_TITLE = "Question"
     private static final String QUESTION_INVALID_DEFAULT_TITLE = "question.format.error"
@@ -66,7 +66,7 @@ class Note {
      * @return the note kind
      */
     NoteKind getNoteKind() {
-       NoteKind.values()[kind]
+        NoteKind.values()[kind]
     }
 
     /**
@@ -103,7 +103,6 @@ class Note {
         parentNote
     }
 
-
     /**
      * Indicate if a note is an interactive question
      * @return true if the note is an interactive question
@@ -119,7 +118,6 @@ class Note {
     boolean isAnInvalidQuestion() {
         kind == NoteKind.INVALID_QUESTION.ordinal()
     }
-
 
     /**
      * Get the question corresponding to the note or null

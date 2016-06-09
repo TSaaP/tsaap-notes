@@ -82,7 +82,7 @@ class ResultListService {
         }
 
         // build a map with results
-        def resultsByUsername = new LinkedHashMap<String,NPhasesLiveSessionResult>()
+        def resultsByUsername = new LinkedHashMap<String, NPhasesLiveSessionResult>()
 
         raws.each { raw ->
             def result = new NPhasesLiveSessionResult()

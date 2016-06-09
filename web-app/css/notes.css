@@ -15,7 +15,7 @@
  */
 
 body {
-  padding-top: 60px;
+    padding-top: 60px;
 }
 
 .note-edition {
@@ -61,7 +61,10 @@ body {
     background-color: #ebebeb;
 }
 
-.note-actions & .note-parent-note {
+.note-actions
+
+&
+.note-parent-note {
     display: none;
 }
 

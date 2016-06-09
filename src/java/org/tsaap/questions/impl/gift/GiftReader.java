@@ -123,7 +123,7 @@ public class GiftReader implements QuizReader {
             return;
         }
         if (!answerFragmentHasStarted) {
-            throw  new GiftReaderNotEscapedCharacterException();
+            throw new GiftReaderNotEscapedCharacterException();
         }
         flushAccumulator();
         answerFragmentHasEnded = true;
@@ -190,11 +190,11 @@ public class GiftReader implements QuizReader {
         }
         flushAccumulator();
         if (answerCreditHasStarted) {
-            answerCreditHasStarted = false ;
+            answerCreditHasStarted = false;
             answerCreditHasEnded = true;
             getQuizContentHandler().onEndAnswerCredit();
         } else {
-            answerCreditHasStarted = true ;
+            answerCreditHasStarted = true;
             getQuizContentHandler().onStartAnswerCredit();
         }
 

@@ -18,95 +18,95 @@ package org.tsaap.directory
 
 class User {
 
-  transient springSecurityService
+    transient springSecurityService
 
-  String firstName
-  String lastName
-  String username
-  String normalizedUsername
-  String email
-  String password
-  String fullname
-  boolean enabled
-  boolean accountExpired
-  boolean accountLocked
-  boolean passwordExpired
+    String firstName
+    String lastName
+    String username
+    String normalizedUsername
+    String email
+    String password
+    String fullname
+    boolean enabled
+    boolean accountExpired
+    boolean accountLocked
+    boolean passwordExpired
 
-  static hasOne = [settings: Settings]
+    static hasOne = [settings: Settings]
 
-  void setUsername(String val) {
-    this.username = val
-    normalizedUsername = val?.toLowerCase()
-  }
-
-  static constraints = {
-    firstName blank: false
-    lastName blank: false
-    normalizedUsername blank: false, unique: true
-    username blank: false, unique: true, validator: { val ->
-      val ==~ /^[a-zA-Z0-9_]{1,15}$/
-    }
-    password blank: false, minSize: 4
-    email email: true, unique: true
-    settings nullable: true
-  }
-
-  static mapping = {
-    password column: '`password`'
-    version(true)
-  }
-
-  static transients = ['fullname','isTeacher','isLearner']
-
-  String getFullname() {
-    "$firstName $lastName"
-  }
-
-  String toString() {
-    username
-  }
-
-  /**
-   *
-   * @return true if the user is a learner
-   */
-  boolean isLearner() {
-    UserRole.get(this.id, RoleEnum.STUDENT_ROLE.id)
-  }
-
-  /**
-   *
-   * @return true if the user is teacher
-   */
-  boolean isTeacher() {
-      UserRole.get(this.id, RoleEnum.TEACHER_ROLE.id)
+    void setUsername(String val) {
+        this.username = val
+        normalizedUsername = val?.toLowerCase()
     }
 
-  /**
-   *
-   * @return true if the user is admin
-   */
-  boolean isAdmin() {
-    UserRole.get(this.id, RoleEnum.ADMIN_ROLE.id)
-  }
-
-  Set<Role> getAuthorities() {
-    def res = UserRole.findAllByUser(this).collect { it.role } as Set
-    res*.roleName
-    res
-  }
-
-  def beforeInsert() {
-    encodePassword()
-  }
-
-  def beforeUpdate() {
-    if (isDirty('password')) {
-      encodePassword()
+    static constraints = {
+        firstName blank: false
+        lastName blank: false
+        normalizedUsername blank: false, unique: true
+        username blank: false, unique: true, validator: { val ->
+            val ==~ /^[a-zA-Z0-9_]{1,15}$/
+        }
+        password blank: false, minSize: 4
+        email email: true, unique: true
+        settings nullable: true
     }
-  }
 
-  protected void encodePassword() {
-    password = springSecurityService.encodePassword(password)
-  }
+    static mapping = {
+        password column: '`password`'
+        version(true)
+    }
+
+    static transients = ['fullname', 'isTeacher', 'isLearner']
+
+    String getFullname() {
+        "$firstName $lastName"
+    }
+
+    String toString() {
+        username
+    }
+
+    /**
+     *
+     * @return true if the user is a learner
+     */
+    boolean isLearner() {
+        UserRole.get(this.id, RoleEnum.STUDENT_ROLE.id)
+    }
+
+    /**
+     *
+     * @return true if the user is teacher
+     */
+    boolean isTeacher() {
+        UserRole.get(this.id, RoleEnum.TEACHER_ROLE.id)
+    }
+
+    /**
+     *
+     * @return true if the user is admin
+     */
+    boolean isAdmin() {
+        UserRole.get(this.id, RoleEnum.ADMIN_ROLE.id)
+    }
+
+    Set<Role> getAuthorities() {
+        def res = UserRole.findAllByUser(this).collect { it.role } as Set
+        res*.roleName
+        res
+    }
+
+    def beforeInsert() {
+        encodePassword()
+    }
+
+    def beforeUpdate() {
+        if (isDirty('password')) {
+            encodePassword()
+        }
+    }
+
+    protected void encodePassword() {
+        password = springSecurityService.encodePassword(password)
+    }
 }

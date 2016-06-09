@@ -19,28 +19,28 @@ package org.tsaap.questions;
 /**
  * @author franck Silvestre
  */
-public enum QuestionType {
+publicenumQuestionType{
 
-    Undefined(0),
-    ExclusiveChoice(1),
-    MultipleChoice(2),
-    TrueFalse(3),
-    FillInTheBlank(4);
+        Undefined(0),
+        ExclusiveChoice(1),
+        MultipleChoice(2),
+        TrueFalse(3),
+        FillInTheBlank(4);
 
-    private int code;
+private int code;
 
-    QuestionType(int code) {
-        this.code = code;
-    }
+        QuestionType(int code){
+        this.code=code;
+        }
 
-    /**
-     * Get the code of que question type
-     *
-     * @return the code
-     */
-    public int getCode() {
+/**
+ * Get the code of que question type
+ *
+ * @return the code
+ */
+public int getCode(){
         return code;
-    }
-}
+        }
+        }
 
 

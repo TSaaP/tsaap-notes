@@ -20,13 +20,13 @@ import org.tsaap.directory.User
 
 class Bookmark {
 
-  Date dateCreated
-  User user
-  Note note
+    Date dateCreated
+    User user
+    Note note
 
-  static constraints = {}
+    static constraints = {}
 
-  static mapping = {
-    version(false)
-  }
+    static mapping = {
+        version(false)
+    }
 }

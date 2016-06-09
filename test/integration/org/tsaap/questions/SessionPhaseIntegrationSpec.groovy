@@ -1,12 +1,10 @@
 package org.tsaap.questions
 
-import org.gcontracts.PreconditionViolation
 import org.tsaap.BootstrapTestService
 import org.tsaap.directory.User
 import org.tsaap.notes.Note
-import org.tsaap.notes.NoteKind
 import org.tsaap.notes.NoteService
-import spock.lang.*
+import spock.lang.Specification
 
 /**
  *
@@ -21,7 +19,8 @@ class SessionPhaseIntegrationSpec extends Specification {
     User user1
     User user2
     User user3
-    def initiliseUsers(){
+
+    def initiliseUsers() {
 
         user1 = User.findByUsername("user1")
         if (!user1) {
@@ -36,12 +35,13 @@ class SessionPhaseIntegrationSpec extends Specification {
             user3 = new User(firstName: "user3", lastName: "u3", username: "user3", password: "password", email: "user3@nomail.com").save()
         }
     }
+
     def setup() {
 
         bootstrapTestService.initializeTests()
         initiliseUsers()
         user = bootstrapTestService.learnerPaul
-        note = noteService.addQuestion(user,"::a question:: What ? {=this ~that}")
+        note = noteService.addQuestion(user, "::a question:: What ? {=this ~that}")
     }
 
     def cleanup() {
@@ -57,38 +57,37 @@ class SessionPhaseIntegrationSpec extends Specification {
     }
 
 
-
     void "test the number of feedback related to the number of submitted evaluation for phases"() {
 
-        given:"a live session and a user and the first phase started"
+        given: "a live session and a user and the first phase started"
         LiveSession liveSession = liveSessionService.createLiveSessionForNote(user, note)
-        SessionPhase firstPhase = liveSessionService.createAndStartFirstSessionPhaseForLiveSession(user,liveSession)
+        SessionPhase firstPhase = liveSessionService.createAndStartFirstSessionPhaseForLiveSession(user, liveSession)
 
         when: "trying to create a response for that learner for this session"
-        LiveSessionResponse response = liveSessionService.createResponseForSessionPhaseAndUser(firstPhase,user1,'[["0"]]',"an explanation1",5)
+        LiveSessionResponse response = liveSessionService.createResponseForSessionPhaseAndUser(firstPhase, user1, '[["0"]]', "an explanation1", 5)
 
         then: "count number of response of this sessionPhase"
         response.sessionPhase == firstPhase
         firstPhase.responseCount() == 1
 
-        when:"the first phase is stopped"
+        when: "the first phase is stopped"
         firstPhase.stop()
 
-        and:"trying again"
-        SessionPhase secondPhase = liveSessionService.createAndStartSessionPhaseForLiveSessionWithRank(user, liveSession,2)
+        and: "trying again"
+        SessionPhase secondPhase = liveSessionService.createAndStartSessionPhaseForLiveSessionWithRank(user, liveSession, 2)
 
         and: "trying to create a response for that learner for this session"
-        response = liveSessionService.createResponseForSessionPhaseAndUser(secondPhase,user1,'[["0"]]',"an explanation1",5)
+        response = liveSessionService.createResponseForSessionPhaseAndUser(secondPhase, user1, '[["0"]]', "an explanation1", 5)
 
         then: "count number of response of this sessionPhase"
         secondPhase.responseCount() == 1
 
-        when:"the second phase is stopped"
+        when: "the second phase is stopped"
         secondPhase.stop()
 
 
-        and:"trying again"
-        SessionPhase thirdPhase = liveSessionService.createAndStartSessionPhaseForLiveSessionWithRank(user, liveSession,3)
+        and: "trying again"
+        SessionPhase thirdPhase = liveSessionService.createAndStartSessionPhaseForLiveSessionWithRank(user, liveSession, 3)
 
         then: "count number of response of this sessionPhase"
 
@@ -96,7 +95,7 @@ class SessionPhaseIntegrationSpec extends Specification {
 
         when: "trying grade to an explanation"
 
-        noteService.gradeNotebyUser(response.explanation,user1,2d)
+        noteService.gradeNotebyUser(response.explanation, user1, 2d)
 
         then: "count number of response of this sessionPhase"
 
@@ -104,7 +103,7 @@ class SessionPhaseIntegrationSpec extends Specification {
 
         when: "trying to grade an explanation"
 
-        noteService.gradeNotebyUser(response.explanation,user2,2d)
+        noteService.gradeNotebyUser(response.explanation, user2, 2d)
 
         then: "count number of response of this sessionPhase"
 
@@ -112,16 +111,14 @@ class SessionPhaseIntegrationSpec extends Specification {
 
         when: "trying to grade an explanation"
 
-        noteService.gradeNotebyUser(response.explanation,user3,2d)
+        noteService.gradeNotebyUser(response.explanation, user3, 2d)
 
         then: "count number of response of this sessionPhase"
 
         thirdPhase.responseCount() == 3
 
 
-
     }
-
 
 
 }

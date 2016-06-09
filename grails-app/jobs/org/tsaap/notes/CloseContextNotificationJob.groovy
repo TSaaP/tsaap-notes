@@ -1,7 +1,6 @@
 package org.tsaap.notes
 
 
-
 class CloseContextNotificationJob {
 
     ContextNotificationService contextNotificationService

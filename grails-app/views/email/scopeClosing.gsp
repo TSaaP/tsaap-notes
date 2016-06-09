@@ -10,6 +10,7 @@
 <head>
     <title>${message(code: "email.closingContext.page.title", locale: new Locale(user.language))}</title>
 </head>
+
 <body>
 
 <p>${message(code: "email.hi", locale: new Locale(user.language))} ${user.first_name}</p>

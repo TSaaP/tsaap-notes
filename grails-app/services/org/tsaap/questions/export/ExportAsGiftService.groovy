@@ -24,7 +24,7 @@ class ExportAsGiftService {
         def questions = findAllQuestionsForContext(context)
         def res = []
         questions.each {
-            def notesOnQuestion = Note.findAllByParentNoteAndGradeGreaterThanEquals(it, MIN_GRADE_FOR_FEEDBACK,[sort:"grade", order:"desc"])
+            def notesOnQuestion = Note.findAllByParentNoteAndGradeGreaterThanEquals(it, MIN_GRADE_FOR_FEEDBACK, [sort: "grade", order: "desc"])
             if (notesOnQuestion) {
                 def generalFeedback = buildGeneralFeedback(notesOnQuestion, feedbackPrefix)
                 res.add(questionHelper.insertGeneralFeedbackInGiftQuestion(generalFeedback, it.content))
@@ -45,7 +45,7 @@ class ExportAsGiftService {
         def questions = findAllQuestionsForContext(context)
         def res = []
         questions.each {
-          res.add(it.content)
+            res.add(it.content)
         }
         res
     }
@@ -53,8 +53,8 @@ class ExportAsGiftService {
     private def findAllQuestionsForContext(Context context) {
         def criteria = Note.createCriteria()
         def questions = criteria.list {
-            eq('context',context)
-            like('content',"::%")
+            eq('context', context)
+            like('content', "::%")
         }
         questions
     }

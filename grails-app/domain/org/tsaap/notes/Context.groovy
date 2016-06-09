@@ -18,6 +18,7 @@ package org.tsaap.notes
 
 import org.gcontracts.annotations.Requires
 import org.tsaap.directory.User
+
 /**
  * The context describes the context which the learner take notes in.
  * Typically the context references a resource and a description that allows
@@ -25,97 +26,97 @@ import org.tsaap.directory.User
  * */
 class Context {
 
-  static transients = ['hasNotes']
+    static transients = ['hasNotes']
 
-  Date dateCreated
-  Date lastUpdated
+    Date dateCreated
+    Date lastUpdated
 
-  String contextName
-  String url
-  String source
+    String contextName
+    String url
+    String source
 
-  /**
-   * The owner is most probably the teacher in a learning context
-   **/
-  User owner
-  Boolean ownerIsTeacher = true
+    /**
+     * The owner is most probably the teacher in a learning context
+     **/
+    User owner
+    Boolean ownerIsTeacher = true
 
-  /**
-   * The description note allows the description of the context with tags and
-   * mentions following the way they are used in a note (# or @ prefix).
-   * All mentions and tags on the context will be automatically bind to each
-   * note taken by a user on this resource
-   **/
-  String descriptionAsNote
+    /**
+     * The description note allows the description of the context with tags and
+     * mentions following the way they are used in a note (# or @ prefix).
+     * All mentions and tags on the context will be automatically bind to each
+     * note taken by a user on this resource
+     **/
+    String descriptionAsNote
 
-  Boolean noteTakingEnabled = false
-  Boolean closed = false
+    Boolean noteTakingEnabled = false
+    Boolean closed = false
 
-  static constraints = {
-    contextName blank: false, maxSize: 1024
-    url url: true, nullable: true
-    descriptionAsNote nullable: true, maxSize: 280
-    source nullable: true, editable: false
-    closed nullable: true
-  }
+    static constraints = {
+        contextName blank: false, maxSize: 1024
+        url url: true, nullable: true
+        descriptionAsNote nullable: true, maxSize: 280
+        source nullable: true, editable: false
+        closed nullable: true
+    }
 
-  /**
-   * Check if the current context has notes
-   * @return true if the current context has notes
-   */
-  Boolean hasNotes() {
-    Note.countByContext(this)
-  }
-  /**
-   * Check if the current context has notes
-   * Of kind Standard
-   * @return true if the current context has standard notes
+    /**
+     * Check if the current context has notes
+     * @return true if the current context has notes
+     */
+    Boolean hasNotes() {
+        Note.countByContext(this)
+    }
+    /**
+     * Check if the current context has notes
+     * Of kind Standard
+     * @return true if the current context has standard notes
      */
 
-  Boolean hasStandardNotes() {
-    Note.countByContextAndKind(this, NoteKind.STANDARD.ordinal())
-  }
-  /**
-   * Check if the current context has new notes since yesterday
-   * @return true if the current context has notes
-   */
-  Integer newNotesCountSinceYesterday() {
-    def today = new Date()
-    Note.countByContextAndDateCreatedBetween(this, today - 1, today)
-  }
-
-  /**
-   * Check if a context is followed by a user
-   * @param user
-   * @return
-   */
-  @Requires({ user })
-  Boolean isFollowedByUser(User user) {
-    if (owner == user) {
-      return true
+    Boolean hasStandardNotes() {
+        Note.countByContextAndKind(this, NoteKind.STANDARD.ordinal())
     }
-    ContextFollower contextFollower = ContextFollower.findByFollowerAndContext(user, this)
-    contextFollower && !contextFollower.isNoMoreSubscribed
-  }
+    /**
+     * Check if the current context has new notes since yesterday
+     * @return true if the current context has notes
+     */
+    Integer newNotesCountSinceYesterday() {
+        def today = new Date()
+        Note.countByContextAndDateCreatedBetween(this, today - 1, today)
+    }
+
+    /**
+     * Check if a context is followed by a user
+     * @param user
+     * @return
+     */
+    @Requires({ user })
+    Boolean isFollowedByUser(User user) {
+        if (owner == user) {
+            return true
+        }
+        ContextFollower contextFollower = ContextFollower.findByFollowerAndContext(user, this)
+        contextFollower && !contextFollower.isNoMoreSubscribed
+    }
 
     /**
      * Check if the current context is open
      * @return true if the context is open false otherwise
      */
-  Boolean isOpen() {
-    closed == false
-  }
+    Boolean isOpen() {
+        closed == false
+    }
 
-  /**
-   * Check if the current context is closed
-   * @return true if the context is closed false otherwise
-   */
-  Boolean isClosed() {
-    closed == true
-  }
+    /**
+     * Check if the current context is closed
+     * @return true if the context is closed false otherwise
+     */
+    Boolean isClosed() {
+        closed == true
+    }
 
 
-  static mapping = {
-    version(false)
-  }
+    static mapping = {
+        version(false)
+    }
 }

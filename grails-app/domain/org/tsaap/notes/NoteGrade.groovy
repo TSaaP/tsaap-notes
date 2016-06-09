@@ -20,16 +20,16 @@ import org.tsaap.directory.User
 
 class NoteGrade {
 
-  Date dateCreated
-  User user
-  Note note
-  Double grade
+    Date dateCreated
+    User user
+    Note note
+    Double grade
 
-  static constraints = {
-    grade min: 0d, max: 5d
-  }
+    static constraints = {
+        grade min: 0d, max: 5d
+    }
 
-  static mapping = {
-    version(false)
-  }
+    static mapping = {
+        version(false)
+    }
 }

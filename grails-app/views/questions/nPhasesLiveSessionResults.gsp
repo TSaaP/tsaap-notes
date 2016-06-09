@@ -39,12 +39,15 @@
 <div class="container">
     <export:formats params="[id: liveSession.id]" controller="question" action="results"/>
     <hr/>
+
     <p>
         <strong>Scope</strong> <br/>${results.contextName}
-        </p>
+    </p>
+
     <p>
         <strong>Question</strong> <br/>${results.question}
-        </p>
+    </p>
+
     <p>
         <strong>Responses count</strong> <br/> ${results.resultList.size()}
     </p>
@@ -54,13 +57,13 @@
                 <th style="border: medium">${labels."$propName"}</th>
             </g:each>
         </tr>
-    <g:each in="${results.resultList}" var="currentResult">
-        <tr>
-            <g:each in="${labels.keySet()}" var="propName">
-                <td>${currentResult."$propName"}</td>
-            </g:each>
+        <g:each in="${results.resultList}" var="currentResult">
+            <tr>
+                <g:each in="${labels.keySet()}" var="propName">
+                    <td>${currentResult."$propName"}</td>
+                </g:each>
             </tr>
-    </g:each>
+        </g:each>
     </table>
     <hr/>
 </div>

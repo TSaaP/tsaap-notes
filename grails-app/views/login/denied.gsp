@@ -14,12 +14,12 @@
   - limitations under the License.
   --}%
 <head>
-<meta name='layout' content='main' />
-<title>
-<g:message code="springSecurity.denied.title" /></title>
-<r:require module="tsaap_ui"/>
+    <meta name='layout' content='main'/>
+    <title>
+        <g:message code="springSecurity.denied.title"/></title>
+    <r:require module="tsaap_ui"/>
 </head>
 
 <body>
-	<div class='alert-danger'><g:message code="springSecurity.denied.message" /></div>
+<div class='alert-danger'><g:message code="springSecurity.denied.message"/></div>
 </body>

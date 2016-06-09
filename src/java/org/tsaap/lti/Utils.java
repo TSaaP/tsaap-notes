@@ -10,9 +10,8 @@ public class Utils {
     /**
      * Initialises the application session and database connection.
      *
-     * @param session user session
+     * @param session      user session
      * @param checkSession <code>true</code> to check the session for a valid connection
-     *
      * @return database object
      */
     public static Db initialise(HttpSession session, Boolean checkSession) {
@@ -36,7 +35,7 @@ public class Utils {
             } catch (SQLException e) {
                 ok = false;
                 if ((checkSession != null) && checkSession) {
-                // Display a more user-friendly error message to LTI users
+                    // Display a more user-friendly error message to LTI users
                     session.setAttribute("error_message", "Unable to open database.");
                 } else {
                     session.setAttribute("error_message", e.getMessage());

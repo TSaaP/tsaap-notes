@@ -18,38 +18,38 @@ package org.tsaap.directory
 
 class Role {
 
-  String roleName
+    String roleName
 
-  static mapping = {
-    cache true
-    version(false)
-    roleName column:'authority'
-  }
+    static mapping = {
+        cache true
+        version(false)
+        roleName column: 'authority'
+    }
 
-  String getAuthority() {
-    "ROLE_${this.roleName}"
-  }
+    String getAuthority() {
+        "ROLE_${this.roleName}"
+    }
 
-  static constraints = {
-    roleName blank: false, unique: true, inList: RoleEnum.values()*.name()
-  }
+    static constraints = {
+        roleName blank: false, unique: true, inList: RoleEnum.values()*.name()
+    }
 
 
 }
 
 enum RoleEnum {
-  ADMIN_ROLE(1),
-  STUDENT_ROLE(2),
-  TEACHER_ROLE(3)
+    ADMIN_ROLE(1),
+    STUDENT_ROLE(2),
+    TEACHER_ROLE(3)
 
-  Long id
+    Long id
 
-  RoleEnum(Long id) {
-    this.id = id
-  }
+    RoleEnum(Long id) {
+        this.id = id
+    }
 
-  Role getRole() {
-    Role.get(id)
-  }
+    Role getRole() {
+        Role.get(id)
+    }
 
 }

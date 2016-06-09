@@ -40,8 +40,7 @@ public class OAuthServlet {
      * parameters come first, followed by the rest in the order they came from
      * request.getParameterMap().
      *
-     * @param URL
-     *            the official URL of this service; that is the URL a legitimate
+     * @param URL the official URL of this service; that is the URL a legitimate
      *            client would use to compute the digital signature. If this
      *            parameter is null, this method will try to reconstruct the URL
      *            from the HTTP request; which may be wrong in some cases.
@@ -59,7 +58,9 @@ public class OAuthServlet {
         return new HttpRequestMessage(request, URL);
     }
 
-    /** Reconstruct the requested URL, complete with query string (if any). */
+    /**
+     * Reconstruct the requested URL, complete with query string (if any).
+     */
     public static String getRequestURL(HttpServletRequest request) {
         StringBuffer url = request.getRequestURL();
         String queryString = request.getQueryString();
@@ -111,7 +112,9 @@ public class OAuthServlet {
 
     private static final Map<String, Integer> PROBLEM_TO_HTTP_CODE = OAuth.Problems.TO_HTTP_CODE;
 
-    /** Send the given parameters as a form-encoded response body. */
+    /**
+     * Send the given parameters as a form-encoded response body.
+     */
     public static void sendForm(HttpServletResponse response,
                                 Iterable<? extends Map.Entry> parameters) throws IOException {
         response.resetBuffer();

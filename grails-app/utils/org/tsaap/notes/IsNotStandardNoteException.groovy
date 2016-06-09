@@ -5,6 +5,6 @@ package org.tsaap.notes
  */
 class IsNotStandardNoteException extends RuntimeException {
     IsNotStandardNoteException(String s) {
-            super(s)
+        super(s)
     }
 }

@@ -60,6 +60,7 @@ public interface Question {
 
     /**
      * Get the general feedback for the question
+     *
      * @return the general feedback for the question
      */
     public String getGeneralFeedback();

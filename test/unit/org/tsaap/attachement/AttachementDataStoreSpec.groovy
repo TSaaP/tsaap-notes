@@ -8,7 +8,7 @@ import spock.lang.Specification
  */
 class AttachementDataStoreSpec extends Specification {
 
-    def "test init file data store errors"(){
+    def "test init file data store errors"() {
 
         given: "an attachement data store"
         AttachementDataStore attachementDataStore = new AttachementDataStore()
@@ -31,15 +31,15 @@ class AttachementDataStoreSpec extends Specification {
         attachementDataStore.path = "/opt/shared/tsaap-repo/grails_logo.png"
         attachementDataStore.initFileDataStore()
 
-        then:"I get an exception"
+        then: "I get an exception"
         thrown(DataStoreException)
 
         when: "I want to init Attachement data store with a given path who's a directory but without write right"
         attachementDataStore.path = "/opt/shared/tsaap-repo/test"
-        println new File (attachementDataStore.path).canWrite()
+        println new File(attachementDataStore.path).canWrite()
         attachementDataStore.initFileDataStore()
 
-        then:"I get an exception"
+        then: "I get an exception"
         thrown(DataStoreException)
     }
 }

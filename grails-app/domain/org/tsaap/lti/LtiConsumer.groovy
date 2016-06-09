@@ -37,14 +37,14 @@ class LtiConsumer {
 
     static mapping = {
         version false
-        id column:'consumer_key', generator:'assigned', type:'string', name:'id'
+        id column: 'consumer_key', generator: 'assigned', type: 'string', name: 'id'
         consumerName column: 'name'
         productName column: 'consumer_name'
         productVersion column: 'consumer_version'
-        productGuid column:'consumer_guid'
-        isProtected column:'protected'
-        isEnabled column:'enabled'
-        dateCreated column:'created'
-        lastUpdated column:'updated'
+        productGuid column: 'consumer_guid'
+        isProtected column: 'protected'
+        isEnabled column: 'enabled'
+        dateCreated column: 'created'
+        lastUpdated column: 'updated'
     }
 }

@@ -67,7 +67,7 @@ public class HttpRequestMessage extends OAuthMessage {
     public static List<OAuth.Parameter> getParameters(HttpServletRequest request) {
         List<OAuth.Parameter> list = new ArrayList<OAuth.Parameter>();
         for (Enumeration<String> headers = request.getHeaders("Authorization"); headers != null
-                && headers.hasMoreElements();) {
+                && headers.hasMoreElements(); ) {
             String header = headers.nextElement();
             for (OAuth.Parameter parameter : OAuthMessage
                     .decodeAuthorization(header)) {

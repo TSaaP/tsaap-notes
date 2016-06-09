@@ -60,13 +60,13 @@ class NoteServiceIntegrationSpec extends Specification {
 
 
         where: "all these data are tested"
-        content | tags | mentions
-        "@teacher_jeanne : a simple #content, with no #spaces in the content" | ["content", "spaces"] | ["teacher_jeanne"]
-        "a simple #content with no #spaces in the content but with #content a copy" | ["content", "spaces"] | []
-        "a simple #content\n #another\r #tag3\n with #spaces\t in the content" | ["content", "another", "tag3", "spaces"] | []
-        "a simple with no tags @teacher_jeanne" | [] | ["teacher_jeanne"]
-        "a simple with no @tags @teacher_jeanne" | [] | ["teacher_jeanne"]
-        "Is it #LOWERCASE ?" | ["lowercase"] | []
+        content                                                                     | tags                                     | mentions
+        "@teacher_jeanne : a simple #content, with no #spaces in the content"       | ["content", "spaces"]                    | ["teacher_jeanne"]
+        "a simple #content with no #spaces in the content but with #content a copy" | ["content", "spaces"]                    | []
+        "a simple #content\n #another\r #tag3\n with #spaces\t in the content"      | ["content", "another", "tag3", "spaces"] | []
+        "a simple with no tags @teacher_jeanne"                                     | []                                       | ["teacher_jeanne"]
+        "a simple with no @tags @teacher_jeanne"                                    | []                                       | ["teacher_jeanne"]
+        "Is it #LOWERCASE ?"                                                        | ["lowercase"]                            | []
 
     }
 
@@ -134,10 +134,10 @@ class NoteServiceIntegrationSpec extends Specification {
                 bytes: [2, 3, 4, 5, 6, 7]
         )
         Attachement myAttachement = attachementService.createAttachement(attachementDto, 10)
-        myAttachement = attachementService.addNoteToAttachement(note1,myAttachement)
+        myAttachement = attachementService.addNoteToAttachement(note1, myAttachement)
 
         when: "I want to delete this note"
-        noteService.deleteNoteByAuthor(note1,bootstrapTestService.learnerMary)
+        noteService.deleteNoteByAuthor(note1, bootstrapTestService.learnerMary)
 
         then: "The note is delete"
         Note.get(note1.id) == null
@@ -269,7 +269,7 @@ class NoteServiceIntegrationSpec extends Specification {
         User user = bootstrapTestService.learnerMary
 
         when: "user like the note"
-        noteService.scoreNotebyUser(note,user)
+        noteService.scoreNotebyUser(note, user)
 
         then: "the note get score"
         note.score != null
@@ -280,7 +280,7 @@ class NoteServiceIntegrationSpec extends Specification {
     def "test add question failure"() {
 
         when: "I want to a question with bad syntax"
-        noteService.addQuestion(bootstrapTestService.learnerPaul,"bad syntax",bootstrapTestService.context1)
+        noteService.addQuestion(bootstrapTestService.learnerPaul, "bad syntax", bootstrapTestService.context1)
 
         then: "I get an IsNotQuestionException"
         thrown(IsNotQuestionException)
@@ -289,21 +289,21 @@ class NoteServiceIntegrationSpec extends Specification {
     def "test add standard note failure"() {
 
         when: "I want to a standard note with bad syntax"
-        noteService.addStandardNote(bootstrapTestService.learnerPaul,"::a question:: what ? {=true~false}",bootstrapTestService.context1)
+        noteService.addStandardNote(bootstrapTestService.learnerPaul, "::a question:: what ? {=true~false}", bootstrapTestService.context1)
 
         then: "I get IsNotStandardNoteException"
         thrown(IsNotStandardNoteException)
     }
 
-    def "test find all user notes for a context"(){
+    def "test find all user notes for a context"() {
 
         given: "two notes add by paul and one add by mary for a context"
         Tag tag = Tag.findOrSaveByName("myTag")
-        Note note1 =  noteService.addStandardNote(bootstrapTestService.learnerPaul,"note1",bootstrapTestService.context1,tag)
-        Note note2 = noteService.addStandardNote(bootstrapTestService.learnerPaul,"note2",bootstrapTestService.context1,tag)
+        Note note1 = noteService.addStandardNote(bootstrapTestService.learnerPaul, "note1", bootstrapTestService.context1, tag)
+        Note note2 = noteService.addStandardNote(bootstrapTestService.learnerPaul, "note2", bootstrapTestService.context1, tag)
 
         when: "I want to find only paul's notes"
-        List<Note> res = noteService.findAllNotes(bootstrapTestService.learnerPaul,true,true,false,bootstrapTestService.context1,tag,[sort: 'dateCreated', order: 'desc'],'standard','off').list
+        List<Note> res = noteService.findAllNotes(bootstrapTestService.learnerPaul, true, true, false, bootstrapTestService.context1, tag, [sort: 'dateCreated', order: 'desc'], 'standard', 'off').list
 
         then: "I get only the two paul's notes"
         res.size() == 2

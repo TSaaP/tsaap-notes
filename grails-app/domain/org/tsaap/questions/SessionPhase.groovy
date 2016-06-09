@@ -3,10 +3,10 @@ package org.tsaap.questions
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 import org.gcontracts.annotations.Requires
-//import org.hibernate.mapping.List
 import org.tsaap.directory.User
+
+//import org.hibernate.mapping.List
 import org.tsaap.ia.conflict.SocioCognitiveConflictService
-import org.tsaap.notes.NoteGrade
 
 class SessionPhase {
 
@@ -32,7 +32,6 @@ class SessionPhase {
         mappingUserExplanation nullable: true
         mappingResponseConflictResponse nullable: true
     }
-
 
     /**
      * Flag to indicate if the phase is not started
@@ -76,7 +75,7 @@ class SessionPhase {
         status = LiveSessionStatus.Ended.name()
         endDate = new Date()
         if (shouldBuildResultMatrix) {
-           updateResultMatrixAsJson()
+            updateResultMatrixAsJson()
         }
         if (rank == 2) {
             updateMappingUserExplanationAsJson()
@@ -96,15 +95,12 @@ class SessionPhase {
         resultMatrixAsJson = builder.toString()
     }
 
-    /**        if (rank == 3) {
-            liveSessionService
-        }
-     * Get the response of the current session phase for a given user
+    /**        if (rank == 3) {liveSessionService}* Get the response of the current session phase for a given user
      * @param user the given user
      * @return the live session response if it exists
      */
     LiveSessionResponse getResponseForUser(User user) {
-        LiveSessionResponse.findBySessionPhaseAndUser(this, user,[fetch: [explanation: 'join'] ])
+        LiveSessionResponse.findBySessionPhaseAndUser(this, user, [fetch: [explanation: 'join']])
     }
 
     /**
@@ -151,7 +147,7 @@ class SessionPhase {
     List<Map<String, Float>> buildResultMatrix() {
         def responses = LiveSessionResponse.findAllBySessionPhase(this)
         Question question = this.liveSession.note.question
-        resultMatrixService.buildResultMatrixForQuestionAndResponses(question,responses)
+        resultMatrixService.buildResultMatrixForQuestionAndResponses(question, responses)
     }
 
     /**
@@ -166,13 +162,13 @@ class SessionPhase {
      * the map matching users to explanation to evaluate
      * @return the map
      */
-    Map<String,List<Long>> getMappingUserExplanationAsMap() {
+    Map<String, List<Long>> getMappingUserExplanationAsMap() {
         JsonSlurper parser = new JsonSlurper()
         if (mappingUserExplanation == null) {
             updateMappingUserExplanationAsJson()
             save(flush: true)
         }
-        Map<String,List<Long>> res = parser.parseText(mappingUserExplanation)
+        Map<String, List<Long>> res = parser.parseText(mappingUserExplanation)
         res
     }
 
@@ -188,7 +184,7 @@ class SessionPhase {
      * Construct the map matching users to explanation to evaluate
      * @return
      */
-    Map<Long,List<Long>> buildMappingUserExplanation() {
+    Map<Long, List<Long>> buildMappingUserExplanation() {
         def responseList = LiveSessionResponse.findAllBySessionPhase(this)
         socioCognitiveConflictService.explanationIdListByUserId(responseList)
     }
@@ -197,13 +193,13 @@ class SessionPhase {
      * the map matching users to explanation to evaluate
      * @return the map
      */
-    Map<String,Long> getMappingResponseConflictResponseAsMap() {
+    Map<String, Long> getMappingResponseConflictResponseAsMap() {
         JsonSlurper parser = new JsonSlurper()
         if (mappingResponseConflictResponse == null) {
             updateMappingConflictResponseResponseAsJson()
             save(flush: true)
         }
-        Map<String,Long> res = parser.parseText(mappingResponseConflictResponse)
+        Map<String, Long> res = parser.parseText(mappingResponseConflictResponse)
         res        //
     }
 
@@ -213,16 +209,14 @@ class SessionPhase {
         mappingResponseConflictResponse = builder.toString()
     }
 
-
     /**
      * Construct the map matching users to explanation to evaluate
      * @return
      */
-    Map<Long,Long> buildMappingResponsesConflict() {
+    Map<Long, Long> buildMappingResponsesConflict() {
         def responseList = LiveSessionResponse.findAllBySessionPhase(this)
         socioCognitiveConflictService.responseConflictIdByResponseId(responseList)
     }
-
 
     /**
      *
@@ -233,7 +227,7 @@ class SessionPhase {
         if (response == null) {
             return null
         }
-        Map<String,Long> map = getMappingResponseConflictResponseAsMap()
+        Map<String, Long> map = getMappingResponseConflictResponseAsMap()
         String key = response.id as String
         Long val = map.get(key)
         LiveSessionResponse.get(val)
@@ -243,11 +237,11 @@ class SessionPhase {
         if (response == null) {
             return []
         }
-        Map<String,List<Long>> map = getMappingUserExplanationAsMap()
+        Map<String, List<Long>> map = getMappingUserExplanationAsMap()
         String key = response.userId as String
         List<Long> respIds = map.get(key)
         LiveSessionResponse.getAll(respIds)
     }
 
-    static transients = ['resultMatrix', 'resultMatrixService','MAX_RANK','socioCognitiveConflictService']
+    static transients = ['resultMatrix', 'resultMatrixService', 'MAX_RANK', 'socioCognitiveConflictService']
 }

@@ -3,7 +3,6 @@ package org.tsaap.questions
 import org.tsaap.directory.User
 import org.tsaap.notes.Note
 import org.tsaap.questions.impl.gift.GiftQuestionService
-import org.tsaap.questions.impl.gift.GiftUserResponseException
 
 class LiveSessionResponse {
 
@@ -43,7 +42,7 @@ class LiveSessionResponse {
             } catch (Exception e) {
                 log.error(e.message)
                 answerBlockTextList = []
-                for(int i = 0 ; i < question.answerBlockList.size(); i++) {
+                for (int i = 0; i < question.answerBlockList.size(); i++) {
                     answerBlockTextList << []
                 }
             }

@@ -24,29 +24,29 @@ import java.util.logging.Level
 
 class BootStrap {
 
-  BootstrapService bootstrapService
+    BootstrapService bootstrapService
 
-  def init = { servletContext ->
-    bootstrapService.initializeReferenceData()
-    Environment.executeForCurrentEnvironment {
-      development {
-        Sql.LOG.level = Level.FINE
-        bootstrapService.inializeDevUsers()
-        bootstrapService.initializeDevContext()
-        bootstrapService.initializeDevContextWithFragment()
-      }
-      demo {
-        bootstrapService.inializeDevUsers()
-        bootstrapService.initializeDevContext()
-        bootstrapService.initializeDevContextWithFragment()
-      }
+    def init = { servletContext ->
+        bootstrapService.initializeReferenceData()
+        Environment.executeForCurrentEnvironment {
+            development {
+                Sql.LOG.level = Level.FINE
+                bootstrapService.inializeDevUsers()
+                bootstrapService.initializeDevContext()
+                bootstrapService.initializeDevContextWithFragment()
+            }
+            demo {
+                bootstrapService.inializeDevUsers()
+                bootstrapService.initializeDevContext()
+                bootstrapService.initializeDevContextWithFragment()
+            }
+        }
+        // inti config db connection for LTI
+        def conf = Holders.config
+        Config.DB_NAME = conf.dataSource.url
+        Config.DB_USERNAME = conf.dataSource.username
+        Config.DB_PASSWORD = conf.dataSource.password
     }
-    // inti config db connection for LTI
-    def conf = Holders.config
-    Config.DB_NAME = conf.dataSource.url
-    Config.DB_USERNAME = conf.dataSource.username
-    Config.DB_PASSWORD = conf.dataSource.password
-  }
 
-  def destroy = {}
+    def destroy = {}
 }

@@ -19,20 +19,20 @@ import org.tsaap.lti.LtiUserException
 
 class UrlMappings {
 
-	static mappings = {
-		"/$controller/$action?/$id?"{
-			constraints {
-				// apply constraints here
-			}
-		}
+    static mappings = {
+        "/$controller/$action?/$id?" {
+            constraints {
+                // apply constraints here
+            }
+        }
 
-        "/scope/$action?/$id?" (controller: 'context')
+        "/scope/$action?/$id?"(controller: 'context')
 
-		"/"(view:"/index")
-        "/terms"(view:"/terms")
-		"/lti/terms"(view: "/lti/terms")
-		"500"(view:'/error')
-		"500"(view: '/lti/error', exception: LtiContextInitialisationException)
-		"500"(view: '/lti/error', exception: LtiUserException)
-	}
+        "/"(view: "/index")
+        "/terms"(view: "/terms")
+        "/lti/terms"(view: "/lti/terms")
+        "500"(view: '/error')
+        "500"(view: '/lti/error', exception: LtiContextInitialisationException)
+        "500"(view: '/lti/error', exception: LtiUserException)
+    }
 }

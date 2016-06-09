@@ -1,9 +1,7 @@
 package org.tsaap.questions
 
-import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
 import org.gcontracts.PreconditionViolation
-import org.tsaap.notes.Note
 import spock.lang.Specification
 
 /**

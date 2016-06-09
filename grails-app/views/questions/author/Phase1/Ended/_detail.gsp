@@ -31,8 +31,10 @@
     </g:each>
     <g:if test="${note.context.isOpen()}">
         ${message(code: "questions.author.phase1.ended.close")} ${sessionPhase.responseCount()} ${message(code: "questions.author.responses")} >
-        <g:remoteLink action="startPhase" controller="question" params="[liveSessId:sessionPhase.liveSession.id,noteId:note.id,phaseRank:2]"
-                      class="btn btn-success btn-xs" update="question_${note.id}" onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])">
+        <g:remoteLink action="startPhase" controller="question"
+                      params="[liveSessId: sessionPhase.liveSession.id, noteId: note.id, phaseRank: 2]"
+                      class="btn btn-success btn-xs" update="question_${note.id}"
+                      onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])">
             <span class="glyphicon glyphicon-play"></span> ${message(code: "questions.author.phase1.ended.start.phase2")}</g:remoteLink>
     </g:if>
 </div>

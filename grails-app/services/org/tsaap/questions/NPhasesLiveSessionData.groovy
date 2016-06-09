@@ -21,7 +21,7 @@ import groovy.transform.ToString
 /**
  * Class for live session data encapsulation
  */
-@ToString(includeNames=true)
+@ToString(includeNames = true)
 class NPhasesLiveSessionData {
     Long contextId
     String contextName

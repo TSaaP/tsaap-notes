@@ -18,10 +18,12 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-  <title>${message(code: "tsaap.terms.title")}</title>
+    <title>${message(code: "tsaap.terms.title")}</title>
 </head>
+
 <body>
 <h1>${message(code: "tsaap.terms.title")}</h1>
+
 <p>
     ${message(code: "tsaap.terms")}
 </p>

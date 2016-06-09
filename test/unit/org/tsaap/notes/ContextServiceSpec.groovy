@@ -20,17 +20,13 @@ import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
 import org.gcontracts.PreconditionViolation
 import org.tsaap.directory.User
-import org.tsaap.notes.Context
-import org.tsaap.notes.ContextService
-import org.tsaap.notes.Note
-import org.tsaap.notes.NoteService
 import spock.lang.Specification
 
 /**
  * Created by franck on 28/10/2014.
  */
 @TestFor(ContextService)
-@Mock([Context,Note])
+@Mock([Context, Note])
 class ContextServiceSpec extends Specification {
 
     ContextService contextService
@@ -49,38 +45,38 @@ class ContextServiceSpec extends Specification {
     }
 
     def "duplication of a context is only possible for the owner of the original scope"() {
-        given:"a contex"
+        given: "a contex"
         context
 
-        and:"a user who is not the owner of the context"
+        and: "a user who is not the owner of the context"
         User aUser = Mock(User)
 
-        when:"the user try to duplicate the scope"
-        contextService.duplicateContext(context,aUser)
+        when: "the user try to duplicate the scope"
+        contextService.duplicateContext(context, aUser)
 
-        then:"an exception is thrown"
+        then: "an exception is thrown"
         thrown(PreconditionViolation)
     }
 
     def "duplication of a context must duplicate name, url, owner"() {
-        given:"a context"
+        given: "a context"
         context
 
         when: "the context is duplicated"
-        Context newContext = contextService.duplicateContext(context, user,false)
+        Context newContext = contextService.duplicateContext(context, user, false)
 
-        then:"the duplicated context has the same properties than the original"
+        then: "the duplicated context has the same properties than the original"
         newContext.contextName == "${context.contextName}$ContextService.SUFFIXE_COPY"
         newContext.url == context.url
         newContext.owner == context.owner
         newContext.descriptionAsNote == context.descriptionAsNote
 
-        and:"he has no errors"
+        and: "he has no errors"
         newContext.hasErrors()
     }
 
     def "default duplication of a context must duplicate the questions of the owner of the scope"() {
-        given:"a context"
+        given: "a context"
         context
 
         and: "2 question notes associated with the context"
@@ -94,19 +90,18 @@ class ContextServiceSpec extends Specification {
             getAuthor() >> Mock(User)
         }
         contextService.noteService = Mock(NoteService) {
-            findAllNotesAsQuestionForContext(context) >> [q1,q2,q3]
+            findAllNotesAsQuestionForContext(context) >> [q1, q2, q3]
         }
 
         when: "the context is duplicated"
         contextService.duplicateContext(context, user)
 
-        then:"only note as question authored by the scope owner is duplicated"
-        1 * contextService.noteService.duplicateNoteInContext(q1,_,user)
-        1 * contextService.noteService.duplicateNoteInContext(q2,_,user)
-        0 * contextService.noteService.duplicateNoteInContext(q3,_,user)
+        then: "only note as question authored by the scope owner is duplicated"
+        1 * contextService.noteService.duplicateNoteInContext(q1, _, user)
+        1 * contextService.noteService.duplicateNoteInContext(q2, _, user)
+        0 * contextService.noteService.duplicateNoteInContext(q3, _, user)
 
     }
-
 
 
 }

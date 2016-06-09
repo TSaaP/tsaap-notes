@@ -41,7 +41,7 @@ public class DataStoreException extends Exception {
      * message and root cause.
      *
      * @param message the detailed message.
-     * @param cause root failure cause
+     * @param cause   root failure cause
      */
     public DataStoreException(String message, Throwable cause) {
         super(message, cause);

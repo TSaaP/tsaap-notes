@@ -20,34 +20,35 @@ import grails.test.mixin.TestFor
 import org.tsaap.directory.User
 import spock.lang.Specification
 import spock.lang.Unroll
+
 /**
  * See the API for {@link grails.test.mixin.domain.DomainClassUnitTestMixin} for usage instructions*/
 @TestFor(Context)
 class ContextSpec extends Specification {
 
-  @Unroll
-  def "'#name' is valid context name is #nameIsOK"() {
+    @Unroll
+    def "'#name' is valid context name is #nameIsOK"() {
 
-    when: "a new context is created"
-    def user = Mock(User)
-    Context context = new Context(contextName: name, url: 'http://www.w3.org', descriptionAsNote: 'a description', owner: user)
+        when: "a new context is created"
+        def user = Mock(User)
+        Context context = new Context(contextName: name, url: 'http://www.w3.org', descriptionAsNote: 'a description', owner: user)
 
-    then: "the validation gives..."
-    println "-${context.contextName}-"
-    context.validate() == nameIsOK
+        then: "the validation gives..."
+        println "-${context.contextName}-"
+        context.validate() == nameIsOK
 
-    where: "name and nameIsOK"
-    name            | nameIsOK
-    "is not a word" | true
-    "franck"        | true
-    "Mary"          | true
-    "franck-s"      | true
-    "Mary_s"        | true
-    "fr@nck"        | true
-    "Mar%"          | true
-    "éric"          | true
-    "69"            | true
-    "thi_s/is/OK"   | true
-  }
+        where: "name and nameIsOK"
+        name            | nameIsOK
+        "is not a word" | true
+        "franck"        | true
+        "Mary"          | true
+        "franck-s"      | true
+        "Mary_s"        | true
+        "fr@nck"        | true
+        "Mar%"          | true
+        "éric"          | true
+        "69"            | true
+        "thi_s/is/OK"   | true
+    }
 
 }

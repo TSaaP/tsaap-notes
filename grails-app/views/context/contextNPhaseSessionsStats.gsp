@@ -47,13 +47,13 @@
                 <th style="border: medium">${propName}</th>
             </g:each>
         </tr>
-    <g:each in="${stats}" var="currentStats">
-        <tr>
-            <g:each in="${labels.keySet()}" var="propName">
-                <td>${currentStats."$propName"}</td>
-            </g:each>
+        <g:each in="${stats}" var="currentStats">
+            <tr>
+                <g:each in="${labels.keySet()}" var="propName">
+                    <td>${currentStats."$propName"}</td>
+                </g:each>
             </tr>
-    </g:each>
+        </g:each>
     </table>
     <hr/>
 </div>

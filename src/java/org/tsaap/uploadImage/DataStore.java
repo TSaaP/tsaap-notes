@@ -38,7 +38,7 @@ public interface DataStore {
      * @param identifier data identifier
      * @return identified data record
      * @throws DataStoreException if the data store could not be accessed,
-     *                     or if the given identifier is invalid
+     *                            or if the given identifier is invalid
      */
     DataRecord getRecord(DataIdentifier identifier) throws DataStoreException;
 

@@ -31,7 +31,7 @@ class Attachement {
         originalName nullable: true
         dimension nullable: true
         context nullable: true
-        note nullable : true
+        note nullable: true
     }
 
     static embedded = ['dimension']

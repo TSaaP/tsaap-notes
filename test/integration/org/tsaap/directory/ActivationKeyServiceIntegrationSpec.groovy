@@ -1,8 +1,7 @@
 package org.tsaap.directory
 
 import org.apache.commons.lang.time.DateUtils
-import org.codehaus.groovy.grails.commons.GrailsApplication
-import spock.lang.*
+import spock.lang.Specification
 
 /**
  *
@@ -64,7 +63,7 @@ class ActivationKeyServiceIntegrationSpec extends Specification {
         activationKey2.save()
         activationKey2.dateCreated = DateUtils.addHours(new Date(), -lifetime - 1)
         activationKey2.save()
-        
+
         and: "Start Activation Key garbage collector job "
         activationKeyService.removeOldActivationKeys()
 

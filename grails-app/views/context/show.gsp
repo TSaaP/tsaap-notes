@@ -13,7 +13,6 @@
 
 <body>
 
-
 <div class="container context-nav" role="navigation">
     <ol class="breadcrumb">
         <li><g:link class="list" action="index"><g:message code="default.list.label"
@@ -94,13 +93,13 @@
                     <td>
                         ${message(code: 'context.show.notes')}
                     </td>
-                <td>
+                    <td>
                         <g:link controller="notes"
                                 params="[displaysAll: 'on', contextName: context?.contextName, contextId: context.id, kind: 'standard']"><g:createLink
                                 absolute="true" controller="notes"
                                 params="[displaysAll: 'on', contextName: context?.contextName, contextId: context.id, kind: 'standard']"/></g:link>
 
-                </td>
+                    </td>
                 </tr>
             </g:if>
 
@@ -132,16 +131,16 @@
                     <g:link class="btn btn-primary" controller="context" action="exportQuestionsAsGift"
                             id="${context.id}" target="_blank">${message(code: 'context.show.export.link')}</g:link>
                     <g:link class="btn btn-primary" controller="context" action="exportQuestionsAsGiftWithFeedbacks"
-                            id="${context.id}" target="_blank">${message(code: 'context.show.exportFeedback.link')}</g:link>
+                            id="${context.id}"
+                            target="_blank">${message(code: 'context.show.exportFeedback.link')}</g:link>
 
                     <g:if test="${context.isOpen()}">
                         <g:link class="btn btn-primary" controller="context" action="closeContext"
-                                params="[id: context.id, show: 1]" >${message(code: 'context.index.close.button')}</g:link>
+                                params="[id: context.id, show: 1]">${message(code: 'context.index.close.button')}</g:link>
                     </g:if>
-                    <g:elseif test="${context.isClosed()}" >
+                    <g:elseif test="${context.isClosed()}">
                         <g:link class="btn btn-primary" controller="context" action="openContext"
                                 params="[id: context.id, show: 1]">${message(code: 'context.index.open.button')}</g:link>
-
 
                     </g:elseif>
                 </fieldset>

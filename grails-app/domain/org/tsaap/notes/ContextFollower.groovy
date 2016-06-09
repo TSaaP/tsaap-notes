@@ -20,22 +20,22 @@ import org.tsaap.directory.User
 
 class ContextFollower {
 
-  Date dateCreated
-  User follower
-  Context context
-  Boolean followerIsTeacher = false
-  Boolean isNoMoreSubscribed = false
-  Date unsusbscriptionDate
+    Date dateCreated
+    User follower
+    Context context
+    Boolean followerIsTeacher = false
+    Boolean isNoMoreSubscribed = false
+    Date unsusbscriptionDate
 
-  static constraints = {
-    unsusbscriptionDate nullable: true, validator: { value, object ->
-      (object.isNoMoreSubscribed && value) || (!object.isNoMoreSubscribed && !value)
+    static constraints = {
+        unsusbscriptionDate nullable: true, validator: { value, object ->
+            (object.isNoMoreSubscribed && value) || (!object.isNoMoreSubscribed && !value)
+        }
     }
-  }
 
-  static mapping = {
-    cache 'read-write'
-    version(false)
-  }
+    static mapping = {
+        cache 'read-write'
+        version(false)
+    }
 
 }

@@ -18,65 +18,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description"
-        content="Tsaap Notes - microblogging for learners and teachers">
-  <meta name="author" content="Tsaap Development Group">
-  <link rel="shortcut icon" href="${resource(dir: 'images', file: 'favicon.ico')}" type="image/x-icon">
-  <title><g:layoutTitle default="TsaaP-Notes"/></title>
-  <r:layoutResources/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+          content="Tsaap Notes - microblogging for learners and teachers">
+    <meta name="author" content="Tsaap Development Group">
+    <link rel="shortcut icon" href="${resource(dir: 'images', file: 'favicon.ico')}" type="image/x-icon">
+    <title><g:layoutTitle default="TsaaP-Notes"/></title>
+    <r:layoutResources/>
 </head>
 
 <body>
 <g:layoutBody/>
 <div class="navbar navbar-inverse navbar-fixed-top">
-  <div class="container">
-    <button type="button" class="navbar-toggle" data-toggle="collapse"
-            data-target=".nav-collapse">
-      <span class="icon-bar"></span>
-      <span class="icon-bar"></span>
-      <span class="icon-bar"></span>
-    </button>
-    <g:link class="navbar-brand" uri="/">TsaaP-Notes</g:link>
+    <div class="container">
+        <button type="button" class="navbar-toggle" data-toggle="collapse"
+                data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <g:link class="navbar-brand" uri="/">TsaaP-Notes</g:link>
 
-    <div class="nav-collapse collapse">
-      <ul class="nav navbar-nav">
-        <li><a href="https://github.com/TSaaP/tsaap-notes" target="_blank">${message(code: "layout.home.github")}</a></li>
-        <li><a href="https://github.com/TSaaP/tsaap-notes/issues?state=open" target="_blank">${message(code: "layout.home.bug")}</a></li>
-        <li><a href="mailto:franck.silvestre@irit.fr">Contact</a></li>
-        %{--<li class="dropdown">--}%
-          %{--<a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b--}%
-                  %{--class="caret"></b></a>--}%
-          %{--<ul class="dropdown-menu">--}%
-            %{--<li><a href="#">Action</a></li>--}%
-            %{--<li><a href="#">Another action</a></li>--}%
-            %{--<li><a href="#">Something else here</a></li>--}%
-            %{--<li class="divider"></li>--}%
-            %{--<li class="nav-header">Nav header</li>--}%
-            %{--<li><a href="#">Separated link</a></li>--}%
-            %{--<li><a href="#">One more separated link</a></li>--}%
-          %{--</ul>--}%
-        %{--</li>--}%
-      </ul>
+        <div class="nav-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="https://github.com/TSaaP/tsaap-notes"
+                       target="_blank">${message(code: "layout.home.github")}</a></li>
+                <li><a href="https://github.com/TSaaP/tsaap-notes/issues?state=open"
+                       target="_blank">${message(code: "layout.home.bug")}</a></li>
+                <li><a href="mailto:franck.silvestre@irit.fr">Contact</a></li>
+                %{--<li class="dropdown">--}%
+                %{--<a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b--}%
+                %{--class="caret"></b></a>--}%
+                %{--<ul class="dropdown-menu">--}%
+                %{--<li><a href="#">Action</a></li>--}%
+                %{--<li><a href="#">Another action</a></li>--}%
+                %{--<li><a href="#">Something else here</a></li>--}%
+                %{--<li class="divider"></li>--}%
+                %{--<li class="nav-header">Nav header</li>--}%
+                %{--<li><a href="#">Separated link</a></li>--}%
+                %{--<li><a href="#">One more separated link</a></li>--}%
+                %{--</ul>--}%
+                %{--</li>--}%
+            </ul>
 
-      <div class="nav-collapse collapse pull-right">
-        <ul class="nav navbar-nav">
-          <tsaap:ifNotLoggedIn>
-          <li><g:link controller="login" action="auth">${message(code: "layout.home.signIn")} &raquo;</g:link></li>
-          </tsaap:ifNotLoggedIn>
-          <tsaap:ifLoggedIn>
-            <li><g:link controller="context" params="[filter:'__FOLLOWED__']">${message(code: "layout.home.welcome")} @<sec:username/> !</g:link></li>
-          </tsaap:ifLoggedIn>
-        </ul>
-      </div>
-    </div><!--/.nav-collapse -->
-  </div>
+            <div class="nav-collapse collapse pull-right">
+                <ul class="nav navbar-nav">
+                    <tsaap:ifNotLoggedIn>
+                        <li><g:link controller="login"
+                                    action="auth">${message(code: "layout.home.signIn")} &raquo;</g:link></li>
+                    </tsaap:ifNotLoggedIn>
+                    <tsaap:ifLoggedIn>
+                        <li><g:link controller="context"
+                                    params="[filter: '__FOLLOWED__']">${message(code: "layout.home.welcome")} @<sec:username/> !</g:link></li>
+                    </tsaap:ifLoggedIn>
+                </ul>
+            </div>
+        </div><!--/.nav-collapse -->
+    </div>
 </div>
 <r:layoutResources/>
 
 <footer class="container">
-    <p>&copy; Tsaap Development Group 2013 - Tsaap-Notes version <g:meta name="app.version"/> - <a href="${grailsApplication.config.grails.serverURL}/terms">Mentions</a></p>
+    <p>&copy; Tsaap Development Group 2013 - Tsaap-Notes version <g:meta name="app.version"/> - <a
+            href="${grailsApplication.config.grails.serverURL}/terms">Mentions</a></p>
 </footer>
 </body>
 </html>

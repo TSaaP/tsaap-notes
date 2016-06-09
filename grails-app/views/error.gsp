@@ -16,45 +16,46 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Tsaap-Notes</title>
-  <meta name="layout" content="home">
-  <r:require module="tsaap_ui_home"/>
+    <title>Tsaap-Notes</title>
+    <meta name="layout" content="home">
+    <r:require module="tsaap_ui_home"/>
 </head>
 
 <body>
 <div class="container">
 
-  <div class="alert">
+    <div class="alert">
 
-    <g:if test="${flash.message}">
-      <p>${flash.message}</p>
-    </g:if>
-    <g:else>
-      <p>
-        ${message(code: "error.apologies.text")}
-      </p>
-    </g:else>
-    <p>
-      ${message(code: "error.continueLink.message")} <g:link uri="/login/auth">${message(code: "error.continueLink.link")}</g:link>.
-    </p>
+        <g:if test="${flash.message}">
+            <p>${flash.message}</p>
+        </g:if>
+        <g:else>
+            <p>
+                ${message(code: "error.apologies.text")}
+            </p>
+        </g:else>
+        <p>
+            ${message(code: "error.continueLink.message")} <g:link
+                    uri="/login/auth">${message(code: "error.continueLink.link")}</g:link>.
+        </p>
 
-  </div>
-
-  <g:if env="development">
-    <p>
-      <a href="#"
-         onclick="showException()">${message(code: "error.development.errorDetail.link")}</a>
-    </p>
-
-    <div id="exception" style="display:none">
-      <g:renderException exception="${exception}"/>
     </div>
-  </g:if>
+
+    <g:if env="development">
+        <p>
+            <a href="#"
+               onclick="showException()">${message(code: "error.development.errorDetail.link")}</a>
+        </p>
+
+        <div id="exception" style="display:none">
+            <g:renderException exception="${exception}"/>
+        </div>
+    </g:if>
 </div>
 <r:script>
-  function showException() {
-    $('#exception').show()
-  }
+    function showException() {
+        $('#exception').show()
+    }
 
 </r:script>
 </body>

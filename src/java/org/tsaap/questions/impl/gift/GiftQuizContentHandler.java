@@ -21,7 +21,10 @@ import org.tsaap.questions.Question;
 import org.tsaap.questions.QuestionType;
 import org.tsaap.questions.QuizContentHandler;
 import org.tsaap.questions.TextBlock;
-import org.tsaap.questions.impl.*;
+import org.tsaap.questions.impl.DefaultAnswer;
+import org.tsaap.questions.impl.DefaultAnswerBlock;
+import org.tsaap.questions.impl.DefaultQuestion;
+import org.tsaap.questions.impl.DefaultQuiz;
 
 /**
  * @author franck Silvestre
@@ -179,7 +182,7 @@ public class GiftQuizContentHandler implements QuizContentHandler {
 
 
     private void postProcess(Question question) {
-       logger.debug("Post processing of the current question");
+        logger.debug("Post processing of the current question");
     }
 
     private static Logger logger = Logger.getLogger(GiftQuizContentHandler.class);
@@ -191,5 +194,5 @@ public class GiftQuizContentHandler implements QuizContentHandler {
     private StringBuffer currentTitle;
     private boolean answerCreditIsBeenBuilt;
     private boolean feedbackIsBeenBuilt;
-    private int answerCounter ;
+    private int answerCounter;
 }

@@ -21,12 +21,16 @@
     <g:if test="${sessionPhase.getResponseForUser(user)}">
         <div class="alert alert-success">
             ${message(code: "questions.user.phase1.started.wait")} &quot;<strong>${question.title}</strong>&quot;...
-            <g:remoteLink action="refreshPhase" controller="question" params="[noteId:note.id,phaseId:sessionPhase.id]" title="Refresh" update="question_${note.id}" onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"><span class="glyphicon glyphicon-refresh">&nbsp;</span></g:remoteLink>
+            <g:remoteLink action="refreshPhase" controller="question"
+                          params="[noteId: note.id, phaseId: sessionPhase.id]" title="Refresh"
+                          update="question_${note.id}"
+                          onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"><span
+                    class="glyphicon glyphicon-refresh">&nbsp;</span></g:remoteLink>
             (${message(code: "questions.responseCount")} :${sessionPhase.responseCount()})
         </div>
     </g:if>
     <g:else>
-        <g:form >
+        <g:form>
             <g:hiddenField name="phaseId" value="${sessionPhase.id}"/>
             <g:hiddenField name="noteId" value="${note.id}"/>
             <p><strong>${question.title}</strong></p>
@@ -36,15 +40,18 @@
                         ${block.text}
                     </g:if>
                     <g:else>
-                        <g:render template="/questions/${question.questionType.name()}AnswerBlock" model="[block: block]"/>
+                        <g:render template="/questions/${question.questionType.name()}AnswerBlock"
+                                  model="[block: block]"/>
                     </g:else>
                 </p>
             </g:each>
             <p>${message(code: "questions.explanation")}</p>
             <g:textArea class="form-control note-editable-content" rows="3" name="explanation"/>
-            <p>${message(code: "questions.confidenceDegree")} <g:select name="confidenceDegree" from="[1,2,3,4,5]"/></p>
+            <p>${message(code: "questions.confidenceDegree")} <g:select name="confidenceDegree"
+                                                                        from="[1, 2, 3, 4, 5]"/></p>
             <g:submitToRemote action="submitResponseInAPhase" controller="question" update="question_${note.id}"
-                              class="btn btn-primary btn-xs" value="${message(code: "questions.user.submit")}" onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"/>
+                              class="btn btn-primary btn-xs" value="${message(code: "questions.user.submit")}"
+                              onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"/>
         </g:form>
     </g:else>
 </div>

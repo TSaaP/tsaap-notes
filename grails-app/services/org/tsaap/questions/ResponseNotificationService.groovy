@@ -5,6 +5,7 @@ import groovy.sql.Sql
 import org.hibernate.SessionFactory
 import org.springframework.context.MessageSource
 import org.tsaap.directory.UnsubscribeKey
+
 import javax.sql.DataSource
 
 class ResponseNotificationService {

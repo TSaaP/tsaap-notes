@@ -22,55 +22,55 @@ import spock.lang.Specification
 
 class BootstrapServiceIntegrationSpec extends Specification {
 
-  BootstrapService bootstrapService
+    BootstrapService bootstrapService
 
-  def "role initialization"() {
+    def "role initialization"() {
 
-    when: "roles are initialized"
-    bootstrapService.initializeRoles()
+        when: "roles are initialized"
+        bootstrapService.initializeRoles()
 
-    then: "we have 3 roles..."
-    bootstrapService.studentRole != null
-    bootstrapService.studentRole == RoleEnum.STUDENT_ROLE.role
-    bootstrapService.teacherRole != null
-    bootstrapService.teacherRole == RoleEnum.TEACHER_ROLE.role
-    bootstrapService.adminRole != null
-    bootstrapService.adminRole == RoleEnum.ADMIN_ROLE.role
-    bootstrapService.adminRole.id == 1
+        then: "we have 3 roles..."
+        bootstrapService.studentRole != null
+        bootstrapService.studentRole == RoleEnum.STUDENT_ROLE.role
+        bootstrapService.teacherRole != null
+        bootstrapService.teacherRole == RoleEnum.TEACHER_ROLE.role
+        bootstrapService.adminRole != null
+        bootstrapService.adminRole == RoleEnum.ADMIN_ROLE.role
+        bootstrapService.adminRole.id == 1
 
-  }
+    }
 
-  def "user initialization"() {
+    def "user initialization"() {
 
-    when: "users are initilized"
-    bootstrapService.inializeDevUsers()
+        when: "users are initilized"
+        bootstrapService.inializeDevUsers()
 
-    then: "we have 3 users"
-    bootstrapService.fsil != null
-    bootstrapService.fsil.username == "fsil"
-    bootstrapService.fsil.settings.language == 'fr'
-    bootstrapService.mary != null
-    bootstrapService.mary.username == "mary"
-    bootstrapService.mary.settings.language == 'fr'
-    bootstrapService.thom != null
-    bootstrapService.thom.username == "thom"
-    bootstrapService.thom.settings.language == 'fr'
-  }
+        then: "we have 3 users"
+        bootstrapService.fsil != null
+        bootstrapService.fsil.username == "fsil"
+        bootstrapService.fsil.settings.language == 'fr'
+        bootstrapService.mary != null
+        bootstrapService.mary.username == "mary"
+        bootstrapService.mary.settings.language == 'fr'
+        bootstrapService.thom != null
+        bootstrapService.thom.username == "thom"
+        bootstrapService.thom.settings.language == 'fr'
+    }
 
-  def "context initialization"() {
+    def "context initialization"() {
 
-    given: "dev users initialized"
-    bootstrapService.inializeDevUsers()
+        given: "dev users initialized"
+        bootstrapService.inializeDevUsers()
 
-    when: "context are initialized"
-    bootstrapService.initializeDevContext()
-    bootstrapService.initializeDevContextWithFragment()
+        when: "context are initialized"
+        bootstrapService.initializeDevContext()
+        bootstrapService.initializeDevContextWithFragment()
 
-    then: "we have two context"
-    bootstrapService.football != null
-    bootstrapService.football.contextName == "football"
-    bootstrapService.science != null
-    bootstrapService.science.contextName == "science"
-  }
+        then: "we have two context"
+        bootstrapService.football != null
+        bootstrapService.football.contextName == "football"
+        bootstrapService.science != null
+        bootstrapService.science.contextName == "science"
+    }
 
 }

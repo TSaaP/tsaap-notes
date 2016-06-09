@@ -36,12 +36,12 @@ class LmsGradeService {
         def grade = [:]
         rows.each {
             def key = it.user_id
-            if(grades[key] == null){
+            if (grades[key] == null) {
                 grades[key] = [:]
                 grade = [:]
             }
             def grade_key = it.session_id
-            if(grade[grade_key] == null){
+            if (grade[grade_key] == null) {
                 grade[grade_key] = 0
             }
             grade[grade_key] = it.percent_credit
@@ -51,7 +51,7 @@ class LmsGradeService {
         def finalGrades = [:]
         grades.each { user, gradesMap ->
             def finalKey = user
-            if(finalGrades[finalKey] == null){
+            if (finalGrades[finalKey] == null) {
                 finalGrades[finalKey] = 0
             }
             int finalGrade = 0
@@ -61,7 +61,7 @@ class LmsGradeService {
                 }
                 finalGrade += credit
             }
-            finalGrade = finalGrade/questionNumber
+            finalGrade = finalGrade / questionNumber
             finalGrades[finalKey] = finalGrade
         }
         finalGrades
@@ -73,9 +73,9 @@ class LmsGradeService {
      * @param user lti user
      * @param grade user grade to send
      */
-    def sendUserGradeToLms(ResourceLink resourceLink,User user,int grade) {
-        Float finalGrade = grade/100
+    def sendUserGradeToLms(ResourceLink resourceLink, User user, int grade) {
+        Float finalGrade = grade / 100
         Outcome outcome = new Outcome("$finalGrade")
-        resourceLink.doOutcomesService(resourceLink.EXT_WRITE,outcome,user)
+        resourceLink.doOutcomesService(resourceLink.EXT_WRITE, outcome, user)
     }
 }

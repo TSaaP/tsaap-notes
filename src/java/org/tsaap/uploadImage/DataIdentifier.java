@@ -3,6 +3,7 @@ package org.tsaap.uploadImage;
 /**
  * Created by dylan on 11/05/15.
  */
+
 import java.io.Serializable;
 
 /**
@@ -68,7 +69,7 @@ public final class DataIdentifier implements Serializable {
      *
      * @param object other object
      * @return <code>true</code> if the given object is the same identifier,
-     *         <code>false</code> otherwise
+     * <code>false</code> otherwise
      */
     public boolean equals(Object object) {
         return (object instanceof DataIdentifier)

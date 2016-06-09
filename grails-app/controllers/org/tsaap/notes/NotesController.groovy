@@ -63,20 +63,18 @@ class NotesController {
             }
         }
         Note myNote
-        try{
-            if(params.kind && params.kind == 'question')
-            {
+        try {
+            if (params.kind && params.kind == 'question') {
                 myNote = noteService.addQuestion(user, noteContent, context, fragmentTag, parentNote)
-            }
-            else {
+            } else {
                 myNote = noteService.addStandardNote(user, noteContent, context, fragmentTag, parentNote)
             }
-        }catch (IsNotQuestionException e){
-            params.put("error","question")
+        } catch (IsNotQuestionException e) {
+            params.put("error", "question")
             renderMainPage(params, user)
             return
-        }catch (IsNotStandardNoteException e){
-            params.put("error","note")
+        } catch (IsNotStandardNoteException e) {
+            params.put("error", "note")
             renderMainPage(params, user)
             return
         }
@@ -150,12 +148,12 @@ class NotesController {
         if (noteInput?.startsWith('::')) {
             try {
                 Question question = giftQuestionService.getQuestionFromGiftText(noteInput)
-                render(template: '/questions/preview/detail',model: [question: question])
-            }catch (Exception e) {
+                render(template: '/questions/preview/detail', model: [question: question])
+            } catch (Exception e) {
                 render("${e.message}")
             }
         } else {
-          render(noteInput ?: '')
+            render(noteInput ?: '')
         }
     }
 
@@ -171,19 +169,23 @@ class NotesController {
 
         Question singleChoice = giftQuestionService.getQuestionFromGiftText("${message(code: "notes.edit.sampleQuestion.singleChoiceExemple")}")
 
-        def singlelink = """<a class="sampleLink" id="singleQuestionSample" onClick="sampleLink(0)">${message(code: "notes.edit.sampleQuestion.link")}</a><br><br>"""
+        def singlelink = """<a class="sampleLink" id="singleQuestionSample" onClick="sampleLink(0)">${
+            message(code: "notes.edit.sampleQuestion.link")
+        }</a><br><br>"""
         def multiple = "${message(code: "notes.edit.sampleQuestion.multipleChoice")}"
 
         Question multipleChoice = giftQuestionService.getQuestionFromGiftText("${message(code: "notes.edit.sampleQuestion.multipleChoiceExemple")}")
 
-        def multiplelink ="""<a class="sampleLink" id="singleQuestionSample" onClick="sampleLink(1)">${message(code: "notes.edit.sampleQuestion.link")}</a>"""
+        def multiplelink = """<a class="sampleLink" id="singleQuestionSample" onClick="sampleLink(1)">${
+            message(code: "notes.edit.sampleQuestion.link")
+        }</a>"""
 
         render(content)
         render(single)
-        render(template: '/questions/preview/detail',model: [question: singleChoice])
+        render(template: '/questions/preview/detail', model: [question: singleChoice])
         render(singlelink)
         render(multiple)
-        render(template: '/questions/preview/detail',model: [question: multipleChoice])
+        render(template: '/questions/preview/detail', model: [question: multipleChoice])
         render(multiplelink)
 
     }
@@ -240,32 +242,32 @@ class NotesController {
 
         def countTotal
         def kind
-       if (kindParams == NoteKind.STANDARD.toString().toLowerCase()){
+        if (kindParams == NoteKind.STANDARD.toString().toLowerCase()) {
 
-           kind = NoteKind.QUESTION
+            kind = NoteKind.QUESTION
 
-       } else {
+        } else {
 
-           kind = NoteKind.STANDARD
-       }
+            kind = NoteKind.STANDARD
+        }
 
-        countTotal  = noteService.countNotes(user,
+        countTotal = noteService.countNotes(user,
                 displaysMyNotes,
                 displaysMyFavorites,
                 displaysAll,
                 context,
                 fragmentTag,
                 kind.toString().toLowerCase()
-                )
+        )
 
 
 
-            render(view: '/notes/index', model: [user: user,
-                                                 notes: notes,
-                                                 countTotal:countTotal,
-                                                 context: context,
-                                                 fragmentTag: fragmentTag,
-                                                 showDiscussion: showDiscussion])
+        render(view: '/notes/index', model: [user          : user,
+                                             notes         : notes,
+                                             countTotal    : countTotal,
+                                             context       : context,
+                                             fragmentTag   : fragmentTag,
+                                             showDiscussion: showDiscussion])
     }
 
 }

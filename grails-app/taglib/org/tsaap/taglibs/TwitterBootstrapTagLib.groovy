@@ -28,24 +28,24 @@ class TwitterBootstrapTagLib {
      */
 
     /**
-    * Creates next/previous links to support pagination for the current controller.<br/>
-    *
-    * &lt;g:paginate total="${Account.count()}" /&gt;<br/>
-    *
-    * @emptyTag
-    *
-    * @attr total REQUIRED The total number of results to paginate
-    * @attr action the name of the action to use in the link, if not specified the default action will be linked
-    * @attr controller the name of the controller to use in the link, if not specified the current controller will be linked
-    * @attr id The id to use in the link
-    * @attr params A map containing request parameters
-    * @attr prev The text to display for the previous link (defaults to "Previous" as defined by default.paginate.prev property in I18n messages.properties)
-    * @attr next The text to display for the next link (defaults to "Next" as defined by default.paginate.next property in I18n messages.properties)
-    * @attr max The number of records displayed per page (defaults to 10). Used ONLY if params.max is empty
-    * @attr maxsteps The number of steps displayed for pagination (defaults to 10). Used ONLY if params.maxsteps is empty
-    * @attr offset Used only if params.offset is empty
-    * @attr fragment The link fragment (often called anchor tag) to use
-    */
+     * Creates next/previous links to support pagination for the current controller.<br/>
+     *
+     * &lt;g:paginate total="${Account.count()}" /&gt;<br/>
+     *
+     * @emptyTag
+     *
+     * @attr total REQUIRED The total number of results to paginate
+     * @attr action the name of the action to use in the link, if not specified the default action will be linked
+     * @attr controller the name of the controller to use in the link, if not specified the current controller will be linked
+     * @attr id The id to use in the link
+     * @attr params A map containing request parameters
+     * @attr prev The text to display for the previous link (defaults to "Previous" as defined by default.paginate.prev property in I18n messages.properties)
+     * @attr next The text to display for the next link (defaults to "Next" as defined by default.paginate.next property in I18n messages.properties)
+     * @attr max The number of records displayed per page (defaults to 10). Used ONLY if params.max is empty
+     * @attr maxsteps The number of steps displayed for pagination (defaults to 10). Used ONLY if params.maxsteps is empty
+     * @attr offset Used only if params.offset is empty
+     * @attr fragment The link fragment (often called anchor tag) to use
+     */
     def paginate = { attrs ->
 
         def writer = out
@@ -71,7 +71,7 @@ class TwitterBootstrapTagLib {
         if (params.sort) linkParams.sort = params.sort
         if (params.order) linkParams.order = params.order
 
-        def linkTagAttrs = [action:action]
+        def linkTagAttrs = [action: action]
         if (attrs.controller) {
             linkTagAttrs.controller = attrs.controller
         }
@@ -108,8 +108,7 @@ class TwitterBootstrapTagLib {
                 (attrs.prev ?: messageSource.getMessage('paginate.prev', null, messageSource.getMessage('default.paginate.prev', null, 'Previous', locale), locale))
             }
             writer << '</li>'
-        }
-        else {
+        } else {
             writer << '<li class="prev disabled">'
             writer << '<span>'
             writer << (attrs.prev ?: messageSource.getMessage('paginate.prev', null, messageSource.getMessage('default.paginate.prev', null, 'Previous', locale), locale))
@@ -141,7 +140,7 @@ class TwitterBootstrapTagLib {
             if (beginstep > firststep) {
                 linkParams.offset = 0
                 writer << '<li>'
-                writer << link(linkTagAttrs.clone()) {firststep.toString()}
+                writer << link(linkTagAttrs.clone()) { firststep.toString() }
                 writer << '</li>'
                 writer << '<li class="disabled"><span>...</span></li>'
             }
@@ -150,13 +149,12 @@ class TwitterBootstrapTagLib {
             (beginstep..endstep).each { i ->
                 if (currentstep == i) {
                     writer << "<li class=\"active\">"
-		    writer << "<span>${i}</span>"
+                    writer << "<span>${i}</span>"
                     writer << "</li>";
-                }
-                else {
+                } else {
                     linkParams.offset = (i - 1) * max
                     writer << "<li>";
-                    writer << link(linkTagAttrs.clone()) {i.toString()}
+                    writer << link(linkTagAttrs.clone()) { i.toString() }
                     writer << "</li>";
                 }
             }
@@ -164,7 +162,7 @@ class TwitterBootstrapTagLib {
             // display laststep link when endstep is not laststep
             if (endstep < laststep) {
                 writer << '<li class="disabled"><span>...</span></li>'
-                linkParams.offset = (laststep -1) * max
+                linkParams.offset = (laststep - 1) * max
                 writer << '<li>'
                 writer << link(linkTagAttrs.clone()) { laststep.toString() }
                 writer << '</li>'
@@ -179,8 +177,7 @@ class TwitterBootstrapTagLib {
                 (attrs.next ? attrs.next : messageSource.getMessage('paginate.next', null, messageSource.getMessage('default.paginate.next', null, 'Next', locale), locale))
             }
             writer << '</li>'
-        }
-        else {
+        } else {
             linkParams.offset = offset + max
             writer << '<li class="next disabled">'
             writer << '<span>'

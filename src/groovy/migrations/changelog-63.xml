@@ -26,14 +26,14 @@
         <comment>Creation "attachement" table</comment>
         <createTable tableName="attachement">
             <column name="id" type="BIGINT" autoIncrement="true">
-                 <constraints primaryKey="true"/>
+                <constraints primaryKey="true"/>
             </column>
             <column name="version" type="BIGINT"/>
             <column name="path" type="varchar(255)">
-                 <constraints nullable="false"/>
+                <constraints nullable="false"/>
             </column>
             <column name="name" type="varchar(255)">
-                 <constraints nullable="false"/>
+                <constraints nullable="false"/>
             </column>
             <column name="original_name" type="varchar(255)"/>
             <column name="size" type="BIGINT"/>
@@ -41,7 +41,7 @@
             <column name="dimension_width" type="BIGINT"/>
             <column name="type_mime" type="varchar(255)"/>
             <column name="note_id" type="BIGINT">
-                 <constraints nullable="false"/>
+                <constraints nullable="false"/>
             </column>
             <column name="context_id" type="BIGINT"/>
         </createTable>
@@ -54,17 +54,17 @@
     </changeSet>
 
     <changeSet id="2" author="drol">
-            <addColumn tableName="attachement">
-                <column name="to_delete" type="INT"/>
-            </addColumn>
+        <addColumn tableName="attachement">
+            <column name="to_delete" type="INT"/>
+        </addColumn>
     </changeSet>
 
     <changeSet id="3" author="drol">
-            <modifyDataType columnName="to_delete"
-                            newDataType="BOOLEAN"
-                            tableName="attachement"/>
-            <dropNotNullConstraint columnDataType="BIGINT"
-                            columnName="note_id"
-                            tableName="attachement"/>
+        <modifyDataType columnName="to_delete"
+                        newDataType="BOOLEAN"
+                        tableName="attachement"/>
+        <dropNotNullConstraint columnDataType="BIGINT"
+                               columnName="note_id"
+                               tableName="attachement"/>
     </changeSet>
 </databaseChangeLog>

@@ -16,9 +16,9 @@
 <body>
 <div class="container">
     <div class="body-content">
-                <div class="alert alert-info" role="alert">
-                    <p>${message(code: "settings.unsubscribedDaily.message")}</p>
-                </div>
+        <div class="alert alert-info" role="alert">
+            <p>${message(code: "settings.unsubscribedDaily.message")}</p>
+        </div>
     </div>
 </div>
 

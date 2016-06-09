@@ -6,7 +6,6 @@ import org.gcontracts.annotations.Requires
 import org.hibernate.StaleObjectStateException
 import org.tsaap.directory.User
 import org.tsaap.notes.Note
-import org.tsaap.questions.impl.gift.GiftQuestionService
 
 class LiveSession {
 
@@ -71,7 +70,7 @@ class LiveSession {
         }
         try {
             save(flush: true)
-        } catch(StaleObjectStateException sose) {
+        } catch (StaleObjectStateException sose) {
             log.error(sose.message)
             refresh()
         }
@@ -126,7 +125,7 @@ class LiveSession {
     List<Map<String, Float>> buildResultMatrix() {
         def responses = LiveSessionResponse.findAllByLiveSession(this)
         Question question = this.note.question
-        resultMatrixService.buildResultMatrixForQuestionAndResponses(question,responses)
+        resultMatrixService.buildResultMatrixForQuestionAndResponses(question, responses)
     }
 
     /**
@@ -134,7 +133,7 @@ class LiveSession {
      * @return true if the current live session has one started session phase
      */
     boolean hasStartedSessionPhase() {
-        SessionPhase.findByLiveSessionAndStatus(this,LiveSessionStatus.Started.name())
+        SessionPhase.findByLiveSessionAndStatus(this, LiveSessionStatus.Started.name())
     }
 
     /**
@@ -142,7 +141,7 @@ class LiveSession {
      * @return the current phase if any
      */
     SessionPhase findCurrentPhase() {
-        def phases = SessionPhase.findAllByLiveSession(this,[sort: "rank", order: "desc"])
+        def phases = SessionPhase.findAllByLiveSession(this, [sort: "rank", order: "desc"])
         def res = null
         if (!phases.isEmpty()) {
             if (phases.first().rank <= SessionPhase.MAX_RANK) {
@@ -157,7 +156,7 @@ class LiveSession {
      * @return the first phase if any
      */
     SessionPhase findFirstPhase() {
-        SessionPhase.findByLiveSessionAndRank(this,1)
+        SessionPhase.findByLiveSessionAndRank(this, 1)
     }
 
     /**
@@ -165,7 +164,7 @@ class LiveSession {
      * @return the second phase if any
      */
     SessionPhase findSecondPhase() {
-        SessionPhase.findByLiveSessionAndRank(this,2)
+        SessionPhase.findByLiveSessionAndRank(this, 2)
     }
 
     /**
@@ -175,11 +174,11 @@ class LiveSession {
      */
     List<LiveSessionResponse> findAllGoodResponses(SessionPhase sessionPhase = null) {
         if (sessionPhase) {
-            return LiveSessionResponse.findAllBySessionPhaseAndPercentCredit(sessionPhase,100,
-                    [sort: "explanation.grade", order: "desc",fetch:[explanation:'join']])
+            return LiveSessionResponse.findAllBySessionPhaseAndPercentCredit(sessionPhase, 100,
+                    [sort: "explanation.grade", order: "desc", fetch: [explanation: 'join']])
         } else {
-            return LiveSessionResponse.findAllByLiveSessionAndPercentCredit(this,100,
-                    [sort: "explanation.grade", order: "desc",fetch:[explanation:'join']])
+            return LiveSessionResponse.findAllByLiveSessionAndPercentCredit(this, 100,
+                    [sort: "explanation.grade", order: "desc", fetch: [explanation: 'join']])
         }
     }
 

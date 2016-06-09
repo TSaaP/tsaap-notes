@@ -3,6 +3,7 @@ package org.tsaap.uploadImage;
 /**
  * Created by dorian on 11/05/15.
  */
+
 /**
  * Abstract data record base class. This base class contains only
  * a reference to the data identifier of the record and implements
@@ -49,7 +50,7 @@ public abstract class AbstractDataRecord implements DataRecord {
      *
      * @param object other object
      * @return <code>true</code> if the other object is a data record and has
-     *         the same identifier as this one, <code>false</code> otherwise
+     * the same identifier as this one, <code>false</code> otherwise
      */
     public boolean equals(Object object) {
         return (object instanceof DataRecord)

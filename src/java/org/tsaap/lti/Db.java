@@ -14,7 +14,6 @@ public class Db {
      * Class constructor.
      * <p>
      * Throws an SQLException if a connection error occurs.
-     *
      */
     public Db() throws SQLException {
 
@@ -54,6 +53,7 @@ public class Db {
 
     /**
      * Close datatabase connection
+     *
      * @throws SQLException
      */
     public void closeConnection() throws SQLException {

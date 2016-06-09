@@ -35,17 +35,29 @@ import java.util.Map;
 public class OAuthProblemException extends OAuthException {
 
     public static final String OAUTH_PROBLEM = "oauth_problem";
-    /** The name of a parameter whose value is the HTTP request. */
+    /**
+     * The name of a parameter whose value is the HTTP request.
+     */
     public static final String HTTP_REQUEST = "HTTP request";
-    /** The name of a parameter whose value is the HTTP response. */
+    /**
+     * The name of a parameter whose value is the HTTP response.
+     */
     public static final String HTTP_RESPONSE = "HTTP response";
-    /** The name of a parameter whose value is the HTTP resopnse status code. */
+    /**
+     * The name of a parameter whose value is the HTTP resopnse status code.
+     */
     public static final String HTTP_STATUS_CODE = "HTTP status";
-    /** The name of a parameter whose value is the response Location header. */
+    /**
+     * The name of a parameter whose value is the response Location header.
+     */
     public static final String HTTP_LOCATION = "Location";
-    /** The name of a parameter whose value is the OAuth signature base string. */
+    /**
+     * The name of a parameter whose value is the OAuth signature base string.
+     */
     public static final String SIGNATURE_BASE_STRING = OAuth.OAUTH_SIGNATURE + " base string";
-    /** The name of a parameter whose value is the request URL. */
+    /**
+     * The name of a parameter whose value is the request URL.
+     */
     public static final String URL = "URL";
 
     public OAuthProblemException() {
@@ -119,8 +131,8 @@ public class OAuthProblemException extends OAuthException {
         try {
             final String eol = System.getProperty("line.separator", "\n");
             final Map<String, Object> parameters = getParameters();
-            for (String key : new String[] { OAuth.Problems.OAUTH_PROBLEM_ADVICE, URL,
-                    SIGNATURE_BASE_STRING }) {
+            for (String key : new String[]{OAuth.Problems.OAUTH_PROBLEM_ADVICE, URL,
+                    SIGNATURE_BASE_STRING}) {
                 Object value = parameters.get(key);
                 if (value != null)
                     s.append(eol + key + ": " + value);

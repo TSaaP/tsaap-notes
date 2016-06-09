@@ -18,14 +18,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description"
-        content="Tsaap Notes - microblogging for learners and teachers">
-  <meta name="author" content="Tsaap Development Group">
-  <link rel="shortcut icon" href="${resource(dir: 'images', file: 'favicon.ico')}" type="image/x-icon">
-  <title><g:layoutTitle default="TsaaP-Notes"/></title>
-  <r:layoutResources/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+          content="Tsaap Notes - microblogging for learners and teachers">
+    <meta name="author" content="Tsaap Development Group">
+    <link rel="shortcut icon" href="${resource(dir: 'images', file: 'favicon.ico')}" type="image/x-icon">
+    <title><g:layoutTitle default="TsaaP-Notes"/></title>
+    <r:layoutResources/>
     <script type="text/javascript"
             src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     </script>
@@ -33,14 +33,15 @@
 
 <body style="padding-top: 10px;">
 <div class="container">
-  @<sec:username/> - <g:link controller="notes" params="[displaysMyNotes:'on']" target="_blank">Tsaap-Notes</g:link>
+    @<sec:username/> - <g:link controller="notes" params="[displaysMyNotes: 'on']" target="_blank">Tsaap-Notes</g:link>
 </div>
 
 <g:layoutBody/>
 
 <r:layoutResources/>
 <footer class="container">
-    <p>&copy; Tsaap Development Group 2013 - Tsaap-Notes version <g:meta name="app.version"/> - <a href="${grailsApplication.config.grails.serverURL}/terms">Mentions</a></p>
+    <p>&copy; Tsaap Development Group 2013 - Tsaap-Notes version <g:meta name="app.version"/> - <a
+            href="${grailsApplication.config.grails.serverURL}/terms">Mentions</a></p>
 </footer>
 </body>
 </html>

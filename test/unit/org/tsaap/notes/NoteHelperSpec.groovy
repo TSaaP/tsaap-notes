@@ -22,32 +22,32 @@ import spock.lang.Unroll
 
 class NoteHelperSpec extends Specification {
 
-  @Unroll
-  def "#content contains these tags : #tags"() {
-    expect:
-      NoteHelper.tagsFromContent(content) == tags
-    where:
-      content                                                                     | tags
-      "a simple #content, with no #spaces in the content"                         | ["content", "spaces"]
-      "a simple #content with no #spaces in the content but with #content a copy" | ["content", "spaces"]
-      "a simple #content\n #another\r #tag3\n with #spaces\t in the content"      | ["content", "another", "tag3", "spaces"]
-      "a simple with no tags"                                                     | []
-      "a simple with no @tags"                                                    | []
-      "Is it #LOWERCASE ?"                                                        | ["lowercase"]
-  }
+    @Unroll
+    def "#content contains these tags : #tags"() {
+        expect:
+        NoteHelper.tagsFromContent(content) == tags
+        where:
+        content                                                                     | tags
+        "a simple #content, with no #spaces in the content"                         | ["content", "spaces"]
+        "a simple #content with no #spaces in the content but with #content a copy" | ["content", "spaces"]
+        "a simple #content\n #another\r #tag3\n with #spaces\t in the content"      | ["content", "another", "tag3", "spaces"]
+        "a simple with no tags"                                                     | []
+        "a simple with no @tags"                                                    | []
+        "Is it #LOWERCASE ?"                                                        | ["lowercase"]
+    }
 
-  @Unroll
-  def "#content contains these mentions : #mentions"() {
-    expect:
-      NoteHelper.mentionsFromContent(content) == mentions
-    where:
-      content                                                                     | mentions
-      "a simple @content, with no @spaces in the content"                         | ["content", "spaces"]
-      "a simple @content with no @spaces in the content but with @content a copy" | ["content", "spaces"]
-      "a simple @content\n @another\r @tag3\n with @spaces\t in the content"      | ["content", "another", "tag3", "spaces"]
-      "a simple with no mentions"                                                 | []
-      "a simple with no #mentions"                                                | []
-      "Is it @LOWERCASE ?"                                                        | ["lowercase"]
-  }
+    @Unroll
+    def "#content contains these mentions : #mentions"() {
+        expect:
+        NoteHelper.mentionsFromContent(content) == mentions
+        where:
+        content                                                                     | mentions
+        "a simple @content, with no @spaces in the content"                         | ["content", "spaces"]
+        "a simple @content with no @spaces in the content but with @content a copy" | ["content", "spaces"]
+        "a simple @content\n @another\r @tag3\n with @spaces\t in the content"      | ["content", "another", "tag3", "spaces"]
+        "a simple with no mentions"                                                 | []
+        "a simple with no #mentions"                                                | []
+        "Is it @LOWERCASE ?"                                                        | ["lowercase"]
+    }
 
 }

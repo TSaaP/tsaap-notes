@@ -20,13 +20,13 @@ import org.tsaap.directory.User
 
 class NoteMention {
 
-  Note note
-  User mention
+    Note note
+    User mention
 
-  static constraints = {}
+    static constraints = {}
 
-  static mapping = {
-    cache 'read-write'
-       version false
-  }
+    static mapping = {
+        cache 'read-write'
+        version false
+    }
 }

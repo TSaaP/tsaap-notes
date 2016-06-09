@@ -5,11 +5,7 @@ import org.tsaap.directory.Role
 import org.tsaap.directory.RoleEnum
 import org.tsaap.directory.User
 import org.tsaap.directory.UserAccountService
-import org.tsaap.notes.Context
-import org.tsaap.notes.ContextService
-import org.tsaap.notes.Note
-import org.tsaap.notes.NoteService
-import org.tsaap.notes.Tag
+import org.tsaap.notes.*
 
 class BootstrapService {
 
@@ -97,11 +93,11 @@ class BootstrapService {
 
     def initializeDevContextWithFragment() {
         football = Context.findByContextName('football')
-        if(!football) {
-            football = contextService.saveContext(new Context(owner: thom, contextName: 'football',descriptionAsNote: 'everything about #football',url: 'http://fr.wikipedia.org/wiki/Football', source: null))
+        if (!football) {
+            football = contextService.saveContext(new Context(owner: thom, contextName: 'football', descriptionAsNote: 'everything about #football', url: 'http://fr.wikipedia.org/wiki/Football', source: null))
         }
         goal = Tag.findOrSaveWhere(name: 'goal')
-        for (int i=0 ; i<10 ; i++) {
+        for (int i = 0; i < 10; i++) {
             note = Note.findByContent("goal$i")
             if (!note) {
                 note = noteService.addStandardNote(thom, "goal$i", football, goal, null)

@@ -15,7 +15,6 @@
  */
 
 
-
 package org.tsaap.notes
 
 import grails.test.mixin.Mock
@@ -57,36 +56,36 @@ class NoteServiceSpec extends Specification {
     }
 
     def "duplication of a note is only possible for the owner of the note"() {
-        given:"a note"
+        given: "a note"
         note
 
-        and:"a user who is not the owner of the context"
+        and: "a user who is not the owner of the context"
         User aUser = Mock(User)
 
-        when:"the user try to duplicate the scope"
-        noteService.duplicateNoteInContext(note,targetContext,aUser)
+        when: "the user try to duplicate the scope"
+        noteService.duplicateNoteInContext(note, targetContext, aUser)
 
-        then:"an exception is thrown"
+        then: "an exception is thrown"
         thrown(PreconditionViolation)
     }
 
     def "duplication of a note in a target context must duplicate content, author, fragment tag and kind"() {
-        given:"a note"
+        given: "a note"
         note
 
         when: "the context is duplicated"
         Note newNote = noteService.duplicateNoteInContext(note, targetContext, user)
 
-        then:"the duplicated note is associated with the target context"
+        then: "the duplicated note is associated with the target context"
         newNote.context == targetContext
 
-        and:"the duplicated context has the same properties than the original"
+        and: "the duplicated context has the same properties than the original"
         newNote.author == user
         newNote.content == note.content
         newNote.fragmentTag == note.fragmentTag
         newNote.kind == note.kind
 
-        and:"the new note has no errors"
+        and: "the new note has no errors"
         !newNote.hasErrors()
     }
 

@@ -21,7 +21,7 @@ import groovy.transform.ToString
 /**
  * Class for encapsulation of live session results
  */
-@ToString(includeNames=true)
+@ToString(includeNames = true)
 class NPhasesLiveSessionResultList extends NPhasesLiveSessionData {
 
     String title

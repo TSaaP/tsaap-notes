@@ -15,35 +15,35 @@
  */
 
 modules = {
-  application {
-    resource url: 'js/application.js'
-  }
+    application {
+        resource url: 'js/application.js'
+    }
 
-  tsaap_ui {
-    dependsOn('jquery')
-    resource url: 'js/bootstrap.min.js'
-    resource url: 'js/jquery.linkify.js'
-    resource url: 'css/bootstrap.min.css'
-  }
+    tsaap_ui {
+        dependsOn('jquery')
+        resource url: 'js/bootstrap.min.js'
+        resource url: 'js/jquery.linkify.js'
+        resource url: 'css/bootstrap.min.css'
+    }
 
-  tsaap_icons {
-    dependsOn('tsaap_ui')
-    resource url: 'css/bootstrap-glyphicons.css'
-    resource url: 'css/docs.css'
-  }
+    tsaap_icons {
+        dependsOn('tsaap_ui')
+        resource url: 'css/bootstrap-glyphicons.css'
+        resource url: 'css/docs.css'
+    }
 
-  tsaap_ui_home {
-    dependsOn('tsaap_ui')
-    resource url: 'css/jumbotron.css'
-  }
+    tsaap_ui_home {
+        dependsOn('tsaap_ui')
+        resource url: 'css/jumbotron.css'
+    }
 
-  tsaap_ui_signin {
-    dependsOn('tsaap_ui')
-    resource url: 'css/signin.css'
-  }
+    tsaap_ui_signin {
+        dependsOn('tsaap_ui')
+        resource url: 'css/signin.css'
+    }
 
-  tsaap_ui_notes {
-    dependsOn('tsaap_ui')
-    resource url: 'css/notes.css'
-  }
+    tsaap_ui_notes {
+        dependsOn('tsaap_ui')
+        resource url: 'css/notes.css'
+    }
 }

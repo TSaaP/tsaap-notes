@@ -3,13 +3,10 @@ package org.tsaap.uploadImage;
 /**
  * Created by dylan on 11/05/15.
  */
-import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
 import org.apache.commons.io.input.AutoCloseInputStream;
+
+import java.io.*;
 
 /**
  * This input stream delays opening the file until the first byte is read, and

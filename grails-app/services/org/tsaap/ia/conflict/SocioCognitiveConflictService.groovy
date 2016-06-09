@@ -1,8 +1,6 @@
 package org.tsaap.ia.conflict
 
-import org.tsaap.notes.Note
 import org.tsaap.questions.LiveSessionResponse
-
 
 class SocioCognitiveConflictService {
 

@@ -17,31 +17,29 @@
 package org.tsaap.taglibs
 
 import grails.plugins.springsecurity.SpringSecurityService
-import org.springframework.context.ApplicationContext
-import org.springframework.context.ApplicationContextAware
 
 class SimpleSecurityTagLib {
 
-  //static defaultEncodeAs = 'html'
-  //static encodeAsForTags = [tagName: 'raw']
-  static namespace = "tsaap"
+    //static defaultEncodeAs = 'html'
+    //static encodeAsForTags = [tagName: 'raw']
+    static namespace = "tsaap"
 
-  SpringSecurityService springSecurityService
+    SpringSecurityService springSecurityService
 
-  /**
-   * Renders the body if the user is authenticated.  */
-  def ifLoggedIn = { attrs, body ->
-    if (springSecurityService.isLoggedIn()) {
-      out << body()
+    /**
+     * Renders the body if the user is authenticated.  */
+    def ifLoggedIn = { attrs, body ->
+        if (springSecurityService.isLoggedIn()) {
+            out << body()
+        }
     }
-  }
 
-  /**
-   * Renders the body if the user is not authenticated.  */
-  def ifNotLoggedIn = { attrs, body ->
-    if (!springSecurityService.isLoggedIn()) {
-      out << body()
+    /**
+     * Renders the body if the user is not authenticated.  */
+    def ifNotLoggedIn = { attrs, body ->
+        if (!springSecurityService.isLoggedIn()) {
+            out << body()
+        }
     }
-  }
 
 }

@@ -15,48 +15,48 @@
  */
 
 
-
 package org.tsaap.directory
 
 import grails.test.mixin.TestFor
 import spock.lang.Specification
 import spock.lang.Unroll
+
 /**
  * See the API for {@link grails.test.mixin.domain.DomainClassUnitTestMixin} for usage instructions*/
 @TestFor(User)
 class UserSpec extends Specification {
 
-  @Unroll
-  def "'#username' is valid username is #usernameIsOK"() {
-    when:
-      User user = new User(firstName: "franck", lastName: "s", username: username, email: "mail@mail.com", password: "password")
-    then:
-      println "-${user.username}-"
-      user.validate() == usernameIsOK
-      user.normalizedUsername == username.toLowerCase()
-    where:
-      username                | usernameIsOK
-      "is not a word"         | false
-      "franck"                | true
-      "Mary"                  | true
-      "franck-s"              | false
-      "Mary_s"                | true
-      "fr@nck"                | false
-      "Mar%"                  | false
-      "éric"                  | false
-      "69"                    | true
-      "thisusernameistoolong" | false
-  }
+    @Unroll
+    def "'#username' is valid username is #usernameIsOK"() {
+        when:
+        User user = new User(firstName: "franck", lastName: "s", username: username, email: "mail@mail.com", password: "password")
+        then:
+        println "-${user.username}-"
+        user.validate() == usernameIsOK
+        user.normalizedUsername == username.toLowerCase()
+        where:
+        username                | usernameIsOK
+        "is not a word"         | false
+        "franck"                | true
+        "Mary"                  | true
+        "franck-s"              | false
+        "Mary_s"                | true
+        "fr@nck"                | false
+        "Mar%"                  | false
+        "éric"                  | false
+        "69"                    | true
+        "thisusernameistoolong" | false
+    }
 
-  def "user get full name string"() {
+    def "user get full name string"() {
 
-    given: "a user"
-    User user = new User(firstName: "franck", lastName: "s", username: "fs", email: "mail@mail.com", password: "password")
+        given: "a user"
+        User user = new User(firstName: "franck", lastName: "s", username: "fs", email: "mail@mail.com", password: "password")
 
-    when: "I want a string with this user fullname"
-    def res = user.getFullname()
+        when: "I want a string with this user fullname"
+        def res = user.getFullname()
 
-    then: "I get a string with this user fullname"
-    res == "franck s"
-  }
+        then: "I get a string with this user fullname"
+        res == "franck s"
+    }
 }

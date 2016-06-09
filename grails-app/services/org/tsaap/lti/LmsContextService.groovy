@@ -19,32 +19,30 @@ class LmsContextService {
      * @param isLearner user is a learner or not
      * @return res an arrayList who contain tsaap notes context name and context id
      */
-    def findOrCreateContext(Sql sql, String consumerKey, String ltiCourseId, String ltiActivityId, String consumerName, String contextTitle, String username, Boolean isLearner){
+    def findOrCreateContext(Sql sql, String consumerKey, String ltiCourseId, String ltiActivityId, String consumerName, String contextTitle, String username, Boolean isLearner) {
         def contextName = null
-        def contextId = lmsContextHelper.selectLmsContext(sql,consumerKey,ltiCourseId,ltiActivityId)
-        def userId = lmsUserHelper.selectUserId(sql,username)
-        if(contextId == null) {
+        def contextId = lmsContextHelper.selectLmsContext(sql, consumerKey, ltiCourseId, ltiActivityId)
+        def userId = lmsUserHelper.selectUserId(sql, username)
+        if (contextId == null) {
             contextName = contextTitle
             // We create a new context
-            if(!isLearner) {
-                lmsContextHelper.insertContext(sql,contextName,"",userId,true,"",consumerName)
-                contextId = lmsContextHelper.selectContextId(sql,contextName,consumerName)
-                lmsContextHelper.insertLmsContext(sql,contextId,ltiCourseId,ltiActivityId,consumerKey,consumerName)
-            }
-            else {
+            if (!isLearner) {
+                lmsContextHelper.insertContext(sql, contextName, "", userId, true, "", consumerName)
+                contextId = lmsContextHelper.selectContextId(sql, contextName, consumerName)
+                lmsContextHelper.insertLmsContext(sql, contextId, ltiCourseId, ltiActivityId, consumerKey, consumerName)
+            } else {
                 throw new LtiContextInitialisationException("error.lti.context.initialisation")
             }
-        }
-        else {
-            contextName = lmsContextHelper.selectContextName(sql,contextId)
-            if(isLearner){
-                def isFollower = lmsContextHelper.checkIfUserIsAContextFollower(sql,userId,contextId)
-                if(!isFollower){
-                    lmsContextHelper.addUserToContextFollower(sql,userId,contextId)
+        } else {
+            contextName = lmsContextHelper.selectContextName(sql, contextId)
+            if (isLearner) {
+                def isFollower = lmsContextHelper.checkIfUserIsAContextFollower(sql, userId, contextId)
+                if (!isFollower) {
+                    lmsContextHelper.addUserToContextFollower(sql, userId, contextId)
                 }
             }
         }
-        [contextName,contextId]
+        [contextName, contextId]
     }
 
     /**
@@ -53,9 +51,9 @@ class LmsContextService {
      * @param contextId tsaap note context id
      */
     def deleteLmsContextForContext(Sql sql, long contextId) {
-        def exist = lmsContextHelper.selectLmsContextForContextId(sql,contextId)
-        if(exist != null) {
-            lmsContextHelper.deleteLmsContext(sql,contextId)
+        def exist = lmsContextHelper.selectLmsContextForContextId(sql, contextId)
+        if (exist != null) {
+            lmsContextHelper.deleteLmsContext(sql, contextId)
         }
     }
 }

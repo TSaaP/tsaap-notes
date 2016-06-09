@@ -16,6 +16,7 @@
 <body>
 <div class="container">
     <br>
+
     <div class="alert">
         <p>${message(code: exception.message)}</p>
     </div>

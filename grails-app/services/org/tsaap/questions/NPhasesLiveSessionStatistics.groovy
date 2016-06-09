@@ -22,7 +22,7 @@ import groovy.transform.ToString
 /**
  * Class for encapsulation of live session statistics.
  */
-@ToString(includeNames=true)
+@ToString(includeNames = true)
 class NPhasesLiveSessionStatistics extends NPhasesLiveSessionData {
 
     Integer numberOfPresents

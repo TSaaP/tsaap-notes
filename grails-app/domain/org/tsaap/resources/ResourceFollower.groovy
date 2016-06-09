@@ -20,14 +20,14 @@ import org.tsaap.directory.User
 
 class ResourceFollower {
 
-  Date dateCreated
-  User follower
-  Resource resource
+    Date dateCreated
+    User follower
+    Resource resource
 
-  static constraints = {}
+    static constraints = {}
 
-  static mapping = {
-    cache 'read-write'
-  }
+    static mapping = {
+        cache 'read-write'
+    }
 
 }

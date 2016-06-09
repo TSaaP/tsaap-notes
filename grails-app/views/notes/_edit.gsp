@@ -6,11 +6,13 @@
             <div class="panel panel-default">
                 <div class="panel-heading" role="tab" id="headingOne" style="margin-bottom: -15px;">
                     <h4 class="panel-title">
-                        <a data-toggle="collapse" id="accordionLink" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed">
+                        <a data-toggle="collapse" id="accordionLink" data-parent="#accordion" href="#collapseOne"
+                           aria-expanded="false" aria-controls="collapseOne" class="collapsed">
                             ${message(code: "notes.edit.question.editor")}
                         </a>
                     </h4>
                 </div>
+
                 <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
                     <div class="panel-body">
                         <g:form method="post" controller="notes" action="addNote" enctype="multipart/form-data">
@@ -25,24 +27,31 @@
                                            id="displaysMyFavoritesInAddForm${idControllSuffix}"/>
                             <g:hiddenField name="displaysAll" id="displaysAllInAddForm${idControllSuffix}"/>
                             <g:set var="kind" value="question"/>
-                            <a id="question_sample" style="margin-top: 15px">${message(code: "notes.edit.sampleQuestion")}</a>
-                            <textarea class="form-control note-editable-content" rows="3" id="noteContent${idControllSuffix}"
+                            <a id="question_sample"
+                               style="margin-top: 15px">${message(code: "notes.edit.sampleQuestion")}</a>
+                            <textarea class="form-control note-editable-content" rows="3"
+                                      id="noteContent${idControllSuffix}"
                                       name="noteContent">${parentNote ? '@' + parentNote.author?.username + ' ' : ''}</textarea>
+
                             <div class="row">
                                 <div class="col-sm-7 col-md-7 col-lg-7">
-                                    <input type="file" name="myFile" title="Image: gif, jpeg and png only" style="margin-top: 5px"/>
+                                    <input type="file" name="myFile" title="Image: gif, jpeg and png only"
+                                           style="margin-top: 5px"/>
                                 </div>
+
                                 <div id="prewiew_tab_${idControllSuffix}" class="col-sm-2 col-md-2 col-lg-2">
                                     <button type="button" class="btn btn-default btn-xs"
                                             id="preview_button_${idControllSuffix}">
                                         ${message(code: "notes.edit.preview")}
                                     </button>
                                 </div>
+
                                 <div class="col-sm-2 col-md-2 col-lg-2">
                                     <button type="submit"
                                             class="btn btn-primary btn-xs"
                                             id="buttonAddNote${idControllSuffix}"
-                                            disabled><span class="glyphicon glyphicon-plus"></span>${message(code: "notes.edit.add.question.button")}
+                                            disabled><span
+                                            class="glyphicon glyphicon-plus"></span>${message(code: "notes.edit.add.question.button")}
                                     </button>
                                 </div>
                             </div>
@@ -67,18 +76,24 @@
             <textarea class="form-control note-editable-content" rows="3" id="noteContent${idControllSuffix}"
                       name="noteContent"
                       maxlength="560">${parentNote ? '@' + parentNote.author?.username + ' ' : ''}</textarea>
+
             <div class="row">
-                <span class="character_counter pull-left" style="margin-left: 15px" id="character_counter${idControllSuffix}"></span>
+                <span class="character_counter pull-left" style="margin-left: 15px"
+                      id="character_counter${idControllSuffix}"></span>
             </div>
+
             <div class="row">
                 <div class="col-xs-12 col-sm-10 col-md-10 col-lg-10">
                     <input type="file" name="myFile" title="Image: gif, jpeg and png only"/>
                 </div>
+
                 <div class="col-xs-12 col-sm-2 col-md-2 col-lg-2">
                     <button type="submit"
-                        class="btn btn-primary btn-xs"
-                        id="buttonAddNote${idControllSuffix}"
-                        disabled><span class="glyphicon glyphicon-plus"></span>${message(code: "notes.edit.add.note.button")}</button>
+                            class="btn btn-primary btn-xs"
+                            id="buttonAddNote${idControllSuffix}"
+                            disabled><span
+                            class="glyphicon glyphicon-plus"></span>${message(code: "notes.edit.add.note.button")}
+                    </button>
                 </div>
             </div>
         </g:form>

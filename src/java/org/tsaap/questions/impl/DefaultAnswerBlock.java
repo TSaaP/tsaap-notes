@@ -40,6 +40,7 @@ public class DefaultAnswerBlock implements AnswerBlock {
 
     /**
      * Add answer to the answer block
+     *
      * @param answer the answer to add
      */
     public void addAnswer(Answer answer) {

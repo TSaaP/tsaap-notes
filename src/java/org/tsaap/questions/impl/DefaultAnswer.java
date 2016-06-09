@@ -56,6 +56,7 @@ public class DefaultAnswer implements Answer {
 
     /**
      * Set te text value of the answer
+     *
      * @param textValue the new text value
      */
     public void setTextValue(String textValue) {
@@ -73,6 +74,7 @@ public class DefaultAnswer implements Answer {
 
     /**
      * Set the percent credit of the answer
+     *
      * @param percentCredit the percent credit
      */
     public void setPercentCredit(Float percentCredit) {
@@ -90,7 +92,8 @@ public class DefaultAnswer implements Answer {
 
     /**
      * Set the identifier
-     * @param identifier  the new identifier
+     *
+     * @param identifier the new identifier
      */
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
@@ -98,6 +101,7 @@ public class DefaultAnswer implements Answer {
 
     /**
      * Set the feedback
+     *
      * @param feedback
      */
     public void setFeedback(String feedback) {

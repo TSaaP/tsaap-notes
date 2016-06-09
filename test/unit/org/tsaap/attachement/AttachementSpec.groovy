@@ -1,7 +1,6 @@
 package org.tsaap.attachement
 
 import grails.test.mixin.TestFor
-import org.tsaap.attachement.Attachement
 import org.tsaap.notes.Context
 import org.tsaap.notes.Note
 import spock.lang.Shared
@@ -29,21 +28,21 @@ class AttachementSpec extends Specification {
 
 
         expect: "the attachement is valid"
-        if(!myAttachement.validate()){
+        if (!myAttachement.validate()) {
             println myAttachement.getErrors()
         }
         myAttachement.validate() == true
 
         where:
 
-        aPath           | aName        | anOriginalName | aSize | aDimension     | aTypeMime    | aNote     | aContext
-        "/home/dorian"  | "grails.png" | "grails.png"   | 1     | myDimension    | "image/png"  | Mock(Note)| Mock(Context)
-        "/home/dorian"  | "grails.png" | "grails.png"   | null  | myDimension    | "image/png"  | Mock(Note)| Mock(Context)
-        "/home/dorian"  | "grails.png" | null           | 1     | myDimension    | "image/png"  | Mock(Note)| Mock(Context)
-        "/home/dorian"  | "grails.png" | "grails.png"   | 1     | myDimension    | null         | Mock(Note)| Mock(Context)
-        "/home/dorian"  | "grails.png" | "grails.png"   | 1     | null           | "image/png"  | Mock(Note)| Mock(Context)
-        "/home/dorian"  | "grails.png" | "grails.png"   | 1     | myDimension    | "image/png"  | Mock(Note)| null
-        "/home/dorian"  | "grails.png" | "grails.png"   | 1     | myDimension    | "image/png"  | null      | Mock(Context)
+        aPath          | aName        | anOriginalName | aSize | aDimension  | aTypeMime   | aNote      | aContext
+        "/home/dorian" | "grails.png" | "grails.png"   | 1     | myDimension | "image/png" | Mock(Note) | Mock(Context)
+        "/home/dorian" | "grails.png" | "grails.png"   | null  | myDimension | "image/png" | Mock(Note) | Mock(Context)
+        "/home/dorian" | "grails.png" | null           | 1     | myDimension | "image/png" | Mock(Note) | Mock(Context)
+        "/home/dorian" | "grails.png" | "grails.png"   | 1     | myDimension | null        | Mock(Note) | Mock(Context)
+        "/home/dorian" | "grails.png" | "grails.png"   | 1     | null        | "image/png" | Mock(Note) | Mock(Context)
+        "/home/dorian" | "grails.png" | "grails.png"   | 1     | myDimension | "image/png" | Mock(Note) | null
+        "/home/dorian" | "grails.png" | "grails.png"   | 1     | myDimension | "image/png" | null       | Mock(Context)
 
     }
 

@@ -20,16 +20,16 @@ import org.tsaap.directory.MailCheckingService
 
 class MailCheckingJob {
 
-  MailCheckingService mailCheckingService
+    MailCheckingService mailCheckingService
 
-  static triggers = {
-    // every 2 minutes
-    cron name: 'mailCheckingCronTrigger', startDelay: 10000, cronExpression: '0 0/2 * * * ?'
-  }
+    static triggers = {
+        // every 2 minutes
+        cron name: 'mailCheckingCronTrigger', startDelay: 10000, cronExpression: '0 0/2 * * * ?'
+    }
 
-  def execute() {
-    log.debug("Start email checking job...")
-    mailCheckingService.sendCheckingEmailMessages()
-    log.debug("End email checking  job.")
-  }
+    def execute() {
+        log.debug("Start email checking job...")
+        mailCheckingService.sendCheckingEmailMessages()
+        log.debug("End email checking  job.")
+    }
 }

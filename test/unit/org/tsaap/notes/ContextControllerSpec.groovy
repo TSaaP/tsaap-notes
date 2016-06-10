@@ -21,6 +21,7 @@ import grails.plugins.springsecurity.SpringSecurityService
 import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
 import groovy.sql.Sql
+import org.tsaap.BootstrapTestService
 import org.tsaap.directory.User
 import org.tsaap.lti.LmsContextHelper
 import org.tsaap.lti.LmsContextService
@@ -38,6 +39,8 @@ class ContextControllerSpec extends Specification {
     Sql sql = Mock(Sql)
     LmsContextService lmsContextService = Mock(LmsContextService)
     LmsContextHelper lmsContextHelper = Mock(LmsContextHelper)
+    BootstrapTestService bootstrapTestService
+    NoteService noteService
 
     def setup() {
         controller.springSecurityService = springSecurityService
@@ -194,5 +197,20 @@ class ContextControllerSpec extends Specification {
         Context.count() == 0
         response.redirectedUrl == '/context/index'
         flash.message != null
+
+        when: "Create a new context"
+        def context2 = new Context(params).save(flush:true)
+
+        and: "Create note in this context"
+        Note note = noteService.addStandardNote(bootstrapTestService.learnerPaul, "a standard note", context2)
+
+        when: "Trying to delete context2"
+        context2.isRemoved() == false
+        controller.delete(context2)
+        
+        then: "context2 is marked as removed but not deleted from database"
+        context2.isRemoved() == true
+        Context.count() == 1
+
     }
 }

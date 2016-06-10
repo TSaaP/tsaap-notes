@@ -140,11 +140,9 @@
                     <g:link class="btn btn-primary" action="edit"
                             resource="${context}"><g:message
                             code="default.button.edit.label" default="Edit"/></g:link>
-                    <g:if test="${!context.hasNotes()}">
                         <g:actionSubmit class="btn btn-default" action="delete"
                                         value="${message(code: 'default.button.delete.label', default: 'Delete')}"
                                         onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"/>
-                    </g:if>
                     <g:link class="btn btn-primary" controller="context" action="exportQuestionsAsGift"
                             id="${context.id}" target="_blank">${message(code: 'context.show.export.link')}</g:link>
                     <g:link class="btn btn-primary" controller="context" action="exportQuestionsAsGiftWithFeedbacks"

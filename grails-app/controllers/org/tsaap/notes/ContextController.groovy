@@ -142,7 +142,7 @@ class ContextController {
             notFound()
             return
         }
-
+        
         if (!context.hasNotes()) {
             contextService.deleteContext(context, springSecurityService.currentUser, true)
         } else {

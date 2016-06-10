@@ -55,12 +55,11 @@ grails.project.dependency.resolution = {
         compile 'org.gcontracts:gcontracts-grails:1.2.12'
         compile 'org.liquibase:liquibase-core:3.2.2'
         compile 'commons-beanutils:commons-beanutils:1.8.3'
-        compile 'jdom:jdom:1.0'
-        compile 'commons-httpclient:commons-httpclient:3.1'
-        compile 'commons-codec:commons-codec:1.8'
+
         compile 'org.springframework.security:spring-security-crypto:3.2.3.RELEASE'
 
         compile 'com.github.TSaaP:tsaap-questions:1.0'
+        compile 'com.github.TSaaP:tsaap-lti:0.2'
 
         // Latest httpcore and httpmime for Coveralls plugin
         build 'org.apache.httpcomponents:httpcore:4.3.2'

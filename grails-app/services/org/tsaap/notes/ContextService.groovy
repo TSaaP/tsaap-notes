@@ -69,7 +69,7 @@ class ContextService {
     @Requires({ user })
     List<Context> contextsForOwner(User user,
                                    def paginationAndSorting = [sort: 'contextName']) {
-        Context.findAllByOwner(user, paginationAndSorting)
+        Context.findAllByOwnerAndRemoved(user,false, paginationAndSorting)
     }
 
     /**
@@ -93,6 +93,7 @@ class ContextService {
                 if (paginationAndSorting.offset) {
                     offset paginationAndSorting.offset
                 }
+                eq('removed',false)
             }
             join 'context'
         }

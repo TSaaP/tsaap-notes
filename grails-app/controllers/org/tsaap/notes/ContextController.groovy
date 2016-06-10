@@ -50,11 +50,11 @@ class ContextController {
         def contextList
         def contextCount = 0
         if (!filter || filter == FilterReservedValue.__ALL__.name()) {
-            contextList = Context.list(params)
-            contextCount = Context.count()
+            contextList = Context.findAllByRemoved(false, params)
+            contextCount = Context.countByRemoved(false)
         } else if (filter == FilterReservedValue.__MINE__.name()) {
             contextList = contextService.contextsForOwner(user, params)
-            contextCount = Context.countByOwner(user)
+            contextCount = Context.countByOwnerAndRemoved(user, false)
         } else if (filter == FilterReservedValue.__FOLLOWED__.name()) {
             contextList = contextService.contextsFollowedByUser(user, params)
             contextCount = contextList.totalCount

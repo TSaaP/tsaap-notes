@@ -94,7 +94,7 @@
             </thead>
             <tbody>
             <g:each in="${contextList}" status="i" var="context">
-                <g:if test="${!context.isRemoved()}">
+                <%--<g:if test="${!context.isRemoved()}">--%>
                 <tr>
 
                     <td>
@@ -188,7 +188,6 @@
                         </td>
                     </g:else>
                 </tr>
-                </g:if>
             </g:each>
             </tbody>
         </table>

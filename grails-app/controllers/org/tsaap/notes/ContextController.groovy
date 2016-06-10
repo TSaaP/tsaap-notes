@@ -143,7 +143,11 @@ class ContextController {
             return
         }
 
-        contextService.deleteContext(context, springSecurityService.currentUser, true)
+        if (!context.hasNotes()) {
+            contextService.deleteContext(context, springSecurityService.currentUser, true)
+        } else {
+            context.removed = true
+        }
 
         request.withFormat {
             form {
@@ -311,27 +315,6 @@ class ContextController {
         }
 
 
-    }
-
-    @Transactional
-    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def deleteContext(Context context) {
-
-        if (context == null) {
-            notFound()
-            return
-        }
-        if(!context.hasNotes())
-            contextService.deleteContext(context, springSecurityService.currentUser, true)
-        else
-            context.removed = true
-        request.withFormat {
-            form {
-                flash.message = message(code: 'default.deleted.message', args: [message(code: 'context.label', default: 'Context'), context.id])
-                redirect action: "index", method: "GET"
-            }
-            '*' { render status: NO_CONTENT }
-        }
     }
 }
 

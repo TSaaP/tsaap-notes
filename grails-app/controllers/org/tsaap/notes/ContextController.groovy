@@ -68,7 +68,11 @@ class ContextController {
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def show(Context context) {
-        respond context, model: [context: context, user: springSecurityService.currentUser]
+        if (context.isRemoved()) {
+            render view: '/404'
+        } else {
+            respond context, model: [context: context, user: springSecurityService.currentUser]
+        }
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
@@ -142,7 +146,7 @@ class ContextController {
             notFound()
             return
         }
-        
+
         if (!context.hasNotes()) {
             contextService.deleteContext(context, springSecurityService.currentUser, true)
         } else {

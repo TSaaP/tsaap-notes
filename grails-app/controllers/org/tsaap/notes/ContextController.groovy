@@ -68,8 +68,8 @@ class ContextController {
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def show(Context context) {
-        if (context.isRemoved()) {
-            render view: '/404'
+        if (!context || context.isRemoved()) {
+            redirect uri: '/404', status: NOT_FOUND
         } else {
             respond context, model: [context: context, user: springSecurityService.currentUser]
         }

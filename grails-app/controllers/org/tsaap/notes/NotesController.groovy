@@ -24,6 +24,7 @@ import org.tsaap.directory.User
 import org.tsaap.questions.Question
 import org.tsaap.questions.impl.gift.GiftQuestionService
 
+import static org.springframework.http.HttpStatus.NOT_FOUND
 
 class NotesController {
 
@@ -200,7 +201,11 @@ class NotesController {
     private def renderMainPage(def params, User user, Map showDiscussion = [:]) {
         Context context = null
         if (params.contextId && params.contextId != 'null') {
-            context = Context.get(params.contextId)
+            context = Context.findByIdAndRemoved(params.contextId, false)
+            if (!context) {
+                redirect uri: '/404', status: NOT_FOUND
+                return
+            }
         }
         Tag fragmentTag = null
         if (params.fragmentTagId && params.fragmentTagId != 'null') {

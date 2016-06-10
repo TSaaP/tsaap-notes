@@ -59,8 +59,8 @@ class ContextController {
             contextList = contextService.contextsFollowedByUser(user, params)
             contextCount = contextList.totalCount
         } else {
-            contextList = Context.findAllByContextNameIlike("%${filter}%", params)
-            contextCount = Context.countByContextNameIlike("%${filter}%")
+            contextList = Context.findAllByContextNameIlikeAndRemoved("%${filter}%", false, params)
+            contextCount = Context.countByContextNameIlikeAndRemoved("%${filter}%", false)
         }
 
         respond contextList, model: [contextList: contextList, contextCount: contextCount, user: user]

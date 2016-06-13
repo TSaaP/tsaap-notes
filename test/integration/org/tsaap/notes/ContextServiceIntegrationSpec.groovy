@@ -54,35 +54,7 @@ class ContextServiceIntegrationSpec extends Specification {
 
     }
 
-    def "delete contexte"() {
 
-        given: "a context with notes"
-        Context context = contextService.saveContext(new Context(owner: bootstrapTestService.learnerPaul, contextName: "aContext"))
-        Note note = noteService.addStandardNote(bootstrapTestService.learnerMary, "a note...", context)
-
-        when: "trying to delete the context"
-        contextService.deleteContext(context, context.owner)
-
-        then: "the delete fails due to precondition on attached notes"
-        thrown(PreconditionViolation)
-
-        when: "a context has no notes and trying to delete the context"
-        noteService.deleteNoteByAuthor(note, bootstrapTestService.learnerMary)
-        contextService.subscribeUserOnContext(bootstrapTestService.learnerMary, context)
-        contextService.deleteContext(context, context.owner)
-
-        then: "the delete is OK"
-        Context.get(context.id) == null
-
-        when: "the user trying to delete the context is not the owner"
-        context = contextService.saveContext(new Context(owner: bootstrapTestService.learnerPaul, contextName: "aContext"))
-        contextService.deleteContext(context, bootstrapTestService.learnerMary)
-
-        then: "the delete fails"
-        thrown(PreconditionViolation)
-
-
-    }
 
     def "subscribe a user on a context"() {
 
@@ -155,5 +127,56 @@ class ContextServiceIntegrationSpec extends Specification {
         Context.findById(context.id).isOpen()
 
     }
+
+    def "delete contexte with no notes"() {
+
+        given: "a context with no notes"
+        Context context = contextService.saveContext(new Context(owner: bootstrapTestService.learnerPaul, contextName: "aContext"))
+
+        expect: "context exists"
+        contextService.contextExists(context)
+        contextService.contextExists(context.id)
+
+        when: "trying to delete the context"
+        contextService.deleteContext(context, context.owner)
+        def fetchContext = Context.findById(context.id)
+
+        then: "the delete is OK"
+        fetchContext == null
+
+        and: "the context doesn't exist"
+        !contextService.contextExists(context.id)
+        !contextService.contextExists(fetchContext)
+
+        when: "the user trying to delete the context is not the owner"
+        context = contextService.saveContext(new Context(owner: bootstrapTestService.learnerPaul, contextName: "aContext"))
+        contextService.deleteContext(context, bootstrapTestService.learnerMary)
+
+        then: "the delete fails"
+        thrown(PreconditionViolation)
+
+        when: "a context  with a notes is created"
+        context = contextService.saveContext(new Context(owner: bootstrapTestService.learnerPaul, contextName: "aContext"))
+        noteService.addStandardNote(bootstrapTestService.learnerMary, "a note...", context)
+
+        then: "context exists"
+        contextService.contextExists(context.id)
+        contextService.contextExists(context)
+
+        when: "removing the context"
+        contextService.deleteContext(context, context.owner)
+        fetchContext = Context.findById(context.id)
+
+        then: "the context is always is the database"
+        fetchContext != null
+
+        and: "the context doesn't exist"
+        !contextService.contextExists(fetchContext)
+        !contextService.contextExists(context.id)
+
+    }
+
+
+
 
 }

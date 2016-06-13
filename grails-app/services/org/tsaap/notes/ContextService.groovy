@@ -121,16 +121,22 @@ class ContextService {
      * @param context the context to delete
      */
     @Requires({
-        context && context.owner == user && !context.hasNotes()
+        context && context.owner == user
     })
     def deleteContext(Context context, User user, Boolean flush = false) {
-        def contextFollowers = ContextFollower.where { context == context }
-        contextFollowers.deleteAll()
-        sql = new Sql(dataSource)
-        lmsContextHelper = new LmsContextHelper()
-        lmsContextService.lmsContextHelper = lmsContextHelper
-        lmsContextService.deleteLmsContextForContext(sql, context.id)
-        context.delete(flush: flush)
+        if (!context.hasNotes()) {
+            def contextFollowers = ContextFollower.where { context == context }
+            contextFollowers.deleteAll()
+            sql = new Sql(dataSource)
+            lmsContextHelper = new LmsContextHelper()
+            lmsContextService.lmsContextHelper = lmsContextHelper
+            lmsContextService.deleteLmsContextForContext(sql, context.id)
+            context.delete(flush: flush)
+        } else {
+            context.removed = true
+            context.save(flush: flush)
+        }
+
     }
 
     /**
@@ -244,5 +250,26 @@ class ContextService {
         context.closed = true
         context.save()
         context
+    }
+
+    /**
+     * Check if a context id match an existing context i.e. a context not null and  not removed
+     * @param contextId the context id
+     * @return true if the context is not null and not removed
+     */
+    boolean contextExists(Long contextId) {
+        Context.findByIdAndRemoved(contextId, false)
+    }
+
+    /**
+     * Check if a context exists
+     * @param context the context to check
+     * @return true if the context exists
+     */
+    boolean contextExists(Context context) {
+        if (!context) {
+            return false
+        }
+        !context.removed
     }
 }

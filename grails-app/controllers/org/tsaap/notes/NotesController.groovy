@@ -30,6 +30,7 @@ class NotesController {
     NoteService noteService
     GiftQuestionService giftQuestionService
     AttachementService attachementService
+    ContextService contextService
 
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
@@ -199,8 +200,8 @@ class NotesController {
     private def renderMainPage(def params, User user, Map showDiscussion = [:]) {
         Context context = null
         if (params.contextId && params.contextId != 'null') {
-            context = Context.findByIdAndRemoved(params.contextId, false)
-            if (!context) {
+            context = Context.get(params.contextId as Long)
+            if (!contextService.contextExists(context)) {
                 response.sendError(404)
                 return
             }

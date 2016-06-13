@@ -21,7 +21,6 @@ import grails.plugins.springsecurity.SpringSecurityService
 import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
 import groovy.sql.Sql
-import org.tsaap.BootstrapTestService
 import org.tsaap.directory.User
 import org.tsaap.lti.LmsContextHelper
 import org.tsaap.lti.LmsContextService
@@ -117,8 +116,8 @@ class ContextControllerSpec extends Specification {
         when: "The show action is executed with a null domain"
         controller.show(null)
 
-        then: "A 404 error is returned"
-        response.status == 404
+        then: "A redirect error is returned"
+        status == 302
 
         when: "A domain instance is passed to the show action"
         populateValidParams(params)

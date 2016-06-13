@@ -62,6 +62,12 @@
                 type="submit"
                 id="submit">${message(code: "springSecurity.login.button")}</button>
     </form>
+    <center>
+        <g:link action="statistics" controller="login">
+            ${message(code: 'login.lost.password.message')}
+        </g:link>
+    </center>
+
 
 </div>
 

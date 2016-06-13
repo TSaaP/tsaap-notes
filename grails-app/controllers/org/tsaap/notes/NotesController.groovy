@@ -24,8 +24,6 @@ import org.tsaap.directory.User
 import org.tsaap.questions.Question
 import org.tsaap.questions.impl.gift.GiftQuestionService
 
-import static org.springframework.http.HttpStatus.NOT_FOUND
-
 class NotesController {
 
     SpringSecurityService springSecurityService
@@ -203,7 +201,7 @@ class NotesController {
         if (params.contextId && params.contextId != 'null') {
             context = Context.findByIdAndRemoved(params.contextId, false)
             if (!context) {
-                redirect uri: '/404', status: NOT_FOUND
+                response.sendError(404)
                 return
             }
         }
@@ -245,18 +243,14 @@ class NotesController {
                 kindParams,
                 inlineParams)
 
-
-        def countTotal
         def kind
-        if (kindParams == NoteKind.STANDARD.toString().toLowerCase()) {
-
+        if (kindParams == 'standard') {
             kind = NoteKind.QUESTION
-
         } else {
-
             kind = NoteKind.STANDARD
         }
 
+        def countTotal
         countTotal = noteService.countNotes(user,
                 displaysMyNotes,
                 displaysMyFavorites,
@@ -266,14 +260,11 @@ class NotesController {
                 kind.toString().toLowerCase()
         )
 
-
-
-        render(view: '/notes/index', model: [user          : user,
+        render view: '/notes/index', model: [user          : user,
                                              notes         : notes,
                                              countTotal    : countTotal,
                                              context       : context,
                                              fragmentTag   : fragmentTag,
-                                             showDiscussion: showDiscussion])
+                                             showDiscussion: showDiscussion]
     }
-
 }

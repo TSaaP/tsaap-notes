@@ -39,8 +39,6 @@ class ContextControllerSpec extends Specification {
     Sql sql = Mock(Sql)
     LmsContextService lmsContextService = Mock(LmsContextService)
     LmsContextHelper lmsContextHelper = Mock(LmsContextHelper)
-    BootstrapTestService bootstrapTestService
-    NoteService noteService
 
     def setup() {
         controller.springSecurityService = springSecurityService
@@ -198,18 +196,32 @@ class ContextControllerSpec extends Specification {
         response.redirectedUrl == '/context/index'
         flash.message != null
 
-        when: "Create a new context"
-        def context2 = new Context(params).save(flush:true)
+    }
 
-        and: "Create note in this context"
-        Note note = noteService.addStandardNote(bootstrapTestService.learnerPaul, "a standard note", context2)
+    void "Test about removing context that contains notes"() {
+        when: "Create a new context"
+        populateValidParams(params)
+        def context = new Context(params).save(flush:true)
+
+        then:""
+        Context.count() == 1
+        Note.count() == 0
+
+        when: "Create note in this context"
+        Note note = new Note(author: user, content: "standard note", context: context, kind: NoteKind.STANDARD.ordinal())
+        note.save(flush: true)
+
+        then:"Check if context has notes"
+        Note.count() == 1
+        context.hasNotes() == true
 
         when: "Trying to delete context2"
-        context2.isRemoved() == false
-        controller.delete(context2)
-        
-        then: "context2 is marked as removed but not deleted from database"
-        context2.isRemoved() == true
+        context.isRemoved() == false
+        springSecurityService.currentUser >> context.owner
+        controller.delete(context)
+
+        then: "context is marked as removed but not deleted from database"
+        context.isRemoved() == true
         Context.count() == 1
 
     }

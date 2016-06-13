@@ -45,21 +45,22 @@ class ContextController {
         params.max = Math.min(max ?: 10, 100)
         params.sort = params.sort ?: 'dateCreated'
         params.order = params.order ?: 'desc'
+
         User user = springSecurityService.currentUser
         def contextList
         def contextCount = 0
         if (!filter || filter == FilterReservedValue.__ALL__.name()) {
-            contextList = Context.list(params)
-            contextCount = Context.count()
+            contextList = Context.findAllByRemoved(false, params)
+            contextCount = Context.countByRemoved(false)
         } else if (filter == FilterReservedValue.__MINE__.name()) {
             contextList = contextService.contextsForOwner(user, params)
-            contextCount = Context.countByOwner(user)
+            contextCount = Context.countByOwnerAndRemoved(user, false)
         } else if (filter == FilterReservedValue.__FOLLOWED__.name()) {
             contextList = contextService.contextsFollowedByUser(user, params)
             contextCount = contextList.totalCount
         } else {
-            contextList = Context.findAllByContextNameIlike("%${filter}%", params)
-            contextCount = Context.countByContextNameIlike("%${filter}%")
+            contextList = Context.findAllByContextNameIlikeAndRemoved("%${filter}%", false, params)
+            contextCount = Context.countByContextNameIlikeAndRemoved("%${filter}%", false)
         }
 
         respond contextList, model: [contextList: contextList, contextCount: contextCount, user: user]
@@ -67,7 +68,11 @@ class ContextController {
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def show(Context context) {
-        respond context, model: [context: context, user: springSecurityService.currentUser]
+        if (!contextService.contextExists(context)) {
+            notFound()
+        } else {
+            respond context, model: [context: context, user: springSecurityService.currentUser]
+        }
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
@@ -80,7 +85,7 @@ class ContextController {
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def save(Context context) {
         def user = springSecurityService.currentUser
-        if (context == null) {
+        if (!contextService.contextExists(context)) {
             notFound()
             return
         }
@@ -110,7 +115,7 @@ class ContextController {
     @Transactional
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def update(Context context) {
-        if (context == null) {
+        if (!contextService.contextExists(context)) {
             notFound()
             return
         }
@@ -137,11 +142,10 @@ class ContextController {
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def delete(Context context) {
 
-        if (context == null) {
+        if (!contextService.contextExists(context)) {
             notFound()
             return
         }
-
         contextService.deleteContext(context, springSecurityService.currentUser, true)
 
         request.withFormat {
@@ -156,7 +160,7 @@ class ContextController {
     @Transactional
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def followContext(Context context) {
-        if (context == null) {
+        if (!contextService.contextExists(context)) {
             notFound()
             return
         }
@@ -173,7 +177,7 @@ class ContextController {
     @Transactional
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def unfollowContext(Context context) {
-        if (context == null) {
+        if (!contextService.contextExists(context)) {
             notFound()
             return
         }
@@ -189,7 +193,7 @@ class ContextController {
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def exportQuestionsAsGiftWithFeedbacks(Context context) {
-        if (context == null) {
+        if (!contextService.contextExists(context)) {
             notFound()
             return
         }
@@ -200,7 +204,7 @@ class ContextController {
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def exportQuestionsAsGift(Context context) {
-        if (context == null) {
+        if (!contextService.contextExists(context)) {
             notFound()
             return
         }
@@ -212,7 +216,7 @@ class ContextController {
     @Transactional
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def duplicateContext(Context context) {
-        if (context == null) {
+        if (!contextService.contextExists(context)) {
             notFound()
             return
         }

@@ -126,8 +126,8 @@
                             <td><g:link controller="context" action="unfollowContext" id="${context.id}"
                                         style="width: 90px;"
                                         class="btn btn-info btn-xs"
-                                        onmouseover='updateFollowLink(  $  (this),"Unfollow","btn-danger")'
-                                        onmouseout='updateFollowLink(  $  (this),"Following","btn-info")'
+                                        onmouseover="updateFollowLink(\$(this),'Unfollow','btn-danger')"
+                                        onmouseout="updateFollowLink(\$(this),'Following','btn-info')"
                                         params="${[filter: params.filter ?: '']}">${message(code: 'context.index.following.button')}</g:link></td>
                         </g:if>
                         <g:else>
@@ -175,6 +175,14 @@
                                             </g:link>
                                         </g:else>
 
+                                    </li>
+                                    <li>
+                                        <g:form action="delete" controller="context" name="delete${context.id}"
+                                                id="${context.id}" resource="${context}" method="DELETE">
+                                        </g:form>
+                                        <a onclick="if (confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}'))
+                                                ${'delete' + context.id}.
+                                        submit();">${message(code: 'default.button.delete.label')}</a>
                                     </li>
                                 </ul>
                             </div>

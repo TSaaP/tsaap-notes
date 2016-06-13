@@ -52,6 +52,7 @@ class Context {
 
     Boolean noteTakingEnabled = false
     Boolean closed = false
+    Boolean removed = false
 
     static constraints = {
         contextName blank: false, maxSize: 1024
@@ -59,6 +60,7 @@ class Context {
         descriptionAsNote nullable: true, maxSize: 280
         source nullable: true, editable: false
         closed nullable: true
+        removed nullable: true
     }
 
     /**
@@ -114,6 +116,13 @@ class Context {
      */
     Boolean isClosed() {
         closed == true
+    }
+    /**
+     * check if the current context is removed
+     * @return true if the context is removed false otherwise
+     */
+    Boolean isRemoved() {
+        removed == true
     }
 
 

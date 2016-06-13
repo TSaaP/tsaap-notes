@@ -24,12 +24,14 @@ import groovy.sql.Sql
 import org.tsaap.directory.User
 import org.tsaap.lti.LmsContextHelper
 import org.tsaap.lti.LmsContextService
+import org.tsaap.questions.LiveSession
+import org.tsaap.questions.LiveSessionService
 import spock.lang.Specification
 
 import javax.sql.DataSource
 
 @TestFor(ContextController)
-@Mock([Context, User, Note, ContextService, ContextFollower])
+@Mock([Context, User, Note, ContextService, ContextFollower, LiveSessionService, NoteService, LiveSession])
 class ContextControllerSpec extends Specification {
 
     User user
@@ -114,8 +116,8 @@ class ContextControllerSpec extends Specification {
         when: "The show action is executed with a null domain"
         controller.show(null)
 
-        then: "A 404 error is returned"
-        response.status == 404
+        then: "A redirect error is returned"
+        status == 302
 
         when: "A domain instance is passed to the show action"
         populateValidParams(params)
@@ -194,5 +196,84 @@ class ContextControllerSpec extends Specification {
         Context.count() == 0
         response.redirectedUrl == '/context/index'
         flash.message != null
+
+    }
+
+    void "Test about removing context that contains notes"() {
+        when: "Create a new context"
+        populateValidParams(params)
+        def context = new Context(params).save(flush: true)
+
+        then: "The context exist"
+        Context.count() == 1
+
+        when: "Create note in this context"
+        Note note = new Note(author: user, content: "standard note", context: context, kind: NoteKind.STANDARD.ordinal())
+        note.save(flush: true)
+
+        then: "Check if context has notes"
+        Note.count() == 1
+        context.hasNotes() == true
+
+        when: "Trying to delete context2"
+        context.isRemoved() == false
+        springSecurityService.currentUser >> context.owner
+        controller.delete(context)
+
+        then: "context is marked as removed but not deleted from database"
+        context.isRemoved() == true
+        Context.count() == 1
+
+    }
+
+    void "Test about closing scope"() {
+        when: "Create a new context"
+        populateValidParams(params)
+        def context = new Context(params).save(flush: true)
+
+        and: ""
+        springSecurityService.currentUser >> context.owner
+        params.filter = filter
+        params.show = show
+        params.id = context.getId()
+        controller.closeContext(10)
+
+        then: ""
+        response.redirectedUrl == resp
+
+        where: ""
+        filter                              | show | resp
+        FilterReservedValue.__MINE__.name() | 0    | '/scope/index?filter=__MINE__'
+        FilterReservedValue.__ALL__.name()  | 0    | '/scope/index'
+        ""                                  | 1    | '/scope/show/1'
+        ""                                  | 0    | '/scope/index'
+
+
+    }
+
+    void "Test about opening scope"() {
+        when: "Create a new claused context"
+        populateValidParams(params)
+        def context = new Context(params).save(flush: true)
+        context.closed = true
+
+        and: ""
+        springSecurityService.currentUser >> context.owner
+        params.filter = filter
+        params.show = show
+        params.id = context.getId()
+        controller.openContext(10)
+
+        then: ""
+        response.redirectedUrl == resp
+
+        where: ""
+        filter                              | show | resp
+        FilterReservedValue.__MINE__.name() | 0    | '/scope/index?filter=__MINE__'
+        FilterReservedValue.__ALL__.name()  | 0    | '/scope/index'
+        ""                                  | 1    | '/scope/show/1'
+        ""                                  | 0    | '/scope/index'
+
+
     }
 }

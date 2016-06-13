@@ -24,13 +24,13 @@ import org.tsaap.directory.User
 import org.tsaap.questions.Question
 import org.tsaap.questions.impl.gift.GiftQuestionService
 
-
 class NotesController {
 
     SpringSecurityService springSecurityService
     NoteService noteService
     GiftQuestionService giftQuestionService
     AttachementService attachementService
+    ContextService contextService
 
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
@@ -200,7 +200,11 @@ class NotesController {
     private def renderMainPage(def params, User user, Map showDiscussion = [:]) {
         Context context = null
         if (params.contextId && params.contextId != 'null') {
-            context = Context.get(params.contextId)
+            context = Context.get(params.contextId as Long)
+            if (!contextService.contextExists(context)) {
+                response.sendError(404)
+                return
+            }
         }
         Tag fragmentTag = null
         if (params.fragmentTagId && params.fragmentTagId != 'null') {
@@ -240,18 +244,14 @@ class NotesController {
                 kindParams,
                 inlineParams)
 
-
-        def countTotal
         def kind
-        if (kindParams == NoteKind.STANDARD.toString().toLowerCase()) {
-
+        if (kindParams == 'standard') {
             kind = NoteKind.QUESTION
-
         } else {
-
             kind = NoteKind.STANDARD
         }
 
+        def countTotal
         countTotal = noteService.countNotes(user,
                 displaysMyNotes,
                 displaysMyFavorites,
@@ -261,14 +261,11 @@ class NotesController {
                 kind.toString().toLowerCase()
         )
 
-
-
-        render(view: '/notes/index', model: [user          : user,
+        render view: '/notes/index', model: [user          : user,
                                              notes         : notes,
                                              countTotal    : countTotal,
                                              context       : context,
                                              fragmentTag   : fragmentTag,
-                                             showDiscussion: showDiscussion])
+                                             showDiscussion: showDiscussion]
     }
-
 }

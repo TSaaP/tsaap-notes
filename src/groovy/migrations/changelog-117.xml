@@ -38,7 +38,7 @@
             <column name="user_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="password_reseted" type="TINYINT(1)">
+            <column name="password_reset_email_sent" type="TINYINT(1)">
                 <constraints nullable="false"/>
             </column>
         </createTable>

@@ -32,15 +32,10 @@
             <column name="version" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="password_reset_key" type="VARCHAR(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="user_id" type="BIGINT">
-                <constraints nullable="false"/>
-            </column>
-            <column name="password_reset_email_sent" type="TINYINT(1)">
-                <constraints nullable="false"/>
-            </column>
+            <column name="password_reset_key" type="VARCHAR(255)"/>
+            <column name="user_id" type="BIGINT"/>
+            <column name="password_reset_email_sent" type="TINYINT(1)"/>
+            <column name="date_created" type="DATETIME"/>
         </createTable>
         <addForeignKeyConstraint baseTableName="password_reset_key" baseColumnNames="user_id"
                                  constraintName="fk_password_reset_key_user_id" referencedTableName="user"

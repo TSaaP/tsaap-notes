@@ -42,7 +42,7 @@ class MailCheckingService {
         notifications.each { actKey, user ->
             actKeysWithEmailSent << actKey
             try {
-                def sub = messageSource.getMessage("email.checking.title", null, new Locale(user.language))
+                def sub = messageSource.getMessage("email.checking.title", null, new Locale(Settings.findByUser(user).language))
                 mailService.sendMail {
                     to user.email
                     subject sub

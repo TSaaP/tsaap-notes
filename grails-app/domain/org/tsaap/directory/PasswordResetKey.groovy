@@ -22,7 +22,7 @@ class PasswordResetKey {
     String passwordResetKey
     Date dateCreated
     User user
-    boolean resetPasswordEmailSent = false
+    boolean passwordResetEmailSent = false
 
     static belongsTo = [user: User]
 

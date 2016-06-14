@@ -2,7 +2,6 @@ package org.tsaap.directory
 
 class PasswordResetKeyController {
 
-    PasswordResetKey passwordResetKey
     PasswordResetService passwordResetService
     /**
      * render the forget password view
@@ -19,10 +18,13 @@ class PasswordResetKeyController {
         def user = passwordResetService.findUserByEmailAddress(params.email)
         if (user) {
             passwordResetService.generatePasswordResetKeyForUser(user)
+            flash.message = message(code: 'useraccount.reset.success')
+            redirect(uri: '/login/auth')
         }
         else {
             flash.message = message(code: 'useraccount.reset.fail')
             render view:'forgetPassword'
         }
+
     }
 }

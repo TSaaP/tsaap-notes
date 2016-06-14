@@ -1,7 +1,6 @@
 package org.tsaap.directory
 
 import grails.plugin.mail.MailService
-import groovy.sql.Sql
 import org.apache.commons.lang.time.DateUtils
 import org.springframework.context.MessageSource
 
@@ -11,10 +10,11 @@ class PasswordResetService {
     MailService mailService
     MessageSource messageSource
 
-    //def lifetime = grailsApplication.config.tsaap.auth.password_reset_key.lifetime_in_hours ?: 1
+
 
     def sendPasswordResetKeyMessages(User user) {
-        def prkList = PasswordResetKey.findAllByResetPasswordEmailSentAndDateCreatedLessThan(false, DateUtils.addHours(new Date(), -lifetime))
+        def lifetime = grailsApplication.config.tsaap.auth.password_reset_key.lifetime_in_hours ?: 1
+        def prkList = PasswordResetKey.findAllByPasswordResetEmailSentAndDateCreatedLessThan(false, DateUtils.addHours(new Date(), -lifetime))
         prkList.each {
             try {
                 def sub = messageSource.getMessage("email.passwordReset.title", null, new Locale(Settings.findByUser(user).language))
@@ -31,13 +31,14 @@ class PasswordResetService {
     }
 
     def generatePasswordResetKeyForUser(User user) {
+        def lifetime = grailsApplication.config.tsaap.auth.password_reset_key.lifetime_in_hours ?: 1
         def prk = PasswordResetKey.findByUser(user)
         if (prk) {
             if (prk.dateCreated < DateUtils.addHours(new Date(), -lifetime)) {
                 prk.passwordResetKey = UUID.randomUUID().toString()
                 prk.dateCreated = new Date()
             }
-            prk.resetPasswordEmailSent = false
+            prk.passwordResetEmailSent = false
         } else {
             prk = new PasswordResetKey(passwordResetKey: UUID.randomUUID().toString(), user: user)
         }
@@ -47,7 +48,7 @@ class PasswordResetService {
     /**
      *
      * @param email
-     * @return true i the address exist in database, false otherwise
+     * @return true if the address exist in database, false otherwise
      */
     def findUserByEmailAddress(String email) {
       User.findByEmail(email)

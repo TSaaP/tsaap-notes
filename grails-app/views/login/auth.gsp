@@ -63,11 +63,10 @@
                 id="submit">${message(code: "springSecurity.login.button")}</button>
     </form>
     <center>
-        <g:link action="doForget">
+        <g:link controller="passwordResetKey" action="doForget">
             ${message(code: 'login.lost.password.message')}
         </g:link>
     </center>
-
 
 </div>
 

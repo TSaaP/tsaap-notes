@@ -141,10 +141,5 @@ class LoginController {
     def ajaxDenied = {
         render([error: 'access denied'] as JSON)
     }
-    /**
-     * render the forget password view
-     */
-    def doForget() {
-        render view:'forgetPassword'
-    }
+
 }

@@ -15,7 +15,7 @@ class PasswordResetKeyController {
      */
     def doReset() {
 
-        def user = passwordResetService.findUserByEmailAddress(params.email)
+        def user = User.findByEmail(params.email)
         if (user) {
             passwordResetService.generatePasswordResetKeyForUser(user)
             flash.message = message(code: 'useraccount.reset.success')

@@ -56,11 +56,34 @@ class PasswordResetServiceIntegrationSpec extends Specification {
 
         when: "they user asks again for a key when its old key is obsolete"
         key2.dateCreated = DateUtils.addHours(new Date(), -lifetime - 1)
-        key2.save(flush: true)
+        key2.save()
         def key3val = passwordResetService.generatePasswordResetKeyForUser(bootstrapTestService.learnerPaul).passwordResetKey
 
         then: "the key is different"
         key2val != key3val
         PasswordResetKey.count == count + 1
+    }
+
+    def "find password reset key mails to send"() {
+        when: "a key is added for a user"
+        def key = passwordResetService.generatePasswordResetKeyForUser(bootstrapTestService.learnerPaul)
+
+        then: "the key is found"
+        key == passwordResetService.findAllPasswordResetKey()[0]
+
+        when: "the key is marked as sent"
+        key.passwordResetEmailSent = true
+        key.save()
+
+        then: "the key is not found"
+        passwordResetService.findAllPasswordResetKey().size() == 0
+
+        when: "a new key is added and is obsolete"
+        def obsKey = passwordResetService.generatePasswordResetKeyForUser(bootstrapTestService.learnerMary)
+        obsKey.dateCreated = DateUtils.addHours(new Date(), -lifetime - 1)
+        obsKey.save()
+
+        then: "the key is not found"
+        passwordResetService.findAllPasswordResetKey().size() == 0
     }
 }

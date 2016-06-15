@@ -46,15 +46,6 @@ class PasswordResetService {
         prk
     }
 
-    /**
-     *
-     * @param email
-     * @return true if the address exist in database, false otherwise
-     */
-    def findUserByEmailAddress(String email) {
-      User.findByEmail(email)
-    }
-
     def findAllPasswordResetKey() {
         def lifetime = grailsApplication.config.tsaap.auth.password_reset_key.lifetime_in_hours ?: 1
         PasswordResetKey.withCriteria {

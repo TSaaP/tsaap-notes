@@ -12,20 +12,19 @@ class PasswordResetService {
 
     def sendPasswordResetKeyMessages() {
         def prkList = findAllPasswordResetKey()
-        prkList.each {
+        prkList.each { prk ->
             try {
-                def map = it
-                def sub = messageSource.getMessage("email.passwordReset.title", null, new Locale(map.user.settings.language))
+                def sub = messageSource.getMessage("email.passwordReset.title", null, new Locale(prk.user.settings.language))
                 mailService.sendMail {
-                    to map.user.email
+                    to prk.user.email
                     subject sub
-                    html view: "/email/emailPasswordReset", model: [user            : map.user,
-                                                                    passwordResetKey: map.passwordResetKey]
+                    html view: "/email/emailPasswordReset", model: [user            : prk.user,
+                                                                    passwordResetKey: prk.passwordResetKey]
                 }
-                it.passwordResetEmailSent = true
-                it.save()
+                prk.passwordResetEmailSent = true
+                prk.save()
             } catch (Exception e) {
-                log.error("Error with ${map.user.email}: ${e.message}")
+                log.error("Error with ${prk.user.email}: ${e.message}")
             }
         }
     }

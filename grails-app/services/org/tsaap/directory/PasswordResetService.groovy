@@ -10,22 +10,22 @@ class PasswordResetService {
     MailService mailService
     MessageSource messageSource
 
-
-
     def sendPasswordResetKeyMessages() {
-        def lifetime = grailsApplication.config.tsaap.auth.password_reset_key.lifetime_in_hours ?: 1
-        def prkList = PasswordResetKey.findAllByPasswordResetEmailSentAndDateCreatedLessThan(false, DateUtils.addHours(new Date(), -lifetime))
+        def prkList = findAllPasswordResetKey()
         prkList.each {
             try {
-                def sub = messageSource.getMessage("email.passwordReset.title", null, new Locale(it.user.settings.language))
+                def map = it
+                def sub = messageSource.getMessage("email.passwordReset.title", null, new Locale(map.user.settings.language))
                 mailService.sendMail {
-                    to it.user.email
+                    to map.user.email
                     subject sub
-                    html view: "/email/emailPasswordReset", model: [user            : it.user,
-                                                                    passwordResetKey: it.passwordResetKey]
+                    html view: "/email/emailPasswordReset", model: [user            : map.user,
+                                                                    passwordResetKey: map.passwordResetKey]
                 }
+                it.passwordResetEmailSent = true
+                it.save()
             } catch (Exception e) {
-                log.error("Error with ${it.user.email}: ${e.message}")
+                log.error("Error with ${map.user.email}: ${e.message}")
             }
         }
     }
@@ -53,5 +53,15 @@ class PasswordResetService {
      */
     def findUserByEmailAddress(String email) {
       User.findByEmail(email)
+    }
+
+    def findAllPasswordResetKey() {
+        def lifetime = grailsApplication.config.tsaap.auth.password_reset_key.lifetime_in_hours ?: 1
+        PasswordResetKey.withCriteria {
+            eq 'passwordResetEmailSent', false
+            gt 'dateCreated', DateUtils.addHours(new Date(), -lifetime)
+            join 'user'
+            join 'user.settings'
+        }
     }
 }

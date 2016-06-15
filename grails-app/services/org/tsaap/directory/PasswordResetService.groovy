@@ -12,20 +12,20 @@ class PasswordResetService {
 
 
 
-    def sendPasswordResetKeyMessages(User user) {
+    def sendPasswordResetKeyMessages() {
         def lifetime = grailsApplication.config.tsaap.auth.password_reset_key.lifetime_in_hours ?: 1
         def prkList = PasswordResetKey.findAllByPasswordResetEmailSentAndDateCreatedLessThan(false, DateUtils.addHours(new Date(), -lifetime))
         prkList.each {
             try {
-                def sub = messageSource.getMessage("email.passwordReset.title", null, new Locale(Settings.findByUser(user).language))
+                def sub = messageSource.getMessage("email.passwordReset.title", null, new Locale(it.user.settings.language))
                 mailService.sendMail {
-                    to user.email
+                    to it.user.email
                     subject sub
-                    html view: "/email/emailPasswordReset", model: [user            : user,
+                    html view: "/email/emailPasswordReset", model: [user            : it.user,
                                                                     passwordResetKey: it.passwordResetKey]
                 }
             } catch (Exception e) {
-                log.error("Error with ${user.email}: ${e.message}")
+                log.error("Error with ${it.user.email}: ${e.message}")
             }
         }
     }
@@ -45,6 +45,7 @@ class PasswordResetService {
         prk.save()
         prk
     }
+
     /**
      *
      * @param email

@@ -15,7 +15,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.tsaap.questions
+package org.tsaap.notes
 
 import grails.plugin.mail.MailService
 import groovy.sql.Sql
@@ -44,8 +44,7 @@ class ResponseNotificationService {
         Map notificationsMentions = findAllMentionsAndResponsesNotifications()
 
         if (notificationsMentions.size() > 0) {
-            def questionMap = null
-            notificationsMentions.each { user, map ->
+            notificationsMentions.each { userId, map ->
 
                 def sub = messageSource.getMessage("email.mention.notification.title", null, new Locale(map.language))
                 try {

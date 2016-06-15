@@ -34,23 +34,22 @@ class MailCheckingService {
     /**
      * Send email to check user emails and then activate the corresponding user
      * accounts
-     * @param user the user to check email in
      */
     def sendCheckingEmailMessages() {
         Map notifications = findAllNotifications()
         List<String> actKeysWithEmailSent = []
-        notifications.each { actKey, user ->
+        notifications.each { actKey, map ->
             actKeysWithEmailSent << actKey
             try {
-                def sub = messageSource.getMessage("email.checking.title", null, new Locale(Settings.findByUser(user).language))
+                def sub = messageSource.getMessage("email.checking.title", null, new Locale(map.language))
                 mailService.sendMail {
-                    to user.email
+                    to map.email
                     subject sub
-                    html view: "/email/emailChecking", model: [user  : user,
+                    html view: "/email/emailChecking", model: [user  : map,
                                                                actKey: actKey]
                 }
             } catch (Exception e) {
-                log.error("Error with ${user.email} : ${e.message}")
+                log.error("Error with ${map.email} : ${e.message}")
             }
         }
         log.debug("Nb email sending try : ${actKeysWithEmailSent.size()}")

@@ -26,8 +26,8 @@ class PasswordResetKeyJob {
     }
 
     def execute() {
-        log.debug("Start Password reset key ...")
+        log.debug("Start Password reset key Job...")
         passwordResetService.sendPasswordResetKeyMessages()
-        log.debug("End Password reset key.")
+        log.debug("End Password reset key Job.")
     }
 }

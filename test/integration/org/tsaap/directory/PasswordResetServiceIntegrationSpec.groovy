@@ -39,26 +39,28 @@ class PasswordResetServiceIntegrationSpec extends Specification {
         bootstrapTestService.initializeTests()
     }
 
-    def "generate a new key"() {
+    def "generate and update a new key"() {
         when: "a key is generated for a new user"
         def count = PasswordResetKey.count()
-        def key1 = passwordResetService.generatePasswordResetKeyForUser(bootstrapTestService.learnerPaul)
+        def key1val = passwordResetService.generatePasswordResetKeyForUser(bootstrapTestService.learnerPaul).passwordResetKey
 
         then: "the key is added in database"
         PasswordResetKey.count == count + 1
 
         when: "the user asks again for a key while its old key is still active"
         def key2 = passwordResetService.generatePasswordResetKeyForUser(bootstrapTestService.learnerPaul)
+        def key2val = key2.passwordResetKey
 
         then: "the key is the same"
-        key1.passwordResetKey == key2.passwordResetKey
+        key1val == key2val
 
         when: "they user asks again for a key when its old key is obsolete"
         key2.dateCreated = DateUtils.addHours(new Date(), -lifetime - 1)
-        def key3 = passwordResetService.generatePasswordResetKeyForUser(bootstrapTestService.learnerPaul)
+        key2.save(flush: true)
+        def key3val = passwordResetService.generatePasswordResetKeyForUser(bootstrapTestService.learnerPaul).passwordResetKey
 
         then: "the key is different"
-        key3.passwordResetKey != key2.passwordResetKey
-        def
+        key2val != key3val
+        PasswordResetKey.count == count + 1
     }
 }

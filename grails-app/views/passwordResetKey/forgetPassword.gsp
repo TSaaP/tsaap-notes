@@ -25,7 +25,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-    <title></title>
+    <title>${message(code: "passwordReset.request.page.title")}</title>
     <meta name='layout' content='home'/>
     <r:require module="tsaap_ui_signin"/>
     <link rel="stylesheet" type="text/css" href="css/bootstrap-glyphicons.css"/>

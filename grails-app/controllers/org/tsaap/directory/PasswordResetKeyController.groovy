@@ -35,11 +35,11 @@ class PasswordResetKeyController {
         def user = User.findByEmail(params.email)
         if (user) {
             passwordResetService.generatePasswordResetKeyForUser(user)
-            flash.message = message(code: 'password.reset.email.success')
+            flash.message = message(code: 'passwordReset.email.success')
             redirect(uri: '/login/auth')
         }
         else {
-            flash.message = message(code: 'password.reset.email.fail')
+            flash.message = message(code: 'passwordReset.email.fail')
             render view:'forgetPassword'
         }
 
@@ -62,7 +62,7 @@ class PasswordResetKeyController {
             user.save(flush: true)
         }
         if (user.hasErrors()) {
-            flash.message = message(code: 'password.reset.fail')
+            flash.message = message(code: 'passwordReset.fail')
             render(view: 'passwordReset', model: [passwordResetKey: params.passwordResetKey])
         } else {
             flash.message = message(code: 'useraccount.update.success')

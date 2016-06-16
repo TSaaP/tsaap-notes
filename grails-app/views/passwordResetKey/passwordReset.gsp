@@ -18,7 +18,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>${message(code: "password.reset.page.title")}</title>
+    <title>${message(code: "passwordReset.page.title")}</title>
     <meta name='layout' content='anonymous'/>
     <r:require module="tsaap_ui_signin"/>
 </head>
@@ -28,7 +28,7 @@
 
     <g:form class="form-signin" controller="passwordResetKey" action='resetPassword'
             params="[passwordResetKey: params.passwordResetKey]">
-        <h3>${message(code: "password.reset.page.reset.titre")}</h3>
+        <h3>${message(code: "passwordReset.page.reset.titre")}</h3>
         <g:if test='${flash.message}'>
             <div class='alert'>${flash.message}</div>
         </g:if>
@@ -48,7 +48,7 @@
 
         <button class="btn btn-large btn-primary btn-block"
                 type="submit"
-                id="submit">${message(code: "password.reset.form.button")}</button>
+                id="submit">${message(code: "passwordReset.form.button")}</button>
     </g:form>
 
 </div>

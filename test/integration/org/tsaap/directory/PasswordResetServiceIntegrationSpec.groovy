@@ -17,13 +17,8 @@
 
 package org.tsaap.directory
 
+import grails.plugin.mail.MailService
 import org.apache.commons.lang.time.DateUtils
-import org.gcontracts.PreconditionViolation
-import org.tsaap.BootstrapTestService
-import org.tsaap.attachement.Attachement
-import org.tsaap.attachement.AttachementDto
-import org.tsaap.attachement.AttachementService
-import org.tsaap.notes.*
 import spock.lang.Specification
 
 class PasswordResetServiceIntegrationSpec extends Specification {
@@ -33,6 +28,8 @@ class PasswordResetServiceIntegrationSpec extends Specification {
 
     int lifetime
     def grailsApplication
+
+    def mockMailService = Mock(MailService)
 
     def setup() {
         lifetime = grailsApplication.config.tsaap.auth.password_reset_key.lifetime_in_hours ?: 1
@@ -88,7 +85,7 @@ class PasswordResetServiceIntegrationSpec extends Specification {
     }
 
     def "remove old keys"() {
-        when: "a key is still valid"
+        given: "a key is still valid"
         def validKey = passwordResetService.generatePasswordResetKeyForUser(bootstrapTestService.learnerPaul)
 
         and: "a key is too old"
@@ -96,7 +93,7 @@ class PasswordResetServiceIntegrationSpec extends Specification {
         obsoleteKey.dateCreated = DateUtils.addHours(new Date(), -lifetime - 1)
         obsoleteKey.save()
 
-        and: "the old keys are removed"
+        when: "the old keys are removed"
         passwordResetService.removeOldPasswordResetKeys()
 
         then: "the valid key is in the database"
@@ -105,5 +102,16 @@ class PasswordResetServiceIntegrationSpec extends Specification {
 
         and: "the obsolete key is not in the database"
         !keys.contains(obsoleteKey)
+    }
+
+    def "sent password reset key are sent"() {
+        given: "a key in the database"
+        def key = passwordResetService.generatePasswordResetKeyForUser(bootstrapTestService.learnerPaul)
+
+        when: "we send paswword reset keys mails"
+        passwordResetService.sendPasswordResetKeyMessages()
+
+        then: "the key is marked as sent"
+        key.passwordResetEmailSent
     }
 }

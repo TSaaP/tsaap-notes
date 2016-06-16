@@ -12,7 +12,7 @@ import spock.lang.Specification
  */
 @TestFor(PasswordResetKeyController)
 @Mock([User, PasswordResetService, PasswordResetKey])
-class PasswordResetKeySpec extends Specification {
+class PasswordResetKeyControllerSpec extends Specification {
 
     SpringSecurityService springSecurityService = Mock(SpringSecurityService)
     PasswordResetService passwordResetService = Mock(PasswordResetService)

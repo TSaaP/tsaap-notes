@@ -27,6 +27,9 @@ class PasswordResetService {
     MailService mailService
     MessageSource messageSource
 
+    /**
+     * Send password reset key to users asking for a reset
+     */
     def sendPasswordResetKeyMessages() {
         def prkList = findAllPasswordResetKey()
         prkList.each { prk ->
@@ -46,6 +49,11 @@ class PasswordResetService {
         }
     }
 
+    /**
+     * Generate (and get) a password reset key for a user
+     * @param user the user asking for the key
+     * @return the key generated
+     */
     def generatePasswordResetKeyForUser(User user) {
         def lifetime = grailsApplication.config.tsaap.auth.password_reset_key.lifetime_in_hours ?: 1
         def prk = PasswordResetKey.findByUser(user)
@@ -62,6 +70,10 @@ class PasswordResetService {
         prk
     }
 
+    /**
+     * Find all the password reset keys not yet sent to users concerned
+     * @return the list of password reset keys
+     */
     def findAllPasswordResetKey() {
         def lifetime = grailsApplication.config.tsaap.auth.password_reset_key.lifetime_in_hours ?: 1
         PasswordResetKey.withCriteria {
@@ -72,6 +84,11 @@ class PasswordResetService {
         }
     }
 
+    /**
+     * Remove password reset keys older than lifetime hours
+     * Lifetime is 1 or defined in the parameter tsaap.auth.activation_key.lifetime_in_hours
+     * @return
+     */
     def removeOldPasswordResetKeys() {
         def lifetime = grailsApplication.config.tsaap.auth.password_reset_key.lifetime_in_hours ?: 1
         def oldKeys = PasswordResetKey.findAllByDateCreatedLessThan(DateUtils.addHours(new Date(), -lifetime))

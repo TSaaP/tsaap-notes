@@ -31,7 +31,7 @@ class PasswordResetServiceIntegrationSpec extends Specification {
     def passwordResetService
     def bootstrapTestService
 
-    def lifetime
+    int lifetime
     def grailsApplication
 
     def setup() {
@@ -85,5 +85,25 @@ class PasswordResetServiceIntegrationSpec extends Specification {
 
         then: "the key is not found"
         passwordResetService.findAllPasswordResetKey().size() == 0
+    }
+
+    def "remove old keys"() {
+        when: "a key is still valid"
+        def validKey = passwordResetService.generatePasswordResetKeyForUser(bootstrapTestService.learnerPaul)
+
+        and: "a key is too old"
+        def obsoleteKey = passwordResetService.generatePasswordResetKeyForUser(bootstrapTestService.learnerMary)
+        obsoleteKey.dateCreated = DateUtils.addHours(new Date(), -lifetime - 1)
+        obsoleteKey.save()
+
+        and: "the old keys are removed"
+        passwordResetService.removeOldPasswordResetKeys()
+
+        then: "the valid key is in the database"
+        def keys = PasswordResetKey.findAll()
+        keys.contains(validKey)
+
+        and: "the obsolete key is not in the database"
+        !keys.contains(obsoleteKey)
     }
 }

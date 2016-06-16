@@ -22,6 +22,7 @@ class ActivationKeyGarbageCollectorJob {
     ActivationKeyService activationKeyService
 
     static triggers = {
+        // every hours
         cron name: 'garbageActKeyCronTrigger', startDelay: 10000, cronExpression: '0 0 0/1 * * ?'
     }
 

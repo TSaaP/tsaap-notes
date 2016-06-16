@@ -17,18 +17,18 @@
 
 package org.tsaap.directory
 
-class PasswordResetKeyJob {
+class PasswordResetKeyGarbageCollectorJob {
 
     PasswordResetService passwordResetService
 
     static triggers = {
-        // every 2 minutes
-        cron name: 'passwordResetKeyJob', startDelay: 10000, cronExpression: '0 0/2 * * * ?'
+        // every hours
+        cron name: 'garbagePassResetKeyCronTrigger', startDelay: 10000, cronExpression: '0 30 0/1 * * ?'
     }
 
     def execute() {
-        log.debug("Start Password reset key Job...")
-        passwordResetService.sendPasswordResetKeyMessages()
-        log.debug("End Password reset key Job.")
+        log.debug("Start PasswordReset Key garbage collector job ...")
+        passwordResetService.removeOldPasswordResetKeys()
+        log.debug("End PasswordReset Key garbage collector job.")
     }
 }

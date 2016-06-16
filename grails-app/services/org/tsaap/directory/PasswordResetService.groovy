@@ -54,4 +54,10 @@ class PasswordResetService {
             join 'user.settings'
         }
     }
+
+    def removeOldPasswordResetKeys() {
+        def lifetime = grailsApplication.config.tsaap.auth.password_reset_key.lifetime_in_hours ?: 1
+        def oldKeys = PasswordResetKey.findAllByDateCreatedLessThan(DateUtils.addHours(new Date(), -lifetime))
+        PasswordResetKey.deleteAll(oldKeys)
+    }
 }

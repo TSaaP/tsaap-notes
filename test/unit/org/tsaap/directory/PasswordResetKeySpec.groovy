@@ -11,6 +11,7 @@ import spock.lang.Specification
  * See the API for {@link grails.test.mixin.support.GrailsUnitTestMixin} for usage instructions
  */
 @TestFor(PasswordResetKeyController)
+@Mock([User, PasswordResetService, PasswordResetKey])
 class PasswordResetKeySpec extends Specification {
 
     SpringSecurityService springSecurityService = Mock(SpringSecurityService)

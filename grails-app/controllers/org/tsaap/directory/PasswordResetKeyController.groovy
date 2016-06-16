@@ -38,8 +38,6 @@ class PasswordResetKeyController {
     def resetPassword() {
         def key = params.passwordResetKey
         User user = PasswordResetKey.findByPasswordResetKey(key).user
-        //List<User> user = PasswordResetKey.executeQuery("SELECT user from PasswordResetKey where password_reset_key = :var", [var: key])
-
         if (params.password != params.passwordConfirm) {
             user.errors.rejectValue('password', 'user.password.confirm.fail', 'The two passwords must be the same.')
         } else {

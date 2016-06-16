@@ -1,5 +1,6 @@
 package org.tsaap.directory
 
+import grails.plugins.springsecurity.SpringSecurityService
 import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
 import grails.test.mixin.TestMixin
@@ -10,14 +11,22 @@ import spock.lang.Specification
  * See the API for {@link grails.test.mixin.support.GrailsUnitTestMixin} for usage instructions
  */
 @TestFor(PasswordResetKeyController)
-@Mock([User])
 class PasswordResetKeySpec extends Specification {
 
+    SpringSecurityService springSecurityService = Mock(SpringSecurityService)
+    PasswordResetService passwordResetService = Mock(PasswordResetService)
+
+    User user
     def setup() {
-        User user = new User(firstName: "moghite", lastName: "kacimi", username: "akac", email: "akac@mail.com", password: "password")
+        user= new User(firstName: "moghite", lastName: "kacimi", username: "akac", email: "akac@mail.com", password: "password")
+        user.springSecurityService = springSecurityService
+        springSecurityService.encodePassword(user.password) >> user.password
+        user.save()
+
     }
 
     def cleanup() {
+        user.delete()
     }
 
     void "test doForget action"() {
@@ -29,7 +38,7 @@ class PasswordResetKeySpec extends Specification {
     }
 
     void "test doReset action"() {
-        when:"Try to searsh with an invalid email"
+        when:"Try to reset password with an invalid email adress"
         params.email = "akacakac@mail.com"
 
         and:"call doReset action"
@@ -37,5 +46,23 @@ class PasswordResetKeySpec extends Specification {
 
         then:"must rend forget password view"
         view == '/passwordResetKey/forgetPassword'
+
+        when: "Trying to reset password with an valid email address"
+        params.email = "akac@mail.com"
+
+        and:"call doReset action"
+        controller.doReset()
+
+        then:""
+        response.redirectedUrl == '/login/auth'
     }
+
+    void "test doPasswordReset action"() {
+        when:"call doPasswordReset action"
+        controller.doPasswordReset()
+
+        then:"must rend passwordReset view"
+        view == '/passwordResetKey/passwordReset'
+    }
+
 }

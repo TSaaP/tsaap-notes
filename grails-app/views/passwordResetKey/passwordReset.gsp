@@ -26,7 +26,8 @@
 <body>
 <div class="container">
 
-    <g:form class="form-signin" controller="passwordResetKey" action='resetPassword' params="[passwordResetKey: params.passwordResetKey]">
+    <g:form class="form-signin" controller="passwordResetKey" action='resetPassword'
+            params="[passwordResetKey: params.passwordResetKey]">
         <h3>${message(code: "password.reset.page.reset.titre")}</h3>
         <g:if test='${flash.message}'>
             <div class='alert'>${flash.message}</div>
@@ -37,6 +38,7 @@
                    placeholder=${message(code: "springSecurity.login.password.placeholder")}
                    name='password' id='password'>
         </div>
+
         <div class="form-group">
             <input type="password" class="input-block-level"
                    placeholder=${message(code: "springSecurity.login.password.confirm.placeholder")}

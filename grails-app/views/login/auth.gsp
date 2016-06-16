@@ -64,7 +64,7 @@
     </form>
     <center>
         <g:link controller="passwordResetKey" action="doForget">
-            ${message(code: 'login.lost.password.message')}
+            ${message(code: 'springSecurity.login.lostPassword.message')}
         </g:link>
     </center>
 

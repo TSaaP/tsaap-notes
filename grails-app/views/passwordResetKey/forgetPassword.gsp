@@ -1,3 +1,20 @@
+%{--
+  - Copyright (C) 2013-2016 Université Toulouse 3 Paul Sabatier
+  -
+  -     This program is free software: you can redistribute it and/or modify
+  -     it under the terms of the GNU Affero General Public License as published by
+  -     the Free Software Foundation, either version 3 of the License, or
+  -     (at your option) any later version.
+  -
+  -     This program is distributed in the hope that it will be useful,
+  -     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  -     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  -     GNU Affero General Public License for more details.
+  -
+  -     You should have received a copy of the GNU Affero General Public License
+  -     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  --}%
+
 <%--
   Created by IntelliJ IDEA.
   User: akacimi
@@ -17,10 +34,11 @@
 <body>
 <div class="container">
     <div class="col-xs-12" style="height:70px;"></div>
+
     <div class="row">
-        <div class="col-lg-6 col-lg-offset-3" >
+        <div class="col-lg-6 col-lg-offset-3">
             <g:if test='${flash.message}'>
-                <%--<div class='alert'>${flash.message}</div>--%>
+            <%--<div class='alert'>${flash.message}</div>--%>
 
                 <div class="alert alert-danger" role="alert">
                     <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
@@ -29,7 +47,8 @@
                 </div>
             </g:if>
             <div class="panel panel-primary" style="background-color:transparent">
-                <div class="panel-heading">${message(code: "login.lost.password.title")}</div>
+                <div class="panel-heading">${message(code: "springSecurity.login.lostPassword.title")}</div>
+
                 <div class="panel-body">
                     <g:form class="form-horizontal" action="doReset">
                         <div class="input-group">
@@ -40,7 +59,7 @@
                         <br>
                         <button class="btn btn-primary"
                                 type="submit"
-                                id="submit">${message(code: "login.lost.password.button")}</button>
+                                id="submit">${message(code: "springSecurity.login.lostPassword.button")}</button>
                     </g:form>
                 </div>
             </div>

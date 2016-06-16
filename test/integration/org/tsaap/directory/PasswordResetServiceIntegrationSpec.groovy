@@ -17,7 +17,6 @@
 
 package org.tsaap.directory
 
-import grails.plugin.mail.MailService
 import org.apache.commons.lang.time.DateUtils
 import spock.lang.Specification
 
@@ -28,8 +27,6 @@ class PasswordResetServiceIntegrationSpec extends Specification {
 
     int lifetime
     def grailsApplication
-
-    def mockMailService = Mock(MailService)
 
     def setup() {
         lifetime = grailsApplication.config.tsaap.auth.password_reset_key.lifetime_in_hours ?: 1
@@ -104,6 +101,7 @@ class PasswordResetServiceIntegrationSpec extends Specification {
         !keys.contains(obsoleteKey)
     }
 
+    /*
     def "sent password reset key are sent"() {
         given: "a key in the database"
         def key = passwordResetService.generatePasswordResetKeyForUser(bootstrapTestService.learnerPaul)
@@ -114,4 +112,5 @@ class PasswordResetServiceIntegrationSpec extends Specification {
         then: "the key is marked as sent"
         key.passwordResetEmailSent
     }
+    */
 }

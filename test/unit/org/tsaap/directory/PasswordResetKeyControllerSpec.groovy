@@ -71,8 +71,8 @@ class PasswordResetKeyControllerSpec extends Specification {
         and:"call doReset action"
         controller.doReset()
 
-        then:""
-        response.redirectedUrl == '/login/auth'
+        then:"must rend send mail confirm view"
+        view == '/passwordResetKey/sendMailConfirm'
     }
 
     void "test doPasswordReset action"() {
@@ -81,6 +81,14 @@ class PasswordResetKeyControllerSpec extends Specification {
 
         then:"must rend passwordReset view"
         view == '/passwordResetKey/passwordReset'
+    }
+
+    void "test goIndex action"() {
+        when:"call goIndew action"
+        controller.goIndex()
+
+        then:"redirect to the index view"
+        response.redirectedUrl == '/'
     }
 
 }

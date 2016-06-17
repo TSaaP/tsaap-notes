@@ -36,7 +36,7 @@ class PasswordResetKeyController {
         if (user) {
             passwordResetService.generatePasswordResetKeyForUser(user)
             flash.message = message(code: 'passwordReset.email.success')
-            redirect(uri: '/login/auth')
+            render view: 'sendMailConfirm'
         }
         else {
             flash.message = message(code: 'passwordReset.email.fail')
@@ -69,6 +69,10 @@ class PasswordResetKeyController {
             redirect(uri: '/login/auth')
         }
 
+    }
+
+    def goIndex() {
+        redirect(uri:'/')
     }
 
 

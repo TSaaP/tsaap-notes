@@ -41,16 +41,17 @@ class NotificationService {
      */
     def notifyUsersOnTodayNotes() {
         Map notifications = findAllNotifications()
-        notifications.each { user, contextList ->
+        notifications.each { userId, map ->
 
 
             try {
-                def sub = messageSource.getMessage("email.notes.notification.title", null, new Locale(user.language))
+                def sub = messageSource.getMessage("email.notes.notification.title", null, new Locale(map.language))
                 mailService.sendMail {
-                    to user.email
+                    to map.email
                     subject sub
-                    html view: "/email/notesNotification", model: [user       : user,
-                                                                   contextList: contextList, key: contextList.find().key]
+                    html view: "/email/notesNotification", model: [user       : [first_name: map.first_name, email: map.email, language: map.language],
+                                                                   contextList: map.contextList,
+                                                                   key        : map.key]
                 }
             } catch (Exception e) {
                 log.error("Error with ${user.email} : ${e.message}")
@@ -94,11 +95,11 @@ class NotificationService {
         def rows = sql.rows(req)
         def notifications = [:]
         rows.each {
-            def key = [user_id: it.user_id, first_name: it.first_name, email: it.email, language: it.language]
+            def key = it.user_id
             if (notifications[key] == null) {
-                notifications[key] = []
+                notifications[key] = [key: it.ukey, first_name: it.first_name, email: it.email, language: it.language, contextList: []]
             }
-            notifications[key] << [context_id: it.context_id, context_name: it.context_name, count_notes: it.count_notes, key: it.ukey]
+            notifications[key].contextList << [context_id: it.context_id, context_name: it.context_name, count_notes: it.count_notes]
         }
         sql.close()
         notifications

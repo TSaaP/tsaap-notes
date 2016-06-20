@@ -14,23 +14,37 @@
   -     You should have received a copy of the GNU Affero General Public License
   -     along with this program.  If not, see <http://www.gnu.org/licenses/>.
   --}%
-<%@ page contentType="text/html;charset=UTF-8" %>
+
+<%--
+  Created by IntelliJ IDEA.
+  User: akacimi
+  Date: 16/06/16
+  Time: 15:28
+--%>
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Tsaap-Notes</title>
-    <meta name="layout" content="anonymous">
-    <r:require module="tsaap_ui_home"/>
+    <title>${message(code: "settings.unsubscribedMention.page.title")}</title>
+    <meta name='layout' content='anonymous'/>
+    <r:require module="tsaap_ui_signin"/>
 </head>
 
 <body>
 <div class="container">
-    <h1>${message(code: "error.404.title")}</h1>
-    <div class="alert">
-        <p>
-            ${message(code: "error.404.text")}
-        </p>
+    <div class="body-content">
+        <g:if test='${flash.message}'>
+
+        <div class="alert alert-info" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            ${flash.message}
+        </div>
+        </g:if>
+        <g:link class="btn btn-primary" controller="passwordResetKey"
+                action="goIndex">${message(code: "password.redirect.home.page")}</g:link>
+
     </div>
 </div>
+
 </body>
 </html>

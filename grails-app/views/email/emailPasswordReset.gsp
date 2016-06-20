@@ -14,23 +14,27 @@
   -     You should have received a copy of the GNU Affero General Public License
   -     along with this program.  If not, see <http://www.gnu.org/licenses/>.
   --}%
+
+<%--
+  Created by IntelliJ IDEA.
+  User: akacimi
+  Date: 14/06/16
+  Time: 15:04
+--%>
+
 <%@ page contentType="text/html;charset=UTF-8" %>
-<!DOCTYPE html>
 <html>
 <head>
-    <title>Tsaap-Notes</title>
-    <meta name="layout" content="anonymous">
-    <r:require module="tsaap_ui_home"/>
+    <title>${message(code: "email.passwordReset.notification.title", locale: new Locale(user.settings.language))}</title>
 </head>
 
 <body>
-<div class="container">
-    <h1>${message(code: "error.404.title")}</h1>
-    <div class="alert">
-        <p>
-            ${message(code: "error.404.text")}
-        </p>
-    </div>
-</div>
+<p>${message(code: "email.hi", locale: new Locale(user.settings.language))} ${user.firstName}</p>
+
+<p>${message(code: "email.passwordReset.content", locale: new Locale(user.settings.language))}</p>
+
+<a href="${createLink(absolute: 'true', action: 'doPasswordReset', controller: 'passwordResetKey', params: [passwordResetKey: passwordResetKey])}">
+    ${message(code: "email.passwordReset.title", locale: new Locale(user.settings.language))}</a>
+
 </body>
 </html>

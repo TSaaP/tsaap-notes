@@ -15,22 +15,20 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.tsaap.notes
-/**
- * Created by dorian on 26/05/15.
- */
-class ResponseNotificationJob {
+package org.tsaap.directory
 
-    ResponseNotificationService responseNotificationService
+class PasswordResetKeyGarbageCollectorJob {
+
+    PasswordResetService passwordResetService
 
     static triggers = {
-        // every 5 minutes
-        simple name: 'responseNotificationTrigger', startDelay: 10000, repeatInterval: 300000
+        // every hours
+        cron name: 'garbagePassResetKeyCronTrigger', startDelay: 10000, cronExpression: '0 30 0/1 * * ?'
     }
 
     def execute() {
-        log.debug("Start response notification job...")
-        responseNotificationService.notifyUsersOnResponsesAndMentions()
-        log.debug("End response notification job.")
+        log.debug("Start PasswordReset Key garbage collector job ...")
+        passwordResetService.removeOldPasswordResetKeys()
+        log.debug("End PasswordReset Key garbage collector job.")
     }
 }

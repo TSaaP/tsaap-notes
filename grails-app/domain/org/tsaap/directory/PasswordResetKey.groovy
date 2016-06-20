@@ -15,22 +15,18 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.tsaap.notes
-/**
- * Created by dorian on 26/05/15.
- */
-class ResponseNotificationJob {
+package org.tsaap.directory
 
-    ResponseNotificationService responseNotificationService
+class PasswordResetKey {
 
-    static triggers = {
-        // every 5 minutes
-        simple name: 'responseNotificationTrigger', startDelay: 10000, repeatInterval: 300000
-    }
+    String passwordResetKey
+    Date dateCreated
+    User user
+    boolean passwordResetEmailSent = false
 
-    def execute() {
-        log.debug("Start response notification job...")
-        responseNotificationService.notifyUsersOnResponsesAndMentions()
-        log.debug("End response notification job.")
+    static belongsTo = [user: User]
+
+    static constraints = {
+        passwordResetKey blank: false
     }
 }

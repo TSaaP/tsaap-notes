@@ -21,7 +21,6 @@ import org.tsaap.directory.Role
 import org.tsaap.directory.RoleEnum
 import org.tsaap.directory.User
 import org.tsaap.directory.UserAccountService
-import org.tsaap.questions.ResponseNotificationService
 import spock.lang.Specification
 
 /**

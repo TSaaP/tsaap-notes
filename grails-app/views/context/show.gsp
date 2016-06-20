@@ -158,6 +158,11 @@
                                 params="[id: context.id, show: 1]">${message(code: 'context.index.open.button')}</g:link>
 
                     </g:elseif>
+
+                    <g:link class="btn btn-primary">
+                        <span class="glyphicon glyphicon-refresh">
+                        <g:message code="default.button.synchronized.label" default="Synchroniser"/>
+                    </g:link>
                 </fieldset>
             </g:form>
         </g:if>

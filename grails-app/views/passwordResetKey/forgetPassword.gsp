@@ -38,11 +38,8 @@
     <div class="row">
         <div class="col-lg-6 col-lg-offset-3">
             <g:if test='${flash.message}'>
-            <%--<div class='alert'>${flash.message}</div>--%>
-
                 <div class="alert alert-danger" role="alert">
                     <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                    <span class="sr-only">Error:</span>
                     ${flash.message}
                 </div>
             </g:if>

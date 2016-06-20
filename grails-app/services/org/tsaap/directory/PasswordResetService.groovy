@@ -34,7 +34,7 @@ class PasswordResetService {
         def prkList = findAllPasswordResetKey()
         prkList.each { prk ->
             try {
-                def sub = messageSource.getMessage("email.passwordReset.title", null, new Locale(prk.user.settings.language))
+                def sub = messageSource.getMessage("email.passwordReset.notification.title", null, new Locale(prk.user.settings.language))
                 mailService.sendMail {
                     to prk.user.email
                     subject sub
@@ -54,7 +54,7 @@ class PasswordResetService {
      * @param user the user asking for the key
      * @return the key generated
      */
-    def generatePasswordResetKeyForUser(User user) {
+    PasswordResetKey generatePasswordResetKeyForUser(User user) {
         def lifetime = grailsApplication.config.tsaap.auth.password_reset_key.lifetime_in_hours ?: 1
         def prk = PasswordResetKey.findByUser(user)
         if (prk) {
@@ -74,7 +74,7 @@ class PasswordResetService {
      * Find all the password reset keys not yet sent to users concerned
      * @return the list of password reset keys
      */
-    def findAllPasswordResetKey() {
+    List<PasswordResetKey> findAllPasswordResetKey() {
         def lifetime = grailsApplication.config.tsaap.auth.password_reset_key.lifetime_in_hours ?: 1
         PasswordResetKey.withCriteria {
             eq 'passwordResetEmailSent', false

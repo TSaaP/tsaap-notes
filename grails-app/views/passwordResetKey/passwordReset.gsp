@@ -35,13 +35,13 @@
 
         <div class="form-group">
             <input type="password" class="input-block-level"
-                   placeholder=${message(code: "springSecurity.login.password.placeholder")}
+                   placeholder="${message(code: 'springSecurity.login.password.placeholder')}"
                    name='password' id='password'>
         </div>
 
         <div class="form-group">
             <input type="password" class="input-block-level"
-                   placeholder=${message(code: "springSecurity.login.password.confirm.placeholder")}
+                   placeholder="${message(code: 'springSecurity.login.password.confirm.placeholder')}"
                    name='passwordConfirm' id='passwordConfirm'>
         </div>
 

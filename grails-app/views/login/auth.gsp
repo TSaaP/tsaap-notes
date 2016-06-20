@@ -33,13 +33,13 @@
         </g:if>
         <div class="form-group">
             <input type="text" class="input-block-level"
-                   placeholder=${message(code: "springSecurity.login.username.placeholder")}
+                   placeholder="${message(code: 'springSecurity.login.username.placeholder')}"
                    autofocus name='j_username' id='username'>
         </div>
 
         <div class="form-group">
             <input type="password" class="input-block-level"
-                   placeholder=${message(code: "springSecurity.login.password.placeholder")}
+                   placeholder="${message(code: 'springSecurity.login.password.placeholder')}"
                    name='j_password' id='password'>
         </div>
 
@@ -57,16 +57,14 @@
                            id='remember_me'/> ${message(code: "springSecurity.login.rememberMe.checkbox")}
                 </g:else>
             </label>
+            <g:link controller="passwordResetKey" action="doForget">
+                ${message(code: 'springSecurity.login.lostPassword.message')}
+            </g:link>
         </div>
         <button class="btn btn-large btn-primary btn-block"
                 type="submit"
                 id="submit">${message(code: "springSecurity.login.button")}</button>
     </form>
-    <center>
-        <g:link controller="passwordResetKey" action="doForget">
-            ${message(code: 'springSecurity.login.lostPassword.message')}
-        </g:link>
-    </center>
 
 </div>
 

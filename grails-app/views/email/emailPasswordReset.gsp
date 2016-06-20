@@ -25,7 +25,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-    <title>${message(code: "email.passwordReset.title", locale: new Locale(user.settings.language))}</title>
+    <title>${message(code: "email.passwordReset.notification.title", locale: new Locale(user.settings.language))}</title>
 </head>
 
 <body>

@@ -67,25 +67,6 @@ class QuestionController {
         def note = Note.get(params.noteId)
         def liveSession = LiveSession.get(params.liveSessId)
         liveSession.stop()
-        if (liveSession.note.context) {
-            if (liveSession.note.context.source != null) {
-                lmsContextHelper = new LmsContextHelper()
-                Sql sql = new Sql(dataSource)
-                String consumerKey
-                String courseId
-                def req = lmsContextHelper.selectConsumerKeyAndCourseId(sql, liveSession.note.context.id)
-                consumerKey = req.get(0)
-                courseId = req.get(1)
-                JDBC jdbc = new JDBC("", dataSource.connection)
-                ToolConsumer toolConsumer = new ToolConsumer(consumerKey, jdbc, false)
-                ResourceLink resourceLink = new ResourceLink(toolConsumer, courseId)
-                def grades = lmsGradeService.getUsersGradeForContext(sql, liveSession.note.context.id)
-                grades.each { ltiUserId, grade ->
-                    org.tsaap.lti.tp.User user = new org.tsaap.lti.tp.User(resourceLink, ltiUserId)
-                    lmsGradeService.sendUserGradeToLms(resourceLink, user, grade)
-                }
-            }
-        }
         if (liveSession.hasErrors()) {
             log.error(liveSession.errors.allErrors.toString())
         }
@@ -140,25 +121,6 @@ class QuestionController {
         def liveSession = phase.liveSession
         if (phase.stopLiveSessionWhenIsStopped()) {
             liveSessionService.closeNPhaseSubmitLiveSession(liveSession)
-            if (liveSession.note.context) {
-                if (liveSession.note.context.source != null) {
-                    lmsContextHelper = new LmsContextHelper()
-                    Sql sql = new Sql(dataSource)
-                    String consumerKey
-                    String courseId
-                    def req = lmsContextHelper.selectConsumerKeyAndCourseId(sql, liveSession.note.contextId)
-                    consumerKey = req.get(0)
-                    courseId = req.get(1)
-                    JDBC jdbc = new JDBC("", dataSource.connection)
-                    ToolConsumer toolConsumer = new ToolConsumer(consumerKey, jdbc, false)
-                    ResourceLink resourceLink = new ResourceLink(toolConsumer, courseId)
-                    def grades = lmsGradeService.getUsersGradeForContext(sql, liveSession.note.contextId)
-                    grades.each { ltiUserId, grade ->
-                        org.tsaap.lti.tp.User user = new org.tsaap.lti.tp.User(resourceLink, ltiUserId)
-                        lmsGradeService.sendUserGradeToLms(resourceLink, user, grade)
-                    }
-                }
-            }
             render(template: "/questions/author/${liveSession.status}/detail", model: [note: note, liveSession: liveSession, user: currentUser])
         } else {
             phase.stop()

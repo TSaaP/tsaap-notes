@@ -18,6 +18,9 @@
 package org.tsaap.lti
 
 import groovy.sql.Sql
+import org.tsaap.lti.tp.ResourceLink
+import org.tsaap.lti.tp.ToolConsumer
+import org.tsaap.lti.tp.dataconnector.JDBC
 
 
 class LmsContextService {

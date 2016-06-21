@@ -27,6 +27,10 @@ import org.tsaap.CustomPagedResultList
 import org.tsaap.directory.User
 import org.tsaap.lti.LmsContextHelper
 import org.tsaap.lti.LmsContextService
+import org.tsaap.lti.LmsGradeService
+import org.tsaap.lti.tp.ResourceLink
+import org.tsaap.lti.tp.ToolConsumer
+import org.tsaap.lti.tp.dataconnector.JDBC
 import org.tsaap.questions.LiveSessionService
 
 import javax.sql.DataSource
@@ -43,6 +47,7 @@ class ContextService {
     LmsContextHelper lmsContextHelper
     Sql sql
     LiveSessionService liveSessionService
+    LmsGradeService lmsGradeService
 
     /**
      * Add a new context
@@ -271,5 +276,27 @@ class ContextService {
             return false
         }
         !context.removed
+    }
+
+    /**
+     * Send all user grades of the context to lms
+     * @param contextId id of the context
+     */
+    def sendAllUserGradeToLms(contextId) {
+        lmsContextHelper = new LmsContextHelper()
+        Sql sql = new Sql(dataSource)
+        String consumerKey
+        String courseId
+        def req = lmsContextHelper.selectConsumerKeyAndCourseId(sql, contextId)
+        consumerKey = req.get(0)
+        courseId = req.get(1)
+        JDBC jdbc = new JDBC("", dataSource.connection)
+        ToolConsumer toolConsumer = new ToolConsumer(consumerKey, jdbc, false)
+        ResourceLink resourceLink = new ResourceLink(toolConsumer, courseId)
+        def grades = lmsGradeService.getUsersGradeForContext(sql, contextId)
+        grades.each { ltiUserId, grade ->
+            org.tsaap.lti.tp.User user = new org.tsaap.lti.tp.User(resourceLink, ltiUserId)
+            lmsGradeService.sendUserGradeToLms(resourceLink, user, grade)
+        }
     }
 }

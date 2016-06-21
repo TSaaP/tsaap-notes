@@ -107,7 +107,7 @@ class Context {
      * @return true if the context is open false otherwise
      */
     Boolean isOpen() {
-        closed == false
+        !closed
     }
 
     /**
@@ -115,16 +115,19 @@ class Context {
      * @return true if the context is closed false otherwise
      */
     Boolean isClosed() {
-        closed == true
+        closed
     }
     /**
      * check if the current context is removed
      * @return true if the context is removed false otherwise
      */
     Boolean isRemoved() {
-        removed == true
+        removed
     }
 
+    Boolean hasLinkedLtiActivity() {
+        source
+    }
 
     static mapping = {
         version(false)

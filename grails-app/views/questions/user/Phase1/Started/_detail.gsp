@@ -47,12 +47,14 @@
                 </p>
             </g:each>
             <p>${message(code: "questions.explanation")}</p>
-            <g:textArea class="form-control note-editable-content" rows="3" name="explanation"/>
+            <ckeditor:editor name="explanation" id="explanation"/>
+
             <p>${message(code: "questions.confidenceDegree")} <g:select name="confidenceDegree"
                                                                         from="[1, 2, 3, 4, 5]"/></p>
             <g:submitToRemote action="submitResponseInAPhase" controller="question" update="question_${note.id}"
                               class="btn btn-primary btn-xs" value="${message(code: "questions.user.submit")}"
-                              onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"/>
+                              onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"
+                              before="document.getElementById('explanation').textContent = CKEDITOR.instances.explanation.getData()"/>
         </g:form>
     </g:else>
 </div>

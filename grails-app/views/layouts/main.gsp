@@ -16,23 +16,6 @@
   --}%
 
 <%@ page import="org.tsaap.notes.FilterReservedValue" %>
-%{--
-  - Copyright 2013 Tsaap Development Group
-  -
-  - Licensed under the Apache License, Version 2.0 (the "License");
-  - you may not use this file except in compliance with the License.
-  - You may obtain a copy of the License at
-  -
-  -    http://www.apache.org/licenses/LICENSE-2.0
-  -
-  - Unless required by applicable law or agreed to in writing, software
-  - distributed under the License is distributed on an "AS IS" BASIS,
-  - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  - See the License for the specific language governing permissions and
-  - limitations under the License.
-  --}%
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -44,6 +27,7 @@
     <link rel="shortcut icon" href="${resource(dir: 'images', file: 'favicon.ico')}" type="image/x-icon">
     <title><g:layoutTitle default="TsaaP-Notes"/></title>
     <r:layoutResources/>
+    <ckeditor:resources/>
     <script type="text/javascript"
             src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     </script>

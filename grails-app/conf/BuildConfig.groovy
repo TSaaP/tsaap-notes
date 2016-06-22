@@ -83,6 +83,8 @@ grails.project.dependency.resolution = {
         runtime ":jquery:1.10.2.2"
         runtime ":resources:1.2.1"
 
+        compile ":ckeditor:4.5.4.1"
+
         compile ":mail:1.0.1"
         compile ":quartz:1.0"
 

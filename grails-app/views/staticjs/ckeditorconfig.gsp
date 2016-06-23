@@ -24,24 +24,23 @@ CKEDITOR.editorConfig = function( config ) {
             ['Markdown' , 'markdown']
         ],
     };
+
 	config.toolbarGroups = [
+		{ name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
 		{ name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
 		{ name: 'editing', groups: [ 'find', 'selection', 'spellchecker', 'editing' ] },
 		{ name: 'forms', groups: [ 'forms' ] },
-		'/',
 		{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
 		{ name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi', 'paragraph' ] },
 		{ name: 'links', groups: [ 'links' ] },
 		{ name: 'insert', groups: [ 'insert' ] },
-		'/',
 		{ name: 'styles', groups: [ 'styles' ] },
 		{ name: 'colors', groups: [ 'colors' ] },
 		{ name: 'tools', groups: [ 'tools' ] },
 		{ name: 'others', groups: [ 'others' ] },
-		{ name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
 		{ name: 'about', groups: [ 'about' ] },
-		{ name: 'pbckcode'},
+		{ name: 'pbckcode' }
 	];
 
-	config.removeButtons = 'Flash,PageBreak,Iframe,Form,HiddenField,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,Save,NewPage,Print,Templates,Cut,Undo,Copy,Redo,Paste,PasteText,PasteFromWord,Find,Replace,SelectAll,Scayt';
+	config.removeButtons = 'Scayt,SelectAll,Find,Save,NewPage,Preview,Print,Templates,Cut,Copy,Redo,Paste,PasteText,PasteFromWord,Undo,Form,HiddenField,Radio,TextField,Checkbox,Textarea,Select,Button,ImageButton,CreateDiv,BidiLtr,BidiRtl,Language,Anchor,Flash,PageBreak,Iframe,BGColor,ShowBlocks,Maximize,About,Replace';
 };

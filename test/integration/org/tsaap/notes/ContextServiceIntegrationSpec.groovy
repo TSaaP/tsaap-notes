@@ -94,6 +94,7 @@ class ContextServiceIntegrationSpec extends Specification {
 
         when: "the user unsubscribes"
         ContextFollower follower = contextService.unsuscribeUserOnContext(bootstrapTestService.learnerMary, context)
+        context.isFollowedByUser(bootstrapTestService.learnerMary)
 
         then: "the objet ContextFollower is marked as unsubscription but not destroyed"
         !context.isFollowedByUser(bootstrapTestService.learnerMary)

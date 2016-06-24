@@ -214,6 +214,8 @@ class ContextControllerSpec extends Specification {
         then: "Check if context has notes"
         Note.count() == 1
         context.hasNotes() == true
+        context.hasStandardNotes() == true
+        context.newNotesCountSinceYesterday() == 1
 
         when: "Trying to delete context2"
         context.isRemoved() == false

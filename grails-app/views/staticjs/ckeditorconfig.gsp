@@ -20,8 +20,50 @@ CKEDITOR.editorConfig = function( config ) {
     config.extraPlugins = 'pbckcode';
         config.pbckcode = {
         modes :  [
-            ['Java' , 'java'],
-            ['Markdown' , 'markdown']
+            ['C/C++'        , 'c_pp'],
+            ['C9Search'     , 'c9search'],
+            ['Clojure'      , 'clojure'],
+            ['CoffeeScript' , 'coffee'],
+            ['ColdFusion'   , 'coldfusion'],
+            ['C#'           , 'csharp'],
+            ['CSS'          , 'css'],
+            ['Diff'         , 'diff'],
+            ['Glsl'         , 'glsl'],
+            ['Go'           , 'golang'],
+            ['Groovy'       , 'groovy'],
+            ['haXe'         , 'haxe'],
+            ['HTML'         , 'html'],
+            ['Jade'         , 'jade'],
+            ['Java'         , 'java'],
+            ['JavaScript'   , 'javascript'],
+            ['JSON'         , 'json'],
+            ['JSP'          , 'jsp'],
+            ['JSX'          , 'jsx'],
+            ['LaTeX'        , 'latex'],
+            ['LESS'         , 'less'],
+            ['Liquid'       , 'liquid'],
+            ['Lua'          , 'lua'],
+            ['LuaPage'      , 'luapage'],
+            ['Markdown'     , 'markdown'],
+            ['OCaml'        , 'ocaml'],
+            ['Perl'         , 'perl'],
+            ['pgSQL'        , 'pgsql'],
+            ['PHP'          , 'php'],
+            ['Powershell'   , 'powershel1'],
+            ['Python'       , 'python'],
+            ['R'            , 'ruby'],
+            ['OpenSCAD'     , 'scad'],
+            ['Scala'        , 'scala'],
+            ['SCSS/Sass'    , 'scss'],
+            ['SH'           , 'sh'],
+            ['SQL'          , 'sql'],
+            ['SVG'          , 'svg'],
+            ['Tcl'          , 'tcl'],
+            ['Text'         , 'text'],
+            ['Textile'      , 'textile'],
+            ['XML'          , 'xml'],
+            ['XQuery'       , 'xq'],
+            ['YAML'         , 'yaml']
         ],
     };
 
@@ -42,5 +84,5 @@ CKEDITOR.editorConfig = function( config ) {
 		{ name: 'pbckcode' }
 	];
 
-	config.removeButtons = 'Scayt,SelectAll,Find,Save,NewPage,Preview,Print,Templates,Cut,Copy,Redo,Paste,PasteText,PasteFromWord,Undo,Form,HiddenField,Radio,TextField,Checkbox,Textarea,Select,Button,ImageButton,CreateDiv,BidiLtr,BidiRtl,Language,Anchor,Flash,PageBreak,Iframe,BGColor,ShowBlocks,Maximize,About,Replace';
+	config.removeButtons = 'Scayt,SelectAll,Find,Save,NewPage,Preview,Print,Templates,Cut,Copy,Redo,Paste,PasteText,PasteFromWord,Undo,Form,HiddenField,Radio,TextField,Checkbox,Textarea,Select,Button,ImageButton,CreateDiv,BidiLtr,BidiRtl,Language,Anchor,Flash,PageBreak,Iframe,BGColor,ShowBlocks,Maximize,About,Replace,Source';
 };

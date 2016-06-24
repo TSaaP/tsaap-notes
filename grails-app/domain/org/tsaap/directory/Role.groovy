@@ -27,10 +27,6 @@ class Role {
         roleName column: 'authority'
     }
 
-    String getAuthority() {
-        "ROLE_${this.roleName}"
-    }
-
     static constraints = {
         roleName blank: false, unique: true, inList: RoleEnum.values()*.name()
     }

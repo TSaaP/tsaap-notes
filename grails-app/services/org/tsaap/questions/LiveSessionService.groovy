@@ -20,6 +20,8 @@ package org.tsaap.questions
 import grails.transaction.NotTransactional
 import grails.transaction.Transactional
 import org.gcontracts.annotations.Requires
+import org.grails.plugins.sanitizer.MarkupSanitizerResult
+import org.grails.plugins.sanitizer.MarkupSanitizerService
 import org.tsaap.directory.User
 import org.tsaap.notes.*
 
@@ -27,6 +29,7 @@ import org.tsaap.notes.*
 class LiveSessionService {
 
     NoteService noteService
+    MarkupSanitizerService markupSanitizerService
 
     /**
      * Create a live session for a corresponding note
@@ -181,7 +184,10 @@ class LiveSessionService {
         )
         Note note = liveSession.note
         if (explanation) {
-            liveSessionResponse.explanation = noteService.addNote(user, explanation, note.context, note.fragmentTag, note, NoteKind.EXPLANATION)
+            MarkupSanitizerResult result = markupSanitizerService.sanitize(explanation)
+            if (result.cleanString) {
+                liveSessionResponse.explanation = noteService.addNote(user, result.cleanString, note.context, note.fragmentTag, note, NoteKind.EXPLANATION)
+            }
         }
         liveSessionResponse.save()
         liveSessionResponse

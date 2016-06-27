@@ -73,6 +73,7 @@ class PasswordResetKeyControllerSpec extends Specification {
 
         then:"must rend send mail confirm view"
         view == '/passwordResetKey/sendMailConfirm'
+
     }
 
     void "test doPasswordReset action"() {
@@ -91,4 +92,28 @@ class PasswordResetKeyControllerSpec extends Specification {
         response.redirectedUrl == '/'
     }
 
+    void "test resetPassword action"() {
+
+        when:"generate password rest key for user for reset current password"
+        PasswordResetKey prk = new PasswordResetKey(passwordResetKey: UUID.randomUUID().toString(), user: user).save()
+        params.passwordResetKey = PasswordResetKey.findByUser(user).passwordResetKey
+
+        and:"try the reset password when the passwords are not the same"
+        params.password = "password1"
+        params.passwordConfirm = "password2"
+        controller.resetPassword()
+
+        then:"return passwordrest view with the passwordResetKey params"
+        view == '/passwordResetKey/passwordReset'
+        model.passwordResetKey == params.passwordResetKey
+
+        when:"try the reset password when the passwords are the same"
+        params.password = "1234"
+        params.passwordConfirm = "1234"
+        controller.resetPassword()
+
+        then:"the password has a new value"
+        user.password == "1234"
+
+    }
 }

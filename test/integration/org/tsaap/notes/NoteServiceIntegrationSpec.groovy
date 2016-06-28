@@ -123,6 +123,18 @@ class NoteServiceIntegrationSpec extends Specification {
 
     }
 
+    def "update a note"() {
+
+        given:"create new note"
+        Note note = noteService.addNote(bootstrapTestService.learnerMary, "contennt")
+
+        when:"try to update content of note"
+        noteService.updateNoteById((note.id).toString(), "new content")
+
+        then:"the note content is updated"
+        note.content == "new content"
+    }
+
     def "delete a note with attachement"() {
 
         given: "A note with an attachement"

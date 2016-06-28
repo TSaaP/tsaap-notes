@@ -109,17 +109,18 @@
                 <g:link controller="notes" action="deleteNote"
                         params="${[noteId: note.id] + displayListParamsWithPagination}"><span
                         class="glyphicon glyphicon-trash"></span> ${message(code: "notes.detail.delete")}</g:link>
-                <g:link data-toggle="modal" data-target="#exampleModal">
+                <g:link data-toggle="modal" data-target="#modalNote${note.id}">
                     <span class="glyphicon glyphicon-pencil"></span> ${message(code: "notes.detail.edit")}
                 </g:link>
-                <div class="modal fade" id="exampleModal" role="dialog" aria-labelledby="exampleModalLabel">
+                <div class="modal fade" id="modalNote${note.id}" role="dialog" aria-labelledby="exampleModalLabel">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
-                                <g:form controller="notes" action="updateNote">
+                                <g:form controller="notes" action="updateNote" params="${displayListParamsWithPagination}">
                                     <div class="modal-body">
+                                        <g:hiddenField name="noteId" value="${note.id}" id="noteId"/>
                                         <div class="form-group">
-                                            <label for="message-text" class="control-label">Message:</label>
-                                            <textarea class="form-control" id="message-text">${note.content}</textarea>
+                                            <label for="noteContent" class="control-label">Message:</label>
+                                            <textarea class="form-control" id="noteContent" name="noteContent">${note.content}</textarea>
                                         </div>
                                     </div>
                                     <div class="modal-footer">

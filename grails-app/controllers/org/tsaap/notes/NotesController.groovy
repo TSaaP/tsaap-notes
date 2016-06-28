@@ -126,6 +126,13 @@ class NotesController {
         redirect(action: index(), params: params)
     }
 
+
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def updateNote() {
+        noteService.updateNoteById(params.noteId, params.noteContent)
+        redirect(action: index(),params: params)
+    }
+
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def showDiscussion() {
         def user = springSecurityService.currentUser
@@ -157,6 +164,7 @@ class NotesController {
             render(noteInput ?: '')
         }
     }
+
 
     /**
      * Give the different question type sample and create link for popup window dedicate to questions samples

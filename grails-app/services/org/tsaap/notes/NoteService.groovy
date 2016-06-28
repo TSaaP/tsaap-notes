@@ -253,6 +253,13 @@ class NoteService {
         note.delete()
     }
 
+    @Transactional
+    def updateNoteById(String noteId, String noteNewContent) {
+        Note note = Note.findById(noteId)
+        note.content = noteNewContent
+        note.save()
+    }
+
     /**
      * Count notes for the given search criteria
      * @param inUser the user performing the search

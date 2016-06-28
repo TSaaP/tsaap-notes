@@ -20,7 +20,7 @@
     <g:render template="detail"
               model="[note: note.parentNote, context: context, displaysMyNotes: displaysMyNotes, displaysMyFavorites: displaysMyFavorites, displaysAll: displaysAll, noteClassParent: 'note-parent-note', showDiscussionNote: showDiscussionNote, kind: kind]"/>
 </g:if>
-<li class="list-group-item ${noteClassParent}" style="padding-bottom: 20px">
+<li class="list-group-item ${noteClassParent}" style="padding-bottom: 20px" xmlns="http://www.w3.org/1999/html">
     <g:set var="noteIsBookmarked" value="${note.isBookmarkedByUser(user)}"/>
     <g:set var="noteIsScored" value="${note.isScoredByUser(user)}"/>
     <g:set var="displayListParams"
@@ -109,6 +109,27 @@
                 <g:link controller="notes" action="deleteNote"
                         params="${[noteId: note.id] + displayListParamsWithPagination}"><span
                         class="glyphicon glyphicon-trash"></span> ${message(code: "notes.detail.delete")}</g:link>
+                <g:link data-toggle="modal" data-target="#exampleModal">
+                    <span class="glyphicon glyphicon-pencil"></span> ${message(code: "notes.detail.edit")}
+                </g:link>
+                <div class="modal fade" id="exampleModal" role="dialog" aria-labelledby="exampleModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                                <g:form controller="notes" action="updateNote">
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            <label for="message-text" class="control-label">Message:</label>
+                                            <textarea class="form-control" id="message-text">${note.content}</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Send message</button>
+                                    </div>
+                                </g:form>
+                        </div>
+                    </div>
+                </div>
             </g:if>
             <g:if test="${noteIsBookmarked}">
                 <g:link style="color: orange" controller="notes" action="unbookmarkNote"

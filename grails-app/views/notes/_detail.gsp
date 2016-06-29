@@ -119,13 +119,12 @@
                                     <div class="modal-body">
                                         <g:hiddenField name="noteId" value="${note.id}" id="noteId"/>
                                         <div class="form-group">
-                                            <label for="noteContent" class="control-label">Message:</label>
-                                            <textarea class="form-control" id="noteContent" name="noteContent">${note.content}</textarea>
+                                            <textarea class="form-control" id="noteContent" name="noteContent" rows="3">${note.content}</textarea>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary">Send message</button>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">${message(code: "notes.detail.edit.cancel")}</button>
+                                        <button type="submit" class="btn btn-primary">${message(code: "notes.detail.edit.save")}</button>
                                     </div>
                                 </g:form>
                         </div>

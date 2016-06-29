@@ -256,8 +256,28 @@ class NoteService {
     @Transactional
     def updateNoteById(String noteId, String noteNewContent) {
         Note note = Note.findById(noteId)
-        note.content = noteNewContent
-        note.save()
+        if (noteNewContent?.startsWith("::")) {
+            throw new IsNotStandardNoteException("notes.edit.note.error")
+        } else {
+            note.content = noteNewContent
+            note.save()
+        }
+        note
+    }
+
+    @Transactional
+    def updateQuestionById(String questionId, String questionNewContent) {
+        Note question = Note.findById(questionId)
+        try {
+            if (giftQuestionService.getQuestionFromGiftText(questionNewContent)) {
+                question.content = questionNewContent
+                question.save()
+            }
+        }
+        catch (Exception e) {
+            throw new IsNotQuestionException("notes.edit.question.error")
+        }
+        question
     }
 
     /**

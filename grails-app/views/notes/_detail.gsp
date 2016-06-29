@@ -115,18 +115,14 @@
                 <div class="modal fade" id="modalNote${note.id}" role="dialog" aria-labelledby="exampleModalLabel">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
-                                <g:form controller="notes" action="updateNote" params="${displayListParamsWithPagination}">
-                                    <div class="modal-body">
-                                        <g:hiddenField name="noteId" value="${note.id}" id="noteId"/>
-                                        <div class="form-group">
-                                            <textarea class="form-control" id="noteContent" name="noteContent" rows="3">${note.content}</textarea>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">${message(code: "notes.detail.edit.cancel")}</button>
-                                        <button type="submit" class="btn btn-primary">${message(code: "notes.detail.edit.save")}</button>
-                                    </div>
-                                </g:form>
+                            <div class="container note-edition">
+                                <g:if test="${note.kind == org.tsaap.notes.NoteKind.QUESTION.ordinal()}">
+                                    <g:render template="/questions/edit" model='[note: note, context: context, fragmentTag: note.fragmentTag]'/>
+                                </g:if>
+                                <g:else>
+                                    <g:render template="/notes/edit" model='[note: note, context: context, fragmentTag: note.fragmentTag]'/>
+                                </g:else>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -170,8 +166,8 @@
 
     <g:if test="${context.noteTakingEnabled && context.isOpen() && !note.isAQuestion()}">
         <div id="replyEdition${note.id}" style="display:none; padding-top:20px">
-        <g:render template="/notes/edit"
-                  model="[context: context, parentNote: note]"/>
+            <g:render template="/notes/edit"
+                      model="[context: context, parentNote: note]"/>
         </div>
     </g:if>
 </li>

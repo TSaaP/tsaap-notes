@@ -15,23 +15,26 @@
   -     along with this program.  If not, see <http://www.gnu.org/licenses/>.
   --}%
 
-<g:set var="idControllSuffix" value="${parentNote ? parentNote.id : 0}"/>
+<g:set var="idControllSuffix" value="${parentNote ? parentNote.id : 0}${note ? "_" + note.id : ""}"/>
 
 <div id="edit_tab_${idControllSuffix}">
-    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+    <div class="panel-group" id="accordion${idControllSuffix}" role="tablist" aria-multiselectable="true">
         <div class="panel panel-default">
-            <div class="panel-heading" role="tab" id="headingOne" style="margin-bottom: -15px;">
+            <div class="panel-heading" role="tab" id="headingOne${idControllSuffix}" style="margin-bottom: -15px;">
                 <h4 class="panel-title">
-                    <a data-toggle="collapse" id="accordionLink" data-parent="#accordion" href="#collapseOne"
+                    <a data-toggle="collapse" id="accordionLink${idControllSuffix}" data-parent="#accordion${idControllSuffix}" href="#collapseOne${idControllSuffix}"
                        aria-expanded="false" aria-controls="collapseOne" class="collapsed">
                         ${message(code: "notes.edit.question.editor")}
                     </a>
                 </h4>
             </div>
 
-            <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+            <div id="collapseOne${idControllSuffix}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne${idControllSuffix}">
                 <div class="panel-body">
-                    <g:form method="post" controller="notes" action="addNote" enctype="multipart/form-data">
+                    <g:form method="post" controller="notes" action="${note ? 'updateNote' : 'addNote'}" enctype="multipart/form-data">
+                        <g:if test="${note}">
+                            <g:hiddenField name="noteId" value="${note.id}"/>
+                        </g:if>
                         <g:hiddenField name="kind" value="question"/>
                         <g:hiddenField name="inline" value="${params.inline}"/>
                         <g:hiddenField name="contextId" value="${context?.id}"
@@ -47,7 +50,7 @@
                            style="margin-top: 15px">${message(code: "notes.edit.sampleQuestion")}</a>
                         <textarea class="form-control note-editable-content" rows="3"
                                   id="noteContent${idControllSuffix}"
-                                  name="noteContent">${parentNote ? '@' + parentNote.author?.username + ' ' : ''}</textarea>
+                                  name="noteContent">${note ? note.content : ""}</textarea>
 
                         <div class="row">
                             <div class="col-sm-7 col-md-7 col-lg-7">
@@ -67,7 +70,8 @@
                                         class="btn btn-primary btn-xs"
                                         id="buttonAddNote${idControllSuffix}"
                                         disabled><span
-                                        class="glyphicon glyphicon-plus"></span>${message(code: "notes.edit.add.question.button")}
+                                        class="glyphicon glyphicon-plus"></span>
+                                    ${note ? message(code: "notes.edit.update.question.button") : message(code: "notes.edit.add.question.button")}
                                 </button>
                             </div>
                         </div>
@@ -82,12 +86,12 @@
 <r:script>
   $(document).ready(function () {
 
-    $("#collapseOne").on('show.bs.collapse', function(){
-        $("#headingOne").attr("style","margin-bottom: 0px;");
+    $("#collapseOne${idControllSuffix}").on('show.bs.collapse', function(){
+        $("#headingOne${idControllSuffix}").attr("style","margin-bottom: 0px;");
     });
 
-    $("#collapseOne").on('hidden.bs.collapse', function(){
-        $("#headingOne").attr("style","margin-bottom: -15px;");
+    $("#collapseOne${idControllSuffix}").on('hidden.bs.collapse', function(){
+        $("#headingOne${idControllSuffix}").attr("style","margin-bottom: -15px;");
     });
 
     var contentPreview;

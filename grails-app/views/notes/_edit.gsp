@@ -15,10 +15,13 @@
   -     along with this program.  If not, see <http://www.gnu.org/licenses/>.
   --}%
 
-<g:set var="idControllSuffix" value="${parentNote ? parentNote.id : 0}"/>
+<g:set var="idControllSuffix" value="${parentNote ? parentNote.id : 0}${note ? "_" + note.id : ""}"/>
 
 <div id="edit_tab_${idControllSuffix}">
-    <g:form method="post" controller="notes" action="addNote" enctype="multipart/form-data">
+    <g:form method="post" controller="notes" action="${note ? "updateNote" : "addNote"}" enctype="multipart/form-data">
+        <g:if test="${note}">
+            <g:hiddenField name="noteId" value="${note.id}"/>
+        </g:if>
         <g:hiddenField name="kind" value="standard"/>
         <g:hiddenField name="inline" value="${params.inline}"/>
         <g:hiddenField name="contextId" value="${context?.id}"
@@ -31,7 +34,7 @@
         <g:hiddenField name="displaysAll" id="displaysAllInAddForm${idControllSuffix}"/>
         <textarea class="form-control note-editable-content" rows="3" id="noteContent${idControllSuffix}"
                   name="noteContent"
-                  maxlength="560">${parentNote ? '@' + parentNote.author?.username + ' ' : ''}</textarea>
+                  maxlength="560">${note ? note.content : parentNote ? '@' + parentNote.author?.username + ' ' : ''}</textarea>
 
         <div class="row">
             <span class="character_counter pull-left" style="margin-left: 15px"
@@ -48,7 +51,8 @@
                         class="btn btn-primary btn-xs"
                         id="buttonAddNote${idControllSuffix}"
                         disabled><span
-                        class="glyphicon glyphicon-plus"></span>${message(code: "notes.edit.add.note.button")}
+                        class="glyphicon glyphicon-plus"></span>
+                    ${note ? message(code: "notes.edit.update.note.button") : message(code: "notes.edit.add.note.button")}
                 </button>
             </div>
         </div>
@@ -57,6 +61,15 @@
 
 <r:script>
   $(document).ready(function () {
+
+    $("#collapseOne${idControllSuffix}").on('show.bs.collapse', function(){
+        $("#headingOne${idControllSuffix}").attr("style","margin-bottom: 0px;");
+    });
+
+    $("#collapseOne${idControllSuffix}").on('hidden.bs.collapse', function(){
+        $("#headingOne${idControllSuffix}").attr("style","margin-bottom: -15px;");
+    });
+
     // set character counters
     //-----------------------
 
@@ -83,5 +96,5 @@
     $("#displaysMyNotesInAddForm${idControllSuffix}").val($("#displaysMyNotes").attr('checked') ? 'on' : '');
     $("#displaysMyFavoritesInAddForm${idControllSuffix}").val($("#displaysMyFavorites").attr('checked') ? 'on' : '');
     $("#displaysAllInAddForm${idControllSuffix}").val($("#displaysAll").attr('checked') ? 'on' : '');
-    });
+  });
 </r:script>

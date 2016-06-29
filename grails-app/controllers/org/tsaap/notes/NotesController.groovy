@@ -129,8 +129,23 @@ class NotesController {
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def updateNote() {
-        noteService.updateNoteById(params.noteId, params.noteContent)
-        redirect(action: index(),params: params)
+        def user = springSecurityService.currentUser
+        try {
+            if (params?.kind == 'question') {
+                noteService.updateQuestionById(params.noteId, params.noteContent)
+            } else {
+                noteService.updateNoteById(params.noteId, params.noteContent)
+            }
+        } catch (IsNotQuestionException e) {
+            params.put("error", "question")
+            renderMainPage(params, user)
+            return
+        } catch (IsNotStandardNoteException e) {
+            params.put("error", "note")
+            renderMainPage(params, user)
+            return
+        }
+        redirect(action: index(), params: params)
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
@@ -164,7 +179,6 @@ class NotesController {
             render(noteInput ?: '')
         }
     }
-
 
     /**
      * Give the different question type sample and create link for popup window dedicate to questions samples

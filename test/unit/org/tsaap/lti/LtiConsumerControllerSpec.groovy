@@ -27,7 +27,6 @@ class LtiConsumerControllerSpec extends Specification {
 
     def populateValidParams(params) {
         assert params != null
-        // TODO: Populate valid properties like...
         params["id"] = 'unId'
         params["consumerName"] = 'un name'
         params["secret"] = 'un secret'

@@ -122,7 +122,13 @@
 
 <g:if test="${(context.noteTakingEnabled || params.kind == 'question') && context.isOpen()}">
     <div class="container note-edition">
-        <g:render template="edit" model='[context: context, fragmentTag: fragmentTag]'/>
+        <g:if test="${params.kind == 'question'}">
+            <g:render template="/questions/edit" model='[context: context, fragmentTag: fragmentTag]'/>
+        </g:if>
+        <g:else>
+            <g:render template="/notes/edit" model='[context: context, fragmentTag: fragmentTag]'/>
+        </g:else>
+
     </div>
 </g:if>
 

@@ -170,7 +170,7 @@
 
     <g:if test="${context.noteTakingEnabled && context.isOpen() && !note.isAQuestion()}">
         <div id="replyEdition${note.id}" style="display:none; padding-top:20px">
-        <g:render template="edit"
+        <g:render template="/notes/edit"
                   model="[context: context, parentNote: note]"/>
         </div>
     </g:if>

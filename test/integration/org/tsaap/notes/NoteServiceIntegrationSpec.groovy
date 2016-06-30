@@ -224,24 +224,6 @@ class NoteServiceIntegrationSpec extends Specification {
         count == 1
     }
 
-
-    def "count  number of questions"() {
-        given: "a context"
-        Context context = contextService.saveContext(new Context(owner: bootstrapTestService.learnerPaul, contextName: "aContext"))
-
-        and: "a std note"
-        Note note = noteService.addStandardNote(bootstrapTestService.learnerPaul, "a standard note", context)
-
-
-        when: "finding all questions for context"
-
-        def count = noteService.countNotes(bootstrapTestService.learnerPaul, false, false, true, context, null, 'standard')
-
-        then: "all notes are found"
-
-        count == 1
-    }
-
     def "find all notes in embedded mode"() {
         given: "a context"
         Context context = contextService.saveContext(new Context(owner: bootstrapTestService.learnerPaul, contextName: "aContext"))
@@ -278,12 +260,14 @@ class NoteServiceIntegrationSpec extends Specification {
 
         when: "finding all notes with the fragment tag"
         List<Note> res = noteService.findAllNotes(bootstrapTestService.learnerPaul, false, false, true, context, tag, null, 'standard', 'on').list
+        def count = noteService.countNotes(bootstrapTestService.learnerPaul, false, false, true, context, tag, 'standard')
 
         then: "all standard notes with the tag are found and are sort with user note in first"
         res.size() == 2
         res.contains(note)
         res.contains(note1)
         res.get(0) == note
+        count == 2
     }
 
     def "test the grade of a note by a user"() {
@@ -349,10 +333,12 @@ class NoteServiceIntegrationSpec extends Specification {
 
         when: "I want to find only paul's notes"
         List<Note> res = noteService.findAllNotes(bootstrapTestService.learnerPaul, true, true, false, bootstrapTestService.context1, tag, [sort: 'dateCreated', order: 'desc'], 'standard', 'off').list
+        def count = noteService.countNotes(bootstrapTestService.learnerPaul, true, true, false, bootstrapTestService.context1, tag, 'standard')
 
         then: "I get only the two paul's notes"
         res.size() == 2
         res.contains(note1)
         res.contains(note2)
+        count == 2
     }
 }

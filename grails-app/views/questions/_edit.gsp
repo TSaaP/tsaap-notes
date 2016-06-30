@@ -22,16 +22,19 @@
         <div class="panel panel-default">
             <div class="panel-heading" role="tab" id="headingOne${idControllSuffix}" style="margin-bottom: -15px;">
                 <h4 class="panel-title">
-                    <a data-toggle="collapse" id="accordionLink${idControllSuffix}" data-parent="#accordion${idControllSuffix}" href="#collapseOne${idControllSuffix}"
+                    <a data-toggle="collapse" id="accordionLink${idControllSuffix}"
+                       data-parent="#accordion${idControllSuffix}" href="#collapseOne${idControllSuffix}"
                        aria-expanded="false" aria-controls="collapseOne" class="collapsed">
                         ${message(code: "notes.edit.question.editor")}
                     </a>
                 </h4>
             </div>
 
-            <div id="collapseOne${idControllSuffix}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne${idControllSuffix}">
+            <div id="collapseOne${idControllSuffix}" class="panel-collapse collapse" role="tabpanel"
+                 aria-labelledby="headingOne${idControllSuffix}">
                 <div class="panel-body">
-                    <g:form method="post" controller="notes" action="${note ? 'updateNote' : 'addNote'}" enctype="multipart/form-data">
+                    <g:form method="post" controller="notes" action="${note ? 'updateNote' : 'addNote'}"
+                            enctype="multipart/form-data">
                         <g:if test="${note}">
                             <g:hiddenField name="noteId" value="${note.id}"/>
                         </g:if>
@@ -52,6 +55,17 @@
                                   id="noteContent${idControllSuffix}"
                                   name="noteContent">${note ? note.content : ""}</textarea>
 
+                        <g:set var="attachment"/>
+                        <g:if test="${note}">
+                            <g:set var="attachment" value="${note.attachment}"/>
+                            <g:if test="${attachment != null}">
+                                <tsaap:viewAttachement width="150" height="150" attachement="${attachment}"/>
+                                <g:link controller="notes" action="removeAttachement"
+                                        params="[noteId: note.id, displaysAll: 'on', contextName: context.contextName, contextId: context.id, kind: 'question']">
+                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                </g:link>
+                            </g:if>
+                        </g:if>
                         <div class="row">
                             <div class="col-sm-7 col-md-7 col-lg-7">
                                 <input type="file" name="myFile" title="Image: gif, jpeg and png only"

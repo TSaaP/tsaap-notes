@@ -124,15 +124,47 @@ class NoteServiceIntegrationSpec extends Specification {
     }
 
     def "update a note"() {
-
         given:"create new note"
-        Note note = noteService.addNote(bootstrapTestService.learnerMary, "contennt")
+        Note note = noteService.addNote(bootstrapTestService.learnerMary, "content")
 
         when:"try to update content of note"
         noteService.updateNoteById((note.id).toString(), "new content")
 
         then:"the note content is updated"
         note.content == "new content"
+    }
+
+    def "update a note with invalid content"() {
+        given:"create new note"
+        Note note = noteService.addNote(bootstrapTestService.learnerMary, "content")
+
+        when:"try to update content of note"
+        noteService.updateNoteById((note.id).toString(), "::new content")
+
+        then:"an exception is thrown"
+        thrown(IsNotStandardNoteException)
+    }
+
+    def "update a question"() {
+        given:"create new question"
+        Note note = noteService.addQuestion(bootstrapTestService.learnerMary, "::a question:: what ? {=true~false}")
+
+        when:"try to update content of the question"
+        noteService.updateQuestionById((note.id).toString(), "::another title:: what ? {=true~false}")
+
+        then:"the question content is updated"
+        note.content == "::another title:: what ? {=true~false}"
+    }
+
+    def "update a question with invalid content"() {
+        given:"create new question"
+        Note note = noteService.addQuestion(bootstrapTestService.learnerMary, "::a question:: what ? {=true~false}")
+
+        when:"try to update content of the question"
+        noteService.updateQuestionById((note.id).toString(), "not a question")
+
+        then:"an exception is thrown"
+        thrown(IsNotQuestionException)
     }
 
     def "delete a note with attachement"() {

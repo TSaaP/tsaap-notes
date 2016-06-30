@@ -36,15 +36,24 @@
                   name="noteContent"
                   maxlength="560">${note ? note.content : parentNote ? '@' + parentNote.author?.username + ' ' : ''}</textarea>
 
+        <g:set var="attachment"/>
+        <g:if test="${note}">
+            <g:set var="attachment" value="${note.attachment}"/>
+            <g:if test="${attachment != null}">
+                <tsaap:viewAttachement width="150" height="150" attachement="${attachment}"/>
+            </g:if>
+        </g:if>
         <div class="row">
             <span class="character_counter pull-left" style="margin-left: 15px"
                   id="character_counter${idControllSuffix}"></span>
         </div>
 
         <div class="row">
-            <div class="col-xs-12 col-sm-10 col-md-10 col-lg-10">
-                <input type="file" name="myFile" title="Image: gif, jpeg and png only"/>
-            </div>
+            <g:if test="${!attachment}">
+                <div class="col-xs-12 col-sm-10 col-md-10 col-lg-10">
+                    <input type="file" name="myFile" title="Image: gif, jpeg and png only"/>
+                </div>
+            </g:if>
 
             <div class="col-xs-12 col-sm-2 col-md-2 col-lg-2">
                 <button type="submit"

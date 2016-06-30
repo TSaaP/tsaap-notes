@@ -135,6 +135,10 @@ class NotesController {
                 noteService.updateQuestionById(params.noteId, params.noteContent)
             } else {
                 noteService.updateNoteById(params.noteId, params.noteContent)
+                def file = request.getFile('myFile')
+                if (file && !file.isEmpty()) {
+                    attachementService.addFileToNote(file, Note.findById(params.noteId as Long))
+                }
             }
         } catch (IsNotQuestionException e) {
             params.put("error", "question")

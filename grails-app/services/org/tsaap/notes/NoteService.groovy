@@ -43,7 +43,9 @@ class NoteService {
      * @return the added note
      */
     @Transactional
-    @Requires({ author && content && (!context || context.isOpen()) && (noteKind == NoteKind.EXPLANATION || parentNote?.noteKind != NoteKind.QUESTION)})
+    @Requires({
+        author && content && (!context || context.isOpen()) && (noteKind == NoteKind.EXPLANATION || parentNote?.noteKind != NoteKind.QUESTION)
+    })
     Note addNote(User author,
                  String content,
                  Context context = null,
@@ -253,6 +255,12 @@ class NoteService {
         note.delete()
     }
 
+    /**
+     * Update note content by noteNewContent and throws IsNotStandardNoteException if content is invalid
+     * @param noteId
+     * @param noteNewContent
+     * @return the updated note
+     */
     @Transactional
     def updateNoteById(String noteId, String noteNewContent) {
         Note note = Note.findById(noteId)
@@ -265,6 +273,12 @@ class NoteService {
         note
     }
 
+    /**
+     * Update question content by questionNewContent and throws IsNotQuestionException if content is invalid
+     * @param questionId
+     * @param questionNewContent
+     * @return the updated question
+     */
     @Transactional
     def updateQuestionById(String questionId, String questionNewContent) {
         Note question = Note.findById(questionId)

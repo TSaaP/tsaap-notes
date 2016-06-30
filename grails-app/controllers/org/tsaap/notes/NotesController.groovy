@@ -126,7 +126,11 @@ class NotesController {
         redirect(action: index(), params: params)
     }
 
-
+    /**
+     * Update the specified note or question and redirect to note or question list
+     * Show errors if any
+     * @return
+     */
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def updateNote() {
         def user = springSecurityService.currentUser
@@ -157,9 +161,9 @@ class NotesController {
     def removeAttachement() {
         def user = springSecurityService.currentUser
         Note note = Note.findById(params.noteId as Long)
-            if (note.attachment) {
-                attachementService.detachAttachement(note.attachment)
-            }
+        if (note.attachment) {
+            attachementService.detachAttachement(note.attachment)
+        }
         redirect(action: index(), params: params)
     }
 

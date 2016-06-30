@@ -130,6 +130,7 @@ class NotesController {
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def updateNote() {
         def user = springSecurityService.currentUser
+        Note note = Note.findById(params.noteId as Long)
         try {
             if (params?.kind == 'question') {
                 noteService.updateQuestionById(params.noteId, params.noteContent)
@@ -137,7 +138,7 @@ class NotesController {
                 noteService.updateNoteById(params.noteId, params.noteContent)
                 def file = request.getFile('myFile')
                 if (file && !file.isEmpty()) {
-                    attachementService.addFileToNote(file, Note.findById(params.noteId as Long))
+                    attachementService.addFileToNote(file, note)
                 }
             }
         } catch (IsNotQuestionException e) {
@@ -149,6 +150,16 @@ class NotesController {
             renderMainPage(params, user)
             return
         }
+        redirect(action: index(), params: params)
+    }
+
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def removeAttachement() {
+        def user = springSecurityService.currentUser
+        Note note = Note.findById(params.noteId as Long)
+            if (note.attachment) {
+                attachementService.detachAttachement(note.attachment)
+            }
         redirect(action: index(), params: params)
     }
 

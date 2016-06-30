@@ -115,13 +115,23 @@
                 <div class="modal fade" id="modalNote${note.id}" role="dialog" aria-labelledby="exampleModalLabel">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
-                            <div class="container note-edition">
-                                <g:if test="${note.kind == org.tsaap.notes.NoteKind.QUESTION.ordinal()}">
-                                    <g:render template="/questions/edit" model='[note: note, context: context, fragmentTag: note.fragmentTag]'/>
-                                </g:if>
-                                <g:else>
-                                    <g:render template="/notes/edit" model='[note: note, context: context, fragmentTag: note.fragmentTag]'/>
-                                </g:else>
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                        aria-hidden="true">&times;</span></button>
+                            </div>
+
+                            <div class="modal-body">
+
+                                <div class="container note-edition">
+                                    <g:if test="${note.kind == org.tsaap.notes.NoteKind.QUESTION.ordinal()}">
+                                        <g:render template="/questions/edit"
+                                                  model='[note: note, context: context, fragmentTag: note.fragmentTag]'/>
+                                    </g:if>
+                                    <g:else>
+                                        <g:render template="/notes/edit"
+                                                  model='[note: note, context: context, fragmentTag: note.fragmentTag]'/>
+                                    </g:else>
+                                </div>
                             </div>
                         </div>
                     </div>

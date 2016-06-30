@@ -41,6 +41,9 @@
             <g:set var="attachment" value="${note.attachment}"/>
             <g:if test="${attachment != null}">
                 <tsaap:viewAttachement width="150" height="150" attachement="${attachment}"/>
+                   <g:link controller="notes" action="removeAttachement" params="[noteId: note.id, displaysAll: 'on', contextName: context.contextName, contextId: context.id, kind: context.noteTakingEnabled ? 'standard' : 'question']">
+                       <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                   </g:link>
             </g:if>
         </g:if>
         <div class="row">

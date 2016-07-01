@@ -123,7 +123,34 @@
 <g:if test="${(context.noteTakingEnabled || params.kind == 'question') && context.isOpen()}">
     <div class="container note-edition">
         <g:if test="${params.kind == 'question'}">
-            <g:render template="/questions/edit" model='[context: context, fragmentTag: fragmentTag]'/>
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingOne"
+                         style="margin-bottom: -15px;">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" id="accordionLink"
+                               data-parent="#accordion" href="#collapseOne"
+                               aria-expanded="false" aria-controls="collapseOne" class="collapsed">
+                                ${message(code: "notes.edit.question.editor")}
+                            </a>
+                        </h4>
+                    </div>
+
+                    <div id="collapseOne${idControllSuffix}" class="panel-collapse collapse" role="tabpanel"
+                         aria-labelledby="headingOne${idControllSuffix}">
+                        <g:render template="/questions/edit" model='[context: context, fragmentTag: fragmentTag]'/>
+                    </div>
+                </div>
+            </div>
+            <r:script>
+            $("#collapseOne").on('show.bs.collapse', function(){
+                $("#headingOne").attr("style","margin-bottom: 0px;");
+            });
+
+            $("#collapseOne").on('hidden.bs.collapse', function(){
+                $("#headingOne").attr("style","margin-bottom: -15px;");
+            });
+            </r:script>
         </g:if>
         <g:else>
             <g:render template="/notes/edit" model='[context: context, fragmentTag: fragmentTag]'/>

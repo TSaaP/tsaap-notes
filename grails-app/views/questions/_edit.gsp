@@ -17,97 +17,68 @@
 
 <g:set var="idControllSuffix" value="${parentNote ? parentNote.id : 0}${note ? "_" + note.id : ""}"/>
 
-<div id="edit_tab_${idControllSuffix}">
-    <div class="panel-group" id="accordion${idControllSuffix}" role="tablist" aria-multiselectable="true">
-        <div class="panel panel-default">
-            <div class="panel-heading" role="tab" id="headingOne${idControllSuffix}" style="margin-bottom: -15px;">
-                <h4 class="panel-title">
-                    <a data-toggle="collapse" id="accordionLink${idControllSuffix}"
-                       data-parent="#accordion${idControllSuffix}" href="#collapseOne${idControllSuffix}"
-                       aria-expanded="false" aria-controls="collapseOne" class="collapsed">
-                        ${message(code: "notes.edit.question.editor")}
-                    </a>
-                </h4>
+<div class="panel-body">
+    <g:form method="post" controller="notes" action="${note ? 'updateNote' : 'addNote'}"
+            enctype="multipart/form-data">
+        <g:if test="${note}">
+            <g:hiddenField name="noteId" value="${note.id}"/>
+        </g:if>
+        <g:hiddenField name="kind" value="question"/>
+        <g:hiddenField name="inline" value="${params.inline}"/>
+        <g:hiddenField name="contextId" value="${context?.id}"
+                       id="contextIdInAddForm${idControllSuffix}"/>
+        <g:hiddenField name="fragmentTagId" value="${fragmentTag?.id}"/>
+        <g:hiddenField name="parentNoteId" value="${parentNote?.id}"/>
+        <g:hiddenField name="displaysMyNotes" id="displaysMyNotesInAddForm${idControllSuffix}"/>
+        <g:hiddenField name="displaysMyFavorites"
+                       id="displaysMyFavoritesInAddForm${idControllSuffix}"/>
+        <g:hiddenField name="displaysAll" id="displaysAllInAddForm${idControllSuffix}"/>
+        <g:set var="kind" value="question"/>
+        <a id="question_sample${idControllSuffix}"
+           style="margin-top: 15px">${message(code: "notes.edit.sampleQuestion")}</a>
+        <textarea class="form-control note-editable-content" rows="3"
+                  id="noteContent${idControllSuffix}"
+                  name="noteContent">${note ? note.content : ""}</textarea>
+
+        <g:set var="attachment"/>
+        <g:if test="${note}">
+            <g:set var="attachment" value="${note.attachment}"/>
+            <g:if test="${attachment != null}">
+                <tsaap:viewAttachement width="150" height="150" attachement="${attachment}"/>
+                <g:link controller="notes" action="removeAttachement"
+                        params="[noteId: note.id, displaysAll: 'on', contextName: context.contextName, contextId: context.id, kind: 'question']">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                </g:link>
+            </g:if>
+        </g:if>
+        <div class="row">
+            <div class="col-sm-7 col-md-7 col-lg-7">
+                <input type="file" name="myFile" title="Image: gif, jpeg and png only"
+                       style="margin-top: 5px"/>
             </div>
 
-            <div id="collapseOne${idControllSuffix}" class="panel-collapse collapse" role="tabpanel"
-                 aria-labelledby="headingOne${idControllSuffix}">
-                <div class="panel-body">
-                    <g:form method="post" controller="notes" action="${note ? 'updateNote' : 'addNote'}"
-                            enctype="multipart/form-data">
-                        <g:if test="${note}">
-                            <g:hiddenField name="noteId" value="${note.id}"/>
-                        </g:if>
-                        <g:hiddenField name="kind" value="question"/>
-                        <g:hiddenField name="inline" value="${params.inline}"/>
-                        <g:hiddenField name="contextId" value="${context?.id}"
-                                       id="contextIdInAddForm${idControllSuffix}"/>
-                        <g:hiddenField name="fragmentTagId" value="${fragmentTag?.id}"/>
-                        <g:hiddenField name="parentNoteId" value="${parentNote?.id}"/>
-                        <g:hiddenField name="displaysMyNotes" id="displaysMyNotesInAddForm${idControllSuffix}"/>
-                        <g:hiddenField name="displaysMyFavorites"
-                                       id="displaysMyFavoritesInAddForm${idControllSuffix}"/>
-                        <g:hiddenField name="displaysAll" id="displaysAllInAddForm${idControllSuffix}"/>
-                        <g:set var="kind" value="question"/>
-                        <a id="question_sample"
-                           style="margin-top: 15px">${message(code: "notes.edit.sampleQuestion")}</a>
-                        <textarea class="form-control note-editable-content" rows="3"
-                                  id="noteContent${idControllSuffix}"
-                                  name="noteContent">${note ? note.content : ""}</textarea>
+            <div id="prewiew_tab_${idControllSuffix}" class="col-sm-2 col-md-2 col-lg-2">
+                <button type="button" class="btn btn-default btn-xs"
+                        id="preview_button_${idControllSuffix}">
+                    ${message(code: "notes.edit.preview")}
+                </button>
+            </div>
 
-                        <g:set var="attachment"/>
-                        <g:if test="${note}">
-                            <g:set var="attachment" value="${note.attachment}"/>
-                            <g:if test="${attachment != null}">
-                                <tsaap:viewAttachement width="150" height="150" attachement="${attachment}"/>
-                                <g:link controller="notes" action="removeAttachement"
-                                        params="[noteId: note.id, displaysAll: 'on', contextName: context.contextName, contextId: context.id, kind: 'question']">
-                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                                </g:link>
-                            </g:if>
-                        </g:if>
-                        <div class="row">
-                            <div class="col-sm-7 col-md-7 col-lg-7">
-                                <input type="file" name="myFile" title="Image: gif, jpeg and png only"
-                                       style="margin-top: 5px"/>
-                            </div>
-
-                            <div id="prewiew_tab_${idControllSuffix}" class="col-sm-2 col-md-2 col-lg-2">
-                                <button type="button" class="btn btn-default btn-xs"
-                                        id="preview_button_${idControllSuffix}">
-                                    ${message(code: "notes.edit.preview")}
-                                </button>
-                            </div>
-
-                            <div class="col-sm-2 col-md-2 col-lg-2">
-                                <button type="submit"
-                                        class="btn btn-primary btn-xs"
-                                        id="buttonAddNote${idControllSuffix}"
-                                        disabled><span
-                                        class="glyphicon glyphicon-plus"></span>
-                                    ${note ? message(code: "notes.edit.update.question.button") : message(code: "notes.edit.add.question.button")}
-                                </button>
-                            </div>
-                        </div>
-                    </g:form>
-                </div>
+            <div class="col-sm-2 col-md-2 col-lg-2">
+                <button type="submit"
+                        class="btn btn-primary btn-xs"
+                        id="buttonAddNote${idControllSuffix}"
+                        disabled><span
+                        class="glyphicon glyphicon-plus"></span>
+                    ${note ? message(code: "notes.edit.update.question.button") : message(code: "notes.edit.add.question.button")}
+                </button>
             </div>
         </div>
-    </div>
+    </g:form>
 </div>
-
 
 <r:script>
   $(document).ready(function () {
-
-    $("#collapseOne${idControllSuffix}").on('show.bs.collapse', function(){
-        $("#headingOne${idControllSuffix}").attr("style","margin-bottom: 0px;");
-    });
-
-    $("#collapseOne${idControllSuffix}").on('hidden.bs.collapse', function(){
-        $("#headingOne${idControllSuffix}").attr("style","margin-bottom: -15px;");
-    });
-
     var contentPreview;
 
     // preview management
@@ -164,21 +135,22 @@
     $("#displaysAllInAddForm${idControllSuffix}").val($("#displaysAll").attr('checked') ? 'on' : '');
 
     // Questions samples popup management
-    $('#question_sample').popover({
-                                 content: function() {return getQuestionSample()},
+    $('#question_sample${idControllSuffix}').popover({
+                                 content: function() {return getQuestionSample${idControllSuffix}()},
                                  html: true,
                                  placement: 'bottom'
                                }).on('shown.bs.popover', function() {
                                  MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_sample'])
                                });
 
-    function getQuestionSample() {
+    function ${'getQuestionSample' + idControllSuffix}() {
         var contentQuestionSample = "" ;
             $.ajax({
                 type: "POST",
-                url: '<g:createLink action="getQuestionsSamples" controller="notes"/>',
+                url: '<g:createLink action="getQuestionsSamples" controller="notes"
+                                    params="[questionSample: 'question_sample' + idControllSuffix, toUpdate: 'noteContent' + idControllSuffix]"/>',
                 async: false
-            }).done(function( data ) {
+            }).done(function(data) {
                 contentQuestionSample = data ;
             });
          return contentQuestionSample
@@ -186,17 +158,14 @@
 
     });
 
-    function sampleLink(id){
-        $('#question_sample').popover('hide');
-        var precedentText = $('textarea[name="noteContent"]').val();
+    function sampleLink(id, questionSample, toUpdate){
+        $('#' + questionSample).popover('hide');
         if(id == 0) {
-            $('textarea[name="noteContent"]').val("${message(code: "notes.edit.sampleQuestion.singleChoiceExemple")}"+"\n"+precedentText);
+            $('#' + toUpdate).prepend("${message(code: "notes.edit.sampleQuestion.singleChoiceExemple")}\n");
+        } else {
+            $('#' + toUpdate).prepend("${message(code: "notes.edit.sampleQuestion.multipleChoiceExemple")}\n")
         }
-        else {
-            $('textarea[name="noteContent"]').val("${message(code: "notes.edit.sampleQuestion.multipleChoiceExemple")}" +"\n"+precedentText);
-        }
-        $('textarea[name="noteContent"]').focus();
-        $('textarea[name="noteContent"]').blur()
+        $('#' + toUpdate).focus().blur()
     }
 
 </r:script>

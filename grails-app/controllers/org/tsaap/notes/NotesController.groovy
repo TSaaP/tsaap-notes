@@ -207,14 +207,14 @@ class NotesController {
 
         Question singleChoice = giftQuestionService.getQuestionFromGiftText("${message(code: "notes.edit.sampleQuestion.singleChoiceExemple")}")
 
-        def singlelink = """<a class="sampleLink" id="singleQuestionSample" onClick="sampleLink(0)">${
+        def singlelink = """<a class="sampleLink" id="singleQuestionSample" onClick="sampleLink(0, '${params.questionSample}', '${params.toUpdate}')">${
             message(code: "notes.edit.sampleQuestion.link")
         }</a><br><br>"""
         def multiple = "${message(code: "notes.edit.sampleQuestion.multipleChoice")}"
 
-        Question multipleChoice = giftQuestionService.getQuestionFromGiftText("${message(code: "notes.edit.sampleQuestion.multipleChoiceExemple")}")
+        Question multipleChoice = giftQuestionService.getQuestionFromGiftText("${message(code: "notes.edit.sampleQuestion.multipleChoiceExemple")}'")
 
-        def multiplelink = """<a class="sampleLink" id="singleQuestionSample" onClick="sampleLink(1)">${
+        def multiplelink = """<a class="sampleLink" id="multipleQuestionSample" onClick="sampleLink(1, '${params.questionSample}', '${params.toUpdate}')">${
             message(code: "notes.edit.sampleQuestion.link")
         }</a>"""
 

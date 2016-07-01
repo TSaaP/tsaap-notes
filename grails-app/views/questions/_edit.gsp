@@ -40,28 +40,28 @@
                   id="noteContent${idControllSuffix}"
                   name="noteContent">${note ? note.content : ""}</textarea>
 
-                        <div id="attach${idControllSuffix}">
-                            <g:set var="attachment"/>
-                            <g:if test="${note}">
-                                <g:set var="attachment" value="${note.attachment}"/>
-                                <g:if test="${attachment != null}">
-                                    <tsaap:viewAttachement width="150" height="150" attachement="${attachment}"/>
-                                    <g:remoteLink controller="notes" action="removeAttachement"
-                                                  params="[noteId: note.id]"
-                                                  update="attach${idControllSuffix}">
-                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                                    </g:remoteLink>
-                                </g:if>
-                            </g:if>
-                        </div>
+        <div id="attach${idControllSuffix}">
+            <g:set var="attachment"/>
+            <g:if test="${note}">
+                <g:set var="attachment" value="${note.attachment}"/>
+                <g:if test="${attachment != null}">
+                    <tsaap:viewAttachement width="150" height="150" attachement="${attachment}"/>
+                    <g:remoteLink controller="notes" action="removeAttachement"
+                                  params="[noteId: note.id]"
+                                  update="attach${idControllSuffix}">
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </g:remoteLink>
+                </g:if>
+            </g:if>
+        </div>
 
-                        <div class="row">
-                        <g:if test="${!attachment}">
-                            <div class="col-sm-7 col-md-7 col-lg-7">
-                                <input type="file" name="myFile" title="Image: gif, jpeg and png only"
-                                       style="margin-top: 5px"/>
-                            </div>
-                        </g:if>
+        <div class="row">
+            <g:if test="${!attachment}">
+                <div class="col-sm-7 col-md-7 col-lg-7">
+                    <input type="file" name="myFile" title="Image: gif, jpeg and png only"
+                           style="margin-top: 5px"/>
+                </div>
+            </g:if>
 
             <div id="prewiew_tab_${idControllSuffix}" class="col-sm-2 col-md-2 col-lg-2">
                 <button type="button" class="btn btn-default btn-xs"
@@ -84,21 +84,21 @@
 </div>
 
 <r:script>
-  $(document).ready(function () {
+$(document).ready(function () {
     var contentPreview;
 
     // preview management
     //--------
     $('#preview_button_${idControllSuffix}').popover({
-                                 content: function() {return getNotePreview()},
-                                 html: true,
-                                 placement: 'bottom'
-                               }).on('shown.bs.popover', function() {
-                                 MathJax.Hub.Queue(['Typeset',MathJax.Hub,'prewiew_tab_${idControllSuffix}'])
-                               });
+        content: function() {return getNotePreview()},
+        html: true,
+        placement: 'bottom'
+    }).on('shown.bs.popover', function() {
+        MathJax.Hub.Queue(['Typeset',MathJax.Hub,'prewiew_tab_${idControllSuffix}']);
+    });
 
     function getNotePreview() {
-        var noteInput = $("#noteContent${idControllSuffix}").val() ;
+        var noteInput = $("#noteContent${idControllSuffix}").val();
         contentPreview = noteInput;
         if (noteInput.lastIndexOf('::', 0) === 0) {
             $.ajax({
@@ -106,11 +106,11 @@
                 url: '<g:createLink action="evaluateContentAsNote" controller="notes"/>',
                 data: {content:noteInput},
                 async: false
-            }).done(function( data ) {
+            }).done(function(data) {
                 contentPreview = data ;
             });
-         }
-         return contentPreview
+        }
+        return contentPreview;
     }
 
     // set character counters
@@ -119,20 +119,20 @@
     // Get the textarea field
     $("#noteContent${idControllSuffix}")
 
-      // Bind the counter function on keyup and blur events
-            .bind('keyup blur', function () {
-                    // Count the characters and set the counter text
-                    var counter =  $("#character_counter${idControllSuffix}");
-                    counter.text($(this).val().length + '/560 ${message(code: "notes.edit.characters")}');
-                    if ($(this).val().length >1) {
-                      $("#buttonAddNote${idControllSuffix}").removeAttr('disabled');
-                    } else {
-                      $("#buttonAddNote${idControllSuffix}").attr('disabled','disabled');
-                    }
-                  })
+        // Bind the counter function on keyup and blur events
+        .bind('keyup blur', function () {
+            // Count the characters and set the counter text
+            var counter =  $("#character_counter${idControllSuffix}");
+            counter.text($(this).val().length + '/560 ${message(code: "notes.edit.characters")}');
+            if ($(this).val().length >1) {
+                $("#buttonAddNote${idControllSuffix}").removeAttr('disabled');
+            } else {
+                $("#buttonAddNote${idControllSuffix}").attr('disabled','disabled');
+            }
+        })
 
-      // Trigger the counter on first load
-            .keyup();
+        // Trigger the counter on first load
+        .keyup();
 
     // set hidden field value
     //----------------------
@@ -142,36 +142,35 @@
 
     // Questions samples popup management
     $('#question_sample${idControllSuffix}').popover({
-                                 content: function() {return getQuestionSample${idControllSuffix}()},
-                                 html: true,
-                                 placement: 'bottom'
-                               }).on('shown.bs.popover', function() {
-                                 MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_sample'])
-                               });
-
-    function ${'getQuestionSample' + idControllSuffix}() {
-        var contentQuestionSample = "" ;
-            $.ajax({
-                type: "POST",
-                url: '<g:createLink action="getQuestionsSamples" controller="notes"
-                                    params="[questionSample: 'question_sample' + idControllSuffix, toUpdate: 'noteContent' + idControllSuffix]"/>',
-                async: false
-            }).done(function(data) {
-                contentQuestionSample = data ;
-            });
-         return contentQuestionSample
-    }
-
+        content: function() {return getQuestionSample${idControllSuffix}()},
+        html: true,
+        placement: 'bottom'
+    }).on('shown.bs.popover', function() {
+        MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_sample'])
     });
 
-    function sampleLink(id, questionSample, toUpdate){
-        $('#' + questionSample).popover('hide');
-        if(id == 0) {
-            $('#' + toUpdate).prepend("${message(code: "notes.edit.sampleQuestion.singleChoiceExemple")}\n");
-        } else {
-            $('#' + toUpdate).prepend("${message(code: "notes.edit.sampleQuestion.multipleChoiceExemple")}\n")
-        }
-        $('#' + toUpdate).focus().blur()
+    function ${'getQuestionSample' + idControllSuffix}() {
+        var contentQuestionSample = "";
+    $.ajax({
+        type: "POST",
+        url: '<g:createLink action="getQuestionsSamples" controller="notes"
+                            params="[questionSample: 'question_sample' + idControllSuffix, toUpdate: 'noteContent' + idControllSuffix]"/>',
+        async: false
+    }).done(function(data) {
+        contentQuestionSample = data;
+    });
+        return contentQuestionSample;
     }
 
+});
+
+function sampleLink(id, questionSample, toUpdate){
+    $('#' + questionSample).popover('hide');
+    if(id == 0) {
+        $('#' + toUpdate).prepend("${message(code: "notes.edit.sampleQuestion.singleChoiceExemple")}\n");
+    } else {
+        $('#' + toUpdate).prepend("${message(code: "notes.edit.sampleQuestion.multipleChoiceExemple")}\n");
+    }
+    $('#' + toUpdate).focus().blur();
+}
 </r:script>

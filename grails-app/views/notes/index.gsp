@@ -15,8 +15,6 @@
   -     along with this program.  If not, see <http://www.gnu.org/licenses/>.
   --}%
 
-
-
 <html xmlns="http://www.w3.org/1999/html">
 <head>
     <g:if test="${params.inline && params.inline == 'on'}">
@@ -136,8 +134,8 @@
                         </h4>
                     </div>
 
-                    <div id="collapseOne${idControllSuffix}" class="panel-collapse collapse" role="tabpanel"
-                         aria-labelledby="headingOne${idControllSuffix}">
+                    <div id="collapseOne" class="panel-collapse collapse" role="tabpanel"
+                         aria-labelledby="headingOne">
                         <g:render template="/questions/edit" model='[context: context, fragmentTag: fragmentTag]'/>
                     </div>
                 </div>

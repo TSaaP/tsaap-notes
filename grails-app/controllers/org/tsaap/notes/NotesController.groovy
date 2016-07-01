@@ -19,6 +19,7 @@ package org.tsaap.notes
 
 import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
+import org.gcontracts.annotations.Requires
 import org.tsaap.attachement.AttachementService
 import org.tsaap.directory.User
 import org.tsaap.questions.Question
@@ -133,7 +134,6 @@ class NotesController {
      */
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def updateNote() {
-        def user = springSecurityService.currentUser
         Note note = Note.findById(params.noteId as Long)
         try {
             if (params?.kind == 'question') {
@@ -155,13 +155,13 @@ class NotesController {
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def removeAttachement() {
-        def user = springSecurityService.currentUser
         Note note = Note.findById(params.noteId as Long)
         if (note.attachment) {
             attachementService.detachAttachement(note.attachment)
         }
         //redirect(action: index(), params: params)
-        render (template: "/editAttach")
+        render """<input type="file" name="myFile" title="Image: gif, jpeg and png only"
+       style="margin-top: 5px"/>"""
     }
 
 
@@ -203,7 +203,6 @@ class NotesController {
      */
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def getQuestionsSamples() {
-
         def content = "${message(code: "notes.edit.sampleQuestion.text")}"
         def single = "${message(code: "notes.edit.sampleQuestion.singleChoice")}"
 
@@ -227,7 +226,6 @@ class NotesController {
         render(multiple)
         render(template: '/questions/preview/detail', model: [question: multipleChoice])
         render(multiplelink)
-
     }
 
     /**

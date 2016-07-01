@@ -16,7 +16,7 @@
   --}%
 
 <g:set var="idControllSuffix" value="${parentNote ? parentNote.id : 0}${note ? "_" + note.id : ""}"/>
-<div id="edit_tab_${idControllSuffix}">
+<div class="panel-body">
     <g:form method="post" controller="notes" action="${note ? "updateNote" : "addNote"}" enctype="multipart/form-data">
         <g:if test="${note}">
             <g:hiddenField name="noteId" value="${note.id}"/>
@@ -57,12 +57,12 @@
 
         <div class="row">
             <g:if test="${!attachment}">
-                <div class="col-xs-12 col-sm-10 col-md-10 col-lg-10">
+                <div class="col-xs-12 col-sm-9 col-md-9 col-lg-9">
                     <input type="file" name="myFile" title="Image: gif, jpeg and png only"/>
                 </div>
             </g:if>
 
-            <div class="col-xs-12 col-sm-2 col-md-2 col-lg-2">
+            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
                 <button type="submit"
                         class="btn btn-primary btn-xs"
                         id="buttonAddNote${idControllSuffix}"

@@ -160,8 +160,10 @@ class NotesController {
         if (note.attachment) {
             attachementService.detachAttachement(note.attachment)
         }
-        redirect(action: index(), params: params)
+        //redirect(action: index(), params: params)
+        render (template: "/editAttach")
     }
+
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def showDiscussion() {

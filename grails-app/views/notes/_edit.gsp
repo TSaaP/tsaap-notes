@@ -16,7 +16,6 @@
   --}%
 
 <g:set var="idControllSuffix" value="${parentNote ? parentNote.id : 0}${note ? "_" + note.id : ""}"/>
-
 <div id="edit_tab_${idControllSuffix}">
     <g:form method="post" controller="notes" action="${note ? "updateNote" : "addNote"}" enctype="multipart/form-data">
         <g:if test="${note}">
@@ -36,17 +35,21 @@
                   name="noteContent"
                   maxlength="560">${note ? note.content : parentNote ? '@' + parentNote.author?.username + ' ' : ''}</textarea>
 
-        <g:set var="attachment"/>
-        <g:if test="${note}">
-            <g:set var="attachment" value="${note.attachment}"/>
-            <g:if test="${attachment != null}">
-                <tsaap:viewAttachement width="150" height="150" attachement="${attachment}"/>
-                <g:link controller="notes" action="removeAttachement"
-                        params="[noteId: note.id, displaysAll: 'on', contextName: context.contextName, contextId: context.id, kind: 'standard']">
-                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                </g:link>
+        <div id="attach${idControllSuffix}">
+            <g:set var="attachment"/>
+            <g:if test="${note}">
+                <g:set var="attachment" value="${note.attachment}"/>
+                <g:if test="${attachment != null}">
+                    <tsaap:viewAttachement width="150" height="150" attachement="${attachment}"/>
+                    <g:remoteLink controller="notes" action="removeAttachement"
+                                  params="[noteId: note.id]"
+                                  update="attach${idControllSuffix}">
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </g:remoteLink>
+                </g:if>
             </g:if>
-        </g:if>
+        </div>
+
         <div class="row">
             <span class="character_counter pull-left" style="margin-left: 15px"
                   id="character_counter${idControllSuffix}"></span>

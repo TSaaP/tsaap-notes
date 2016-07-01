@@ -40,22 +40,28 @@
                   id="noteContent${idControllSuffix}"
                   name="noteContent">${note ? note.content : ""}</textarea>
 
-        <g:set var="attachment"/>
-        <g:if test="${note}">
-            <g:set var="attachment" value="${note.attachment}"/>
-            <g:if test="${attachment != null}">
-                <tsaap:viewAttachement width="150" height="150" attachement="${attachment}"/>
-                <g:link controller="notes" action="removeAttachement"
-                        params="[noteId: note.id, displaysAll: 'on', contextName: context.contextName, contextId: context.id, kind: 'question']">
-                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                </g:link>
-            </g:if>
-        </g:if>
-        <div class="row">
-            <div class="col-sm-7 col-md-7 col-lg-7">
-                <input type="file" name="myFile" title="Image: gif, jpeg and png only"
-                       style="margin-top: 5px"/>
-            </div>
+                        <div id="attach${idControllSuffix}">
+                            <g:set var="attachment"/>
+                            <g:if test="${note}">
+                                <g:set var="attachment" value="${note.attachment}"/>
+                                <g:if test="${attachment != null}">
+                                    <tsaap:viewAttachement width="150" height="150" attachement="${attachment}"/>
+                                    <g:remoteLink controller="notes" action="removeAttachement"
+                                                  params="[noteId: note.id]"
+                                                  update="attach${idControllSuffix}">
+                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                    </g:remoteLink>
+                                </g:if>
+                            </g:if>
+                        </div>
+
+                        <div class="row">
+                        <g:if test="${!attachment}">
+                            <div class="col-sm-7 col-md-7 col-lg-7">
+                                <input type="file" name="myFile" title="Image: gif, jpeg and png only"
+                                       style="margin-top: 5px"/>
+                            </div>
+                        </g:if>
 
             <div id="prewiew_tab_${idControllSuffix}" class="col-sm-2 col-md-2 col-lg-2">
                 <button type="button" class="btn btn-default btn-xs"

@@ -147,12 +147,8 @@ class NotesController {
             }
         } catch (IsNotQuestionException e) {
             params.put("error", "question")
-            renderMainPage(params, user)
-            return
         } catch (IsNotStandardNoteException e) {
             params.put("error", "note")
-            renderMainPage(params, user)
-            return
         }
         redirect(action: index(), params: params)
     }

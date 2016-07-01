@@ -71,21 +71,15 @@ class NotesController {
             } else {
                 myNote = noteService.addStandardNote(user, noteContent, context, fragmentTag, parentNote)
             }
+            def file = request.getFile('myFile')
+            if (file && !file.isEmpty()) {
+                attachementService.addFileToNote(file, myNote)
+            }
         } catch (IsNotQuestionException e) {
             params.put("error", "question")
-            renderMainPage(params, user)
-            return
         } catch (IsNotStandardNoteException e) {
             params.put("error", "note")
-            renderMainPage(params, user)
-            return
         }
-
-        def file = request.getFile('myFile')
-        if (file && !file.isEmpty()) {
-            attachementService.addFileToNote(file, myNote)
-        }
-
 
         params.remove('noteContent')
         redirect(action: index(), params: params)

@@ -166,11 +166,14 @@ $(document).ready(function () {
 
 function sampleLink(id, questionSample, toUpdate){
     $('#' + questionSample).popover('hide');
+    var precedentText = $('#' + toUpdate).val();
     if(id == 0) {
-        $('#' + toUpdate).prepend("${message(code: "notes.edit.sampleQuestion.singleChoiceExemple")}\n");
-    } else {
-        $('#' + toUpdate).prepend("${message(code: "notes.edit.sampleQuestion.multipleChoiceExemple")}\n");
+        $('#' + toUpdate).val("${message(code: "notes.edit.sampleQuestion.singleChoiceExemple")}"+"\n"+precedentText);
     }
-    $('#' + toUpdate).focus().blur();
+    else {
+        $('#' + toUpdate).val("${message(code: "notes.edit.sampleQuestion.multipleChoiceExemple")}" +"\n"+precedentText);
+    }
+    $('#' + toUpdate).focus();
+    $('#' + toUpdate).blur();
 }
 </r:script>

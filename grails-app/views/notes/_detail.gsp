@@ -109,7 +109,7 @@
                 <g:link controller="notes" action="deleteNote"
                         params="${[noteId: note.id] + displayListParamsWithPagination}"><span
                         class="glyphicon glyphicon-trash"></span> ${message(code: "notes.detail.delete")}</g:link>
-                <g:if test="${(context.noteTakingEnabled || note.kind == org.tsaap.notes.NoteKind.QUESTION.ordinal()) && context.isOpen()}">
+                <g:if test="${(context.noteTakingEnabled || note.kind == org.tsaap.notes.NoteKind.QUESTION.ordinal()) && context.isOpen() && !note.liveSession}">
                     <g:link data-toggle="modal" data-target="#modalNote${note.id}">
                         <span class="glyphicon glyphicon-pencil"></span> ${message(code: "notes.detail.edit")}
                     </g:link>

@@ -131,9 +131,9 @@ class NotesController {
         Note note = Note.findById(params.noteId as Long)
         try {
             if (params?.kind == 'question') {
-                noteService.updateQuestionById(params.noteId, params.noteContent)
+                noteService.updateQuestionById(note, params.noteContent, note.author)
             } else {
-                noteService.updateNoteById(params.noteId, params.noteContent)
+                noteService.updateNoteById(note, params.noteContent, note.author)
             }
             def file = request.getFile('myFile')
             if (file && !file.isEmpty()) {
@@ -154,7 +154,7 @@ class NotesController {
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def removeAttachement() {
         Note note = Note.findById(params.noteId as Long)
-        if (note.attachment) {
+        if (note.attachment && note.author == springSecurityService.currentUser) {
             attachementService.detachAttachement(note.attachment)
         }
 

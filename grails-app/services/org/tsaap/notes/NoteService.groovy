@@ -262,8 +262,8 @@ class NoteService {
      * @return the updated note
      */
     @Transactional
-    def updateNoteById(String noteId, String noteNewContent) {
-        Note note = Note.findById(noteId)
+    @Requires({ !author || note.canBeEditedBy(author) })
+    def updateNoteById(Note note, String noteNewContent, User author = null) {
         if (noteNewContent?.startsWith("::")) {
             throw new IsNotStandardNoteException("notes.edit.note.error")
         } else {
@@ -280,8 +280,8 @@ class NoteService {
      * @return the updated question
      */
     @Transactional
-    def updateQuestionById(String questionId, String questionNewContent) {
-        Note question = Note.findById(questionId)
+    @Requires({ !author || question.canBeEditedBy(author) })
+    def updateQuestionById(Note question, String questionNewContent, User author = null) {
         try {
             if (giftQuestionService.getQuestionFromGiftText(questionNewContent)) {
                 question.content = questionNewContent

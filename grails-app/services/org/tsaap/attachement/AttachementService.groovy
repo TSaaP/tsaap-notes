@@ -18,8 +18,10 @@
 package org.tsaap.attachement
 
 import groovy.transform.ToString
+import org.gcontracts.annotations.Requires
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
+import org.tsaap.directory.User
 import org.tsaap.notes.Note
 import org.tsaap.uploadImage.DataIdentifier
 import org.tsaap.uploadImage.DataRecord
@@ -195,7 +197,8 @@ class AttachementService {
      * @param myAttachement the attachment to detach
      * @return the detached attachment
      */
-    Attachement detachAttachement(Attachement myAttachement) {
+    @Requires({ !author || myAttachement.note.canBeEditedBy(author) })
+    Attachement detachAttachement(Attachement myAttachement, User author = null) {
         if (myAttachement.context != null) {
             myAttachement.context = null
         }

@@ -34,12 +34,18 @@
         <g:remoteLink action="startLiveSession" controller="question"
                       params="[liveSessId: liveSession?.id, noteId: note.id]"
                       class="btn btn-success btn-xs" update="question_${note.id}"
-                      onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])">
+                      onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}']);disableEdit('${note.id}')">
             <span class="glyphicon glyphicon-play"></span> ${message(code: "questions.author.notStarted.simpleSession.start")}</g:remoteLink>
         <g:remoteLink action="startNPhasesLiveSession" controller="question"
                       params="[liveSessId: liveSession?.id, noteId: note.id]"
                       class="btn btn-success btn-xs" update="question_${note.id}"
-                      onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])">
+                      onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}']);disableEdit('${note.id}')">
             <span class="glyphicon glyphicon-play"></span> ${message(code: "questions.author.notStarted.nPhaseSession.start")}</g:remoteLink>
     </g:if>
 </div>
+<r:script>
+    function disableEdit(noteId) {
+        $("#modalNote" + noteId).detach()
+        $("*[data-target='#modalNote" + noteId + "']").detach()
+    }
+</r:script>

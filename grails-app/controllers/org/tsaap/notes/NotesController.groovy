@@ -147,13 +147,17 @@ class NotesController {
         redirect(action: index(), params: params)
     }
 
+    /**
+     * Remove attachment and put the browse file input instead
+     * @return
+     */
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def removeAttachement() {
         Note note = Note.findById(params.noteId as Long)
         if (note.attachment) {
             attachementService.detachAttachement(note.attachment)
         }
-        //redirect(action: index(), params: params)
+
         render """<input type="file" name="myFile" title="Image: gif, jpeg and png only"
        style="margin-top: 5px"/>"""
     }

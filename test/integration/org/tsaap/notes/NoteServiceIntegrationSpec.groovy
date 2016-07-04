@@ -128,7 +128,7 @@ class NoteServiceIntegrationSpec extends Specification {
         Note note = noteService.addNote(bootstrapTestService.learnerMary, "content")
 
         when:"try to update content of note"
-        noteService.updateNoteById((note.id).toString(), "new content")
+        noteService.updateNoteById(note, "new content")
 
         then:"the note content is updated"
         note.content == "new content"
@@ -139,7 +139,7 @@ class NoteServiceIntegrationSpec extends Specification {
         Note note = noteService.addNote(bootstrapTestService.learnerMary, "content")
 
         when:"try to update content of note"
-        noteService.updateNoteById((note.id).toString(), "::new content")
+        noteService.updateNoteById(note, "::new content")
 
         then:"an exception is thrown"
         thrown(IsNotStandardNoteException)
@@ -150,7 +150,7 @@ class NoteServiceIntegrationSpec extends Specification {
         Note note = noteService.addQuestion(bootstrapTestService.learnerMary, "::a question:: what ? {=true~false}")
 
         when:"try to update content of the question"
-        noteService.updateQuestionById((note.id).toString(), "::another title:: what ? {=true~false}")
+        noteService.updateQuestionById(note, "::another title:: what ? {=true~false}")
 
         then:"the question content is updated"
         note.content == "::another title:: what ? {=true~false}"
@@ -161,7 +161,7 @@ class NoteServiceIntegrationSpec extends Specification {
         Note note = noteService.addQuestion(bootstrapTestService.learnerMary, "::a question:: what ? {=true~false}")
 
         when:"try to update content of the question"
-        noteService.updateQuestionById((note.id).toString(), "not a question")
+        noteService.updateQuestionById(note, "not a question")
 
         then:"an exception is thrown"
         thrown(IsNotQuestionException)

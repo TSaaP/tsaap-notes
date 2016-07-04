@@ -19,6 +19,8 @@ package org.tsaap.questions
 
 import org.tsaap.BootstrapTestService
 import org.tsaap.directory.User
+import org.tsaap.notes.Context
+import org.tsaap.notes.ContextService
 import org.tsaap.notes.Note
 import org.tsaap.notes.NoteService
 import spock.lang.Specification
@@ -36,7 +38,7 @@ class SessionPhaseIntegrationSpec extends Specification {
     User user1
     User user2
     User user3
-
+    ContextService contextService
     def initiliseUsers() {
 
         user1 = User.findByUsername("user1")
@@ -58,7 +60,8 @@ class SessionPhaseIntegrationSpec extends Specification {
         bootstrapTestService.initializeTests()
         initiliseUsers()
         user = bootstrapTestService.learnerPaul
-        note = noteService.addQuestion(user, "::a question:: What ? {=this ~that}")
+        Context context = contextService.saveContext(new Context(owner: user, contextName: "context"))
+        note = noteService.addQuestion(user, "::a question:: What ? {=this ~that}", context)
     }
 
     def cleanup() {

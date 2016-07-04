@@ -147,7 +147,8 @@ class NoteServiceIntegrationSpec extends Specification {
 
     def "update a question"() {
         given:"create new question"
-        Note note = noteService.addQuestion(bootstrapTestService.learnerMary, "::a question:: what ? {=true~false}")
+        Context context = contextService.saveContext(new Context(owner: bootstrapTestService.learnerMary, contextName: "context"))
+        Note note = noteService.addQuestion(bootstrapTestService.learnerMary, "::a question:: what ? {=true~false}", context)
 
         when:"try to update content of the question"
         noteService.updateQuestionById(note, "::another title:: what ? {=true~false}")
@@ -158,7 +159,8 @@ class NoteServiceIntegrationSpec extends Specification {
 
     def "update a question with invalid content"() {
         given:"create new question"
-        Note note = noteService.addQuestion(bootstrapTestService.learnerMary, "::a question:: what ? {=true~false}")
+        Context context = contextService.saveContext(new Context(owner: bootstrapTestService.learnerMary, contextName: "context"))
+        Note note = noteService.addQuestion(bootstrapTestService.learnerMary, "::a question:: what ? {=true~false}", context)
 
         when:"try to update content of the question"
         noteService.updateQuestionById(note, "not a question")

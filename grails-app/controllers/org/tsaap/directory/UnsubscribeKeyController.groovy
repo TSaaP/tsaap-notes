@@ -29,9 +29,8 @@ class UnsubscribeKeyController {
      */
     def doUnsubscribeDaily() {
         def key = params.key
-        //def idUser = UnsubscribeKey.executeQuery("SELECT user from UnsubscribeKey where unsubscribe_key = :var", [var: key])
-        User idUser = UnsubscribeKey.findByUnsubscribeKey(key).user
-        settingsService.updateSettingsForUser(idUser, [dailyNotifications: false])
+        User user = UnsubscribeKey.findByUnsubscribeKey(key).user
+        settingsService.updateSettingsForUser(user, [dailyNotifications: false])
 
         render(view: '/directory/dailyNotifUnsubscribe')
     }
@@ -42,8 +41,8 @@ class UnsubscribeKeyController {
      */
     def doUnsubscribeMention() {
         def key = params.key
-        User idUser = UnsubscribeKey.findByUnsubscribeKey(key).user
-        settingsService.updateSettingsForUser(idUser, [mentionNotifications: false])
+        User user = UnsubscribeKey.findByUnsubscribeKey(key).user
+        settingsService.updateSettingsForUser(user, [mentionNotifications: false])
 
         render(view: '/directory/mentionNotifUnsubscribe')
     }

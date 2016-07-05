@@ -130,13 +130,17 @@
                                         </g:if>
                                         <g:else>
                                             <g:render template="/notes/edit"
-                                                      model='[note: note, context: context, fragmentTag: note.fragmentTag, update:true]'/>
+                                                      model='[note: note, context: context, fragmentTag: note.fragmentTag, update: true]'/>
                                         </g:else>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </g:if>
+                <g:if test="${note.kind == org.tsaap.notes.NoteKind.QUESTION.ordinal()}">
+                    <g:link><span class="glyphicon glyphicon-arrow-up"></span> ${message(code: "notes.detail.up")} </g:link>
+                    <g:link><span class="glyphicon glyphicon-arrow-down"></span> ${message(code: "notes.detail.down")} </g:link>
                 </g:if>
             </g:if>
             <g:if test="${noteIsBookmarked}">
@@ -161,6 +165,7 @@
                         fragment="note${note.id}"><span
                         class="glyphicon glyphicon-thumbs-up"></span> ${message(code: "notes.detail.learn")}</g:link>
             </g:else>
+
         </small>
     </div>
 

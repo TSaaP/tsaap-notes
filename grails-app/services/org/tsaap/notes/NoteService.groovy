@@ -62,6 +62,9 @@ class NoteService {
                 kind: noteKind.ordinal()
         )
 
+        if (noteKind == NoteKind.QUESTION) {
+            theNote.rank = Note.findByContextAndKind(context, NoteKind.QUESTION.ordinal(), [order: "asc", sort: "rank"]).rank - 1
+        }
         // save the note
         theNote.save()
 

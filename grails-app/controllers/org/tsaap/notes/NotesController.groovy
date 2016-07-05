@@ -226,6 +226,24 @@ class NotesController {
         render(multiplelink)
     }
 
+    def moveQuestionUp() {
+        def question = Note.findById(params.noteId)
+        def previousQuestion = Note.findByKindAndContextAndRankLessThan(NoteKind.QUESTION.ordinal(), question.context, question.rank, [sort: "rank", order: "desc"])
+        def temp = question.rank
+        question.rank = previousQuestion.rank
+        previousQuestion.rank = temp
+        redirect(action: index(), params: params)
+    }
+
+    def moveQuestionDown() {
+        def question = Note.findById(params.noteId)
+        def nextQuestion = Note.findByKindAndContextAndRankGreaterThan(NoteKind.QUESTION.ordinal(), question.context, question.rank, [sort: "rank", order: "asc"])
+        def temp = question.rank
+        question.rank = nextQuestion.rank
+        nextQuestion.rank = temp
+        redirect(action: index(), params: params)
+    }
+
     /**
      * Render the main page given the params and the user
      * @param params the params
@@ -263,7 +281,13 @@ class NotesController {
             displaysAll = true
         }
         params.max = Math.min(params.max as Long ?: 5, 20)
-        def paginationAndSorting = [sort: 'dateCreated', order: 'desc', max: params.max]
+        def paginationAndSorting
+        if (params.kind == 'question') {
+            paginationAndSorting = [sort: 'rank', order: 'asc', max: params.max]
+        } else {
+            paginationAndSorting = [sort: 'dateCreated', order: 'desc', max: params.max]
+        }
+
         if (params.offset) {
             paginationAndSorting.offset = params.offset
         }

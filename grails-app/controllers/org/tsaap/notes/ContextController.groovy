@@ -324,6 +324,7 @@ class ContextController {
             contextService.sendAllUserGradeToLms(params.id)
             flash.message = message(code: 'context.synchronized.sucess.message')
         } catch (Throwable e) {
+            log.error(e.message)
             flash.message = message(code: 'context.synchronized.failure.message')
         }
 

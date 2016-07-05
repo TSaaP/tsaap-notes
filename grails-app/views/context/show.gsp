@@ -160,7 +160,7 @@
                     </g:elseif>
                     <g:if test="${context.hasLinkedLtiActivity()}">
                         <g:link class="btn btn-primary" controller="context" action="syncGrades"
-                                params="[id: context.id]">
+                                id="${context.id}">
                             <span class="glyphicon glyphicon-refresh">
                             <g:message code="default.button.synchronized.label" default="Synchroniser"/>
                         </g:link>

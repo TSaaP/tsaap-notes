@@ -19,6 +19,7 @@ package org.tsaap.notes
 
 import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
+import grails.transaction.NotTransactional
 import grails.transaction.Transactional
 import org.tsaap.directory.User
 import org.tsaap.questions.StatisticsService
@@ -314,6 +315,20 @@ class ContextController {
         }
 
 
+    }
+
+    @NotTransactional
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def syncGrades() {
+        try {
+            contextService.sendAllUserGradeToLms(params.id)
+            flash.message = message(code: 'context.synchronized.sucess.message')
+        } catch (Throwable e) {
+            log.error(e.message)
+            flash.message = message(code: 'context.synchronized.failure.message')
+        }
+
+        redirect(uri: '/scope/show/' + params.id)
     }
 }
 

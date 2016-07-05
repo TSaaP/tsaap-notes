@@ -50,7 +50,7 @@ class LmsContextHelper {
      * @param source lti context source
      */
     def insertContext(Sql sql, String contextName, String description, long owner, Boolean isTeacher, String url, String source, boolean noteTakingEnabled = true) {
-        sql.execute("INSERT INTO context (context_name, date_created, description_as_note, last_updated, owner_id, owner_is_teacher, url, source, note_taking_enabled) VALUES ($contextName,now(),$description,now(),$owner,$isTeacher,$url,$source,$noteTakingEnabled)")
+        sql.execute("INSERT INTO context (context_name, date_created, description_as_note, last_updated, owner_id, owner_is_teacher, url, source, note_taking_enabled, closed, removed) VALUES ($contextName,now(),$description,now(),$owner,$isTeacher,$url,$source,$noteTakingEnabled,0,0)")
     }
 
     /**

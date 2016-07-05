@@ -140,9 +140,9 @@
                     <g:link class="btn btn-primary" action="edit"
                             resource="${context}"><g:message
                             code="default.button.edit.label" default="Edit"/></g:link>
-                        <g:actionSubmit class="btn btn-default" action="delete"
-                                        value="${message(code: 'default.button.delete.label', default: 'Delete')}"
-                                        onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"/>
+                    <g:actionSubmit class="btn btn-default" action="delete"
+                                    value="${message(code: 'default.button.delete.label', default: 'Delete')}"
+                                    onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"/>
                     <g:link class="btn btn-primary" controller="context" action="exportQuestionsAsGift"
                             id="${context.id}" target="_blank">${message(code: 'context.show.export.link')}</g:link>
                     <g:link class="btn btn-primary" controller="context" action="exportQuestionsAsGiftWithFeedbacks"
@@ -158,6 +158,13 @@
                                 params="[id: context.id, show: 1]">${message(code: 'context.index.open.button')}</g:link>
 
                     </g:elseif>
+                    <g:if test="${context.hasLinkedLtiActivity()}">
+                        <g:link class="btn btn-primary" controller="context" action="syncGrades"
+                                id="${context.id}">
+                            <span class="glyphicon glyphicon-refresh">
+                            <g:message code="default.button.synchronized.label" default="Synchroniser"/>
+                        </g:link>
+                    </g:if>
                 </fieldset>
             </g:form>
         </g:if>

@@ -31,7 +31,6 @@ class ResponseNotificationService {
 
     MailService mailService
     DataSource dataSource
-    SessionFactory sessionFactory
     MessageSource messageSource
     UnsubscribeKey key
 
@@ -68,7 +67,7 @@ class ResponseNotificationService {
      * @return a map with the user as key, and information and all notifications about the user as value
      */
     Map findAllMentionsAndResponsesNotifications() {
-        def sql = new Sql(sessionFactory.currentSession.connection())
+        def sql = new Sql(dataSource)
         def req = """
                 SELECT distinct tmention.mention_id as receiver_id, tuser1.first_name, tuser1.email, tsettings.language, tcontext.id as context_id,
                 tcontext.context_name, tnote.fragment_tag_id as tag_id, if((tnote.fragment_tag_id is null),null,ttag.name) tag_name, tuser2.username as author, tnote.content, tkey.unsubscribe_key as ukey

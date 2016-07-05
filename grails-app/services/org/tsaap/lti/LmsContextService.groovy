@@ -19,7 +19,6 @@ package org.tsaap.lti
 
 import groovy.sql.Sql
 
-
 class LmsContextService {
 
     LmsContextHelper lmsContextHelper

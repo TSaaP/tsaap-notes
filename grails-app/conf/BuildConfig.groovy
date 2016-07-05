@@ -85,6 +85,8 @@ grails.project.dependency.resolution = {
 
         compile ":ckeditor:4.5.4.1"
 
+        compile "org.grails.plugins:sanitizer:0.11.0"
+
         compile ":mail:1.0.1"
         compile ":quartz:1.0"
 

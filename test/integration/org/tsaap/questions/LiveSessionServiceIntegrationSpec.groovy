@@ -186,5 +186,18 @@ class LiveSessionServiceIntegrationSpec extends Specification {
 
     }
 
+    void "test the creation of a response with XSS explanation"() {
+        given: "a live session and a user and the first phase started"
+        LiveSession liveSession = liveSessionService.createLiveSessionForNote(user, note)
+        SessionPhase firstPhase = liveSessionService.createAndStartFirstSessionPhaseForLiveSession(user, liveSession)
 
+        and: "a learner"
+        def learner = bootstrapTestService.learnerMary
+
+        when: "trying to create a response for that learner for this session"
+        LiveSessionResponse response = liveSessionService.createResponseForSessionPhaseAndUser(firstPhase, learner, '[["1"]]', "<script>alert('XSS');</script>", 5)
+
+        then: "the response has no or empty explanation"
+        !response.explanation?.content
+    }
 }

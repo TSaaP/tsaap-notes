@@ -17,7 +17,7 @@
 
 <g:set var="idControllSuffix" value="${parentNote ? parentNote.id : 0}${note ? "_" + note.id : ""}"/>
 <div class="panel-body">
-    <g:form method="post" controller="notes" action="${note ? "updateNote" : "addNote"}" enctype="multipart/form-data">
+    <g:form method="post" controller="notes" action="${update ? "updateNote" : "addNote"}" enctype="multipart/form-data">
         <g:if test="${note}">
             <g:hiddenField name="noteId" value="${note.id}"/>
         </g:if>
@@ -31,24 +31,27 @@
         <g:hiddenField name="displaysMyFavorites"
                        id="displaysMyFavoritesInAddForm${idControllSuffix}"/>
         <g:hiddenField name="displaysAll" id="displaysAllInAddForm${idControllSuffix}"/>
-        <textarea class="form-control note-editable-content" rows="3" id="noteContent${idControllSuffix}"
-                  name="noteContent"
-                  maxlength="560">${note ? note.content : parentNote ? '@' + parentNote.author?.username + ' ' : ''}</textarea>
 
-        <div id="attach${idControllSuffix}">
-            <g:set var="attachment"/>
-            <g:if test="${note}">
-                <g:set var="attachment" value="${note.attachment}"/>
-                <g:if test="${attachment != null}">
-                    <tsaap:viewAttachement width="150" height="150" attachement="${attachment}"/>
-                    <g:remoteLink controller="notes" action="removeAttachement"
-                                  params="[noteId: note.id]"
-                                  update="attach${idControllSuffix}">
-                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                    </g:remoteLink>
+        <textarea class="form-control note-editable-content" rows="3" id="noteContent${idControllSuffix}"
+                      name="noteContent"
+                      maxlength="560">${update ? note.content: (parentNote ? '@' + parentNote.author?.username + ' ' : '')}</textarea>
+
+        <g:if test="${update}">
+            <div id="attach${idControllSuffix}">
+                <g:set var="attachment"/>
+                <g:if test="${note}">
+                    <g:set var="attachment" value="${note.attachment}"/>
+                    <g:if test="${attachment != null}">
+                        <tsaap:viewAttachement width="150" height="150" attachement="${attachment}"/>
+                        <g:remoteLink controller="notes" action="removeAttachement"
+                                      params="[noteId: note.id]"
+                                      update="attach${idControllSuffix}">
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        </g:remoteLink>
+                    </g:if>
                 </g:if>
-            </g:if>
-        </div>
+            </div>
+        </g:if>
 
         <div class="row">
             <span class="character_counter pull-left" style="margin-left: 15px"
@@ -68,7 +71,7 @@
                         id="buttonAddNote${idControllSuffix}"
                         disabled><span
                         class="glyphicon glyphicon-plus"></span>
-                    ${note ? message(code: "notes.edit.update.note.button") : message(code: "notes.edit.add.note.button")}
+                    ${update ? message(code: "notes.edit.update.note.button") : message(code: "notes.edit.add.note.button")}
                 </button>
             </div>
         </div>

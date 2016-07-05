@@ -126,11 +126,11 @@
                                     <div class="container note-edition">
                                         <g:if test="${note.kind == org.tsaap.notes.NoteKind.QUESTION.ordinal()}">
                                             <g:render template="/questions/edit"
-                                                      model='[note: note, context: context, fragmentTag: note.fragmentTag]'/>
+                                                      model='[note: note, context: context, fragmentTag: note.fragmentTag, update: true]'/>
                                         </g:if>
                                         <g:else>
                                             <g:render template="/notes/edit"
-                                                      model='[note: note, context: context, fragmentTag: note.fragmentTag]'/>
+                                                      model='[note: note, context: context, fragmentTag: note.fragmentTag, update:true]'/>
                                         </g:else>
                                     </div>
                                 </div>

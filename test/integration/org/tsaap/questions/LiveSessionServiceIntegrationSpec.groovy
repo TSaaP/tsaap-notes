@@ -20,6 +20,8 @@ package org.tsaap.questions
 import org.gcontracts.PreconditionViolation
 import org.tsaap.BootstrapTestService
 import org.tsaap.directory.User
+import org.tsaap.notes.Context
+import org.tsaap.notes.ContextService
 import org.tsaap.notes.Note
 import org.tsaap.notes.NoteKind
 import org.tsaap.notes.NoteService
@@ -31,11 +33,13 @@ class LiveSessionServiceIntegrationSpec extends Specification {
     LiveSessionService liveSessionService
     Note note
     User user
+    ContextService contextService
 
     def setup() {
         bootstrapTestService.initializeTests()
         user = bootstrapTestService.learnerPaul
-        note = noteService.addQuestion(user, "::a question:: What ? {=this ~that}")
+        Context context = contextService.saveContext(new Context(owner: user, contextName: "context"))
+        note = noteService.addQuestion(user, "::a question:: What ? {=this ~that}", context)
     }
 
     void "test the creation of a first phase session"() {

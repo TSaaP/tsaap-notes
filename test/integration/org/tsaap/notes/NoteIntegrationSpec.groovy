@@ -26,6 +26,7 @@ class NoteIntegrationSpec extends Specification {
     BootstrapTestService bootstrapTestService
     NoteService noteService
     LiveSessionService liveSessionService
+    ContextService contextService
 
     def setup() {
         bootstrapTestService.initializeTests()
@@ -40,7 +41,8 @@ class NoteIntegrationSpec extends Specification {
         !note.liveSession
 
         when: "a note is a question but that has no live session"
-        note = noteService.addQuestion(bootstrapTestService.learnerMary, "::a question:: what ? {=this ~that}")
+        Context context = contextService.saveContext(new Context(owner: bootstrapTestService.learnerMary, contextName: "context"))
+        note = noteService.addQuestion(bootstrapTestService.learnerMary, "::a question:: what ? {=this ~that}", context)
 
         then: "no live session found"
         !note.liveSession

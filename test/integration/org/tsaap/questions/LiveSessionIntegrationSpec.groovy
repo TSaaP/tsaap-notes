@@ -19,6 +19,8 @@ package org.tsaap.questions
 
 import org.gcontracts.PreconditionViolation
 import org.tsaap.BootstrapTestService
+import org.tsaap.notes.Context
+import org.tsaap.notes.ContextService
 import org.tsaap.notes.Note
 import org.tsaap.notes.NoteService
 import org.tsaap.questions.impl.gift.GiftQuestionService
@@ -29,10 +31,12 @@ class LiveSessionIntegrationSpec extends Specification {
     NoteService noteService
     LiveSessionService liveSessionService
     Note note
+    ContextService contextService
 
     def setup() {
         bootstrapTestService.initializeTests()
-        note = noteService.addQuestion(bootstrapTestService.learnerPaul, "::a question:: What ? {=this ~that}")
+        Context context = contextService.saveContext(new Context(owner: bootstrapTestService.learnerPaul, contextName: "context"))
+        note = noteService.addQuestion(bootstrapTestService.learnerPaul, "::a question:: What ? {=this ~that}", context)
     }
 
     void "test the creation of a new live session response"() {
@@ -122,7 +126,8 @@ class LiveSessionIntegrationSpec extends Specification {
 
     void "test the construction of the result matrix"() {
         given: "a started live session for a note"
-        def note2 = noteService.addQuestion(bootstrapTestService.teacherJeanne, "::a question:: What ? {~bad1 =good1 ~bad2 ~bad3}")
+        Context context = contextService.saveContext(new Context(owner: bootstrapTestService.teacherJeanne, contextName: "context"))
+        def note2 = noteService.addQuestion(bootstrapTestService.teacherJeanne, "::a question:: What ? {~bad1 =good1 ~bad2 ~bad3}", context)
         LiveSession liveSession = liveSessionService.createLiveSessionForNote(bootstrapTestService.teacherJeanne, note2)
         liveSession.start()
 
@@ -157,7 +162,8 @@ class LiveSessionIntegrationSpec extends Specification {
 
     void "test the construction of the result matrix in a session phase"() {
         given: "a started live session for a note"
-        def note2 = noteService.addQuestion(bootstrapTestService.teacherJeanne, "::a question:: What ? {~bad1 =good1 ~bad2 ~bad3}")
+        Context context = contextService.saveContext(new Context(owner: bootstrapTestService.teacherJeanne, contextName: "context"))
+        def note2 = noteService.addQuestion(bootstrapTestService.teacherJeanne, "::a question:: What ? {~bad1 =good1 ~bad2 ~bad3}", context)
         LiveSession liveSession = liveSessionService.createLiveSessionForNote(bootstrapTestService.teacherJeanne, note2)
         SessionPhase sessionPhase = liveSessionService.createAndStartFirstSessionPhaseForLiveSession(bootstrapTestService.teacherJeanne, liveSession)
 

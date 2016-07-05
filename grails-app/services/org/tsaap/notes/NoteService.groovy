@@ -43,7 +43,9 @@ class NoteService {
      * @return the added note
      */
     @Transactional
-    @Requires({ author && content && (!context || context.isOpen()) && (noteKind == NoteKind.EXPLANATION || parentNote?.noteKind != NoteKind.QUESTION)})
+    @Requires({
+        author && content && (!context || context.isOpen()) && (noteKind == NoteKind.EXPLANATION || parentNote?.noteKind != NoteKind.QUESTION)
+    })
     Note addNote(User author,
                  String content,
                  Context context = null,
@@ -251,6 +253,45 @@ class NoteService {
         query.deleteAll()
         // finally delete notes
         note.delete()
+    }
+
+    /**
+     * Update note content by noteNewContent and throws IsNotStandardNoteException if content is invalid
+     * @param noteId
+     * @param noteNewContent
+     * @return the updated note
+     */
+    @Transactional
+    @Requires({ !author || note.canBeEditedBy(author) })
+    def updateNoteById(Note note, String noteNewContent, User author = null) {
+        if (noteNewContent?.startsWith("::")) {
+            throw new IsNotStandardNoteException("notes.edit.note.error")
+        } else {
+            note.content = noteNewContent
+            note.save()
+        }
+        note
+    }
+
+    /**
+     * Update question content by questionNewContent and throws IsNotQuestionException if content is invalid
+     * @param questionId
+     * @param questionNewContent
+     * @return the updated question
+     */
+    @Transactional
+    @Requires({ !author || question.canBeEditedBy(author) })
+    def updateQuestionById(Note question, String questionNewContent, User author = null) {
+        try {
+            if (giftQuestionService.getQuestionFromGiftText(questionNewContent)) {
+                question.content = questionNewContent
+                question.save()
+            }
+        }
+        catch (Exception e) {
+            throw new IsNotQuestionException("notes.edit.question.error")
+        }
+        question
     }
 
     /**

@@ -611,3 +611,7 @@ a.skip {
     position: absolute;
     left: -9999px;
 }
+
+p {
+    word-wrap: break-word;
+}

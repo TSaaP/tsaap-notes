@@ -19,6 +19,7 @@ package org.tsaap.notes
 
 import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
+import org.gcontracts.annotations.Requires
 import org.tsaap.attachement.AttachementService
 import org.tsaap.directory.User
 import org.tsaap.questions.Question
@@ -70,21 +71,15 @@ class NotesController {
             } else {
                 myNote = noteService.addStandardNote(user, noteContent, context, fragmentTag, parentNote)
             }
+            def file = request.getFile('myFile')
+            if (file && !file.isEmpty()) {
+                attachementService.addFileToNote(file, myNote)
+            }
         } catch (IsNotQuestionException e) {
             params.put("error", "question")
-            renderMainPage(params, user)
-            return
         } catch (IsNotStandardNoteException e) {
             params.put("error", "note")
-            renderMainPage(params, user)
-            return
         }
-
-        def file = request.getFile('myFile')
-        if (file && !file.isEmpty()) {
-            attachementService.addFileToNote(file, myNote)
-        }
-
 
         params.remove('noteContent')
         redirect(action: index(), params: params)
@@ -126,6 +121,48 @@ class NotesController {
         redirect(action: index(), params: params)
     }
 
+    /**
+     * Update the specified note or question and redirect to note or question list
+     * Show errors if any
+     * @return
+     */
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def updateNote() {
+        Note note = Note.findById(params.noteId as Long)
+        try {
+            if (params?.kind == 'question') {
+                noteService.updateQuestionById(note, params.noteContent, note.author)
+            } else {
+                noteService.updateNoteById(note, params.noteContent, note.author)
+            }
+            def file = request.getFile('myFile')
+            if (file && !file.isEmpty()) {
+                attachementService.addFileToNote(file, note)
+            }
+        } catch (IsNotQuestionException e) {
+            params.put("error", "question")
+        } catch (IsNotStandardNoteException e) {
+            params.put("error", "note")
+        }
+        redirect(action: index(), params: params)
+    }
+
+    /**
+     * Remove attachment and put the browse file input instead
+     * @return
+     */
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def removeAttachement() {
+        Note note = Note.findById(params.noteId as Long)
+        if (note.attachment && note.author == springSecurityService.currentUser) {
+            attachementService.detachAttachement(note.attachment)
+        }
+
+        render """<input type="file" name="myFile" title="Image: gif, jpeg and png only"
+       style="margin-top: 5px"/>"""
+    }
+
+
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def showDiscussion() {
         def user = springSecurityService.currentUser
@@ -164,20 +201,19 @@ class NotesController {
      */
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def getQuestionsSamples() {
-
         def content = "${message(code: "notes.edit.sampleQuestion.text")}"
         def single = "${message(code: "notes.edit.sampleQuestion.singleChoice")}"
 
         Question singleChoice = giftQuestionService.getQuestionFromGiftText("${message(code: "notes.edit.sampleQuestion.singleChoiceExemple")}")
 
-        def singlelink = """<a class="sampleLink" id="singleQuestionSample" onClick="sampleLink(0)">${
+        def singlelink = """<a class="sampleLink" id="singleQuestionSample" onClick="sampleLink(0, '${params.questionSample}', '${params.toUpdate}')">${
             message(code: "notes.edit.sampleQuestion.link")
         }</a><br><br>"""
         def multiple = "${message(code: "notes.edit.sampleQuestion.multipleChoice")}"
 
-        Question multipleChoice = giftQuestionService.getQuestionFromGiftText("${message(code: "notes.edit.sampleQuestion.multipleChoiceExemple")}")
+        Question multipleChoice = giftQuestionService.getQuestionFromGiftText("${message(code: "notes.edit.sampleQuestion.multipleChoiceExemple")}'")
 
-        def multiplelink = """<a class="sampleLink" id="singleQuestionSample" onClick="sampleLink(1)">${
+        def multiplelink = """<a class="sampleLink" id="multipleQuestionSample" onClick="sampleLink(1, '${params.questionSample}', '${params.toUpdate}')">${
             message(code: "notes.edit.sampleQuestion.link")
         }</a>"""
 
@@ -188,7 +224,6 @@ class NotesController {
         render(multiple)
         render(template: '/questions/preview/detail', model: [question: multipleChoice])
         render(multiplelink)
-
     }
 
     /**

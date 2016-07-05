@@ -20,7 +20,7 @@
     <g:render template="detail"
               model="[note: note.parentNote, context: context, displaysMyNotes: displaysMyNotes, displaysMyFavorites: displaysMyFavorites, displaysAll: displaysAll, noteClassParent: 'note-parent-note', showDiscussionNote: showDiscussionNote, kind: kind]"/>
 </g:if>
-<li class="list-group-item ${noteClassParent}" style="padding-bottom: 20px">
+<li class="list-group-item ${noteClassParent}" style="padding-bottom: 20px" xmlns="http://www.w3.org/1999/html">
     <g:set var="noteIsBookmarked" value="${note.isBookmarkedByUser(user)}"/>
     <g:set var="noteIsScored" value="${note.isScoredByUser(user)}"/>
     <g:set var="displayListParams"
@@ -109,6 +109,35 @@
                 <g:link controller="notes" action="deleteNote"
                         params="${[noteId: note.id] + displayListParamsWithPagination}"><span
                         class="glyphicon glyphicon-trash"></span> ${message(code: "notes.detail.delete")}</g:link>
+                <g:if test="${(context.noteTakingEnabled || note.kind == org.tsaap.notes.NoteKind.QUESTION.ordinal()) && context.isOpen() && !note.liveSession}">
+                    <g:link data-toggle="modal" data-target="#modalNote${note.id}">
+                        <span class="glyphicon glyphicon-pencil"></span> ${message(code: "notes.detail.edit")}
+                    </g:link>
+                    <div class="modal fade" id="modalNote${note.id}" role="dialog" aria-labelledby="exampleModalLabel">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                            aria-hidden="true">&times;</span></button>
+                                </div>
+
+                                <div class="modal-body">
+
+                                    <div class="container note-edition">
+                                        <g:if test="${note.kind == org.tsaap.notes.NoteKind.QUESTION.ordinal()}">
+                                            <g:render template="/questions/edit"
+                                                      model='[note: note, context: context, fragmentTag: note.fragmentTag, update: true]'/>
+                                        </g:if>
+                                        <g:else>
+                                            <g:render template="/notes/edit"
+                                                      model='[note: note, context: context, fragmentTag: note.fragmentTag, update:true]'/>
+                                        </g:else>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </g:if>
             </g:if>
             <g:if test="${noteIsBookmarked}">
                 <g:link style="color: orange" controller="notes" action="unbookmarkNote"
@@ -149,8 +178,8 @@
 
     <g:if test="${context.noteTakingEnabled && context.isOpen() && !note.isAQuestion()}">
         <div id="replyEdition${note.id}" style="display:none; padding-top:20px">
-        <g:render template="edit"
-                  model="[context: context, parentNote: note]"/>
+            <g:render template="/notes/edit"
+                      model="[context: context, parentNote: note]"/>
         </div>
     </g:if>
 </li>

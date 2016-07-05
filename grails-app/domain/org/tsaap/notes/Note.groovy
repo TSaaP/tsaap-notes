@@ -246,6 +246,20 @@ class Note {
     int evaluationCount() {
         NoteGrade.countByNote(this)
     }
+
+    /**
+     * Indicate if the note can be edited by user
+     * The note can be a standard note, a question or an explanation
+     * @param user the user asking for edition
+     * @return true if it can be edited, false otherwise
+     */
+    boolean canBeEditedBy(User user) {
+        (!context.isClosed()
+                && user == author
+                && kind != NoteKind.EXPLANATION.ordinal() // explanations can't be edited
+                && kind != NoteKind.STANDARD.ordinal() || context.noteTakingEnabled // note -> noteTaking enabled
+                && !isAQuestion() || !liveSession) // question -> not started
+    }
 }
 
 enum NoteKind {

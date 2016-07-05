@@ -39,6 +39,8 @@ class Note {
 
     Integer kind = NoteKind.STANDARD.ordinal()
 
+    Integer rank
+
     GiftQuestionService giftQuestionService
     Question question
     LiveSession liveSession
@@ -51,6 +53,7 @@ class Note {
         parentNote nullable: true
         bookmarks nullable: true
         grade nullable: true
+        rank nullable: true
     }
 
     static mapping = {

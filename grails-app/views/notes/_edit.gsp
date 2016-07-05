@@ -69,8 +69,7 @@
                 <button type="submit"
                         class="btn btn-primary btn-xs"
                         id="buttonAddNote${idControllSuffix}"
-                        disabled><span
-                        class="glyphicon glyphicon-plus"></span>
+                        disabled>
                     ${update ? message(code: "notes.edit.update.note.button") : message(code: "notes.edit.add.note.button")}
                 </button>
             </div>

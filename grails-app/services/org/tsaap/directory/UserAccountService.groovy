@@ -115,15 +115,4 @@ class UserAccountService {
         user
     }
 
-    /**
-     *
-     * @param newPassword the new password
-     * @param user the user
-     * @return the processed user
-     */
-    User updatePasswordForUser(String newPassword, User user) {
-        user.password = newPassword
-        user.save()
-        user
-    }
 }

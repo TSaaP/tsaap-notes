@@ -152,4 +152,20 @@ class UserAccountServiceIntegrationSpec extends Specification {
         res2 == false
     }
 
+    def "enable user with his activationKey"() {
+        when:"create a new user"
+        User user = userAccountService.addUser(new User(firstName: "moghite", lastName: "kacimi", username: "akac", password: "password", email: "akac@nomail.com", language: 'fr'), RoleEnum.STUDENT_ROLE.role, false, 'fr', true)
+
+        then:"the count of the new user is disabled"
+        user.enabled == false
+
+        when:"call function to enable this user account"
+        ActivationKey actKey = ActivationKey.findByUser(user)
+        actKey.user == user
+        userAccountService.enableUserWithActivationKey(user, actKey)
+
+        then:"the account of the user is enabled now"
+        user.enabled == true
+    }
+
 }

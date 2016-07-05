@@ -58,10 +58,10 @@
             <g:hiddenField name="phaseId" value="${sessionPhase.id}"/>
             <g:each in="${responsesToEvaluate}" var="responseToEval" status="i">
                 <g:hiddenField name="explanationIds[${i}]" value="${responseToEval?.explanation?.id}"/>
-                <p class="alert alert-info">
-                    ${responseToEval?.explanation?.content} <g:select name="grades[${i}]" from="[1, 2, 3, 4, 5]"
+                <div class="alert alert-info">
+                    ${raw(responseToEval?.explanation?.content)} <g:select name="grades[${i}]" from="[1, 2, 3, 4, 5]"
                                                                       style="display: block;"/>
-                </p>
+                </div>
             </g:each>
             <g:submitToRemote action="evaluateResponses" controller="question" update="question_${note.id}"
                               class="btn btn-primary btn-xs" value="${message(code: "questions.user.submit")}"

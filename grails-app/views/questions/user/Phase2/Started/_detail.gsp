@@ -45,7 +45,7 @@
                         </g:each>
                     </g:each>
 
-                <p>${altResponse?.explanation?.content}</p>
+                ${raw(altResponse?.explanation?.content)}
             </div>
             <hr/>
         </g:if>
@@ -70,13 +70,14 @@
                 </p>
             </g:each>
             <p>${message(code: "questions.explanation")}</p>
-            <g:textArea class="form-control note-editable-content" rows="3" name="explanation"
-                        value="${firstResponse?.explanation?.content}"/>
+            <ckeditor:editor name="explanation" toolbar="Basic" id="explanation">${firstResponse?.explanation?.content}</ckeditor:editor>
+
             <p>${message(code: "questions.confidenceDegree")} <g:select name="confidenceDegree" from="[1, 2, 3, 4, 5]"
                                                                         value="${firstResponse?.confidenceDegree}"/></p>
             <g:submitToRemote action="submitResponseInAPhase" controller="question" update="question_${note.id}"
                               class="btn btn-primary btn-xs" value="${message(code: "questions.user.submit")}"
-                              onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"/>
+                              onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"
+                              before="document.getElementById('explanation').textContent = CKEDITOR.instances.explanation.getData()"/>
         </g:form>
     </g:else>
 </div>

@@ -1,3 +1,5 @@
+import org.gualdi.grails.plugins.ckeditor.Ckeditor
+
 /*
  * Copyright (C) 2013-2016 Université Toulouse 3 Paul Sabatier
  *
@@ -179,3 +181,5 @@ environments {
         tsaap.auth.check_user_email = true
     }
 }
+
+ckeditor.config = '/ckeditor/config.js'

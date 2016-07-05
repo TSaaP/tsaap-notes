@@ -27,6 +27,7 @@
     <link rel="shortcut icon" href="${resource(dir: 'images', file: 'favicon.ico')}" type="image/x-icon">
     <title><g:layoutTitle default="TsaaP-Notes"/></title>
     <r:layoutResources/>
+    <ckeditor:resources/>
     <script type="text/javascript"
             src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     </script>

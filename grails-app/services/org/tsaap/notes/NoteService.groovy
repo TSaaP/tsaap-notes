@@ -63,7 +63,8 @@ class NoteService {
         )
 
         if (noteKind == NoteKind.QUESTION) {
-            theNote.rank = Note.findByContextAndKind(context, NoteKind.QUESTION.ordinal(), [order: "asc", sort: "rank"]).rank - 1
+            def temp = Note.findByContextAndKind(context, NoteKind.QUESTION.ordinal(), [order: "asc", sort: "rank"])
+            theNote.rank = (temp ? temp.rank : 1) - 1
         }
         // save the note
         theNote.save()

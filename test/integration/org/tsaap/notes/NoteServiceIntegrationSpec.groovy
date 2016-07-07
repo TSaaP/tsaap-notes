@@ -351,25 +351,25 @@ class NoteServiceIntegrationSpec extends Specification {
         Note question1 = noteService.addQuestion(bootstrapTestService.learnerMary, "::a question:: what ? {=true~false}", context)
         Note question2 = noteService.addQuestion(bootstrapTestService.learnerMary, "::a question:: what ? {=true~false}", context)
 
-        and:"want to find the previous of the question1 by rank"
-        def questionPrevious = noteService.findQuestionPrevious(question1)
+        and:"want to find the previous of the question2 by rank"
+        def questionPrevious = noteService.findQuestionPrevious(question2)
 
-        then:"the previous of the question1 must be question2"
-        questionPrevious == question2
+        then:"the previous of the question2 must be question1"
+        questionPrevious == question1
 
-        when:"want to find the next of the question2 by rank"
-        def questionNext = noteService.findQuestionNext(question2)
+        when:"want to find the next of the question1 by rank"
+        def questionNext = noteService.findQuestionNext(question1)
 
-        then:"the next of the question2 must be question1"
-        questionNext == question1
+        then:"the next of the question1 must be question2"
+        questionNext == question2
 
         when:"exchange rank of questions"
-        question1.swapQuestion(question2)
-        questionPrevious = noteService.findQuestionPrevious(question2)
-        questionNext = noteService.findQuestionNext(question1)
+        question2.swapQuestion(question1)
+        questionPrevious = noteService.findQuestionPrevious(question1)
+        questionNext = noteService.findQuestionNext(question2)
 
         then:"test the previous and next for question1 and question2"
-        questionPrevious == question1
-        questionNext == question2
+        questionPrevious == question2
+        questionNext == question1
     }
 }

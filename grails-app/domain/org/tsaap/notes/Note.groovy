@@ -266,6 +266,17 @@ class Note {
                 && kind != NoteKind.STANDARD.ordinal() || context.noteTakingEnabled // note -> noteTaking enabled
                 && !isAQuestion() || !liveSession) // question -> not started
     }
+
+    /**
+     * Exchange rank of 2 questions
+     * @param question to change rank with
+     * @return
+     */
+    def swapQuestion(Note question) {
+        def temp = this.rank
+        this.rank = question.rank
+        question.rank = temp
+    }
 }
 
 enum NoteKind {

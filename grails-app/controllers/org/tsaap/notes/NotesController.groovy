@@ -231,19 +231,15 @@ class NotesController {
 
     def moveQuestionUp() {
         def question = Note.findById(params.noteId)
-        def previousQuestion = Note.findByKindAndContextAndRankLessThan(NoteKind.QUESTION.ordinal(), question.context, question.rank, [sort: "rank", order: "desc"])
-        def temp = question.rank
-        question.rank = previousQuestion.rank
-        previousQuestion.rank = temp
+        def previousQuestion = noteService.findQuestionPrevious(question)
+        question.swapQuestion(previousQuestion)
         redirect(action: index(), params: params)
     }
 
     def moveQuestionDown() {
         def question = Note.findById(params.noteId)
-        def nextQuestion = Note.findByKindAndContextAndRankGreaterThan(NoteKind.QUESTION.ordinal(), question.context, question.rank, [sort: "rank", order: "asc"])
-        def temp = question.rank
-        question.rank = nextQuestion.rank
-        nextQuestion.rank = temp
+        def nextQuestion = noteService.findQuestionNext(question)
+        question.swapQuestion(nextQuestion)
         redirect(action: index(), params: params)
     }
 

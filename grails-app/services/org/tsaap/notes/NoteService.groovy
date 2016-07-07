@@ -485,6 +485,26 @@ class NoteService {
             it.isAQuestion()
         }
     }
+
+    /**
+     * Find the next question
+     * @param question to find next
+     * @return next question
+     */
+    Note findQuestionNext(Note question) {
+        Note nextQuestion = Note.findByKindAndContextAndRankGreaterThan(NoteKind.QUESTION.ordinal(), question.context, question.rank, [sort: "rank", order: "asc"])
+        nextQuestion
+    }
+
+    /**
+     * Find the previous question
+     * @param question to find previous
+     * @return previous question
+     */
+    Note findQuestionPrevious(Note question) {
+        Note previousQuestion = Note.findByKindAndContextAndRankLessThan(NoteKind.QUESTION.ordinal(), question.context, question.rank, [sort: "rank", order: "desc"])
+        previousQuestion
+    }
 }
 
 /**

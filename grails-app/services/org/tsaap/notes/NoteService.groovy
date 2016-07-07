@@ -62,10 +62,12 @@ class NoteService {
                 kind: noteKind.ordinal()
         )
 
+        // add the question at the end of the context
         if (noteKind == NoteKind.QUESTION) {
-            def temp = Note.findByContextAndKind(context, NoteKind.QUESTION.ordinal(), [order: "asc", sort: "rank"])
-            theNote.rank = (temp ? temp.rank : 1) - 1
+            def temp = Note.findByContextAndKind(context, NoteKind.QUESTION.ordinal(), [order: "desc", sort: "rank"])
+            theNote.rank = temp ? temp.rank + 1 : 0
         }
+
         // save the note
         theNote.save()
 
@@ -106,7 +108,7 @@ class NoteService {
      * @return the added question
      */
     @Transactional
-    @Requires({ author && content && ( author == context.owner) })
+    @Requires({ author && content && (author == context.owner) })
     Note addQuestion(User author,
                      String content,
                      Context context = null,

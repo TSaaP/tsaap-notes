@@ -139,8 +139,16 @@
                     </div>
                 </g:if>
                 <g:if test="${note.kind == org.tsaap.notes.NoteKind.QUESTION.ordinal()}">
-                    <g:link controller="notes" action="moveQuestionUp" params="${[noteId : note.id]+ displayListParamsWithPagination}"><span class="glyphicon glyphicon-arrow-up"></span> ${message(code: "notes.detail.up")} </g:link>
-                    <g:link controller="notes" action="moveQuestionDown" params="${[noteId : note.id]+ displayListParamsWithPagination}"><span class="glyphicon glyphicon-arrow-down"></span> ${message(code: "notes.detail.down")} </g:link>
+                    <g:if test="${!note.isFirstQuestionInContext}">
+                        <g:link controller="notes" action="moveQuestionUp"
+                                params="${[noteId: note.id] + displayListParamsWithPagination}"><span
+                                class="glyphicon glyphicon-arrow-up"></span> ${message(code: "notes.detail.up")}</g:link>
+                    </g:if>
+                    <g:if test="${!note.isLastQuestionInContext}">
+                        <g:link controller="notes" action="moveQuestionDown"
+                                params="${[noteId: note.id] + displayListParamsWithPagination}"><span
+                                class="glyphicon glyphicon-arrow-down"></span> ${message(code: "notes.detail.down")}</g:link>
+                    </g:if>
                 </g:if>
             </g:if>
             <g:if test="${noteIsBookmarked}">

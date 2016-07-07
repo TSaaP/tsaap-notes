@@ -45,6 +45,9 @@ class Note {
     Question question
     LiveSession liveSession
 
+    Boolean isFirstQuestionInContext
+    Boolean isLastQuestionInContext
+
     static hasMany = [bookmarks: Bookmark]
 
     static constraints = {
@@ -60,7 +63,7 @@ class Note {
         version false
     }
 
-    static transients = ['noteUrl', 'question', 'giftQuestionService', 'liveSession', 'activeLiveSession', 'attachment', 'noteKind']
+    static transients = ['noteUrl', 'question', 'giftQuestionService', 'liveSession', 'activeLiveSession', 'attachment', 'noteKind', 'isFirstQuestionInContext', 'isLastQuestionInContext']
 
     private static final String QUESTION_DEFAULT_TITLE = "Question"
     private static final String QUESTION_INVALID_DEFAULT_TITLE = "question.format.error"

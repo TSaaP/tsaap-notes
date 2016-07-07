@@ -321,11 +321,13 @@ class NotesController {
 
         /* Set isFirstQuestionInContext or isLastQuestionInContext flag on questions to know if we can't move them up or down */
         if (kindParams == 'question') {
-            if (!paginationAndSorting.offset || paginationAndSorting.offset.toLong() == 0) {
-                notes.list.first().isFirstQuestionInContext = true
-            }
-            if (paginationAndSorting?.offset?.toLong() >= notes.totalCount - paginationAndSorting.max) {
-                notes.list.last().isLastQuestionInContext = true
+            if (notes.totalCount > 0) {
+                if (!paginationAndSorting.offset || paginationAndSorting.offset.toLong() == 0) {
+                    notes.list.first().isFirstQuestionInContext = true
+                }
+                if (paginationAndSorting?.offset?.toLong() >= notes.totalCount - paginationAndSorting.max) {
+                    notes.list.last().isLastQuestionInContext = true
+                }
             }
         }
 

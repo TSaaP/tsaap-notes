@@ -343,4 +343,33 @@ class NoteServiceIntegrationSpec extends Specification {
         res.contains(note2)
         count == 2
     }
+
+    def "test next and previous of question"() {
+
+        when:"Add 2 questions in the same context"
+        Context context = contextService.saveContext(new Context(owner: bootstrapTestService.learnerMary, contextName: "context"))
+        Note question1 = noteService.addQuestion(bootstrapTestService.learnerMary, "::a question:: what ? {=true~false}", context)
+        Note question2 = noteService.addQuestion(bootstrapTestService.learnerMary, "::a question:: what ? {=true~false}", context)
+
+        and:"want to find the previous of the question1 by rank"
+        def questionPrevious = noteService.findQuestionPrevious(question1)
+
+        then:"the previous of the question1 must be question2"
+        questionPrevious == question2
+
+        when:"want to find the next of the question2 by rank"
+        def questionNext = noteService.findQuestionNext(question2)
+
+        then:"the next of the question2 must be question1"
+        questionNext == question1
+
+        when:"exchange rank of questions"
+        question1.swapQuestion(question2)
+        questionPrevious = noteService.findQuestionPrevious(question2)
+        questionNext = noteService.findQuestionNext(question1)
+
+        then:"test the previous and next for question1 and question2"
+        questionPrevious == question1
+        questionNext == question2
+    }
 }

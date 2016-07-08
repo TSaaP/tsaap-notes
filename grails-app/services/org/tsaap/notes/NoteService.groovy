@@ -62,6 +62,12 @@ class NoteService {
                 kind: noteKind.ordinal()
         )
 
+        // add the question at the end of the context
+        if (noteKind == NoteKind.QUESTION) {
+            def temp = Note.findByContextAndKind(context, NoteKind.QUESTION.ordinal(), [order: "desc", sort: "rank"])
+            theNote.rank = temp ? temp.rank + 1 : 0
+        }
+
         // save the note
         theNote.save()
 
@@ -102,7 +108,7 @@ class NoteService {
      * @return the added question
      */
     @Transactional
-    @Requires({ author && content && ( author == context.owner) })
+    @Requires({ author && content && (author == context.owner) })
     Note addQuestion(User author,
                      String content,
                      Context context = null,
@@ -480,6 +486,26 @@ class NoteService {
         Note.findAllByContext(context).findAll {
             it.isAQuestion()
         }
+    }
+
+    /**
+     * Find the next question
+     * @param question to find next
+     * @return next question
+     */
+    Note findQuestionNext(Note question) {
+        Note nextQuestion = Note.findByKindAndContextAndRankGreaterThan(NoteKind.QUESTION.ordinal(), question.context, question.rank, [sort: "rank", order: "asc"])
+        nextQuestion
+    }
+
+    /**
+     * Find the previous question
+     * @param question to find previous
+     * @return previous question
+     */
+    Note findQuestionPrevious(Note question) {
+        Note previousQuestion = Note.findByKindAndContextAndRankLessThan(NoteKind.QUESTION.ordinal(), question.context, question.rank, [sort: "rank", order: "desc"])
+        previousQuestion
     }
 }
 

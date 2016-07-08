@@ -19,7 +19,6 @@ package org.tsaap.notes
 
 import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
-import org.gcontracts.annotations.Requires
 import org.tsaap.attachement.AttachementService
 import org.tsaap.directory.User
 import org.tsaap.questions.Question
@@ -206,14 +205,18 @@ class NotesController {
 
         Question singleChoice = giftQuestionService.getQuestionFromGiftText("${message(code: "notes.edit.sampleQuestion.singleChoiceExemple")}")
 
-        def singlelink = """<a class="sampleLink" id="singleQuestionSample" onClick="sampleLink(0, '${params.questionSample}', '${params.toUpdate}')">${
+        def singlelink = """<a class="sampleLink" id="singleQuestionSample" onClick="sampleLink(0, '${
+            params.questionSample
+        }', '${params.toUpdate}')">${
             message(code: "notes.edit.sampleQuestion.link")
         }</a><br><br>"""
         def multiple = "${message(code: "notes.edit.sampleQuestion.multipleChoice")}"
 
         Question multipleChoice = giftQuestionService.getQuestionFromGiftText("${message(code: "notes.edit.sampleQuestion.multipleChoiceExemple")}'")
 
-        def multiplelink = """<a class="sampleLink" id="multipleQuestionSample" onClick="sampleLink(1, '${params.questionSample}', '${params.toUpdate}')">${
+        def multiplelink = """<a class="sampleLink" id="multipleQuestionSample" onClick="sampleLink(1, '${
+            params.questionSample
+        }', '${params.toUpdate}')">${
             message(code: "notes.edit.sampleQuestion.link")
         }</a>"""
 
@@ -224,6 +227,20 @@ class NotesController {
         render(multiple)
         render(template: '/questions/preview/detail', model: [question: multipleChoice])
         render(multiplelink)
+    }
+
+    def moveQuestionUp() {
+        def question = Note.findById(params.noteId)
+        def previousQuestion = noteService.findQuestionPrevious(question)
+        question.swapQuestion(previousQuestion)
+        redirect(action: index(), params: params)
+    }
+
+    def moveQuestionDown() {
+        def question = Note.findById(params.noteId)
+        def nextQuestion = noteService.findQuestionNext(question)
+        question.swapQuestion(nextQuestion)
+        redirect(action: index(), params: params)
     }
 
     /**
@@ -262,11 +279,18 @@ class NotesController {
         if (params.displaysAll == 'on') {
             displaysAll = true
         }
-        params.max = Math.min(params.max as Long ?: 5, 20)
-        def paginationAndSorting = [sort: 'dateCreated', order: 'desc', max: params.max]
-        if (params.offset) {
-            paginationAndSorting.offset = params.offset
+
+        def paginationAndSorting
+        if (params.kind == 'question') {
+            paginationAndSorting = [sort: 'rank', order: 'asc']
+        } else {
+            params.max = Math.min(params.max as Long ?: 5, 20)
+            paginationAndSorting = [sort: 'dateCreated', order: 'desc', max: params.max]
+            if (params.offset) {
+                paginationAndSorting.offset = params.offset
+            }
         }
+
         def kindParams = params.kind
         def inlineParams = params.inline
         def notes = noteService.findAllNotes(user,
@@ -279,11 +303,11 @@ class NotesController {
                 kindParams,
                 inlineParams)
 
-        def kind
-        if (kindParams == 'standard') {
-            kind = NoteKind.QUESTION
+        def otherKind
+        if (kindParams == 'question') {
+            otherKind = 'standard'
         } else {
-            kind = NoteKind.STANDARD
+            otherKind = 'question'
         }
 
         def countTotal
@@ -293,8 +317,26 @@ class NotesController {
                 displaysAll,
                 context,
                 fragmentTag,
-                kind.toString().toLowerCase()
+                otherKind
         )
+
+        /* Set isFirstQuestionInContext or isLastQuestionInContext flag on questions to know if we can't move them up or down */
+        if (kindParams == 'question') {
+            if (notes.totalCount > 0) {
+                /*
+                If we use pagination for questions again we can use this code
+                if (!paginationAndSorting.offset || paginationAndSorting.offset.toLong() == 0) {
+                    notes.list.first().isFirstQuestionInContext = true
+                }
+                if (paginationAndSorting?.offset?.toLong() >= notes.totalCount - paginationAndSorting.max) {
+                    notes.list.last().isLastQuestionInContext = true
+                }
+                */
+                notes.list.first().isFirstQuestionInContext = true
+                notes.list.last().isLastQuestionInContext = true
+            }
+        }
+
 
         render view: '/notes/index', model: [user          : user,
                                              notes         : notes,

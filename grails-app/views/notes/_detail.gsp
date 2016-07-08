@@ -50,13 +50,72 @@
             </span>
             </g:if>
         </g:if>
-        <small class="pull-right"><g:formatDate date="${note.dateCreated}"
-                                                type="datetime" style="LONG"
-                                                timeStyle="SHORT"/></small>
+        <small><g:formatDate date="${note.dateCreated}"
+                             type="datetime" style="LONG"
+                             timeStyle="SHORT"/></small>
         <g:if test="${noteIsBookmarked}"><span
-                class="pull-right glyphicon glyphicon-star"
+                class="glyphicon glyphicon-star"
                 style="color: orange; padding-right: 5px;"></span></g:if>
 
+        <g:set var="displayListParamsWithPagination"
+               value="${[contextId: params.contextId, fragmentTagId: params.fragmentTagId, fragmentTagName: params.fragmentTagName, max: params.max ?: 7, offset: params.offset ?: 0] + displayListParams}"/>
+        <span class="pull-right">
+            <g:if test="${user == note.author || user == note?.context?.owner}">
+                <g:link onclick="return confirm('${message(code: "notes.detail.delete.confirmation")}');"
+                        controller="notes" action="deleteNote"
+                        params="${[noteId: note.id] + displayListParamsWithPagination}"><span
+                        class="glyphicon glyphicon-trash" data-toggle="tooltip"
+                        title="${message(code: "notes.detail.delete")}"
+                        data-placement="bottom"></span></g:link>
+                <g:if test="${(context.noteTakingEnabled || note.kind == org.tsaap.notes.NoteKind.QUESTION.ordinal()) && context.isOpen() && !note.liveSession}">
+                    <g:link data-toggle="modal" data-target="#modalNote${note.id}">
+                        <span class="glyphicon glyphicon-pencil" data-toggle="tooltip"
+                              title="${message(code: "notes.detail.edit")}"
+                              data-placement="bottom"></span>
+                    </g:link>
+                    <div class="modal fade" id="modalNote${note.id}" role="dialog" aria-labelledby="exampleModalLabel">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                            aria-hidden="true">&times;</span></button>
+                                </div>
+
+                                <div class="modal-body">
+
+                                    <div class="container note-edition">
+                                        <g:if test="${note.kind == org.tsaap.notes.NoteKind.QUESTION.ordinal()}">
+                                            <g:render template="/questions/edit"
+                                                      model='[note: note, context: context, fragmentTag: note.fragmentTag, update: true]'/>
+                                        </g:if>
+                                        <g:else>
+                                            <g:render template="/notes/edit"
+                                                      model='[note: note, context: context, fragmentTag: note.fragmentTag, update: true]'/>
+                                        </g:else>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </g:if>
+                <g:if test="${note.kind == org.tsaap.notes.NoteKind.QUESTION.ordinal()}">
+                    <g:if test="${!note.isFirstQuestionInContext}">
+                        <g:link controller="notes" action="moveQuestionUp"
+                                params="${[noteId: note.id] + displayListParamsWithPagination}"><span
+                                class="glyphicon glyphicon-arrow-up" data-toggle="tooltip"
+                                title="${message(code: "notes.detail.up")}"
+                                data-placement="bottom"></span></g:link>
+                    </g:if>
+                    <g:if test="${!note.isLastQuestionInContext}">
+                        <g:link controller="notes" action="moveQuestionDown"
+                                params="${[noteId: note.id] + displayListParamsWithPagination}"><span
+                                class="glyphicon glyphicon-arrow-down" data-toggle="tooltip"
+                                title="${message(code: "notes.detail.down")}"
+                                data-placement="bottom"></span></g:link>
+                    </g:if>
+                </g:if>
+            </g:if>
+        </span>
     </h6>
     <g:set var="attachment" value="${note.attachment}"/>
     <g:if test="${attachment != null}">
@@ -82,8 +141,6 @@
         <p id="content${note.id}" class="note-content">${note.content}</p>
     </g:else>
     <div id="noteActions" class="pull-right note-actions">
-        <g:set var="displayListParamsWithPagination"
-               value="${[contextId: params.contextId, fragmentTagId: params.fragmentTagId, fragmentTagName: params.fragmentTagName, max: params.max ?: 7, offset: params.offset ?: 0] + displayListParams}"/>
         <small>
             <g:if test="${note.hasParent() && !noteClassParent && !showDiscussionNote}">
                 <g:link controller="notes" action="showDiscussion"
@@ -103,41 +160,6 @@
                 <a href="#note${note.id}" id="replyLink${note.id}"
                    onclick="displaysReplyField(${note.id})"><span
                         class="glyphicon glyphicon-share"></span> ${message(code: "notes.detail.reply")}</a>
-            </g:if>
-
-            <g:if test="${user == note.author || user == note?.context?.owner}">
-                <g:link controller="notes" action="deleteNote"
-                        params="${[noteId: note.id] + displayListParamsWithPagination}"><span
-                        class="glyphicon glyphicon-trash"></span> ${message(code: "notes.detail.delete")}</g:link>
-                <g:if test="${(context.noteTakingEnabled || note.kind == org.tsaap.notes.NoteKind.QUESTION.ordinal()) && context.isOpen() && !note.liveSession}">
-                    <g:link data-toggle="modal" data-target="#modalNote${note.id}">
-                        <span class="glyphicon glyphicon-pencil"></span> ${message(code: "notes.detail.edit")}
-                    </g:link>
-                    <div class="modal fade" id="modalNote${note.id}" role="dialog" aria-labelledby="exampleModalLabel">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                            aria-hidden="true">&times;</span></button>
-                                </div>
-
-                                <div class="modal-body">
-
-                                    <div class="container note-edition">
-                                        <g:if test="${note.kind == org.tsaap.notes.NoteKind.QUESTION.ordinal()}">
-                                            <g:render template="/questions/edit"
-                                                      model='[note: note, context: context, fragmentTag: note.fragmentTag, update: true]'/>
-                                        </g:if>
-                                        <g:else>
-                                            <g:render template="/notes/edit"
-                                                      model='[note: note, context: context, fragmentTag: note.fragmentTag, update:true]'/>
-                                        </g:else>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </g:if>
             </g:if>
             <g:if test="${noteIsBookmarked}">
                 <g:link style="color: orange" controller="notes" action="unbookmarkNote"
@@ -161,6 +183,7 @@
                         fragment="note${note.id}"><span
                         class="glyphicon glyphicon-thumbs-up"></span> ${message(code: "notes.detail.learn")}</g:link>
             </g:else>
+
         </small>
     </div>
 

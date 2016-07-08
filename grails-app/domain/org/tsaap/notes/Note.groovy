@@ -39,9 +39,14 @@ class Note {
 
     Integer kind = NoteKind.STANDARD.ordinal()
 
+    Integer rank
+
     GiftQuestionService giftQuestionService
     Question question
     LiveSession liveSession
+
+    Boolean isFirstQuestionInContext
+    Boolean isLastQuestionInContext
 
     static hasMany = [bookmarks: Bookmark]
 
@@ -51,13 +56,14 @@ class Note {
         parentNote nullable: true
         bookmarks nullable: true
         grade nullable: true
+        rank nullable: true
     }
 
     static mapping = {
         version false
     }
 
-    static transients = ['noteUrl', 'question', 'giftQuestionService', 'liveSession', 'activeLiveSession', 'attachment', 'noteKind']
+    static transients = ['noteUrl', 'question', 'giftQuestionService', 'liveSession', 'activeLiveSession', 'attachment', 'noteKind', 'isFirstQuestionInContext', 'isLastQuestionInContext']
 
     private static final String QUESTION_DEFAULT_TITLE = "Question"
     private static final String QUESTION_INVALID_DEFAULT_TITLE = "question.format.error"
@@ -259,6 +265,17 @@ class Note {
                 && kind != NoteKind.EXPLANATION.ordinal() // explanations can't be edited
                 && kind != NoteKind.STANDARD.ordinal() || context.noteTakingEnabled // note -> noteTaking enabled
                 && !isAQuestion() || !liveSession) // question -> not started
+    }
+
+    /**
+     * Exchange rank of 2 questions
+     * @param question to change rank with
+     * @return
+     */
+    def swapQuestion(Note question) {
+        def temp = this.rank
+        this.rank = question.rank
+        question.rank = temp
     }
 }
 

@@ -279,17 +279,18 @@ class NotesController {
         if (params.displaysAll == 'on') {
             displaysAll = true
         }
-        params.max = Math.min(params.max as Long ?: 5, 20)
+
         def paginationAndSorting
         if (params.kind == 'question') {
-            paginationAndSorting = [sort: 'rank', order: 'asc', max: params.max]
+            paginationAndSorting = [sort: 'rank', order: 'asc']
         } else {
+            params.max = Math.min(params.max as Long ?: 5, 20)
             paginationAndSorting = [sort: 'dateCreated', order: 'desc', max: params.max]
+            if (params.offset) {
+                paginationAndSorting.offset = params.offset
+            }
         }
 
-        if (params.offset) {
-            paginationAndSorting.offset = params.offset
-        }
         def kindParams = params.kind
         def inlineParams = params.inline
         def notes = noteService.findAllNotes(user,
@@ -322,12 +323,17 @@ class NotesController {
         /* Set isFirstQuestionInContext or isLastQuestionInContext flag on questions to know if we can't move them up or down */
         if (kindParams == 'question') {
             if (notes.totalCount > 0) {
+                /*
+                If we use pagination for questions again we can use this code
                 if (!paginationAndSorting.offset || paginationAndSorting.offset.toLong() == 0) {
                     notes.list.first().isFirstQuestionInContext = true
                 }
                 if (paginationAndSorting?.offset?.toLong() >= notes.totalCount - paginationAndSorting.max) {
                     notes.list.last().isLastQuestionInContext = true
                 }
+                */
+                notes.list.first().isFirstQuestionInContext = true
+                notes.list.last().isLastQuestionInContext = true
             }
         }
 

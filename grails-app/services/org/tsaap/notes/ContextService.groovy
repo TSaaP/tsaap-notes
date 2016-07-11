@@ -92,12 +92,6 @@ class ContextService {
             eq 'isNoMoreSubscribed', false
             context {
                 order paginationAndSorting.sort, paginationAndSorting.order
-                if (paginationAndSorting.max) {
-                    maxResults paginationAndSorting.max
-                }
-                if (paginationAndSorting.offset) {
-                    offset paginationAndSorting.offset
-                }
                 eq('removed',false)
             }
             join 'context'

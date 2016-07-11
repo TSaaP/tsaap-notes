@@ -73,7 +73,7 @@
     </ul>
 </div>
 
-<g:if test="${context?.noteTakingEnabled && context.isOpen()}">
+<g:if test="${context?.noteTakingEnabled && context?.isOpen()}">
     <div class="container note-edition">
         <g:render template="/notes/edit" model='[context: context, fragmentTag: fragmentTag]'/>
     </div>

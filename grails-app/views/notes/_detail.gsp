@@ -68,11 +68,11 @@
                         title="${message(code: "notes.detail.delete")}"
                         data-placement="bottom"></span></g:link>
                 <g:if test="${(context.noteTakingEnabled || note.kind == org.tsaap.notes.NoteKind.QUESTION.ordinal()) && context.isOpen() && !note.liveSession}">
-                    <g:link data-toggle="modal" data-target="#modalNote${note.id}">
+                    <a style="cursor: pointer" data-toggle="modal" data-target="#modalNote${note.id}">
                         <span class="glyphicon glyphicon-pencil" data-toggle="tooltip"
                               title="${message(code: "notes.detail.edit")}"
                               data-placement="bottom"></span>
-                    </g:link>
+                    </a>
                     <div class="modal fade" id="modalNote${note.id}" role="dialog" aria-labelledby="exampleModalLabel">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
@@ -118,7 +118,7 @@
                     <span class="glyphicon glyphicon-circle-arrow-right"></span> ${message(code: "notes.detail.hideDiscussion")}
                 </g:link>
             </g:if>
-            <g:if test="${context.noteTakingEnabled && context.isOpen()}">
+            <g:if test="${context?.noteTakingEnabled && context?.isOpen()}">
                 <a href="#note${note.id}" id="replyLink${note.id}"
                    onclick="displaysReplyField(${note.id})"><span
                         class="glyphicon glyphicon-share"></span> ${message(code: "notes.detail.reply")}</a>

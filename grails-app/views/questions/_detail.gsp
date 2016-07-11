@@ -59,17 +59,17 @@
         <span class="pull-right">
             <g:if test="${user == note.author || user == note?.context?.owner}">
                 <g:link onclick="return confirm('${message(code: "notes.detail.delete.confirmation")}');"
-                        controller="questions" action="delete"
+                        action="delete"
                         params="${[noteId: note.id] + displayListParamsWithPagination}"><span
                         class="glyphicon glyphicon-trash" data-toggle="tooltip"
                         title="${message(code: "notes.detail.delete")}"
                         data-placement="bottom"></span></g:link>
-                <g:if test="${context.isOpen() && !note.liveSession}">
-                    <g:link data-toggle="modal" data-target="#modalNote${note.id}">
+                <g:if test="${context?.isOpen() && !note.liveSession}">
+                    <a style="cursor: pointer" data-toggle="modal" data-target="#modalNote${note.id}">
                         <span class="glyphicon glyphicon-pencil" data-toggle="tooltip"
                               title="${message(code: "notes.detail.edit")}"
                               data-placement="bottom"></span>
-                    </g:link>
+                    </a>
                     <div class="modal fade" id="modalNote${note.id}" role="dialog" aria-labelledby="exampleModalLabel">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
@@ -79,7 +79,6 @@
                                 </div>
 
                                 <div class="modal-body">
-
                                     <div class="container note-edition">
                                         <g:render template="/questions/edit"
                                                   model='[note: note, context: context, fragmentTag: note.fragmentTag, update: true]'/>
@@ -110,9 +109,6 @@
     <g:if test="${attachment != null}">
         <tsaap:viewAttachement width="650" height="380" attachement="${attachment}"/>
     </g:if>
-    <g:else>
-        <p id="content${note.id}" class="note-content">${note.content}</p>
-    </g:else>
 
     <g:set var="liveSession" value="${note.getLiveSession()}"/>
     <g:set var="sessionPhase" value="${liveSession ? liveSession.findCurrentPhase() : null}"/>

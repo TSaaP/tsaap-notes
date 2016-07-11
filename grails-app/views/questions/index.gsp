@@ -93,7 +93,7 @@
 
 </div>
 
-<g:if test="${context.isOpen()}">
+<g:if test="${context?.isOpen()}">
     <div class="container note-edition">
         <g:if test="${user == context.owner}">
             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">

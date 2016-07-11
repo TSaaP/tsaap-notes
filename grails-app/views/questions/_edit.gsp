@@ -18,12 +18,11 @@
 <g:set var="idControllSuffix" value="${parentNote ? parentNote.id : 0}${note ? "_" + note.id : ""}"/>
 
 <div class="panel-body">
-    <g:form method="post" controller="notes" action="${note ? 'updateNote' : 'add'}"
+    <g:form method="post" action="${note ? 'update' : 'add'}"
             enctype="multipart/form-data">
         <g:if test="${note}">
             <g:hiddenField name="noteId" value="${note.id}"/>
         </g:if>
-        <g:hiddenField name="kind" value="question"/>
         <g:hiddenField name="inline" value="${params.inline}"/>
         <g:hiddenField name="contextId" value="${context?.id}"
                        id="contextIdInAddForm${idControllSuffix}"/>
@@ -33,7 +32,6 @@
         <g:hiddenField name="displaysMyFavorites"
                        id="displaysMyFavoritesInAddForm${idControllSuffix}"/>
         <g:hiddenField name="displaysAll" id="displaysAllInAddForm${idControllSuffix}"/>
-        <g:set var="kind" value="question"/>
         <a id="question_sample${idControllSuffix}"
            style="margin-top: 15px">${message(code: "notes.edit.sampleQuestion")}</a>
         <textarea class="form-control note-editable-content" rows="3"

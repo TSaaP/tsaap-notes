@@ -229,19 +229,24 @@ class NotesController {
         render(multiplelink)
     }
 
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def moveQuestionUp() {
+        User user = springSecurityService.currentUser
         def question = Note.findById(params.noteId)
         def previousQuestion = noteService.findQuestionPrevious(question)
-        question.swapQuestion(previousQuestion)
+        noteService.swapQuestions(question, previousQuestion, user)
         redirect(action: index(), params: params)
     }
 
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def moveQuestionDown() {
+        User user = springSecurityService.currentUser
         def question = Note.findById(params.noteId)
         def nextQuestion = noteService.findQuestionNext(question)
-        question.swapQuestion(nextQuestion)
+        noteService.swapQuestions(question, nextQuestion, user)
         redirect(action: index(), params: params)
     }
+
 
     /**
      * Render the main page given the params and the user

@@ -44,7 +44,7 @@
     <g:if test="${!responsesToEvaluate || responsesToEvaluate[0]?.explanation?.hasBeenAlreadyEvaluatedByUser(user)}">
         <div class="alert alert-success">
             ${message(code: "questions.user.phase3.started.wait")} &quot;<strong>${question.title}</strong>&quot;...
-            <g:remoteLink action="refresh" controller="question"
+            <g:remoteLink action="refresh" controller="questions"
                           params="[noteId: note.id]"
                           title="Refresh" update="question_${note.id}"
                           onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"><span
@@ -63,7 +63,7 @@
                                                                       style="display: block;"/>
                 </div>
             </g:each>
-            <g:submitToRemote action="evaluateResponses" controller="question" update="question_${note.id}"
+            <g:submitToRemote action="evaluateResponses" controller="questions" update="question_${note.id}"
                               class="btn btn-primary btn-xs" value="${message(code: "questions.user.submit")}"
                               onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"/>
         </g:form>

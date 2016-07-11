@@ -65,7 +65,7 @@
             </a>
         </li>
         <li role="presentation">
-            <g:link controller="notes"
+            <g:link controller="questions"
                     params='[contextId: "${params.contextId}", contextName: "${params.contextName}", displaysMyNotes: "${params.displaysMyNotes}", displaysMyFavorites: "${params.displaysMyFavorites}", displaysAll: "${params.displaysAll}", fragmentTagId: "${params.fragmentTagId}", kind: "question", inline: "${params.inline}"]'>
                 ${message(code: "notes.question.link")} <span class="badge">${countTotal}</span>
             </g:link>

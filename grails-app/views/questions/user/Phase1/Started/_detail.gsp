@@ -22,7 +22,7 @@
     <g:if test="${sessionPhase.getResponseForUser(user)}">
         <div class="alert alert-success">
             ${message(code: "questions.user.phase1.started.wait")} &quot;<strong>${question.title}</strong>&quot;...
-            <g:remoteLink action="refreshPhase" controller="question"
+            <g:remoteLink action="refreshPhase" controller="questions"
                           params="[noteId: note.id, phaseId: sessionPhase.id]" title="Refresh"
                           update="question_${note.id}"
                           onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"><span
@@ -51,7 +51,7 @@
 
             <p>${message(code: "questions.confidenceDegree")} <g:select name="confidenceDegree"
                                                                         from="[1, 2, 3, 4, 5]"/></p>
-            <g:submitToRemote action="submitResponseInAPhase" controller="question" update="question_${note.id}"
+            <g:submitToRemote action="submitResponseInAPhase" controller="questions" update="question_${note.id}"
                               class="btn btn-primary btn-xs" value="${message(code: "questions.user.submit")}"
                               onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"
                               before="document.getElementById('explanation').textContent = CKEDITOR.instances.explanation.getData()"/>

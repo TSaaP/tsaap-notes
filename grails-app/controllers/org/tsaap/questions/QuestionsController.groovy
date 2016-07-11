@@ -28,15 +28,14 @@ import org.tsaap.lti.tp.ToolConsumer
 import org.tsaap.lti.tp.dataconnector.JDBC
 import org.tsaap.notes.Note
 import org.tsaap.notes.NoteService
+import org.tsaap.notes.NotesController
 
 import javax.sql.DataSource
 
 
-class QuestionController {
+class QuestionsController extends NotesController {
 
-    SpringSecurityService springSecurityService
     LiveSessionService liveSessionService
-    NoteService noteService
     StatisticsService statisticsService
     ResultListService resultListService
     LmsGradeService lmsGradeService
@@ -45,7 +44,6 @@ class QuestionController {
 
     // for export stats
     def exportService
-    def grailsApplication
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def startLiveSession() {
@@ -234,6 +232,24 @@ class QuestionController {
             )
         }
         render(view: '/questions/nPhasesLiveSessionResults', model: [results: results, labels: labels, user: user, liveSession: liveSession])
+    }
+
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def moveQuestionUp() {
+        User user = springSecurityService.currentUser
+        def question = Note.findById(params.noteId)
+        def previousQuestion = noteService.findQuestionPrevious(question)
+        noteService.swapQuestions(question, previousQuestion, user)
+        redirect(action: index(), params: params)
+    }
+
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def moveQuestionDown() {
+        User user = springSecurityService.currentUser
+        def question = Note.findById(params.noteId)
+        def nextQuestion = noteService.findQuestionNext(question)
+        noteService.swapQuestions(question, nextQuestion, user)
+        redirect(action: index(), params: params)
     }
 
     private String buildAnswerAsStringFromAnswers(List<String> answers) {

@@ -30,12 +30,12 @@
             </g:else>
         </p>
     </g:each>
-    <g:remoteLink action="stopPhase" controller="question" params="[phaseId: sessionPhase.id, noteId: note.id]"
+    <g:remoteLink action="stopPhase" controller="questions" params="[phaseId: sessionPhase.id, noteId: note.id]"
                   class="btn btn-warning btn-xs" update="question_${note.id}"
                   onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"><span
             class="glyphicon glyphicon-stop"></span> ${message(code: "questions.author.phase1.started.endPhase")}</g:remoteLink>
     (${message(code: "questions.responseCount")} : ${sessionPhase.responseCount()} <g:remoteLink action="refreshPhase"
-                                                                                                 controller="question"
+                                                                                                 controller="questions"
                                                                                                  params="[noteId: note.id, phaseId: sessionPhase.id]"
                                                                                                  title="Refresh"
                                                                                                  update="question_${note.id}"

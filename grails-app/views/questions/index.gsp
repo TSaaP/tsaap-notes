@@ -72,26 +72,24 @@
             </li>
         </ul>
     </g:if>
-    <g:else>
-        <g:if test="${countTotal}">
-            <ul class="nav nav-tabs pull-right">
-                <g:if test="${countTotal}">
-                    <li role="presentation" data-toggle="tooltip" data-html="true"
-                        title="${message(code: "notes.disabled.link.message")}" data-placement="bottom">
-                        <g:link controller="notes" class="text-muted"
-                                params='[contextId: "${params.contextId}", contextName: "${params.contextName}", displaysMyNotes: "${params.displaysMyNotes}", displaysMyFavorites: "${params.displaysMyFavorites}", displaysAll: "${params.displaysAll}", fragmentTagId: "${params.fragmentTagId}", kind: "standard", inline: "${params.inline}"]'>
-                            ${message(code: "notes.link")} <span class="badge">${countTotal}</span>
-                        </g:link>
-                    </li>
-                    <li role="presentation" class="active">
-                        <a>
-                            ${message(code: "notes.question.link")} <span class="badge">${notes.totalCount}</span>
-                        </a>
-                    </li>
-                </g:if>
-            </ul>
-        </g:if>
-    </g:else>
+    <g:elseif test="${countTotal}">
+        <ul class="nav nav-tabs pull-right">
+            <g:if test="${countTotal}">
+                <li role="presentation" data-toggle="tooltip" data-html="true"
+                    title="${message(code: "notes.disabled.link.message")}" data-placement="bottom">
+                    <g:link controller="notes" class="text-muted"
+                            params='[contextId: "${params.contextId}", contextName: "${params.contextName}", displaysMyNotes: "${params.displaysMyNotes}", displaysMyFavorites: "${params.displaysMyFavorites}", displaysAll: "${params.displaysAll}", fragmentTagId: "${params.fragmentTagId}", kind: "standard", inline: "${params.inline}"]'>
+                        ${message(code: "notes.link")} <span class="badge">${countTotal}</span>
+                    </g:link>
+                </li>
+                <li role="presentation" class="active">
+                    <a>
+                        ${message(code: "notes.question.link")} <span class="badge">${notes.totalCount}</span>
+                    </a>
+                </li>
+            </g:if>
+        </ul>
+    </g:elseif>
 
 </div>
 
@@ -135,7 +133,7 @@
 <div class="container note-list">
     <div class="note-list-header">
         <div class="note-list-selector pull-right">
-            <g:form controller="notes" action="index" method="get">
+            <g:form controller="questions" action="index" method="get">
                 <g:hiddenField name="contextId" value="${context?.id}"/>
                 <g:hiddenField name="fragmentTagId" value="${fragmentTag?.id}"/>
                 <g:hiddenField name="inline" value="${params.inline}"/>

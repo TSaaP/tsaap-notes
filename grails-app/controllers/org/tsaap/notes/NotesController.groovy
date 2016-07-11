@@ -342,12 +342,21 @@ class NotesController {
             }
         }
 
+        if (params.kind == 'question') {
+            render view: '/questions/index', model: [user          : user,
+                                                     notes         : notes,
+                                                     countTotal    : countTotal,
+                                                     context       : context,
+                                                     fragmentTag   : fragmentTag,
+                                                     showDiscussion: showDiscussion]
+        } else {
+            render view: '/notes/index', model: [user          : user,
+                                                     notes         : notes,
+                                                     countTotal    : countTotal,
+                                                     context       : context,
+                                                     fragmentTag   : fragmentTag,
+                                                     showDiscussion: showDiscussion]
+        }
 
-        render view: '/notes/index', model: [user          : user,
-                                             notes         : notes,
-                                             countTotal    : countTotal,
-                                             context       : context,
-                                             fragmentTag   : fragmentTag,
-                                             showDiscussion: showDiscussion]
     }
 }

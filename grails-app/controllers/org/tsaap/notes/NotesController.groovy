@@ -65,7 +65,7 @@ class NotesController {
         }
         Note myNote
         try {
-            if (params.kind && params.kind == 'question') {
+            if (controllerName == 'questions') {
                 myNote = noteService.addQuestion(user, noteContent, context, fragmentTag, parentNote)
             } else {
                 myNote = noteService.addStandardNote(user, noteContent, context, fragmentTag, parentNote)
@@ -129,7 +129,7 @@ class NotesController {
     def update() {
         Note note = Note.findById(params.noteId as Long)
         try {
-            if (params?.kind == 'question') {
+            if (controllerName == 'questions') {
                 noteService.updateQuestionById(note, params.noteContent, note.author)
             } else {
                 noteService.updateNoteById(note, params.noteContent, note.author)
@@ -232,7 +232,7 @@ class NotesController {
         }
 
         def paginationAndSorting
-        if (params.kind == 'question') {
+        if (controllerName == 'questions') {
             paginationAndSorting = [sort: 'rank', order: 'asc']
         } else {
             params.max = Math.min(params.max as Long ?: 5, 20)
@@ -242,7 +242,8 @@ class NotesController {
             }
         }
 
-        def kindParams = params.kind
+        def kind = controllerName == 'questions' ? 'question' : 'standard'
+
         def inlineParams = params.inline
         def notes = noteService.findAllNotes(user,
                 displaysMyNotes,
@@ -251,11 +252,11 @@ class NotesController {
                 context,
                 fragmentTag,
                 paginationAndSorting,
-                kindParams,
+                kind,
                 inlineParams)
 
         def otherKind
-        if (kindParams == 'question') {
+        if (controllerName == 'questions') {
             otherKind = 'standard'
         } else {
             otherKind = 'question'
@@ -272,7 +273,7 @@ class NotesController {
         )
 
         /* Set isFirstQuestionInContext or isLastQuestionInContext flag on questions to know if we can't move them up or down */
-        if (kindParams == 'question') {
+        if (controllerName == 'questions') {
             if (notes.totalCount > 0) {
                 /*
                 If we use pagination for questions again we can use this code
@@ -288,7 +289,7 @@ class NotesController {
             }
         }
 
-        if (params.kind == 'question') {
+        if (controllerName == 'questions') {
             render view: '/questions/index', model: [user          : user,
                                                      notes         : notes,
                                                      countTotal    : countTotal,
@@ -297,11 +298,11 @@ class NotesController {
                                                      showDiscussion: showDiscussion]
         } else {
             render view: '/notes/index', model: [user          : user,
-                                                     notes         : notes,
-                                                     countTotal    : countTotal,
-                                                     context       : context,
-                                                     fragmentTag   : fragmentTag,
-                                                     showDiscussion: showDiscussion]
+                                                 notes         : notes,
+                                                 countTotal    : countTotal,
+                                                 context       : context,
+                                                 fragmentTag   : fragmentTag,
+                                                 showDiscussion: showDiscussion]
         }
 
     }

@@ -38,7 +38,7 @@
             <g:if test="${fragmentTag}">
                 <li>
                     <g:link controller="notes"
-                            params='[contextId: "${params.contextId}", displaysMyNotes: "${params.displaysMyNotes}", displaysMyFavorites: "${params.displaysMyFavorites}", displaysAll: "${params.displaysAll}", inline: "${params.inline}", kind: "question"]'>
+                            params='[contextId: "${params.contextId}", displaysMyNotes: "${params.displaysMyNotes}", displaysMyFavorites: "${params.displaysMyFavorites}", displaysAll: "${params.displaysAll}", inline: "${params.inline}"]'>
                         ${context.contextName}</g:link>
                 </li>
                 <li class="active">
@@ -57,11 +57,11 @@
             </g:else>
         </g:if>
     </ol>
-    <g:if test="${context.noteTakingEnabled}">
+    <g:if test="${context?.noteTakingEnabled}">
         <ul class="nav nav-tabs pull-right">
             <li role="presentation">
                 <g:link controller="notes"
-                        params='[contextId: "${params.contextId}", contextName: "${params.contextName}", displaysMyNotes: "${params.displaysMyNotes}", displaysMyFavorites: "${params.displaysMyFavorites}", displaysAll: "${params.displaysAll}", fragmentTagId: "${params.fragmentTagId}", kind: "standard", inline: "${params.inline}"]'>
+                        params='[contextId: "${params.contextId}", contextName: "${params.contextName}", displaysMyNotes: "${params.displaysMyNotes}", displaysMyFavorites: "${params.displaysMyFavorites}", displaysAll: "${params.displaysAll}", fragmentTagId: "${params.fragmentTagId}", inline: "${params.inline}"]'>
                     ${message(code: "notes.link")} <span class="badge">${countTotal}</span>
                 </g:link>
             </li>
@@ -78,7 +78,7 @@
                 <li role="presentation" data-toggle="tooltip" data-html="true"
                     title="${message(code: "notes.disabled.link.message")}" data-placement="bottom">
                     <g:link controller="notes" class="text-muted"
-                            params='[contextId: "${params.contextId}", contextName: "${params.contextName}", displaysMyNotes: "${params.displaysMyNotes}", displaysMyFavorites: "${params.displaysMyFavorites}", displaysAll: "${params.displaysAll}", fragmentTagId: "${params.fragmentTagId}", kind: "standard", inline: "${params.inline}"]'>
+                            params='[contextId: "${params.contextId}", contextName: "${params.contextName}", displaysMyNotes: "${params.displaysMyNotes}", displaysMyFavorites: "${params.displaysMyFavorites}", displaysAll: "${params.displaysAll}", fragmentTagId: "${params.fragmentTagId}", inline: "${params.inline}"]'>
                         ${message(code: "notes.link")} <span class="badge">${countTotal}</span>
                     </g:link>
                 </li>
@@ -133,11 +133,10 @@
 <div class="container note-list">
     <div class="note-list-header">
         <div class="note-list-selector pull-right">
-            <g:form controller="questions" action="index" method="get">
+            <g:form action="index" method="get">
                 <g:hiddenField name="contextId" value="${context?.id}"/>
                 <g:hiddenField name="fragmentTagId" value="${fragmentTag?.id}"/>
                 <g:hiddenField name="inline" value="${params.inline}"/>
-                <g:hiddenField id="noteKind" name="kind" value="question"/>
                 <label class="checkbox-inline">
                     <g:checkBox name="displaysMyNotes" checked="${params.displaysMyNotes == 'on' ? true : false}"
                                 onchange="submit();"/> ${message(code: "notes.index.myNotes.checkbox")}
@@ -211,12 +210,7 @@
         contentElement.focus().val('').val(content);
     }
 
-    if ($("#noteKind").val() == 'question') {
-        $("#mainLinkQuestions").addClass('active');
-    }
-    else {
-        $("#mainLinkNotes").addClass('active');
-    }
+    $("#mainLinkQuestions").addClass('active');
 </r:script>
 <script>
     $(function () {

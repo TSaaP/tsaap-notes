@@ -38,7 +38,7 @@
             <g:if test="${fragmentTag}">
                 <li>
                     <g:link controller="notes"
-                            params='[contextId: "${params.contextId}", displaysMyNotes: "${params.displaysMyNotes}", displaysMyFavorites: "${params.displaysMyFavorites}", displaysAll: "${params.displaysAll}", inline: "${params.inline}", kind: "standard"]'>
+                            params='[contextId: "${params.contextId}", displaysMyNotes: "${params.displaysMyNotes}", displaysMyFavorites: "${params.displaysMyFavorites}", displaysAll: "${params.displaysAll}", inline: "${params.inline}"]'>
                         ${context.contextName}</g:link>
                 </li>
                 <li class="active">
@@ -66,14 +66,14 @@
         </li>
         <li role="presentation">
             <g:link controller="questions"
-                    params='[contextId: "${params.contextId}", contextName: "${params.contextName}", displaysMyNotes: "${params.displaysMyNotes}", displaysMyFavorites: "${params.displaysMyFavorites}", displaysAll: "${params.displaysAll}", fragmentTagId: "${params.fragmentTagId}", kind: "question", inline: "${params.inline}"]'>
+                    params='[contextId: "${params.contextId}", contextName: "${params.contextName}", displaysMyNotes: "${params.displaysMyNotes}", displaysMyFavorites: "${params.displaysMyFavorites}", displaysAll: "${params.displaysAll}", fragmentTagId: "${params.fragmentTagId}", inline: "${params.inline}"]'>
                 ${message(code: "notes.question.link")} <span class="badge">${countTotal}</span>
             </g:link>
         </li>
     </ul>
 </div>
 
-<g:if test="${context.noteTakingEnabled && context.isOpen()}">
+<g:if test="${context?.noteTakingEnabled && context.isOpen()}">
     <div class="container note-edition">
         <g:render template="/notes/edit" model='[context: context, fragmentTag: fragmentTag]'/>
     </div>
@@ -88,7 +88,6 @@
                 <g:hiddenField name="contextId" value="${context?.id}"/>
                 <g:hiddenField name="fragmentTagId" value="${fragmentTag?.id}"/>
                 <g:hiddenField name="inline" value="${params.inline}"/>
-                <g:hiddenField id="noteKind" name="kind" value="standard"/>
                 <label class="checkbox-inline">
                     <g:checkBox name="displaysMyNotes" checked="${params.displaysMyNotes == 'on' ? true : false}"
                                 onchange="submit();"/> ${message(code: "notes.index.myNotes.checkbox")}
@@ -139,7 +138,7 @@
     <g:if test="${!(params.inline && params.inline == 'on' && params.fragmentTagId && params.fragmentTagId != 'null')}">
         <div class="note-list-pagination">
             <tsaap:paginate class="pull-right" prev="&laquo;" next="&raquo;" total="${notes.totalCount}"
-                            params='[contextId: "${params.contextId}", fragmentTagId: "${params.fragmentTagId}", displaysMyNotes: "${params.displaysMyNotes}", displaysMyFavorites: "${params.displaysMyFavorites}", displaysAll: "${params.displaysAll}", inline: "${params.inline}", kind: "standard"]'/>
+                            params='[contextId: "${params.contextId}", fragmentTagId: "${params.fragmentTagId}", displaysMyNotes: "${params.displaysMyNotes}", displaysMyFavorites: "${params.displaysMyFavorites}", displaysAll: "${params.displaysAll}", inline: "${params.inline}"]'/>
         </div>
     </g:if>
 </div>
@@ -168,12 +167,7 @@
         contentElement.focus().val('').val(content);
     }
 
-    if ($("#noteKind").val() == 'question') {
-        $("#mainLinkQuestions").addClass('active');
-    }
-    else {
-        $("#mainLinkNotes").addClass('active');
-    }
+    $("#mainLinkNotes").addClass('active');
 </r:script>
 <script>
     $(function () {

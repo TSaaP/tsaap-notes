@@ -62,7 +62,7 @@
         <span class="pull-right">
             <g:if test="${user == note.author || user == note?.context?.owner}">
                 <g:link onclick="return confirm('${message(code: "notes.detail.delete.confirmation")}');"
-                        controller="notes" action="deleteNote"
+                        controller="notes" action="delete"
                         params="${[noteId: note.id] + displayListParamsWithPagination}"><span
                         class="glyphicon glyphicon-trash" data-toggle="tooltip"
                         title="${message(code: "notes.detail.delete")}"
@@ -124,13 +124,13 @@
                         class="glyphicon glyphicon-share"></span> ${message(code: "notes.detail.reply")}</a>
             </g:if>
             <g:if test="${noteIsBookmarked}">
-                <g:link style="color: orange" controller="notes" action="unbookmarkNote"
+                <g:link style="color: orange" controller="notes" action="unbookmark"
                         params="${[noteId: note.id] + displayListParamsWithPagination}"
                         fragment="note${note.id}"><span
                         class="glyphicon glyphicon-star"></span> ${message(code: "notes.detail.favorite")}</g:link>
             </g:if>
             <g:else>
-                <g:link controller="notes" action="bookmarkNote"
+                <g:link controller="notes" action="bookmark"
                         params="${[noteId: note.id] + displayListParamsWithPagination}"
                         fragment="note${note.id}"><span
                         class="glyphicon glyphicon-star"></span> ${message(code: "notes.detail.favorite")}</g:link>
@@ -140,7 +140,7 @@
                       class="glyphicon glyphicon-thumbs-up">${message(code: "notes.detail.learn")}</span>
             </g:if>
             <g:else>
-                <g:link controller="notes" action="markAsLikedNote"
+                <g:link controller="notes" action="markAsLiked"
                         params="${[noteId: note.id] + displayListParamsWithPagination}"
                         fragment="note${note.id}"><span
                         class="glyphicon glyphicon-thumbs-up"></span> ${message(code: "notes.detail.learn")}</g:link>

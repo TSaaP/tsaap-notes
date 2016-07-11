@@ -235,7 +235,7 @@ class QuestionsController extends NotesController {
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def moveQuestionUp() {
+    def moveUp() {
         User user = springSecurityService.currentUser
         def question = Note.findById(params.noteId)
         def previousQuestion = noteService.findQuestionPrevious(question)
@@ -244,7 +244,7 @@ class QuestionsController extends NotesController {
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def moveQuestionDown() {
+    def moveDown() {
         User user = springSecurityService.currentUser
         def question = Note.findById(params.noteId)
         def nextQuestion = noteService.findQuestionNext(question)
@@ -267,6 +267,40 @@ class QuestionsController extends NotesController {
         answersAsString.toString()
     }
 
+    /**
+     * Give the different question type sample and create link for popup window dedicate to questions samples
+     * @return the popup window content
+     */
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def getSamples() {
+        def content = "${message(code: "notes.edit.sampleQuestion.text")}"
+        def single = "${message(code: "notes.edit.sampleQuestion.singleChoice")}"
+
+        Question singleChoice = giftQuestionService.getQuestionFromGiftText("${message(code: "notes.edit.sampleQuestion.singleChoiceExemple")}")
+
+        def singlelink = """<a class="sampleLink" id="singleQuestionSample" onClick="sampleLink(0, '${
+            params.questionSample
+        }', '${params.toUpdate}')">${
+            message(code: "notes.edit.sampleQuestion.link")
+        }</a><br><br>"""
+        def multiple = "${message(code: "notes.edit.sampleQuestion.multipleChoice")}"
+
+        Question multipleChoice = giftQuestionService.getQuestionFromGiftText("${message(code: "notes.edit.sampleQuestion.multipleChoiceExemple")}'")
+
+        def multiplelink = """<a class="sampleLink" id="multipleQuestionSample" onClick="sampleLink(1, '${
+            params.questionSample
+        }', '${params.toUpdate}')">${
+            message(code: "notes.edit.sampleQuestion.link")
+        }</a>"""
+
+        render(content)
+        render(single)
+        render(template: '/questions/preview/detail', model: [question: singleChoice])
+        render(singlelink)
+        render(multiple)
+        render(template: '/questions/preview/detail', model: [question: multipleChoice])
+        render(multiplelink)
+    }
 }
 
 class AnswersWrapperCommand {

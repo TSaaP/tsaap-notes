@@ -18,7 +18,7 @@
 <g:set var="idControllSuffix" value="${parentNote ? parentNote.id : 0}${note ? "_" + note.id : ""}"/>
 
 <div class="panel-body">
-    <g:form method="post" controller="notes" action="${note ? 'updateNote' : 'addNote'}"
+    <g:form method="post" controller="notes" action="${note ? 'updateNote' : 'add'}"
             enctype="multipart/form-data">
         <g:if test="${note}">
             <g:hiddenField name="noteId" value="${note.id}"/>
@@ -152,7 +152,7 @@ $(document).ready(function () {
         var contentQuestionSample = "";
     $.ajax({
         type: "POST",
-        url: '<g:createLink action="getQuestionsSamples" controller="notes"
+        url: '<g:createLink action="getSamples"
                             params="[questionSample: 'question_sample' + idControllSuffix, toUpdate: 'noteContent' + idControllSuffix]"/>',
         async: false
     }).done(function(data) {

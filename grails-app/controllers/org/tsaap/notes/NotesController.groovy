@@ -40,7 +40,7 @@ class NotesController {
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def addNote() {
+    def add() {
         def user = springSecurityService.currentUser
         def noteContent = params.noteContent
         Context context = null
@@ -85,7 +85,7 @@ class NotesController {
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def bookmarkNote() {
+    def bookmark() {
         def user = springSecurityService.currentUser
         Note note = Note.get(params.noteId)
         noteService.bookmarkNotebyUser(note, user)
@@ -94,7 +94,7 @@ class NotesController {
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def unbookmarkNote() {
+    def unbookmark() {
         def user = springSecurityService.currentUser
         Note note = Note.get(params.noteId)
         noteService.unbookmarkedNoteByUser(note, user)
@@ -103,7 +103,7 @@ class NotesController {
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def markAsLikedNote() {
+    def markAsLiked() {
         def user = springSecurityService.currentUser
         Note note = Note.get(params.noteId)
         noteService.scoreNotebyUser(note, user)
@@ -112,7 +112,7 @@ class NotesController {
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def deleteNote() {
+    def delete() {
         def user = springSecurityService.currentUser
         Note note = Note.load(params.noteId)
         noteService.deleteNoteByAuthor(note, user)
@@ -126,7 +126,7 @@ class NotesController {
      * @return
      */
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def updateNote() {
+    def update() {
         Note note = Note.findById(params.noteId as Long)
         try {
             if (params?.kind == 'question') {
@@ -192,41 +192,6 @@ class NotesController {
         } else {
             render(noteInput ?: '')
         }
-    }
-
-    /**
-     * Give the different question type sample and create link for popup window dedicate to questions samples
-     * @return the popup window content
-     */
-    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def getQuestionsSamples() {
-        def content = "${message(code: "notes.edit.sampleQuestion.text")}"
-        def single = "${message(code: "notes.edit.sampleQuestion.singleChoice")}"
-
-        Question singleChoice = giftQuestionService.getQuestionFromGiftText("${message(code: "notes.edit.sampleQuestion.singleChoiceExemple")}")
-
-        def singlelink = """<a class="sampleLink" id="singleQuestionSample" onClick="sampleLink(0, '${
-            params.questionSample
-        }', '${params.toUpdate}')">${
-            message(code: "notes.edit.sampleQuestion.link")
-        }</a><br><br>"""
-        def multiple = "${message(code: "notes.edit.sampleQuestion.multipleChoice")}"
-
-        Question multipleChoice = giftQuestionService.getQuestionFromGiftText("${message(code: "notes.edit.sampleQuestion.multipleChoiceExemple")}'")
-
-        def multiplelink = """<a class="sampleLink" id="multipleQuestionSample" onClick="sampleLink(1, '${
-            params.questionSample
-        }', '${params.toUpdate}')">${
-            message(code: "notes.edit.sampleQuestion.link")
-        }</a>"""
-
-        render(content)
-        render(single)
-        render(template: '/questions/preview/detail', model: [question: singleChoice])
-        render(singlelink)
-        render(multiple)
-        render(template: '/questions/preview/detail', model: [question: multipleChoice])
-        render(multiplelink)
     }
 
     /**

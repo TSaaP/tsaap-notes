@@ -59,7 +59,7 @@
         <span class="pull-right">
             <g:if test="${user == note.author || user == note?.context?.owner}">
                 <g:link onclick="return confirm('${message(code: "notes.detail.delete.confirmation")}');"
-                        controller="questions" action="deleteNote"
+                        controller="questions" action="delete"
                         params="${[noteId: note.id] + displayListParamsWithPagination}"><span
                         class="glyphicon glyphicon-trash" data-toggle="tooltip"
                         title="${message(code: "notes.detail.delete")}"
@@ -90,14 +90,14 @@
                     </div>
                 </g:if>
                 <g:if test="${!note.isFirstQuestionInContext}">
-                    <g:link action="moveQuestionUp"
+                    <g:link action="moveUp"
                             params="${[noteId: note.id] + displayListParamsWithPagination}"><span
                             class="glyphicon glyphicon-arrow-up" data-toggle="tooltip"
                             title="${message(code: "notes.detail.up")}"
                             data-placement="bottom"></span></g:link>
                 </g:if>
                 <g:if test="${!note.isLastQuestionInContext}">
-                    <g:link action="moveQuestionDown"
+                    <g:link action="moveDown"
                             params="${[noteId: note.id] + displayListParamsWithPagination}"><span
                             class="glyphicon glyphicon-arrow-down" data-toggle="tooltip"
                             title="${message(code: "notes.detail.down")}"
@@ -130,13 +130,13 @@
     <div id="noteActions" class="pull-right note-actions">
         <small>
             <g:if test="${noteIsBookmarked}">
-                <g:link style="color: orange" controller="questions" action="unbookmarkNote"
+                <g:link style="color: orange" controller="questions" action="unbookmark"
                         params="${[noteId: note.id] + displayListParamsWithPagination}"
                         fragment="note${note.id}"><span
                         class="glyphicon glyphicon-star"></span> ${message(code: "notes.detail.favorite")}</g:link>
             </g:if>
             <g:else>
-                <g:link controller="questions" action="bookmarkNote"
+                <g:link controller="questions" action="bookmark"
                         params="${[noteId: note.id] + displayListParamsWithPagination}"
                         fragment="note${note.id}"><span
                         class="glyphicon glyphicon-star"></span> ${message(code: "notes.detail.favorite")}</g:link>
@@ -146,7 +146,7 @@
                       class="glyphicon glyphicon-thumbs-up">${message(code: "notes.detail.learn")}</span>
             </g:if>
             <g:else>
-                <g:link controller="questions" action="markAsLikedNote"
+                <g:link controller="questions" action="markAsLiked"
                         params="${[noteId: note.id] + displayListParamsWithPagination}"
                         fragment="note${note.id}"><span
                         class="glyphicon glyphicon-thumbs-up"></span> ${message(code: "notes.detail.learn")}</g:link>

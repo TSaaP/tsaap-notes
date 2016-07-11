@@ -17,7 +17,7 @@
 
 <g:set var="idControllSuffix" value="${parentNote ? parentNote.id : 0}${note ? "_" + note.id : ""}"/>
 <div class="panel-body">
-    <g:form method="post" controller="notes" action="${update ? "updateNote" : "addNote"}" enctype="multipart/form-data">
+    <g:form method="post" controller="notes" action="${update ? "update" : "add"}" enctype="multipart/form-data">
         <g:if test="${note}">
             <g:hiddenField name="noteId" value="${note.id}"/>
         </g:if>

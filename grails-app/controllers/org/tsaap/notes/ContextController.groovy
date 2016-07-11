@@ -30,7 +30,7 @@ import static org.springframework.http.HttpStatus.*
 @Transactional(readOnly = true)
 class ContextController {
 
-    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE", duplicateContext: "POST"]
+    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE", duplicate: "POST"]
 
     SpringSecurityService springSecurityService
     ContextService contextService
@@ -216,7 +216,7 @@ class ContextController {
 
     @Transactional
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def duplicateContext(Context context) {
+    def duplicate(Context context) {
         if (!contextService.contextExists(context)) {
             notFound()
             return
@@ -263,7 +263,7 @@ class ContextController {
 
     @Transactional
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def closeContext(Integer max) {
+    def close(Integer max) {
 
         params.max = Math.min(max ?: 10, 100)
         params.sort = params.sort ?: 'dateCreated'
@@ -291,7 +291,7 @@ class ContextController {
 
     @Transactional
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def openContext(Integer max) {
+    def open(Integer max) {
 
         params.max = Math.min(max ?: 10, 100)
         params.sort = params.sort ?: 'dateCreated'

@@ -96,34 +96,28 @@
 <g:if test="${context?.isOpen()}">
     <div class="container note-edition">
         <g:if test="${user == context.owner}">
-            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                <div class="panel panel-default">
-                    <div class="panel-heading" role="tab" id="headingOne"
-                         style="margin-bottom: -15px;">
-                        <h4 class="panel-title">
-                            <a data-toggle="collapse" id="accordionLink"
-                               data-parent="#accordion" href="#collapseOne"
-                               aria-expanded="false" aria-controls="collapseOne" class="collapsed">
-                                ${message(code: "notes.edit.question.editor")}
-                            </a>
-                        </h4>
-                    </div>
+            <button class="btn btn-primary btn-xs pull-right" data-toggle="modal" data-target="#modalQuestion">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                ${message(code: "notes.edit.add.question.button")}
+            </button>
 
-                    <div id="collapseOne" class="panel-collapse collapse" role="tabpanel"
-                         aria-labelledby="headingOne">
-                        <g:render template="/questions/edit" model='[context: context, fragmentTag: fragmentTag]'/>
+            <div class="modal fade" id="modalQuestion" role="dialog" aria-labelledby="exampleModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="container note-edition">
+                                <g:render template="/questions/edit" model='[context: context, fragmentTag: fragmentTag]'/>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <r:script>
-                $("#collapseOne").on('show.bs.collapse', function () {
-                    $("#headingOne").attr("style", "margin-bottom: 0px;");
-                });
 
-                $("#collapseOne").on('hidden.bs.collapse', function () {
-                    $("#headingOne").attr("style", "margin-bottom: -15px;");
-                });
-            </r:script>
         </g:if>
     </div>
 </g:if>

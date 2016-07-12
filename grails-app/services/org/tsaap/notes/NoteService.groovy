@@ -507,6 +507,18 @@ class NoteService {
         Note previousQuestion = Note.findByKindAndContextAndRankLessThan(NoteKind.QUESTION.ordinal(), question.context, question.rank, [sort: "rank", order: "desc"])
         previousQuestion
     }
+
+    /**
+     * Exchange rank of questions if the current user is owner of the scope questions
+     * @param question1
+     * @param question2
+     * @param user the current user
+     * @return
+     */
+    @Requires({ user == question1.context.owner })
+    def swapQuestions(Note question1, Note question2, User user) {
+        question1.swapQuestion(question2)
+    }
 }
 
 /**

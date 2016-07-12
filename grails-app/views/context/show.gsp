@@ -112,9 +112,9 @@
                     </td>
                     <td>
                         <g:link controller="notes"
-                                params="[displaysAll: 'on', contextName: context?.contextName, contextId: context.id, kind: 'standard']"><g:createLink
+                                params="[displaysAll: 'on', contextName: context?.contextName, contextId: context.id]"><g:createLink
                                 absolute="true" controller="notes"
-                                params="[displaysAll: 'on', contextName: context?.contextName, contextId: context.id, kind: 'standard']"/></g:link>
+                                params="[displaysAll: 'on', contextName: context?.contextName, contextId: context.id]"/></g:link>
 
                     </td>
                 </tr>
@@ -124,10 +124,10 @@
                 <td>
                     ${message(code: 'context.show.questions')}
                 </td>
-                <td><g:link controller="notes"
-                            params="[displaysAll: 'on', contextName: context?.contextName, contextId: context.id, kind: 'question']"><g:createLink
-                            absolute="true" controller="notes"
-                            params="[displaysAll: 'on', contextName: context?.contextName, contextId: context.id, kind: 'question']"/></g:link></td>
+                <td><g:link controller="questions"
+                            params="[displaysAll: 'on', contextName: context?.contextName, contextId: context.id]"><g:createLink
+                            absolute="true" controller="questions"
+                            params="[displaysAll: 'on', contextName: context?.contextName, contextId: context.id]"/></g:link></td>
             </tr>
             </tbody>
         </table>

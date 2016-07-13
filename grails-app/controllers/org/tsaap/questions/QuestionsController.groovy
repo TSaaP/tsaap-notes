@@ -267,6 +267,21 @@ class QuestionsController extends NotesController {
         answersAsString.toString()
     }
 
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def evaluateContentAsQuestion() {
+        String noteInput = params.content
+        if (noteInput?.startsWith('::')) {
+            try {
+                Question question = giftQuestionService.getQuestionFromGiftText(noteInput)
+                render(template: '/questions/preview/detail', model: [question: question])
+            } catch (Exception e) {
+                render("${e.message}")
+            }
+        } else {
+            render(noteInput ?: '')
+        }
+    }
+
     /**
      * Give the different question type sample and create link for popup window dedicate to questions samples
      * @return the popup window content

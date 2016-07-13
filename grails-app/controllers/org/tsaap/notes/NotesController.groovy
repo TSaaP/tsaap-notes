@@ -179,21 +179,6 @@ class NotesController {
         renderMainPage(params, user, showDiscussion)
     }
 
-    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def evaluateContentAsNote() {
-        String noteInput = params.content
-        if (noteInput?.startsWith('::')) {
-            try {
-                Question question = giftQuestionService.getQuestionFromGiftText(noteInput)
-                render(template: '/questions/preview/detail', model: [question: question])
-            } catch (Exception e) {
-                render("${e.message}")
-            }
-        } else {
-            render(noteInput ?: '')
-        }
-    }
-
     /**
      * Render the main page given the params and the user
      * @param params the params

@@ -103,7 +103,7 @@ $(document).ready(function () {
         if (noteInput.lastIndexOf('::', 0) === 0) {
             $.ajax({
                 type: "POST",
-                url: '<g:createLink action="evaluateContentAsNote" controller="notes"/>',
+                url: '<g:createLink action="evaluateContentAsQuestion"/>',
                 data: {content:noteInput},
                 async: false
             }).done(function(data) {

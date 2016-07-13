@@ -18,12 +18,11 @@
 <g:set var="idControllSuffix" value="${parentNote ? parentNote.id : 0}${note ? "_" + note.id : ""}"/>
 
 <div class="panel-body">
-    <g:form method="post" controller="notes" action="${note ? 'updateNote' : 'addNote'}"
+    <g:form method="post" action="${note ? 'update' : 'add'}"
             enctype="multipart/form-data">
         <g:if test="${note}">
             <g:hiddenField name="noteId" value="${note.id}"/>
         </g:if>
-        <g:hiddenField name="kind" value="question"/>
         <g:hiddenField name="inline" value="${params.inline}"/>
         <g:hiddenField name="contextId" value="${context?.id}"
                        id="contextIdInAddForm${idControllSuffix}"/>
@@ -33,50 +32,52 @@
         <g:hiddenField name="displaysMyFavorites"
                        id="displaysMyFavoritesInAddForm${idControllSuffix}"/>
         <g:hiddenField name="displaysAll" id="displaysAllInAddForm${idControllSuffix}"/>
-        <g:set var="kind" value="question"/>
         <a id="question_sample${idControllSuffix}"
            style="margin-top: 15px">${message(code: "notes.edit.sampleQuestion")}</a>
         <textarea class="form-control note-editable-content" rows="3"
                   id="noteContent${idControllSuffix}"
                   name="noteContent">${note ? note.content : ""}</textarea>
 
-        <div id="attach${idControllSuffix}">
-            <g:set var="attachment"/>
-            <g:if test="${note}">
-                <g:set var="attachment" value="${note.attachment}"/>
-                <g:if test="${attachment != null}">
-                    <tsaap:viewAttachement width="150" height="150" attachement="${attachment}"/>
-                    <g:remoteLink controller="notes" action="removeAttachement"
-                                  params="[noteId: note.id]"
-                                  update="attach${idControllSuffix}">
-                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                    </g:remoteLink>
-                </g:if>
-            </g:if>
-        </div>
-
         <div class="row">
-            <g:if test="${!attachment}">
-                <div class="col-sm-7 col-md-7 col-lg-7">
-                    <input type="file" name="myFile" title="Image: gif, jpeg and png only"
-                           style="margin-top: 5px"/>
+            <div class="btn-toolbar">
+                <div id="attach${idControllSuffix}" class="col-sm-8 col-md-8 col-lg-8">
+                    <g:set var="attachment"/>
+                    <g:if test="${note}">
+                        <g:set var="attachment" value="${note.attachment}"/>
+                        <g:if test="${attachment != null}">
+                            <tsaap:viewAttachement width="150" height="150" attachement="${attachment}"/>
+                            <g:remoteLink controller="notes" action="removeAttachement"
+                                          params="[noteId: note.id]"
+                                          update="attach${idControllSuffix}">
+                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                            </g:remoteLink>
+                        </g:if>
+                    </g:if>
+                    <g:if test="${!attachment}">
+                        <input type="file" name="myFile" title="Image: gif, jpeg and png only"/>
+                    </g:if>
                 </div>
-            </g:if>
+                <div class="col-sm-4 col-md-4 col-lg-4">
+                    <div class="pull-right">
+                        <button type="button"
+                                class="btn btn-default btn-xs"
+                                id="preview_button_${idControllSuffix}">
+                            ${message(code: "notes.edit.preview")}
+                        </button>
 
-            <div id="prewiew_tab_${idControllSuffix}" class="col-sm-2 col-md-2 col-lg-2">
-                <button type="button" class="btn btn-default btn-xs"
-                        id="preview_button_${idControllSuffix}">
-                    ${message(code: "notes.edit.preview")}
-                </button>
-            </div>
-
-            <div class="col-sm-2 col-md-2 col-lg-2">
-                <button type="submit"
-                        class="btn btn-primary btn-xs"
-                        id="buttonAddNote${idControllSuffix}"
-                        disabled>
-                    ${note ? message(code: "notes.edit.update.question.button") : message(code: "notes.edit.add.question.button")}
-                </button>
+                        <button type="submit"
+                                class="btn btn-primary btn-xs"
+                                id="buttonAddNote${idControllSuffix}"
+                                disabled>
+                            <g:if test="${note}">
+                                ${message(code: "notes.edit.update.question.button")}
+                            </g:if>
+                            <g:else>
+                                <span class="glyphicon glyphicon-plus"></span> ${message(code: "notes.edit.add.question.button")}
+                            </g:else>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </g:form>
@@ -152,7 +153,7 @@ $(document).ready(function () {
         var contentQuestionSample = "";
     $.ajax({
         type: "POST",
-        url: '<g:createLink action="getQuestionsSamples" controller="notes"
+        url: '<g:createLink action="getSamples"
                             params="[questionSample: 'question_sample' + idControllSuffix, toUpdate: 'noteContent' + idControllSuffix]"/>',
         async: false
     }).done(function(data) {

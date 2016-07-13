@@ -57,25 +57,74 @@
             </g:else>
         </g:if>
     </ol>
-    <ul class="nav nav-tabs pull-right">
-        <li role="presentation" class="active" data-toggle="tooltip" data-html="true"
-            title="${message(code: "notes.disabled.link.message")}" data-placement="bottom">
-            <a class="text-muted">
-                ${message(code: "notes.link")} <span class="badge">${notes.totalCount}</span>
-            </a>
-        </li>
-        <li role="presentation">
-            <g:link controller="questions"
-                    params='[contextId: "${params.contextId}", contextName: "${params.contextName}", displaysMyNotes: "${params.displaysMyNotes}", displaysMyFavorites: "${params.displaysMyFavorites}", displaysAll: "${params.displaysAll}", fragmentTagId: "${params.fragmentTagId}", inline: "${params.inline}"]'>
-                ${message(code: "notes.question.link")} <span class="badge">${countTotal}</span>
-            </g:link>
-        </li>
-    </ul>
+    <g:if test="${context?.noteTakingEnabled}">
+        <ul class="nav nav-tabs pull-right">
+            <li role="presentation">
+                <g:link controller="notes"
+                        params='[contextId: "${params.contextId}", contextName: "${params.contextName}", displaysMyNotes: "${params.displaysMyNotes}", displaysMyFavorites: "${params.displaysMyFavorites}", displaysAll: "${params.displaysAll}", fragmentTagId: "${params.fragmentTagId}", inline: "${params.inline}"]'>
+                    ${message(code: "notes.link")} <span class="badge">${countTotal}</span>
+                </g:link>
+            </li>
+            <li role="presentation" class="active">
+                <a>
+                    ${message(code: "notes.question.link")} <span class="badge">${notes.totalCount}</span>
+                </a>
+            </li>
+        </ul>
+    </g:if>
+    <g:elseif test="${countTotal}">
+        <ul class="nav nav-tabs pull-right">
+            <g:if test="${countTotal}">
+                <li role="presentation" data-toggle="tooltip" data-html="true"
+                    title="${message(code: "notes.disabled.link.message")}" data-placement="bottom">
+                    <g:link controller="notes" class="text-muted"
+                            params='[contextId: "${params.contextId}", contextName: "${params.contextName}", displaysMyNotes: "${params.displaysMyNotes}", displaysMyFavorites: "${params.displaysMyFavorites}", displaysAll: "${params.displaysAll}", fragmentTagId: "${params.fragmentTagId}", inline: "${params.inline}"]'>
+                        ${message(code: "notes.link")} <span class="badge">${countTotal}</span>
+                    </g:link>
+                </li>
+                <li role="presentation" class="active">
+                    <a>
+                        ${message(code: "notes.question.link")} <span class="badge">${notes.totalCount}</span>
+                    </a>
+                </li>
+            </g:if>
+        </ul>
+    </g:elseif>
+
 </div>
 
-<g:if test="${context?.noteTakingEnabled && context?.isOpen()}">
+<g:if test="${context?.isOpen()}">
     <div class="container note-edition">
-        <g:render template="/notes/edit" model='[context: context, fragmentTag: fragmentTag]'/>
+        <g:if test="${user == context.owner}">
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingOne"
+                         style="margin-bottom: -15px;">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" id="accordionLink"
+                               data-parent="#accordion" href="#collapseOne"
+                               aria-expanded="false" aria-controls="collapseOne" class="collapsed">
+                                ${message(code: "notes.edit.question.editor")}
+                            </a>
+                        </h4>
+                    </div>
+
+                    <div id="collapseOne" class="panel-collapse collapse" role="tabpanel"
+                         aria-labelledby="headingOne">
+                        <g:render template="/questions/edit" model='[context: context, fragmentTag: fragmentTag]'/>
+                    </div>
+                </div>
+            </div>
+            <r:script>
+                $("#collapseOne").on('show.bs.collapse', function () {
+                    $("#headingOne").attr("style", "margin-bottom: 0px;");
+                });
+
+                $("#collapseOne").on('hidden.bs.collapse', function () {
+                    $("#headingOne").attr("style", "margin-bottom: -15px;");
+                });
+            </r:script>
+        </g:if>
     </div>
 </g:if>
 
@@ -84,7 +133,7 @@
 <div class="container note-list">
     <div class="note-list-header">
         <div class="note-list-selector pull-right">
-            <g:form controller="notes" action="index" method="get">
+            <g:form action="index" method="get">
                 <g:hiddenField name="contextId" value="${context?.id}"/>
                 <g:hiddenField name="fragmentTagId" value="${fragmentTag?.id}"/>
                 <g:hiddenField name="inline" value="${params.inline}"/>
@@ -113,14 +162,9 @@
 
     <div class="note-list-content">
         <ul class="list-group">
-            <g:if test="${!(notes.list.isEmpty())}">
-                <g:if test="${notes.list.get(0).author == user}">
-                    <g:set var="separationLine" value="false"/>
-                </g:if>
-            </g:if>
-            <g:else>
+            <g:if test="${notes.list.isEmpty()}">
                 <g:set var="separationLine" value="true"/>
-            </g:else>
+            </g:if>
             <g:each in="${notes.list}" var="note">
                 <g:if test="${(separationLine == "false") && (user != note.author) && params.inline == 'on' && params.fragmentTagId != null}">
                     <hr/>
@@ -135,12 +179,6 @@
             </g:each>
         </ul>
     </div>
-    <g:if test="${!(params.inline && params.inline == 'on' && params.fragmentTagId && params.fragmentTagId != 'null')}">
-        <div class="note-list-pagination">
-            <tsaap:paginate class="pull-right" prev="&laquo;" next="&raquo;" total="${notes.totalCount}"
-                            params='[contextId: "${params.contextId}", fragmentTagId: "${params.fragmentTagId}", displaysMyNotes: "${params.displaysMyNotes}", displaysMyFavorites: "${params.displaysMyFavorites}", displaysAll: "${params.displaysAll}", inline: "${params.inline}"]'/>
-        </div>
-    </g:if>
 </div>
 <g:if test="${context}">
     <r:script>
@@ -155,7 +193,12 @@
 <g:if test="${params.error}">
     <g:hiddenField name="errorParam" id="errorParam" value="${params.error}"/>
     <r:script>
-        alert("${message(code: "notes.edit.note.error")}");
+        if ($("#errorParam").val() == 'question') {
+            alert("${message(code: "notes.edit.question.error")}");
+        }
+        else {
+            alert("${message(code: "notes.edit.note.error")}");
+        }
     </r:script>
 </g:if>
 
@@ -167,7 +210,7 @@
         contentElement.focus().val('').val(content);
     }
 
-    $("#mainLinkNotes").addClass('active');
+    $("#mainLinkQuestions").addClass('active');
 </r:script>
 <script>
     $(function () {

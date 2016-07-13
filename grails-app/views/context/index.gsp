@@ -156,20 +156,20 @@
                                         </g:link>
                                     </li>
                                     <li>
-                                        <g:form action="duplicateContext" controller="context" name="${context.id}"
+                                        <g:form action="duplicate" controller="context" name="${context.id}"
                                                 id="${context.id}">
                                         </g:form>
                                         <a onclick="submitDuplicate(${context.id})">${message(code: 'context.index.duplicate.button')}</a>
                                     </li>
                                     <li>
                                         <g:if test="${context.isOpen()}">
-                                            <g:link action="closeContext" controller="context"
+                                            <g:link action="close" controller="context"
                                                     params="[id: context.id, filter: params.filter]">
                                                 ${message(code: 'context.index.close.button')}
                                             </g:link>
                                         </g:if>
                                         <g:else>
-                                            <g:link action="openContext" controller="context"
+                                            <g:link action="open" controller="context"
                                                     params="[id: context.id, filter: params.filter]">
                                                 ${message(code: 'context.index.open.button')}
                                             </g:link>

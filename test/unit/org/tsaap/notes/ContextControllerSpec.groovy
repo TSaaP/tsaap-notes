@@ -238,7 +238,7 @@ class ContextControllerSpec extends Specification {
         params.filter = filter
         params.show = show
         params.id = context.getId()
-        controller.closeContext(10)
+        controller.close(10)
 
         then: ""
         response.redirectedUrl == resp
@@ -264,7 +264,7 @@ class ContextControllerSpec extends Specification {
         params.filter = filter
         params.show = show
         params.id = context.getId()
-        controller.openContext(10)
+        controller.open(10)
 
         then: ""
         response.redirectedUrl == resp

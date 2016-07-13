@@ -150,11 +150,11 @@
                             target="_blank">${message(code: 'context.show.exportFeedback.link')}</g:link>
 
                     <g:if test="${context.isOpen()}">
-                        <g:link class="btn btn-primary" controller="context" action="closeContext"
+                        <g:link class="btn btn-primary" controller="context" action="close"
                                 params="[id: context.id, show: 1]">${message(code: 'context.index.close.button')}</g:link>
                     </g:if>
                     <g:elseif test="${context.isClosed()}">
-                        <g:link class="btn btn-primary" controller="context" action="openContext"
+                        <g:link class="btn btn-primary" controller="context" action="open"
                                 params="[id: context.id, show: 1]">${message(code: 'context.index.open.button')}</g:link>
 
                     </g:elseif>

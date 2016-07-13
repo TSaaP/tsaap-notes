@@ -28,15 +28,14 @@ import org.tsaap.lti.tp.ToolConsumer
 import org.tsaap.lti.tp.dataconnector.JDBC
 import org.tsaap.notes.Note
 import org.tsaap.notes.NoteService
+import org.tsaap.notes.NotesController
 
 import javax.sql.DataSource
 
 
-class QuestionController {
+class QuestionsController extends NotesController {
 
-    SpringSecurityService springSecurityService
     LiveSessionService liveSessionService
-    NoteService noteService
     StatisticsService statisticsService
     ResultListService resultListService
     LmsGradeService lmsGradeService
@@ -45,7 +44,6 @@ class QuestionController {
 
     // for export stats
     def exportService
-    def grailsApplication
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def startLiveSession() {
@@ -236,6 +234,24 @@ class QuestionController {
         render(view: '/questions/nPhasesLiveSessionResults', model: [results: results, labels: labels, user: user, liveSession: liveSession])
     }
 
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def moveUp() {
+        User user = springSecurityService.currentUser
+        def question = Note.findById(params.noteId)
+        def previousQuestion = noteService.findQuestionPrevious(question)
+        noteService.swapQuestions(question, previousQuestion, user)
+        redirect(action: index(), params: params)
+    }
+
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def moveDown() {
+        User user = springSecurityService.currentUser
+        def question = Note.findById(params.noteId)
+        def nextQuestion = noteService.findQuestionNext(question)
+        noteService.swapQuestions(question, nextQuestion, user)
+        redirect(action: index(), params: params)
+    }
+
     private String buildAnswerAsStringFromAnswers(List<String> answers) {
         StringBuilder answersAsString = new StringBuilder("[[")
         answers.each { answer ->
@@ -251,6 +267,40 @@ class QuestionController {
         answersAsString.toString()
     }
 
+    /**
+     * Give the different question type sample and create link for popup window dedicate to questions samples
+     * @return the popup window content
+     */
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def getSamples() {
+        def content = "${message(code: "notes.edit.sampleQuestion.text")}"
+        def single = "${message(code: "notes.edit.sampleQuestion.singleChoice")}"
+
+        Question singleChoice = giftQuestionService.getQuestionFromGiftText("${message(code: "notes.edit.sampleQuestion.singleChoiceExemple")}")
+
+        def singlelink = """<a class="sampleLink" id="singleQuestionSample" onClick="sampleLink(0, '${
+            params.questionSample
+        }', '${params.toUpdate}')">${
+            message(code: "notes.edit.sampleQuestion.link")
+        }</a><br><br>"""
+        def multiple = "${message(code: "notes.edit.sampleQuestion.multipleChoice")}"
+
+        Question multipleChoice = giftQuestionService.getQuestionFromGiftText("${message(code: "notes.edit.sampleQuestion.multipleChoiceExemple")}'")
+
+        def multiplelink = """<a class="sampleLink" id="multipleQuestionSample" onClick="sampleLink(1, '${
+            params.questionSample
+        }', '${params.toUpdate}')">${
+            message(code: "notes.edit.sampleQuestion.link")
+        }</a>"""
+
+        render(content)
+        render(single)
+        render(template: '/questions/preview/detail', model: [question: singleChoice])
+        render(singlelink)
+        render(multiple)
+        render(template: '/questions/preview/detail', model: [question: multipleChoice])
+        render(multiplelink)
+    }
 }
 
 class AnswersWrapperCommand {

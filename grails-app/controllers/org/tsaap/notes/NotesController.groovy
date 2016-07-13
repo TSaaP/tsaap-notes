@@ -40,7 +40,7 @@ class NotesController {
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def addNote() {
+    def add() {
         def user = springSecurityService.currentUser
         def noteContent = params.noteContent
         Context context = null
@@ -65,7 +65,7 @@ class NotesController {
         }
         Note myNote
         try {
-            if (params.kind && params.kind == 'question') {
+            if (controllerName == 'questions') {
                 myNote = noteService.addQuestion(user, noteContent, context, fragmentTag, parentNote)
             } else {
                 myNote = noteService.addStandardNote(user, noteContent, context, fragmentTag, parentNote)
@@ -85,7 +85,7 @@ class NotesController {
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def bookmarkNote() {
+    def bookmark() {
         def user = springSecurityService.currentUser
         Note note = Note.get(params.noteId)
         noteService.bookmarkNotebyUser(note, user)
@@ -94,7 +94,7 @@ class NotesController {
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def unbookmarkNote() {
+    def unbookmark() {
         def user = springSecurityService.currentUser
         Note note = Note.get(params.noteId)
         noteService.unbookmarkedNoteByUser(note, user)
@@ -103,7 +103,7 @@ class NotesController {
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def markAsLikedNote() {
+    def markAsLiked() {
         def user = springSecurityService.currentUser
         Note note = Note.get(params.noteId)
         noteService.scoreNotebyUser(note, user)
@@ -112,7 +112,7 @@ class NotesController {
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def deleteNote() {
+    def delete() {
         def user = springSecurityService.currentUser
         Note note = Note.load(params.noteId)
         noteService.deleteNoteByAuthor(note, user)
@@ -126,10 +126,10 @@ class NotesController {
      * @return
      */
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def updateNote() {
+    def update() {
         Note note = Note.findById(params.noteId as Long)
         try {
-            if (params?.kind == 'question') {
+            if (controllerName == 'questions') {
                 noteService.updateQuestionById(note, params.noteContent, note.author)
             } else {
                 noteService.updateNoteById(note, params.noteContent, note.author)
@@ -195,60 +195,6 @@ class NotesController {
     }
 
     /**
-     * Give the different question type sample and create link for popup window dedicate to questions samples
-     * @return the popup window content
-     */
-    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def getQuestionsSamples() {
-        def content = "${message(code: "notes.edit.sampleQuestion.text")}"
-        def single = "${message(code: "notes.edit.sampleQuestion.singleChoice")}"
-
-        Question singleChoice = giftQuestionService.getQuestionFromGiftText("${message(code: "notes.edit.sampleQuestion.singleChoiceExemple")}")
-
-        def singlelink = """<a class="sampleLink" id="singleQuestionSample" onClick="sampleLink(0, '${
-            params.questionSample
-        }', '${params.toUpdate}')">${
-            message(code: "notes.edit.sampleQuestion.link")
-        }</a><br><br>"""
-        def multiple = "${message(code: "notes.edit.sampleQuestion.multipleChoice")}"
-
-        Question multipleChoice = giftQuestionService.getQuestionFromGiftText("${message(code: "notes.edit.sampleQuestion.multipleChoiceExemple")}'")
-
-        def multiplelink = """<a class="sampleLink" id="multipleQuestionSample" onClick="sampleLink(1, '${
-            params.questionSample
-        }', '${params.toUpdate}')">${
-            message(code: "notes.edit.sampleQuestion.link")
-        }</a>"""
-
-        render(content)
-        render(single)
-        render(template: '/questions/preview/detail', model: [question: singleChoice])
-        render(singlelink)
-        render(multiple)
-        render(template: '/questions/preview/detail', model: [question: multipleChoice])
-        render(multiplelink)
-    }
-
-    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def moveQuestionUp() {
-        User user = springSecurityService.currentUser
-        def question = Note.findById(params.noteId)
-        def previousQuestion = noteService.findQuestionPrevious(question)
-        noteService.swapQuestions(question, previousQuestion, user)
-        redirect(action: index(), params: params)
-    }
-
-    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def moveQuestionDown() {
-        User user = springSecurityService.currentUser
-        def question = Note.findById(params.noteId)
-        def nextQuestion = noteService.findQuestionNext(question)
-        noteService.swapQuestions(question, nextQuestion, user)
-        redirect(action: index(), params: params)
-    }
-
-
-    /**
      * Render the main page given the params and the user
      * @param params the params
      * @param user the user
@@ -286,7 +232,7 @@ class NotesController {
         }
 
         def paginationAndSorting
-        if (params.kind == 'question') {
+        if (controllerName == 'questions') {
             paginationAndSorting = [sort: 'rank', order: 'asc']
         } else {
             params.max = Math.min(params.max as Long ?: 5, 20)
@@ -296,7 +242,8 @@ class NotesController {
             }
         }
 
-        def kindParams = params.kind
+        def kind = controllerName == 'questions' ? 'question' : 'standard'
+
         def inlineParams = params.inline
         def notes = noteService.findAllNotes(user,
                 displaysMyNotes,
@@ -305,11 +252,11 @@ class NotesController {
                 context,
                 fragmentTag,
                 paginationAndSorting,
-                kindParams,
+                kind,
                 inlineParams)
 
         def otherKind
-        if (kindParams == 'question') {
+        if (controllerName == 'questions') {
             otherKind = 'standard'
         } else {
             otherKind = 'question'
@@ -326,7 +273,7 @@ class NotesController {
         )
 
         /* Set isFirstQuestionInContext or isLastQuestionInContext flag on questions to know if we can't move them up or down */
-        if (kindParams == 'question') {
+        if (controllerName == 'questions') {
             if (notes.totalCount > 0) {
                 /*
                 If we use pagination for questions again we can use this code
@@ -342,12 +289,21 @@ class NotesController {
             }
         }
 
+        if (controllerName == 'questions') {
+            render view: '/questions/index', model: [user          : user,
+                                                     notes         : notes,
+                                                     countTotal    : countTotal,
+                                                     context       : context,
+                                                     fragmentTag   : fragmentTag,
+                                                     showDiscussion: showDiscussion]
+        } else {
+            render view: '/notes/index', model: [user          : user,
+                                                 notes         : notes,
+                                                 countTotal    : countTotal,
+                                                 context       : context,
+                                                 fragmentTag   : fragmentTag,
+                                                 showDiscussion: showDiscussion]
+        }
 
-        render view: '/notes/index', model: [user          : user,
-                                             notes         : notes,
-                                             countTotal    : countTotal,
-                                             context       : context,
-                                             fragmentTag   : fragmentTag,
-                                             showDiscussion: showDiscussion]
     }
 }

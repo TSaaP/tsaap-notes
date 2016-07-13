@@ -42,7 +42,7 @@ class NotesControllerSpec extends Specification {
 
         when: "Bookmark note by user"
         params.noteId = note.id
-        controller.bookmarkNote()
+        controller.bookmark()
 
         then:""
         Bookmark.count() == 1
@@ -51,7 +51,7 @@ class NotesControllerSpec extends Specification {
         when:"Bookmark the same note by user"
         response.reset()
         params.noteId = note.id
-        controller.unbookmarkNote()
+        controller.unbookmark()
 
         then:""
         Bookmark.count() == 0
@@ -61,7 +61,7 @@ class NotesControllerSpec extends Specification {
 
         when:"try to remove this note"
         params.noteId = note.id
-        controller.deleteNote()
+        controller.delete()
 
         then:"the instance is deleted"
         Note.count == 0
@@ -72,7 +72,7 @@ class NotesControllerSpec extends Specification {
 
         when:"Like note"
         params.noteId = note.id
-        controller.markAsLikedNote()
+        controller.markAsLiked()
 
         then:"the note is mark as liked note"
         Score.count() == 1

@@ -17,7 +17,7 @@
 
 <g:set var="idControllSuffix" value="${parentNote ? parentNote.id : 0}${note ? "_" + note.id : ""}"/>
 <div class="panel-body">
-    <g:form method="post" controller="notes" action="${update ? "updateNote" : "addNote"}" enctype="multipart/form-data">
+    <g:form method="post" controller="notes" action="${update ? "update" : "add"}" enctype="multipart/form-data">
         <g:if test="${note}">
             <g:hiddenField name="noteId" value="${note.id}"/>
         </g:if>
@@ -33,8 +33,8 @@
         <g:hiddenField name="displaysAll" id="displaysAllInAddForm${idControllSuffix}"/>
 
         <textarea class="form-control note-editable-content" rows="3" id="noteContent${idControllSuffix}"
-                      name="noteContent"
-                      maxlength="560">${update ? note.content: (parentNote ? '@' + parentNote.author?.username + ' ' : '')}</textarea>
+                  name="noteContent"
+                  maxlength="560">${update ? note.content : (parentNote ? '@' + parentNote.author?.username + ' ' : '')}</textarea>
 
         <g:if test="${update}">
             <div id="attach${idControllSuffix}">
@@ -59,19 +59,25 @@
         </div>
 
         <div class="row">
-            <g:if test="${!attachment}">
+            <div class="btn-toolbar">
                 <div class="col-xs-12 col-sm-9 col-md-9 col-lg-9">
-                    <input type="file" name="myFile" title="Image: gif, jpeg and png only"/>
+                    <g:if test="${!attachment}">
+                        <input type="file" name="myFile" title="Image: gif, jpeg and png only"/>
+                    </g:if>
                 </div>
-            </g:if>
-
-            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
-                <button type="submit"
-                        class="btn btn-primary btn-xs"
-                        id="buttonAddNote${idControllSuffix}"
-                        disabled>
-                    ${update ? message(code: "notes.edit.update.note.button") : message(code: "notes.edit.add.note.button")}
-                </button>
+                <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                    <button type="submit"
+                            class="btn btn-primary btn-xs pull-right"
+                            id="buttonAddNote${idControllSuffix}"
+                            disabled>
+                        <g:if test="${update}">
+                            ${message(code: "notes.edit.update.note.button")}
+                        </g:if>
+                        <g:else>
+                            <span class="glyphicon glyphicon-plus"></span> ${message(code: "notes.edit.add.note.button")}
+                        </g:else>
+                    </button>
+                </div>
             </div>
         </div>
     </g:form>

@@ -70,14 +70,14 @@
                 </p>
             </g:each>
             <p>${message(code: "questions.explanation")}</p>
-            <ckeditor:editor name="explanation" toolbar="Basic" id="explanation">${firstResponse?.explanation?.content}</ckeditor:editor>
+            <ckeditor:editor name="explanation" toolbar="Basic" id="explanation${note.id}">${firstResponse?.explanation?.content}</ckeditor:editor>
 
             <p>${message(code: "questions.confidenceDegree")} <g:select name="confidenceDegree" from="[1, 2, 3, 4, 5]"
                                                                         value="${firstResponse?.confidenceDegree}"/></p>
             <g:submitToRemote action="submitResponseInAPhase" controller="questions" update="question_${note.id}"
                               class="btn btn-primary btn-xs" value="${message(code: "questions.user.submit")}"
                               onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_${note.id}'])"
-                              before="document.getElementById('explanation').textContent = CKEDITOR.instances.explanation.getData()"/>
+                              before="document.getElementById('explanation${note.id}').textContent = CKEDITOR.instances.explanation${note.id}.getData()"/>
         </g:form>
     </g:else>
 </div>

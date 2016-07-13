@@ -54,9 +54,11 @@
                         </g:if>
                     </g:if>
                     <g:if test="${!attachment}">
-                        <input type="file" name="myFile" title="Image: gif, jpeg and png only"/>
+                        <input id="file_input_${idControllSuffix}" type="file" name="myFile"
+                               title="Image: gif, jpeg and png only"/>
                     </g:if>
                 </div>
+
                 <div class="col-sm-4 col-md-4 col-lg-4">
                     <div class="pull-right">
                         <button type="button"
@@ -64,7 +66,6 @@
                                 id="preview_button_${idControllSuffix}">
                             ${message(code: "notes.edit.preview")}
                         </button>
-
                         <button type="submit"
                                 class="btn btn-primary btn-xs"
                                 id="buttonAddNote${idControllSuffix}"
@@ -80,6 +81,7 @@
                 </div>
             </div>
         </div>
+        <div id="preview_${idControllSuffix}"></div>
     </g:form>
 </div>
 
@@ -89,12 +91,18 @@ $(document).ready(function () {
 
     // preview management
     //--------
-    $('#preview_button_${idControllSuffix}').popover({
-        content: function() {return getNotePreview()},
-        html: true,
-        placement: 'bottom'
-    }).on('shown.bs.popover', function() {
-        MathJax.Hub.Queue(['Typeset',MathJax.Hub,'prewiew_tab_${idControllSuffix}']);
+    $('#preview_button_${idControllSuffix}').click(function() {
+        var previewDiv = $('#preview_${idControllSuffix}')
+        previewDiv.html("");
+        var fl = document.getElementById('file_input_${idControllSuffix}');
+        if (fl && fl.files.length > 0) {
+            var img;
+            var blob = new Blob(fl.files, {type: 'image/png'});
+            img = document.createElement('img');
+            img.src = URL.createObjectURL(blob);
+            previewDiv.append(img);
+        }
+        previewDiv.append(getNotePreview());
     });
 
     function getNotePreview() {

@@ -22,9 +22,7 @@
     <g:set var="displayListParams"
            value="${[displaysMyNotes: params.displaysMyNotes, displaysMyFavorites: params.displaysMyFavorites, displaysAll: params.displaysAll, inline: params.inline, kind: params.kind]}"/>
     <h6 class="list-group-item-heading"><strong>@${note.author.username}</strong>
-
         <g:if test="${note.context}">
-
             <span class="badge">
                 <g:link controller="questions" action="index"
                         params="${[contextId: note.contextId] + displayListParams}">
@@ -39,7 +37,6 @@
                     </g:link>
                 </span>
             </g:if>
-
             <g:if test="${note.noteUrl}"><span class="badge">
                 <a href="${note.noteUrl}" target="_blank">
                     <span class="glyphicon glyphicon-share"></span>
@@ -70,23 +67,6 @@
                               title="${message(code: "notes.detail.edit")}"
                               data-placement="bottom"></span>
                     </a>
-                    <div class="modal fade" id="modalNote${note.id}" role="dialog" aria-labelledby="exampleModalLabel">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                            aria-hidden="true">&times;</span></button>
-                                </div>
-
-                                <div class="modal-body">
-                                    <div class="container note-edition">
-                                        <g:render template="/questions/edit"
-                                                  model='[note: note, context: context, fragmentTag: note.fragmentTag, update: true]'/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </g:if>
                 <g:if test="${!note.isFirstQuestionInContext}">
                     <g:link action="moveUp"
@@ -109,7 +89,6 @@
     <g:if test="${attachment != null}">
         <tsaap:viewAttachement width="650" height="380" attachement="${attachment}"/>
     </g:if>
-
     <g:set var="liveSession" value="${note.getLiveSession()}"/>
     <g:set var="sessionPhase" value="${liveSession ? liveSession.findCurrentPhase() : null}"/>
     <g:set var="userType" value="${(user == note.author || user == note?.context?.owner) ? 'author' : 'user'}"/>
@@ -149,7 +128,6 @@
             </g:else>
         </small>
     </div>
-
     <div>&nbsp;</div>
     <g:if test="${note.score > 1}">
         <div>
@@ -161,4 +139,21 @@
             <small class="pull-right">${note.score} ${message(code: "notes.detail.uniqueLearnScore")}</small>
         </div>
     </g:if>
+    <div class="modal fade" id="modalNote${note.id}" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="container note-edition">
+                        <g:render template="/questions/edit"
+                                  model='[note: note, context: context, fragmentTag: note.fragmentTag, update: true]'/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </li>

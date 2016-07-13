@@ -25,9 +25,7 @@
     </g:else>
     <r:require modules="tsaap_ui_notes,tsaap_icons"/>
 </head>
-
 <body>
-
 <div class="container">
     <ol class="breadcrumb" style="display: inline-block;">
         <li>
@@ -90,9 +88,7 @@
             </g:if>
         </ul>
     </g:elseif>
-
 </div>
-
 <g:if test="${context?.isOpen()}">
     <div class="container note-edition">
         <g:if test="${user == context.owner}">
@@ -100,7 +96,6 @@
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                 ${message(code: "notes.edit.add.question.button")}
             </button>
-
             <div class="modal fade" id="modalQuestion" role="dialog" aria-labelledby="exampleModalLabel">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -108,22 +103,19 @@
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                                     aria-hidden="true">&times;</span></button>
                         </div>
-
                         <div class="modal-body">
                             <div class="container note-edition">
-                                <g:render template="/questions/edit" model='[context: context, fragmentTag: fragmentTag]'/>
+                                <g:render template="/questions/edit"
+                                          model='[context: context, fragmentTag: fragmentTag]'/>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
         </g:if>
     </div>
 </g:if>
-
 <div class="divider"></div>
-
 <div class="container note-list">
     <div class="note-list-header">
         <div class="note-list-selector pull-right">
@@ -153,7 +145,6 @@
             </g:form>
         </div>
     </div>
-
     <div class="note-list-content">
         <ul class="list-group">
             <g:if test="${notes.list.isEmpty()}">
@@ -166,7 +157,6 @@
                 </g:if>
                 <g:set var="showDiscussionNote" value="${showDiscussion[note.id]}"/>
                 <div id="note${note.id}" class="${showDiscussionNote ? 'note-discussion' : 'note-only'}">
-
                     <g:render template="detail"
                               model="[note: note, context: context, showDiscussionNote: showDiscussionNote]"/>
                 </div>
@@ -183,7 +173,6 @@
 
     </r:script>
 </g:if>
-
 <g:if test="${params.error}">
     <g:hiddenField name="errorParam" id="errorParam" value="${params.error}"/>
     <r:script>
@@ -195,7 +184,6 @@
         }
     </r:script>
 </g:if>
-
 <r:script>
     function displaysReplyField(noteId) {
         $('#replyEdition' + noteId).toggle();

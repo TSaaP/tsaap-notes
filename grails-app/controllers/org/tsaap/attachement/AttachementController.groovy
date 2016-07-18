@@ -32,6 +32,4 @@ class AttachementController {
         def is = attachementService.getInputStreamForAttachement(attachement)
         render(file: is, contentType: attachement.typeMime, fileName: attachement.originalName)
     }
-
-
 }

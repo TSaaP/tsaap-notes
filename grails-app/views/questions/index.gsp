@@ -55,6 +55,9 @@
             </g:else>
         </g:if>
     </ol>
+    <g:if test="${flash.message}">
+        <div class="alert alert-info" role="status">${flash.message}</div>
+    </g:if>
     <g:if test="${context?.noteTakingEnabled}">
         <ul class="nav nav-tabs pull-right">
             <li role="presentation">
@@ -96,9 +99,9 @@
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                 ${message(code: "notes.edit.add.question.button")}
             </button>
-            <div class="modal fade" id="modalQuestion" role="dialog" aria-labelledby="exampleModalLabel">
+            <div class="modal fade" id="modalQuestion" role="dialog">
                 <div class="modal-dialog" role="document">
-                    <div class="modal-content">
+                    <div class="modal-content" style="width:700px">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                                     aria-hidden="true">&times;</span></button>

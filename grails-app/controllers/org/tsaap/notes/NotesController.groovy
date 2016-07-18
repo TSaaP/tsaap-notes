@@ -66,6 +66,7 @@ class NotesController {
         Note myNote
         try {
             if (controllerName == 'questions') {
+                flash.message = message(code: 'notes.edit.add.question.success')
                 myNote = noteService.addQuestion(user, noteContent, context, fragmentTag, parentNote)
             } else {
                 myNote = noteService.addStandardNote(user, noteContent, context, fragmentTag, parentNote)

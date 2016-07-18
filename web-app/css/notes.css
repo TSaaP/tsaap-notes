@@ -69,3 +69,10 @@ body {
     border: 1px solid #eeeeee;
 }
 
+*[id]:before {
+    display: block;
+    content: " ";
+    margin-top: -50px;
+    height: 50px;
+    visibility: hidden;
+}

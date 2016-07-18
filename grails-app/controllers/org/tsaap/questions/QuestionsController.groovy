@@ -240,7 +240,7 @@ class QuestionsController extends NotesController {
         def question = Note.findById(params.noteId)
         def previousQuestion = noteService.findQuestionPrevious(question)
         noteService.swapQuestions(question, previousQuestion, user)
-        redirect(action: index(), params: params)
+        redirect(action: index(), params: params, fragment: 'note' + params.noteId)
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
@@ -249,7 +249,7 @@ class QuestionsController extends NotesController {
         def question = Note.findById(params.noteId)
         def nextQuestion = noteService.findQuestionNext(question)
         noteService.swapQuestions(question, nextQuestion, user)
-        redirect(action: index(), params: params)
+        redirect(action: index(), params: params, fragment: 'note' + params.noteId)
     }
 
     private String buildAnswerAsStringFromAnswers(List<String> answers) {

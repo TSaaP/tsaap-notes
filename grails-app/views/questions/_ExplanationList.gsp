@@ -15,7 +15,7 @@
   -     along with this program.  If not, see <http://www.gnu.org/licenses/>.
   --}%
 
-<g:if test="${responses.size() < 4 || displaysAll}">
+<g:if test="${responses.size() < 1 || displaysAll}">
     <g:each in="${responses}" var="response" status="i">
         <g:set var="explanation" value="${response?.explanation}"/>
         <g:if test="${explanation}">
@@ -29,7 +29,7 @@
     </g:each>
 </g:if>
 <g:else>
-    <g:each var="i" in="${(0..< 3)}">
+    <g:each var="i" in="${(0..< 0)}">
         <g:set var="theResponse" value="${responses.get(i)}"/>
         <g:set var="explanation" value="${theResponse?.explanation}"/>
         <g:if test="${explanation}">
@@ -81,7 +81,9 @@
                                         <g:set var="answerGroup" value="${i}_${j}"/>
                                         <h4 class="panel-title">
                                             <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse${answerGroup}" aria-expanded="true" aria-controls="collapse${answerGroup}">
-                                                Collapsible Group Item${answerGroup}
+                                                 Réponses: ${explanationList.key}
+                                                ${message(code: "liveSessionResponse.user.score",args: [answerMap.key])}
+                                                 ${message(code: "questions.responseCount")}:${explanationList.value.size()}
                                             </a>
                                         </h4>
                                     </div>

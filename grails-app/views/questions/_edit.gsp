@@ -54,9 +54,11 @@
                         </g:if>
                     </g:if>
                     <g:if test="${!attachment}">
-                        <input type="file" name="myFile" title="Image: gif, jpeg and png only"/>
+                        <input type="file" name="myFile"
+                               title="Image: gif, jpeg and png only"/>
                     </g:if>
                 </div>
+
                 <div class="col-sm-4 col-md-4 col-lg-4">
                     <div class="pull-right">
                         <button type="button"
@@ -64,22 +66,17 @@
                                 id="preview_button_${idControllSuffix}">
                             ${message(code: "notes.edit.preview")}
                         </button>
-
                         <button type="submit"
                                 class="btn btn-primary btn-xs"
                                 id="buttonAddNote${idControllSuffix}"
                                 disabled>
-                            <g:if test="${note}">
                                 ${message(code: "notes.edit.update.question.button")}
-                            </g:if>
-                            <g:else>
-                                <span class="glyphicon glyphicon-plus"></span> ${message(code: "notes.edit.add.question.button")}
-                            </g:else>
                         </button>
                     </div>
                 </div>
             </div>
         </div>
+        <div id="preview_${idControllSuffix}"></div>
     </g:form>
 </div>
 
@@ -89,13 +86,53 @@ $(document).ready(function () {
 
     // preview management
     //--------
-    $('#preview_button_${idControllSuffix}').popover({
-        content: function() {return getNotePreview()},
-        html: true,
-        placement: 'bottom'
-    }).on('shown.bs.popover', function() {
-        MathJax.Hub.Queue(['Typeset',MathJax.Hub,'prewiew_tab_${idControllSuffix}']);
+    $('#preview_button_${idControllSuffix}').click(function() {
+        var fileTypes = ['image/gif', 'image/jpeg', 'image/png'];
+        var previewDiv = $('#preview_${idControllSuffix}')
+        previewDiv.html("");
+        var attach = document.getElementById('attach${idControllSuffix}');
+        var inputs = attach.getElementsByTagName('input');
+        var img;
+        if (inputs.length > 0) { // If there is a fileInput (to add an image) we use it
+            var fl = inputs[0];
+            if (fl && fl.files.length > 0 && fileTypes.includes(fl.files[0].type)) {
+                img = document.createElement('img');
+                var blob = new Blob(fl.files, {type: 'image/png'});
+                //img = document.createElement('img');
+                img.src = URL.createObjectURL(blob);
+            }
+        } else { // If there already is an image we use it
+            img = document.createElement('img');
+            var existingImg = attach.getElementsByTagName('img')[0];
+            if (img) {
+                img.src = existingImg.src;
+            }
+        }
+
+        if (img) {
+            img.onload = function() {
+                resizeImg(img);
+                previewDiv.prepend(img);
+            };
+        }
+
+        previewDiv.append(getNotePreview());
     });
+
+    function resizeImg(img) {
+        var l = img.naturalWidth;
+        var h = img.naturalHeight;
+
+        var ratio = Math.max(l / 650.0, h / 380.0);
+
+        if (ratio > 1) {
+            l = Math.floor(l / ratio);
+            h = Math.floor(h / ratio);
+        }
+
+        img.width = l;
+        img.height = h;
+    }
 
     function getNotePreview() {
         var noteInput = $("#noteContent${idControllSuffix}").val();
@@ -103,7 +140,7 @@ $(document).ready(function () {
         if (noteInput.lastIndexOf('::', 0) === 0) {
             $.ajax({
                 type: "POST",
-                url: '<g:createLink action="evaluateContentAsNote" controller="notes"/>',
+                url: '<g:createLink action="evaluateContentAsQuestion"/>',
                 data: {content:noteInput},
                 async: false
             }).done(function(data) {

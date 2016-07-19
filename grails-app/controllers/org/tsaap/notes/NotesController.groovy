@@ -66,6 +66,7 @@ class NotesController {
         Note myNote
         try {
             if (controllerName == 'questions') {
+                flash.message = message(code: 'notes.edit.add.question.success')
                 myNote = noteService.addQuestion(user, noteContent, context, fragmentTag, parentNote)
             } else {
                 myNote = noteService.addStandardNote(user, noteContent, context, fragmentTag, parentNote)
@@ -177,21 +178,6 @@ class NotesController {
         def user = springSecurityService.currentUser
         Map showDiscussion = [:]
         renderMainPage(params, user, showDiscussion)
-    }
-
-    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def evaluateContentAsNote() {
-        String noteInput = params.content
-        if (noteInput?.startsWith('::')) {
-            try {
-                Question question = giftQuestionService.getQuestionFromGiftText(noteInput)
-                render(template: '/questions/preview/detail', model: [question: question])
-            } catch (Exception e) {
-                render("${e.message}")
-            }
-        } else {
-            render(noteInput ?: '')
-        }
     }
 
     /**

@@ -59,7 +59,7 @@
     </ol>
     <ul class="nav nav-tabs pull-right">
         <li role="presentation" class="active" data-toggle="tooltip" data-html="true"
-            title="${message(code: "notes.disabled.link.message")}" data-placement="bottom">
+            title="${context.noteTakingEnabled ? '' : message(code: "notes.disabled.link.message")}" data-placement="bottom">
             <a class="text-muted">
                 ${message(code: "notes.link")} <span class="badge">${notes.totalCount}</span>
             </a>

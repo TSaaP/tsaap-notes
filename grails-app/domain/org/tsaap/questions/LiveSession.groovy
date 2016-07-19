@@ -199,6 +199,32 @@ class LiveSession {
         }
     }
 
+    Map<Float, Map<String, List<LiveSessionResponse>>> findAllBadResponses(SessionPhase sessionPhase = null) {
+        def list
+        Map map = [:]
+        if (sessionPhase) {
+            list =  LiveSessionResponse.findAllBySessionPhaseAndPercentCreditLessThan(sessionPhase, 100,
+                    [sort: "percentCredit", order: "desc", fetch: [explanation: 'join']])
+        } else {
+            list =  LiveSessionResponse.findAllByLiveSessionAndPercentCreditLessThan(this, 100,
+                    [sort: "percentCredit", order: "desc", fetch: [explanation: 'join']])
+        }
+        list.each {
+            if (!map[it.percentCredit]){
+                def answerMap = [:]
+                answerMap.put(it.answerListAsString, [it])
+                map[it.percentCredit] = answerMap
+            } else {
+                if (!map[it.percentCredit][it.answerListAsString]) {
+                    map[it.percentCredit][it.answerListAsString] = [it]
+                } else {
+                    map[it.percentCredit][it.answerListAsString].push(it)
+                }
+            }
+
+        }
+        map
+    }
     static transients = ['resultMatrix', 'resultMatrixService']
 }
 

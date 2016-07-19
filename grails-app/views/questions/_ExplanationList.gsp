@@ -29,7 +29,7 @@
     </g:each>
 </g:if>
 <g:else>
-    <g:each var="i" in="${(0..<3)}">
+    <g:each var="i" in="${(0..< 3)}">
         <g:set var="theResponse" value="${responses.get(i)}"/>
         <g:set var="explanation" value="${theResponse?.explanation}"/>
         <g:if test="${explanation}">
@@ -57,8 +57,44 @@
                 </div>
 
                 <div class="modal-body">
-                    <g:render template="/questions/ExplanationList"
-                              model="[responses: responses, note: note, displaysAll: true]"/>
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingOne">
+                                <h4 class="panel-title">
+                                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        Collapsible Group Item #1
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                <div class="panel-body">
+                                    <g:render template="/questions/ExplanationList"
+                                              model="[responses: responses, note: note, displaysAll: true]"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <g:each in="${badResponses}" var="answerMap" status="i">
+                            <g:each in="${answerMap.value}" var="explanationList" status="j">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="heading${explanationList.key}">
+                                        <g:set var="answerGroup" value="${i}_${j}"/>
+                                        <h4 class="panel-title">
+                                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse${answerGroup}" aria-expanded="true" aria-controls="collapse${answerGroup}">
+                                                Collapsible Group Item${answerGroup}
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapse${answerGroup}" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading${answerGroup}">
+                                        <div class="panel-body">
+                                            <g:render template="/questions/ExplanationList"
+                                                      model="[responses: explanationList.value, note: note, displaysAll: true]"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </g:each>
+                        </g:each>
+
                 </div>
 
                 <div class="modal-footer">
@@ -68,6 +104,8 @@
             </div>
         </div>
     </div>
+    </div>
+
 </g:else>
 
 

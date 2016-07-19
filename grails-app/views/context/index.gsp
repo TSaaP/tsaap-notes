@@ -98,9 +98,9 @@
 
                     <td>
                         <strong>
-
-                            <g:link controller="notes"
-                                    params="[displaysAll: 'on', contextName: context.contextName, contextId: context.id, kind: context.noteTakingEnabled ? 'standard' : 'question']">${fieldValue(bean: context, field: "contextName")}
+                            <g:set var="linkController" value="${context.noteTakingEnabled ? 'notes' : 'questions'}"/>
+                            <g:link controller="$linkController"
+                                    params="[displaysAll: 'on', contextName: context.contextName, contextId: context.id]">${fieldValue(bean: context, field: "contextName")}
                             </g:link>
                         </strong>
                         <g:if test="${context.isClosed()}">

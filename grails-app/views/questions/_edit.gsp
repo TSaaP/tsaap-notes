@@ -70,12 +70,7 @@
                                 class="btn btn-primary btn-xs"
                                 id="buttonAddNote${idControllSuffix}"
                                 disabled>
-                            <g:if test="${note}">
                                 ${message(code: "notes.edit.update.question.button")}
-                            </g:if>
-                            <g:else>
-                                <span class="glyphicon glyphicon-plus"></span> ${message(code: "notes.edit.add.question.button")}
-                            </g:else>
                         </button>
                     </div>
                 </div>

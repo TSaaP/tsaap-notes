@@ -18,20 +18,13 @@
 package org.tsaap.questions
 
 import grails.plugins.springsecurity.Secured
-import grails.plugins.springsecurity.SpringSecurityService
-import groovy.sql.Sql
 import org.tsaap.directory.User
 import org.tsaap.lti.LmsContextHelper
 import org.tsaap.lti.LmsGradeService
-import org.tsaap.lti.tp.ResourceLink
-import org.tsaap.lti.tp.ToolConsumer
-import org.tsaap.lti.tp.dataconnector.JDBC
 import org.tsaap.notes.Note
-import org.tsaap.notes.NoteService
 import org.tsaap.notes.NotesController
 
 import javax.sql.DataSource
-
 
 class QuestionsController extends NotesController {
 

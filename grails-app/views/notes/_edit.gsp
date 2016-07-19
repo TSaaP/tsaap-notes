@@ -65,6 +65,7 @@
                         <input type="file" name="myFile" title="Image: gif, jpeg and png only"/>
                     </g:if>
                 </div>
+
                 <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
                     <button type="submit"
                             class="btn btn-primary btn-xs pull-right"
@@ -84,41 +85,11 @@
 </div>
 
 <r:script>
-  $(document).ready(function () {
+    $("#noteContent${idControllSuffix}").bind('keyup blur', function () {
+        charCount('${idControllSuffix}', this);
+    }).keyup();
 
-    $("#collapseOne${idControllSuffix}").on('show.bs.collapse', function(){
-        $("#headingOne${idControllSuffix}").attr("style","margin-bottom: 0px;");
-    });
-
-    $("#collapseOne${idControllSuffix}").on('hidden.bs.collapse', function(){
-        $("#headingOne${idControllSuffix}").attr("style","margin-bottom: -15px;");
-    });
-
-    // set character counters
-    //-----------------------
-
-    // Get the textarea field
-    $("#noteContent${idControllSuffix}")
-
-      // Bind the counter function on keyup and blur events
-            .bind('keyup blur', function () {
-                    // Count the characters and set the counter text
-                    var counter =  $("#character_counter${idControllSuffix}");
-                    counter.text($(this).val().length + '/560 ${message(code: "notes.edit.characters")}');
-                    if ($(this).val().length >1) {
-                      $("#buttonAddNote${idControllSuffix}").removeAttr('disabled');
-                    } else {
-                      $("#buttonAddNote${idControllSuffix}").attr('disabled','disabled');
-                    }
-                  })
-
-      // Trigger the counter on first load
-            .keyup();
-
-    // set hidden field value
-    //----------------------
     $("#displaysMyNotesInAddForm${idControllSuffix}").val($("#displaysMyNotes").attr('checked') ? 'on' : '');
     $("#displaysMyFavoritesInAddForm${idControllSuffix}").val($("#displaysMyFavorites").attr('checked') ? 'on' : '');
     $("#displaysAllInAddForm${idControllSuffix}").val($("#displaysAll").attr('checked') ? 'on' : '');
-  });
 </r:script>

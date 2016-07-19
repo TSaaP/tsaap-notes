@@ -166,8 +166,18 @@
         var content = contentElement.val();
         contentElement.focus().val('').val(content);
     }
-
-    $("#mainLinkNotes").addClass('active');
+</r:script>
+%{--Functions for note edition--}%
+<r:script>
+    function charCount(idControllSuffix, content) {
+        var counter =  $("#character_counter" + idControllSuffix);
+        counter.text($(content).val().length + '/560 ${message(code: "notes.edit.characters")}');
+        if ($(content).val().length >1) {
+            $("#buttonAddNote" + idControllSuffix).removeAttr('disabled');
+        } else {
+            $("#buttonAddNote" + idControllSuffix).attr('disabled','disabled');
+        }
+    }
 </r:script>
 <script>
     $(function () {

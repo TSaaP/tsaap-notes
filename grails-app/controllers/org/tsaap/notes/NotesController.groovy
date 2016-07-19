@@ -21,7 +21,6 @@ import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
 import org.tsaap.attachement.AttachementService
 import org.tsaap.directory.User
-import org.tsaap.questions.Question
 import org.tsaap.questions.impl.gift.GiftQuestionService
 
 class NotesController {
@@ -66,8 +65,8 @@ class NotesController {
         Note myNote
         try {
             if (controllerName == 'questions') {
-                flash.message = message(code: 'notes.edit.add.question.success')
                 myNote = noteService.addQuestion(user, noteContent, context, fragmentTag, parentNote)
+                flash.message = message(code: 'notes.edit.add.question.success')
             } else {
                 myNote = noteService.addStandardNote(user, noteContent, context, fragmentTag, parentNote)
             }

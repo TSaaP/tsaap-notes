@@ -25,6 +25,7 @@
     </g:else>
     <r:require modules="tsaap_ui_notes,tsaap_icons"/>
 </head>
+
 <body>
 <div class="container">
     <ol class="breadcrumb" style="display: inline-block;">
@@ -99,6 +100,7 @@
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                 ${message(code: "notes.edit.add.question.button")}
             </button>
+
             <div class="modal fade" id="modalQuestion" role="dialog">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content" style="width:700px">
@@ -106,6 +108,7 @@
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                                     aria-hidden="true">&times;</span></button>
                         </div>
+
                         <div class="modal-body">
                             <div class="container note-edition">
                                 <g:render template="/questions/edit"
@@ -119,6 +122,7 @@
     </div>
 </g:if>
 <div class="divider"></div>
+
 <div class="container note-list">
     <div class="note-list-header">
         <div class="note-list-selector pull-right">
@@ -148,6 +152,7 @@
             </g:form>
         </div>
     </div>
+
     <div class="note-list-content">
         <ul class="list-group">
             <g:if test="${notes.list.isEmpty()}">
@@ -169,33 +174,118 @@
 </div>
 <g:if test="${context}">
     <r:script>
-  $('#button_context').popover({
-                                 content: "<p><strong>url</strong>: <a href='${context.url}' target='blank'>${context.url}</a></p><p>${context.descriptionAsNote?.replaceAll('[\n\r]', ' ')}</p>",
-                                 html: true
-                               })
-
+        $('#button_context').popover({
+            content: "<p><strong>url</strong>: <a href='${context.url}' target='blank'>${context.url}</a></p><p>${context.descriptionAsNote?.replaceAll('[\n\r]', ' ')}</p>",
+            html: true
+        });
     </r:script>
 </g:if>
 <g:if test="${params.error}">
     <g:hiddenField name="errorParam" id="errorParam" value="${params.error}"/>
     <r:script>
-        if ($("#errorParam").val() == 'question') {
-            alert("${message(code: "notes.edit.question.error")}");
-        }
-        else {
-            alert("${message(code: "notes.edit.note.error")}");
-        }
+        alert("${message(code: "notes.edit.question.error")}");
     </r:script>
 </g:if>
+%{--Functions for question edition--}%
 <r:script>
-    function displaysReplyField(noteId) {
-        $('#replyEdition' + noteId).toggle();
-        var contentElement = $('#noteContent' + noteId);
-        var content = contentElement.val();
-        contentElement.focus().val('').val(content);
+    function charCount(idControllSuffix, content) {
+        var counter =  $("#character_counter" + idControllSuffix);
+        counter.text($(content).val().length + '/560 ${message(code: "notes.edit.characters")}');
+        if ($(content).val().length >1) {
+            $("#buttonAddNote" + idControllSuffix).removeAttr('disabled');
+        } else {
+            $("#buttonAddNote" + idControllSuffix).attr('disabled','disabled');
+        }
     }
 
-    $("#mainLinkQuestions").addClass('active');
+    function showPreview(idControllSuffix, link) {
+        var fileTypes = ['image/gif', 'image/jpeg', 'image/png'];
+        var previewDiv = $('#preview_' + idControllSuffix);
+        previewDiv.html("");
+        var attach = document.getElementById('attach' + idControllSuffix);
+        var inputs = attach.getElementsByTagName('input');
+        var img;
+        if (inputs.length > 0) { // If there is a fileInput (to add an image) we use it
+            var fl = inputs[0];
+            if (fl && fl.files.length > 0 && fileTypes.includes(fl.files[0].type)) {
+                img = document.createElement('img');
+                var blob = new Blob(fl.files, {type: 'image/png'});
+                //img = document.createElement('img');
+                img.src = URL.createObjectURL(blob);
+            }
+        } else { // If there already is an image we use it
+            img = document.createElement('img');
+            var existingImg = attach.getElementsByTagName('img')[0];
+            if (img) {
+                img.src = existingImg.src;
+            }
+        }
+
+        if (img) {
+            img.onload = function() {
+                resizeImg(img);
+                previewDiv.prepend(img);
+            };
+        }
+
+        previewDiv.append(getNotePreview(idControllSuffix, link));
+    }
+
+    function resizeImg(img) {
+        var l = img.naturalWidth;
+        var h = img.naturalHeight;
+
+        var ratio = Math.max(l / 650.0, h / 380.0);
+
+        if (ratio > 1) {
+            l = Math.floor(l / ratio);
+            h = Math.floor(h / ratio);
+        }
+
+        img.width = l;
+        img.height = h;
+    }
+
+    function getNotePreview(idControllSuffix, link) {
+        var noteInput = $("#noteContent" + idControllSuffix).val();
+        contentPreview = noteInput;
+        if (noteInput.lastIndexOf('::', 0) === 0) {
+            $.ajax({
+                type: "POST",
+                url: link,
+                data: {content:noteInput},
+                async: false
+            }).done(function(data) {
+                contentPreview = data ;
+            });
+        }
+        return contentPreview;
+    }
+
+    function sampleLink(id, questionSample, toUpdate){
+        $('#' + questionSample).popover('hide');
+        var precedentText = $('#' + toUpdate).val();
+        if(id == 0) {
+            $('#' + toUpdate).val("${message(code: "notes.edit.sampleQuestion.singleChoiceExemple")}"+"\n"+precedentText);
+        }
+        else {
+            $('#' + toUpdate).val("${message(code: "notes.edit.sampleQuestion.multipleChoiceExemple")}" +"\n"+precedentText);
+        }
+        $('#' + toUpdate).focus();
+        $('#' + toUpdate).blur();
+    }
+
+    function getQuestionSample(idControllSuffix, link) {
+        var contentQuestionSample = "";
+        $.ajax({
+            type: "POST",
+            url: link,
+            async: false
+        }).done(function(data) {
+            contentQuestionSample = data;
+        });
+        return contentQuestionSample;
+    }
 </r:script>
 <script>
     $(function () {

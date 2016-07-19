@@ -36,7 +36,8 @@
            style="margin-top: 15px">${message(code: "notes.edit.sampleQuestion")}</a>
         <textarea class="form-control note-editable-content" rows="3"
                   id="noteContent${idControllSuffix}"
-                  name="noteContent">${note ? note.content : ""}</textarea>
+                  name="noteContent"
+                  onkeyup="" onblur="">${note ? note.content : ""}</textarea>
 
         <div class="row">
             <div class="btn-toolbar">
@@ -63,7 +64,7 @@
                     <div class="pull-right">
                         <button type="button"
                                 class="btn btn-default btn-xs"
-                                id="preview_button_${idControllSuffix}">
+                                onclick="showPreview('${idControllSuffix}', '<g:createLink action="evaluateContentAsQuestion"/>')">
                             ${message(code: "notes.edit.preview")}
                         </button>
                         <button type="submit"
@@ -76,141 +77,27 @@
                 </div>
             </div>
         </div>
+
         <div id="preview_${idControllSuffix}"></div>
     </g:form>
 </div>
 
 <r:script>
-$(document).ready(function () {
-    var contentPreview;
+    $("#noteContent${idControllSuffix}").bind('keyup blur', function () {
+        charCount('${idControllSuffix}', this);
+    }).keyup();
 
-    // preview management
-    //--------
-    $('#preview_button_${idControllSuffix}').click(function() {
-        var fileTypes = ['image/gif', 'image/jpeg', 'image/png'];
-        var previewDiv = $('#preview_${idControllSuffix}')
-        previewDiv.html("");
-        var attach = document.getElementById('attach${idControllSuffix}');
-        var inputs = attach.getElementsByTagName('input');
-        var img;
-        if (inputs.length > 0) { // If there is a fileInput (to add an image) we use it
-            var fl = inputs[0];
-            if (fl && fl.files.length > 0 && fileTypes.includes(fl.files[0].type)) {
-                img = document.createElement('img');
-                var blob = new Blob(fl.files, {type: 'image/png'});
-                //img = document.createElement('img');
-                img.src = URL.createObjectURL(blob);
-            }
-        } else { // If there already is an image we use it
-            img = document.createElement('img');
-            var existingImg = attach.getElementsByTagName('img')[0];
-            if (img) {
-                img.src = existingImg.src;
-            }
-        }
-
-        if (img) {
-            img.onload = function() {
-                resizeImg(img);
-                previewDiv.prepend(img);
-            };
-        }
-
-        previewDiv.append(getNotePreview());
-    });
-
-    function resizeImg(img) {
-        var l = img.naturalWidth;
-        var h = img.naturalHeight;
-
-        var ratio = Math.max(l / 650.0, h / 380.0);
-
-        if (ratio > 1) {
-            l = Math.floor(l / ratio);
-            h = Math.floor(h / ratio);
-        }
-
-        img.width = l;
-        img.height = h;
-    }
-
-    function getNotePreview() {
-        var noteInput = $("#noteContent${idControllSuffix}").val();
-        contentPreview = noteInput;
-        if (noteInput.lastIndexOf('::', 0) === 0) {
-            $.ajax({
-                type: "POST",
-                url: '<g:createLink action="evaluateContentAsQuestion"/>',
-                data: {content:noteInput},
-                async: false
-            }).done(function(data) {
-                contentPreview = data ;
-            });
-        }
-        return contentPreview;
-    }
-
-    // set character counters
-    //-----------------------
-
-    // Get the textarea field
-    $("#noteContent${idControllSuffix}")
-
-        // Bind the counter function on keyup and blur events
-        .bind('keyup blur', function () {
-            // Count the characters and set the counter text
-            var counter =  $("#character_counter${idControllSuffix}");
-            counter.text($(this).val().length + '/560 ${message(code: "notes.edit.characters")}');
-            if ($(this).val().length >1) {
-                $("#buttonAddNote${idControllSuffix}").removeAttr('disabled');
-            } else {
-                $("#buttonAddNote${idControllSuffix}").attr('disabled','disabled');
-            }
-        })
-
-        // Trigger the counter on first load
-        .keyup();
-
-    // set hidden field value
-    //----------------------
     $("#displaysMyNotesInAddForm${idControllSuffix}").val($("#displaysMyNotes").attr('checked') ? 'on' : '');
     $("#displaysMyFavoritesInAddForm${idControllSuffix}").val($("#displaysMyFavorites").attr('checked') ? 'on' : '');
     $("#displaysAllInAddForm${idControllSuffix}").val($("#displaysAll").attr('checked') ? 'on' : '');
 
-    // Questions samples popup management
     $('#question_sample${idControllSuffix}').popover({
-        content: function() {return getQuestionSample${idControllSuffix}()},
+        content: function() {
+            return getQuestionSample('${idControllSuffix}','<g:createLink action="getSamples"
+                                                                          params="[questionSample: 'question_sample' + idControllSuffix, toUpdate: 'noteContent' + idControllSuffix]"/>')},
         html: true,
         placement: 'bottom'
     }).on('shown.bs.popover', function() {
         MathJax.Hub.Queue(['Typeset',MathJax.Hub,'question_sample'])
     });
-
-    function ${'getQuestionSample' + idControllSuffix}() {
-        var contentQuestionSample = "";
-    $.ajax({
-        type: "POST",
-        url: '<g:createLink action="getSamples"
-                            params="[questionSample: 'question_sample' + idControllSuffix, toUpdate: 'noteContent' + idControllSuffix]"/>',
-        async: false
-    }).done(function(data) {
-        contentQuestionSample = data;
-    });
-        return contentQuestionSample;
-    }
-
-});
-
-function sampleLink(id, questionSample, toUpdate){
-    $('#' + questionSample).popover('hide');
-    var precedentText = $('#' + toUpdate).val();
-    if(id == 0) {
-        $('#' + toUpdate).val("${message(code: "notes.edit.sampleQuestion.singleChoiceExemple")}"+"\n"+precedentText);
-    }
-    else {
-        $('#' + toUpdate).val("${message(code: "notes.edit.sampleQuestion.multipleChoiceExemple")}" +"\n"+precedentText);
-    }
-    $('#' + toUpdate).focus();
-    $('#' + toUpdate).blur();
-}
 </r:script>

@@ -45,13 +45,13 @@
         </button>
         <a class="navbar-brand" href="${grailsApplication.config.grails.serverURL}">TsaaP-Notes</a>
 
-        <div class="nav-collapse collapse">
+        <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li id="mainLinkContexts"><g:link controller="context"
                                                   params="[filter: FilterReservedValue.__MINE__.name()]">${message(code: "layout.main.scope")}</g:link></li>
             </ul>
 
-            <div class="nav-collapse collapse pull-right">
+            <div class="navbar-collapse collapse pull-right">
                 <ul class="nav navbar-nav">
                     <tsaap:ifLoggedIn>
                         <li class="dropdown">

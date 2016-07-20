@@ -41,7 +41,7 @@
         </button>
         <g:link class="navbar-brand" uri="/">TsaaP-Notes</g:link>
 
-        <div class="nav-collapse collapse">
+        <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li><a href="https://github.com/TSaaP/tsaap-notes"
                        target="_blank">${message(code: "layout.home.github")}</a></li>
@@ -63,7 +63,7 @@
                 %{--</li>--}%
             </ul>
 
-            <div class="nav-collapse collapse pull-right">
+            <div class="navbar-collapse collapse pull-right">
                 <ul class="nav navbar-nav">
                     <tsaap:ifNotLoggedIn>
                         <li><g:link controller="login"

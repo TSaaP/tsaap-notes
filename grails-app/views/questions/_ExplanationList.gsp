@@ -87,7 +87,7 @@
                                             </a>
                                         </h4>
                                     </div>
-                                    <div id="collapse${answerGroup}" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading${answerGroup}">
+                                    <div id="collapse${answerGroup}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading${answerGroup}">
                                         <div class="panel-body">
                                             <g:render template="/questions/ExplanationList"
                                                       model="[responses: explanationList.value, note: note, displaysAll: true]"/>

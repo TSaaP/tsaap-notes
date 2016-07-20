@@ -24,6 +24,9 @@ import org.hibernate.StaleObjectStateException
 import org.tsaap.directory.User
 import org.tsaap.notes.Note
 
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+
 class LiveSession {
 
     Date dateCreated
@@ -210,21 +213,38 @@ class LiveSession {
                     [sort: "percentCredit", order: "desc", fetch: [explanation: 'join']])
         }
         list.each {
-            if (!map[it.percentCredit]){
+            def answers = prettyAnswers(it.answerListAsString)
+            if (!map[it.percentCredit]) {
                 def answerMap = [:]
-                answerMap.put(it.answerListAsString, [it])
+                answerMap.put(answers, [it])
                 map[it.percentCredit] = answerMap
             } else {
-                if (!map[it.percentCredit][it.answerListAsString]) {
-                    map[it.percentCredit][it.answerListAsString] = [it]
+                if (!map[it.percentCredit][answers]) {
+                    map[it.percentCredit][answers] = [it]
                 } else {
-                    map[it.percentCredit][it.answerListAsString].push(it)
+                    map[it.percentCredit][answers].push(it)
                 }
             }
-
         }
         map
     }
+
+    private static String prettyAnswers(answerList) {
+        def answers = answerList.replaceAll("[\\[\\]\\\"]", "")
+
+        Pattern digitPattern = Pattern.compile("(\\d+)");
+
+        Matcher matcher = digitPattern.matcher(answers);
+        StringBuffer result = new StringBuffer();
+        while (matcher.find())
+        {
+            matcher.appendReplacement(result, String.valueOf(Integer.parseInt(matcher.group(1)) + 1));
+        }
+        matcher.appendTail(result);
+
+        return result.toString();
+    }
+
     static transients = ['resultMatrix', 'resultMatrixService']
 }
 

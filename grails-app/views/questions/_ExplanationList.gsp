@@ -36,7 +36,7 @@
             <div class="alert alert-info">
                 <strong><g:formatNumber number="${explanation.findOrUpdateMeanGrade()}" type="number"
                                         maxFractionDigits="2"/> /5  @${explanation.author.username}</strong> ${message(code: "questions.explanation.evaluated")} ${explanation.evaluationCount()} ${message(code: "questions.explanation.contributors")}<br/>
-                ${explanation.content}
+                ${raw(explanation.content)}
             </div>
         </g:if>
 
@@ -61,8 +61,15 @@
                         <div class="panel panel-default">
                             <div class="panel-heading" role="tab" id="headingOne">
                                 <h4 class="panel-title">
+                                    <g:set var="responsesChoice" value="${responses.get(0).prettyAnswers()}"/>
                                     <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                        Collapsible Group Item #1
+                                    <small>
+                                        <p class="text-info text-center">
+                                            ${message(code: "liveSessionResponse.users.responses")}:${responsesChoice} <strong>--</strong>
+                                            ${message(code: "liveSessionResponse.user.score",args: [100])}<strong> --</strong>
+                                            ${message(code: "questions.responseCount")}:${responses.size()}
+                                        </p>
+                                    </small>
                                     </a>
                                 </h4>
                             </div>
@@ -81,9 +88,13 @@
                                         <g:set var="answerGroup" value="${i}_${j}"/>
                                         <h4 class="panel-title">
                                             <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse${answerGroup}" aria-expanded="true" aria-controls="collapse${answerGroup}">
-                                                 Réponses: ${explanationList.key}
-                                                ${message(code: "liveSessionResponse.user.score",args: [answerMap.key])}
-                                                 ${message(code: "questions.responseCount")}:${explanationList.value.size()}
+                                                <small>
+                                                    <p class="text-info text-center">
+                                                        ${message(code: "liveSessionResponse.users.responses")}: ${explanationList.key} <strong>--</strong>
+                                                        ${message(code: "liveSessionResponse.user.score",args: [answerMap.key])}  <strong>--</strong>
+                                                        ${message(code: "questions.responseCount")}:${explanationList.value.size()}
+                                                    </p>
+                                                </small>
                                             </a>
                                         </h4>
                                     </div>

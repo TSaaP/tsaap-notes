@@ -24,8 +24,7 @@ import org.hibernate.StaleObjectStateException
 import org.tsaap.directory.User
 import org.tsaap.notes.Note
 
-import java.util.regex.Matcher
-import java.util.regex.Pattern
+
 
 class LiveSession {
 
@@ -213,7 +212,7 @@ class LiveSession {
                     [sort: "percentCredit", order: "desc", fetch: [explanation: 'join']])
         }
         list.each {
-            def answers = prettyAnswers(it.answerListAsString)
+            def answers = it.prettyAnswers()
             if (!map[it.percentCredit]) {
                 def answerMap = [:]
                 answerMap.put(answers, [it])
@@ -229,21 +228,6 @@ class LiveSession {
         map
     }
 
-    private static String prettyAnswers(answerList) {
-        def answers = answerList.replaceAll("[\\[\\]\\\"]", "")
-
-        Pattern digitPattern = Pattern.compile("(\\d+)");
-
-        Matcher matcher = digitPattern.matcher(answers);
-        StringBuffer result = new StringBuffer();
-        while (matcher.find())
-        {
-            matcher.appendReplacement(result, String.valueOf(Integer.parseInt(matcher.group(1)) + 1));
-        }
-        matcher.appendTail(result);
-
-        return result.toString();
-    }
 
     static transients = ['resultMatrix', 'resultMatrixService']
 }

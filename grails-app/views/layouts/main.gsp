@@ -37,39 +37,37 @@
 <g:layoutBody/>
 <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
-        <button type="button" class="navbar-toggle" data-toggle="collapse"
-                data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="${grailsApplication.config.grails.serverURL}">TsaaP-Notes</a>
-
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="${grailsApplication.config.grails.serverURL}">TsaaP-Notes</a>
+        </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li id="mainLinkContexts"><g:link controller="context"
                                                   params="[filter: FilterReservedValue.__MINE__.name()]">${message(code: "layout.main.scope")}</g:link></li>
             </ul>
-
-            <div class="navbar-collapse collapse pull-right">
-                <ul class="nav navbar-nav">
-                    <tsaap:ifLoggedIn>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><sec:username/>
-                                <span class="glyphicon glyphicon-cog"></span> <b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li><g:link controller="userAccount"
-                                            action="doEdit">${message(code: "layout.main.account")}</g:link></li>
-                                <li class="divider"></li>
-                                <li><g:link controller="settings"
-                                            action="doSettings">${message(code: "layout.main.settings")}</g:link></li>
-                                <li class="divider"></li>
-                                <li><g:link controller="logout">${message(code: "layout.main.disconnect")}</g:link></li>
-                            </ul>
-                        </li>
-                    </tsaap:ifLoggedIn>
-                </ul>
-            </div>
+            <ul class="nav navbar-nav navbar-right">
+                <tsaap:ifLoggedIn>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><sec:username/>
+                            <span class="glyphicon glyphicon-cog"></span> <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><g:link controller="userAccount"
+                                        action="doEdit">${message(code: "layout.main.account")}</g:link></li>
+                            <li class="divider"></li>
+                            <li><g:link controller="settings"
+                                        action="doSettings">${message(code: "layout.main.settings")}</g:link></li>
+                            <li class="divider"></li>
+                            <li><g:link controller="logout">${message(code: "layout.main.disconnect")}</g:link></li>
+                        </ul>
+                    </li>
+                </tsaap:ifLoggedIn>
+            </ul>
         </div><!--/.nav-collapse -->
     </div>
 </div>

@@ -74,6 +74,11 @@ class LiveSessionResponse {
         userResponse
     }
 
+    /**
+     * Return a prettier string for answerListAsString
+     * example: [["0","3"]] -> 1,4
+     * @return pretty string
+     */
     String prettyAnswers() {
         def answers = answerListAsString.replaceAll("[\\[\\]\\\"]", "")
 

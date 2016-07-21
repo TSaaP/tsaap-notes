@@ -226,8 +226,7 @@ class LiveSession {
                 fetchMode('explanation', FetchMode.JOIN)
                 fetchMode('user', FetchMode.JOIN)
             }
-//            list =  LiveSessionResponse.findAllBySessionPhaseAndPercentCreditLessThan(sessionPhase, 100,
-//                    [sort: "percentCredit", order: "desc", fetch: [explanation: 'join', 'explanation.author': 'join']])
+
         } else {
             list = LiveSessionResponse.withCriteria {
                 eq('liveSession', this)
@@ -239,8 +238,7 @@ class LiveSession {
                 fetchMode('explanation', FetchMode.JOIN)
                 fetchMode('user', FetchMode.JOIN)
             }
-//            list =  LiveSessionResponse.findAllByLiveSessionAndPercentCreditLessThan(this, 100,
-//                    [sort: "percentCredit", order: "desc", fetch: [explanation: 'join', 'explanation.author': 'join']])
+
         }
         list.each {
             def answers = it.prettyAnswers()

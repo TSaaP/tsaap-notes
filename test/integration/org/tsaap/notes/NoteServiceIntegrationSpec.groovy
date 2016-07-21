@@ -39,11 +39,13 @@ class NoteServiceIntegrationSpec extends Specification {
     def "add notes"() {
 
         when: "adding a note"
-        Note note = noteService.addNote(bootstrapTestService.learnerPaul, content)
+        Note note = noteService.addStandardNote(bootstrapTestService.learnerPaul, content)
 
         then: "the note exists and mentions and tags are created when needed"
         note != null
         note.content == content
+        note.kind == NoteKind.STANDARD.ordinal()
+        note.format == NoteFormat.TEXT.ordinal()
         // tags
         def noteTags = NoteTag.findAllByNote(note)
         noteTags.size() == tags.size()
@@ -125,7 +127,7 @@ class NoteServiceIntegrationSpec extends Specification {
 
     def "update a note"() {
         given:"create new note"
-        Note note = noteService.addNote(bootstrapTestService.learnerMary, "content")
+        Note note = noteService.addStandardNote(bootstrapTestService.learnerMary, "content")
 
         when:"try to update content of note"
         noteService.updateNoteById(note, "new content")
@@ -136,7 +138,7 @@ class NoteServiceIntegrationSpec extends Specification {
 
     def "update a note with invalid content"() {
         given:"create new note"
-        Note note = noteService.addNote(bootstrapTestService.learnerMary, "content")
+        Note note = noteService.addStandardNote(bootstrapTestService.learnerMary, "content")
 
         when:"try to update content of note"
         noteService.updateNoteById(note, "::new content")
@@ -145,8 +147,9 @@ class NoteServiceIntegrationSpec extends Specification {
         thrown(IsNotStandardNoteException)
     }
 
+
     def "update a question"() {
-        given:"create new question"
+        given:"a question"
         Context context = contextService.saveContext(new Context(owner: bootstrapTestService.learnerMary, contextName: "context"))
         Note note = noteService.addQuestion(bootstrapTestService.learnerMary, "::a question:: what ? {=true~false}", context)
 

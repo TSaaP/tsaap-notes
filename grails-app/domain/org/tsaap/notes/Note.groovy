@@ -38,6 +38,7 @@ class Note {
     Double grade
 
     Integer kind = NoteKind.STANDARD.ordinal()
+    Integer format = NoteFormat.TEXT.ordinal()
 
     Integer rank
 
@@ -63,7 +64,7 @@ class Note {
         version false
     }
 
-    static transients = ['noteUrl', 'question', 'giftQuestionService', 'liveSession', 'activeLiveSession', 'attachment', 'noteKind', 'isFirstQuestionInContext', 'isLastQuestionInContext']
+    static transients = ['noteUrl', 'question', 'giftQuestionService', 'liveSession', 'activeLiveSession', 'attachment', 'noteKind','noteFormat', 'isFirstQuestionInContext', 'isLastQuestionInContext']
 
     private static final String QUESTION_DEFAULT_TITLE = "Question"
     private static final String QUESTION_INVALID_DEFAULT_TITLE = "question.format.error"
@@ -74,6 +75,14 @@ class Note {
      */
     NoteKind getNoteKind() {
         NoteKind.values()[kind]
+    }
+
+    /**
+     * Get the note format object
+     * @return the note format
+     */
+    NoteFormat getNoteFormat() {
+        NoteFormat.values()[format]
     }
 
     /**
@@ -277,6 +286,12 @@ class Note {
         this.rank = question.rank
         question.rank = temp
     }
+}
+
+enum NoteFormat {
+    TEXT,
+    HTML,
+    GIFT
 }
 
 enum NoteKind {

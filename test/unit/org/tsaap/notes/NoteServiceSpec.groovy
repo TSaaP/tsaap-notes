@@ -22,6 +22,7 @@ import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
 import org.gcontracts.PreconditionViolation
 import org.tsaap.directory.User
+import org.tsaap.questions.impl.DefaultQuestion
 import org.tsaap.questions.impl.gift.GiftQuestionService
 import spock.lang.Specification
 
@@ -45,14 +46,18 @@ class NoteServiceSpec extends Specification {
             getAuthor() >> user
             getContent() >> "a content"
             getFragmentTag() >> Mock(Tag)
-            getNoteKind() >> NoteKind.STANDARD
-            getKind() >> NoteKind.STANDARD.ordinal()
+            getNoteKind() >> NoteKind.EXPLANATION
+            getKind() >> NoteKind.EXPLANATION.ordinal()
+            getNoteFormat() >> NoteFormat.HTML
+            getFormat() >> NoteFormat.HTML.ordinal()
         }
         targetContext = Mock(Context) {
             isOpen() >> true
+            getOwner() >> user
         }
         noteService.giftQuestionService = Mock(GiftQuestionService) {
             getQuestionFromGiftText(note.content) >> null
+            getQuestionFromGiftText(_) >> new DefaultQuestion()
         }
     }
 
@@ -70,7 +75,7 @@ class NoteServiceSpec extends Specification {
         thrown(PreconditionViolation)
     }
 
-    def "duplication of a note in a target context must duplicate content, author, fragment tag and kind"() {
+    def "duplication of a note in a target context must duplicate content, author, fragment tag, kind and format"() {
         given: "a note"
         note
 
@@ -85,9 +90,47 @@ class NoteServiceSpec extends Specification {
         newNote.content == note.content
         newNote.fragmentTag == note.fragmentTag
         newNote.kind == note.kind
+        newNote.format == note.format
 
         and: "the new note has no errors"
         !newNote.hasErrors()
     }
+
+    def "add question set properly kind and format of the added note"() {
+
+        when:"a question is added"
+        Note question = noteService.addQuestion(user, "::a question:: what ? {=true~false}", targetContext)
+
+        then:"the kind of the question is NoteKind.QUESTION"
+        question.kind == NoteKind.QUESTION.ordinal()
+
+        and:"the format of the question is NoteFormat.GIFT"
+        question.format == NoteFormat.GIFT.ordinal()
+    }
+
+    def "add standard note set properly kind and format of the added note"() {
+
+        when:"a standard note is added"
+        Note stdNote = noteService.addStandardNote(user, "a standard note", targetContext)
+
+        then:"the kind of the question is NoteKind.QUESTION"
+        stdNote.kind == NoteKind.STANDARD.ordinal()
+
+        and:"the format of the question is NoteFormat.GIFT"
+        stdNote.format == NoteFormat.TEXT.ordinal()
+    }
+
+    def "add explanation  set properly kind and format of the added note"() {
+
+        when:"an explanation is added"
+        Note explanation = noteService.addExplanation(user, "<h1>an explanation</h1>", targetContext)
+
+        then:"the kind of the question is NoteKind.QUESTION"
+        explanation.kind == NoteKind.EXPLANATION.ordinal()
+
+        and:"the format of the question is NoteFormat.GIFT"
+        explanation.format == NoteFormat.HTML.ordinal()
+    }
+
 
 }

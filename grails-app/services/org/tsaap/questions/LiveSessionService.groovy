@@ -186,7 +186,7 @@ class LiveSessionService {
         if (explanation) {
             MarkupSanitizerResult result = markupSanitizerService.sanitize(explanation)
             if (result.cleanString) {
-                liveSessionResponse.explanation = noteService.addNote(user, result.cleanString, note.context, note.fragmentTag, note, NoteKind.EXPLANATION)
+                liveSessionResponse.explanation = noteService.addExplanation(user, result.cleanString, note.context, note.fragmentTag, note)
             }
         }
         liveSessionResponse.save()

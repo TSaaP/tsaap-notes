@@ -46,12 +46,13 @@ class NoteService {
     @Requires({
         author && content && (!context || context.isOpen()) && (noteKind == NoteKind.EXPLANATION || parentNote?.noteKind != NoteKind.QUESTION)
     })
-    Note addNote(User author,
+    private Note addNote(User author,
                  String content,
                  Context context = null,
                  Tag fragmentTag = null,
                  Note parentNote = null,
-                 NoteKind noteKind = NoteKind.STANDARD) {
+                 NoteKind noteKind = NoteKind.STANDARD,
+                 NoteFormat noteFormat = NoteFormat.TEXT) {
 
         // create the note
         Note theNote = new Note(author: author,
@@ -59,7 +60,8 @@ class NoteService {
                 context: context,
                 fragmentTag: fragmentTag,
                 parentNote: parentNote,
-                kind: noteKind.ordinal()
+                kind: noteKind.ordinal(),
+                format: noteFormat.ordinal()
         )
 
         // add the question at the end of the context
@@ -117,7 +119,7 @@ class NoteService {
         Note theNote
         try {
             if (giftQuestionService.getQuestionFromGiftText(content)) {
-                theNote = addNote(author, content, context, fragmentTag, parentNote, NoteKind.QUESTION)
+                theNote = addNote(author, content, context, fragmentTag, parentNote, NoteKind.QUESTION, NoteFormat.GIFT)
             }
         }
         catch (Exception e) {
@@ -146,8 +148,29 @@ class NoteService {
         if (content?.startsWith("::")) {
             throw new IsNotStandardNoteException("notes.edit.note.error")
         } else {
-            theNote = addNote(author, content, context, fragmentTag, parentNote, NoteKind.STANDARD)
+            theNote = addNote(author, content, context, fragmentTag, parentNote, NoteKind.STANDARD, NoteFormat.TEXT)
         }
+        theNote
+    }
+
+    /**
+     * add an explanation
+     * @param author the author
+     * @param content the content
+     * @param context the context
+     * @param fragmentTag the fragment tag
+     * @param parentNote the parent note
+     * @return the added standard note
+     */
+    @Transactional
+    @Requires({ author && content })
+    Note addExplanation(User author,
+                         String content,
+                         Context context = null,
+                         Tag fragmentTag = null,
+                         Note parentNote = null) {
+        Note theNote
+        theNote = addNote(author, content, context, fragmentTag, parentNote, NoteKind.EXPLANATION, NoteFormat.HTML)
         theNote
     }
 
@@ -474,7 +497,7 @@ class NoteService {
      */
     @Requires({ note && note.author == user })
     Note duplicateNoteInContext(Note note, Context targetContext, User user) {
-        addNote(user, note.content, targetContext, note.fragmentTag, null, note.noteKind)
+        addNote(user, note.content, targetContext, note.fragmentTag, null, note.noteKind, note.noteFormat)
     }
 
     /**

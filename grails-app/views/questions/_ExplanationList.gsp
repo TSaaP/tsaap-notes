@@ -15,16 +15,23 @@
   -     along with this program.  If not, see <http://www.gnu.org/licenses/>.
   --}%
 
-<g:if test="${responses.size() < 1 || displaysAll}">
+<g:if test="${displaysAll}">
     <g:each in="${responses}" var="response" status="i">
         <g:set var="explanation" value="${response?.explanation}"/>
         <g:if test="${explanation}">
             <div class="alert alert-info">
+                <g:set var="grade" value="${explanation.findOrUpdateMeanGrade()}"/>
                 <strong>
-                    <g:if test="${explanation.findOrUpdateMeanGrade() != null}">
-                        <g:formatNumber number="${explanation.findOrUpdateMeanGrade()}" type="number"
+                    <g:if test="${grade != null}">
+                        <g:formatNumber number="${grade}" type="number"
                                         maxFractionDigits="2"/>/5
-                    </g:if> @${explanation.author.username}</strong> ${message(code: "questions.explanation.evaluated")} ${explanation.evaluationCount()} ${message(code: "questions.explanation.contributors")}<br/>
+                    </g:if>
+                    @${explanation.author.username}
+                </strong>
+                <g:if test="${grade != null}">
+                    ${message(code: "questions.explanation.evaluated")} ${explanation.evaluationCount()} ${message(code: "questions.explanation.contributors")}
+                </g:if>
+                <br/>
                 ${raw(explanation.content)}
             </div>
 
@@ -32,13 +39,13 @@
     </g:each>
 </g:if>
 <g:else>
-    <g:each var="i" in="${(0..<0)}">
+    <g:each var="i" in="${(0..<Math.min(responses.size(), 3))}">
         <g:set var="theResponse" value="${responses.get(i)}"/>
         <g:set var="explanation" value="${theResponse?.explanation}"/>
         <g:if test="${explanation}">
             <div class="alert alert-info">
                 <strong><g:formatNumber number="${explanation.findOrUpdateMeanGrade()}" type="number"
-                                        maxFractionDigits="2"/> /5  @${explanation.author.username}</strong> ${message(code: "questions.explanation.evaluated")} ${explanation.evaluationCount()} ${message(code: "questions.explanation.contributors")}<br/>
+                                        maxFractionDigits="2"/>/5  @${explanation.author.username}</strong> ${message(code: "questions.explanation.evaluated")} ${explanation.evaluationCount()} ${message(code: "questions.explanation.contributors")}<br/>
                 ${raw(explanation.content)}
             </div>
         </g:if>
@@ -60,66 +67,63 @@
                 </div>
 
                 <div class="modal-body">
-                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                        <div class="panel panel-default">
-                            <div class="panel-heading" role="tab" id="headingOne">
-                                <h4 class="panel-title">
-                                    <g:set var="responsesChoice" value="${responses.get(0).prettyAnswers()}"/>
-                                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"
-                                       aria-expanded="true" aria-controls="collapseOne">
-                                        <small>
-                                            <p class="text-info text-center">
-                                                ${message(code: "liveSessionResponse.users.responses")}:${responsesChoice} <strong>--</strong>
-                                                ${message(code: "liveSessionResponse.user.score", args: [100])}<strong>--</strong>
-                                                ${message(code: "questions.responseCount")}:${responses.size()}
-                                            </p>
-                                        </small>
-                                    </a>
-                                </h4>
-                            </div>
+                    <g:if test="${badResponses != null}">
+                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingOne">
+                                    <h4 class="panel-title">
+                                        <g:set var="responsesChoice" value="${responses.get(0).prettyAnswers()}"/>
+                                        <a role="button" data-toggle="collapse" data-parent="#accordion"
+                                           href="#collapseOne"
+                                           aria-expanded="true" aria-controls="collapseOne">
+                                            ${message(code: "liveSessionResponse.users.responses")}: ${responsesChoice}<strong>-</strong>
+                                            ${message(code: "liveSessionResponse.user.score", args: [100])}<strong>-</strong>
+                                            ${message(code: "questions.responseCount")}: ${responses.size()}
+                                        </a>
+                                    </h4>
+                                </div>
 
-                            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel"
-                                 aria-labelledby="headingOne">
-                                <div class="panel-body">
-                                    <g:render template="/questions/ExplanationList"
-                                              model="[responses: responses, note: note, displaysAll: true]"/>
+                                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel"
+                                     aria-labelledby="headingOne">
+                                    <div class="panel-body">
+                                        <g:render template="/questions/ExplanationList"
+                                                  model="[responses: responses, note: note, displaysAll: true]"/>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <g:each in="${badResponses}" var="answerMap" status="i">
-                            <g:each in="${answerMap.value}" var="explanationList" status="j">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading" role="tab" id="heading${explanationList.key}">
-                                        <g:set var="answerGroup" value="${i}_${j}"/>
-                                        <h4 class="panel-title">
-                                            <a role="button" data-toggle="collapse" data-parent="#accordion"
-                                               href="#collapse${answerGroup}" aria-expanded="true"
-                                               aria-controls="collapse${answerGroup}">
-                                                <small>
-                                                    <p class="text-info text-center">
-                                                        ${message(code: "liveSessionResponse.users.responses")}: ${explanationList.key} <strong>--</strong>
-                                                        ${message(code: "liveSessionResponse.user.score", args: [answerMap.key])}  <strong>--</strong>
-                                                        ${message(code: "questions.responseCount")}:${explanationList.value.size()}
-                                                    </p>
-                                                </small>
-                                            </a>
-                                        </h4>
-                                    </div>
+                            <g:each in="${badResponses}" var="answerMap" status="i">
+                                <g:each in="${answerMap.value}" var="explanationList" status="j">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab" id="heading${explanationList.key}">
+                                            <g:set var="answerGroup" value="${i}_${j}"/>
+                                            <h4 class="panel-title">
+                                                <a role="button" data-toggle="collapse" data-parent="#accordion"
+                                                   href="#collapse${answerGroup}" aria-expanded="true"
+                                                   aria-controls="collapse${answerGroup}">
+                                                    ${message(code: "liveSessionResponse.users.responses")}: ${explanationList.key}<strong>-</strong>
+                                                    ${message(code: "liveSessionResponse.user.score", args: [answerMap.key])}<strong>-</strong>
+                                                    ${message(code: "questions.responseCount")}: ${explanationList.value.size()}
+                                                </a>
+                                            </h4>
+                                        </div>
 
-                                    <div id="collapse${answerGroup}" class="panel-collapse collapse" role="tabpanel"
-                                         aria-labelledby="heading${answerGroup}">
-                                        <div class="panel-body">
-                                            <g:render template="/questions/ExplanationList"
-                                                      model="[responses: explanationList.value, note: note, displaysAll: true]"/>
+                                        <div id="collapse${answerGroup}" class="panel-collapse collapse" role="tabpanel"
+                                             aria-labelledby="heading${answerGroup}">
+                                            <div class="panel-body">
+                                                <g:render template="/questions/ExplanationList"
+                                                          model="[responses: explanationList.value, note: note, displaysAll: true]"/>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                </g:each>
                             </g:each>
-                        </g:each>
-
-                    </div>
-
+                        </div>
+                    </g:if>
+                    <g:else>
+                        <g:render template="/questions/ExplanationList"
+                                  model="[responses: responses, note: note, displaysAll: true]"/>
+                    </g:else>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default"
                                 data-dismiss="modal">${message(code: "questions.explanation.close.button")}</button>

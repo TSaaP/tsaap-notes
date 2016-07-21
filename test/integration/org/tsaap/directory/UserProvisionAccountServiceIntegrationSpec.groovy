@@ -41,41 +41,73 @@ class UserProvisionAccountServiceIntegrationSpec extends Specification {
 
     def "test generate username"() {
 
-        when: "I want to generate a new username for two user with same quadrigram"
-        def username = userProvisionAccountService.generateUsername(sql, "john", "doe")
-        lmsUserHelper.insertUserInDatabase(sql, 'jdoe@mail.com', 'john', "doel'hh", 'jdoe', 'pass', true)
-        def username2 = userProvisionAccountService.generateUsername(sql, 'jane', 'doe')
-        lmsUserHelper.insertUserInDatabase(sql, 'jane@mail.com', 'jane', 'doe', 'jdoe2', 'passw', true)
-        def username3 = userProvisionAccountService.generateUsername(sql, 'jean', 'doel')
-        lmsUserHelper.insertUserInDatabase(sql, 'janine@mail.com', 'janine', 'doerel', 'jdoer', 'passw', true)
-        def username4 = userProvisionAccountService.generateUsername(sql, 'julien', 'doelel')
+        when: "I want to generate a username when there is not already the same username in the database"
+        def username = userProvisionAccountService.generateUsername(sql, "John", "Dorel")
 
+        then: "I obtain a username without index as suffix"
+        username == 'johdore'
 
-        then: "I got a different username for the two users"
-        username == "jdoe"
-        username2 == "jdoe2"
-        username3 == "jdoe3"
-        username4 == "jdoe3"
+        when:"when the username exists"
+        lmsUserHelper.insertUserInDatabase(sql, 'jdoe@mail.com', 'john', "doel'hh", 'johdore', 'pass', true)
+
+        and:"I generate a username"
+        def username2 = userProvisionAccountService.generateUsername(sql, 'johan', 'dorelia')
+
+        then: "the generation takes into account the existing username and adds an index at the end of the generated username"
+        username2 == 'johdore2'
+
+        when:"the username exists with numerical suffix"
+        lmsUserHelper.insertUserInDatabase(sql, 'jane@mail.com', 'jane', 'doe', 'johdore15', 'passw', true)
+
+        and:"I generate a username"
+        def username3 = userProvisionAccountService.generateUsername(sql, 'johaquim', 'dorelabel')
+
+        then: "the generation takes into account the existing username and adds an index at the end of the generated username"
+        username3 == 'johdore16'
+
+        when:"the username exists with a litteral suffix"
+        lmsUserHelper.insertUserInDatabase(sql, 'janine@mail.com', 'janine', 'doerel', 'johdoreabcd', 'passw', true)
+
+        and:"I generate a username"
+        def username4 = userProvisionAccountService.generateUsername(sql, 'joham', 'doredeli')
+
+        then: "the generation doesn't take into account the existing username with literal suffix"
+        username4 == 'johdore16'
 
 
     }
 
     def "test generate username with very short name"() {
         when: "I generate a username based on a very short name"
-        def username = userProvisionAccountService.generateUsername(sql, "john", "do")
+        def username = userProvisionAccountService.generateUsername(sql, "jo", "do")
 
-        then: "I got a username with the adhoc trigram"
-        username == "jdo"
+        then: "I got a username with the adhoc result"
+        username == "jodo"
 
         when: "a user with quadrigramm already used exists"
-        lmsUserHelper.insertUserInDatabase(sql, 'jdoe@mail.com', 'john', "do", 'jdo21', 'pass', true)
-        def username2 = userProvisionAccountService.generateUsername(sql, "john", "do")
-        lmsUserHelper.insertUserInDatabase(sql, 'jdoe@mail.com', 'john', "do", 'jdoka', 'pass', true)
-        def username3 = userProvisionAccountService.generateUsername(sql, "john", "do")
+        lmsUserHelper.insertUserInDatabase(sql, 'jdoe@mail.com', 'john', "do", 'jodo21', 'pass', true)
+        def username2 = userProvisionAccountService.generateUsername(sql, "jo", "do")
+        lmsUserHelper.insertUserInDatabase(sql, 'jdoe@mail.com', 'john', "do", 'jodoka', 'pass', true)
+        def username3 = userProvisionAccountService.generateUsername(sql, "jo", "do")
 
-        then: "I got a username with the adhoc trigram"
-        username2 == "jdo22"
-        username3 == "jdo22"
+        then: "I got a username with the adhoc result"
+        username2 == "jodo22"
+        username3 == "jodo22"
+    }
 
+    def "test generate username with accents"() {
+        when: "I generate a username with firsname and lastname with  accents"
+        def username = userProvisionAccountService.generateUsername(sql, "Jérémie", "DÖrel")
+
+        then: "I got a username with the adhoc result"
+        username == "jerdore"
+    }
+
+    def "test generate username with spaces in firstname or lastname"() {
+        when: "I generate a username with firsname and lastname  with an whitespaces "
+        def username = userProvisionAccountService.generateUsername(sql, "El Medie", "Ma Patrick")
+
+        then: "I got a username with the adhoc result"
+        username == "elmmapa"
     }
 }

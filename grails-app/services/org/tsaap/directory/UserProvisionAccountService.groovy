@@ -21,6 +21,9 @@ import grails.plugins.springsecurity.SpringSecurityService
 import groovy.sql.Sql
 import org.tsaap.lti.LmsUserHelper
 
+import java.text.Normalizer
+import java.util.regex.Pattern
+
 class UserProvisionAccountService {
 
     SpringSecurityService springSecurityService
@@ -37,9 +40,18 @@ class UserProvisionAccountService {
         password
     }
 
+    /**
+     * Generate username from firstname and lastname
+     * @param sql the sql connection to check existing username
+     * @param firstName the firstname
+     * @param lastName the lastname
+     * @return
+     */
     def generateUsername(Sql sql, String firstName, String lastName) {
-        def indexLastname = Math.min(3, lastName.length())
-        def username = firstName.substring(0, 1) + lastName.substring(0, indexLastname)
+        def indexLastname = Math.min(MAX_INDEX_LASTNAME, lastName.length())
+        def indexFirstName = Math.min(MAX_INDEX_FIRSTNAME, firstName.length())
+        def username = replaceAccent(firstName.replaceAll("\\s","").toLowerCase().substring(0, indexFirstName)) +
+                replaceAccent(lastName.replaceAll("\\s","").toLowerCase().substring(0, indexLastname))
         // Check if the new username is not already use
         def checkUsername = lmsUserHelper.selectUsernameIfExist(sql, username)
         if (checkUsername) {
@@ -61,4 +73,19 @@ class UserProvisionAccountService {
 //        matcher = "jdoe" =~ /[0-9]+/
 //        println matcher.getCount()
     }
+
+    private static final MAX_INDEX_LASTNAME = 4
+    private static final MAX_INDEX_FIRSTNAME = 3
+
+    /**
+     * Replace accents in a string
+     * @param str the string to modify
+     * @return
+     */
+    private String replaceAccent(final String str) {
+        String nfdNormalizedString = Normalizer.normalize(str, Normalizer.Form.NFD);
+        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+        return pattern.matcher(nfdNormalizedString).replaceAll("");
+    }
+
 }

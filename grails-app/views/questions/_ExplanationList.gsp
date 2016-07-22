@@ -74,8 +74,8 @@
                                     <h4 class="panel-title">
                                         <g:set var="responsesChoice" value="${responses.get(0).prettyAnswers()}"/>
                                         <a role="button" data-toggle="collapse" data-parent="#accordion"
-                                           href="#collapseOne"
-                                           aria-expanded="true" aria-controls="collapseOne">
+                                           href="#collapseOne${note.id}"
+                                           aria-expanded="true" aria-controls="collapseOne${note.id}">
                                             ${message(code: "liveSessionResponse.users.responses")}: ${responsesChoice}<strong>-</strong>
                                             ${message(code: "liveSessionResponse.user.score", args: [100])}<strong>-</strong>
                                             ${message(code: "questions.responseCount")}: ${responses.size()}
@@ -83,8 +83,8 @@
                                     </h4>
                                 </div>
 
-                                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel"
-                                     aria-labelledby="headingOne">
+                                <div id="collapseOne${note.id}" class="panel-collapse collapse in" role="tabpanel"
+                                     aria-labelledby="headingOne${note.id}">
                                     <div class="panel-body">
                                         <g:render template="/questions/ExplanationList"
                                                   model="[responses: responses, note: note, displaysAll: true]"/>
@@ -96,7 +96,7 @@
                                 <g:each in="${answerMap.value}" var="explanationList" status="j">
                                     <div class="panel panel-default">
                                         <div class="panel-heading" role="tab" id="heading${explanationList.key}">
-                                            <g:set var="answerGroup" value="${i}_${j}"/>
+                                            <g:set var="answerGroup" value="${note.id}_${i}_${j}"/>
                                             <h4 class="panel-title">
                                                 <a role="button" data-toggle="collapse" data-parent="#accordion"
                                                    href="#collapse${answerGroup}" aria-expanded="true"

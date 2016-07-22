@@ -16,9 +16,11 @@
   --}%
 
 <g:if test="${displaysAll}">
+    <g:set var="explanationCount" value="${0}"/>
     <g:each in="${responses}" var="response" status="i">
         <g:set var="explanation" value="${response?.explanation}"/>
         <g:if test="${explanation}">
+            <g:set var="explanationCount" value="${explanationCount + 1}"/>
             <div class="alert alert-info">
                 <g:set var="grade" value="${explanation.findOrUpdateMeanGrade()}"/>
                 <strong>
@@ -37,6 +39,9 @@
 
         </g:if>
     </g:each>
+    <g:if test="${!explanationCount}">
+        <div class="alert alert-warning">${message(code: "questions.explanation.noExplanation")}</div>
+    </g:if>
 </g:if>
 <g:else>
     <g:each var="i" in="${(0..<Math.min(responses.size(), 3))}">

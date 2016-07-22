@@ -33,15 +33,17 @@
 <g:layoutBody/>
 <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
-        <button type="button" class="navbar-toggle" data-toggle="collapse"
-                data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </button>
-        <g:link class="navbar-brand" uri="/">TsaaP-Notes</g:link>
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <g:link class="navbar-brand" uri="/">TsaaP-Notes</g:link>
+        </div>
 
-        <div class="nav-collapse collapse">
+        <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li><a href="https://github.com/TSaaP/tsaap-notes"
                        target="_blank">${message(code: "layout.home.github")}</a></li>
@@ -62,20 +64,17 @@
                 %{--</ul>--}%
                 %{--</li>--}%
             </ul>
-
-            <div class="nav-collapse collapse pull-right">
-                <ul class="nav navbar-nav">
-                    <tsaap:ifNotLoggedIn>
-                        <li><g:link controller="login"
-                                    action="auth">${message(code: "layout.home.signIn")} &raquo;</g:link></li>
-                    </tsaap:ifNotLoggedIn>
-                    <tsaap:ifLoggedIn>
-                        <li><g:link controller="context"
-                                    params="[filter: '__FOLLOWED__']">${message(code: "layout.home.welcome")} @<sec:username/> !</g:link></li>
-                    </tsaap:ifLoggedIn>
-                </ul>
-            </div>
-        </div><!--/.nav-collapse -->
+            <ul class="nav navbar-nav navbar-right">
+                <tsaap:ifNotLoggedIn>
+                    <li><g:link controller="login"
+                                action="auth">${message(code: "layout.home.signIn")} &raquo;</g:link></li>
+                </tsaap:ifNotLoggedIn>
+                <tsaap:ifLoggedIn>
+                    <li><g:link controller="context"
+                                params="[filter: '__FOLLOWED__']">${message(code: "layout.home.welcome")} @<sec:username/> !</g:link></li>
+                </tsaap:ifLoggedIn>
+            </ul>
+        </div>
     </div>
 </div>
 <r:layoutResources/>

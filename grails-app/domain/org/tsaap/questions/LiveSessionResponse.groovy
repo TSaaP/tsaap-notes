@@ -21,6 +21,9 @@ import org.tsaap.directory.User
 import org.tsaap.notes.Note
 import org.tsaap.questions.impl.gift.GiftQuestionService
 
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+
 class LiveSessionResponse {
 
     LiveSession liveSession
@@ -70,6 +73,28 @@ class LiveSessionResponse {
         }
         userResponse
     }
+
+    /**
+     * Return a prettier string for answerListAsString
+     * example: [["0","3"]] -> 1,4
+     * @return pretty string
+     */
+    String prettyAnswers() {
+        def answers = answerListAsString.replaceAll("[\\[\\]\\\"]", "")
+
+        Pattern digitPattern = Pattern.compile("(\\d+)");
+
+        Matcher matcher = digitPattern.matcher(answers);
+        StringBuffer result = new StringBuffer();
+        while (matcher.find())
+        {
+            matcher.appendReplacement(result, String.valueOf(Integer.parseInt(matcher.group(1)) + 1));
+        }
+        matcher.appendTail(result);
+
+        return result.toString();
+    }
+
 
     static transients = ['giftQuestionService', 'userResponse']
 

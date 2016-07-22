@@ -56,4 +56,21 @@ class LiveSessionResponseSpec extends Specification {
         '[[lost quotes]]'                                        || false
 
     }
+
+    void "test prettyAnswers"() {
+        given: "a live session response"
+        LiveSessionResponse liveSessionResponse = new LiveSessionResponse(user: Mock(User), liveSession: Mock(LiveSession))
+
+        when: "the answer list as string is set corresponding to a specific value"
+        liveSessionResponse.answerListAsString = value
+
+        then: "the prettyAnswers corresponds"
+        liveSessionResponse.prettyAnswers() == pretty
+
+        where: "the values of the answer list as string are"
+        value              || pretty
+        '[[]]'             || ''
+        '[["0"]]'          || '1'
+        '[["1","3","14"]]' || '2,4,15'
+    }
 }

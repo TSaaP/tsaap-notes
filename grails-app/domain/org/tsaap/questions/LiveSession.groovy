@@ -20,9 +20,12 @@ package org.tsaap.questions
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 import org.gcontracts.annotations.Requires
+import org.hibernate.FetchMode
 import org.hibernate.StaleObjectStateException
 import org.tsaap.directory.User
 import org.tsaap.notes.Note
+
+
 
 class LiveSession {
 
@@ -198,6 +201,62 @@ class LiveSession {
                     [sort: "explanation.grade", order: "desc", fetch: [explanation: 'join']])
         }
     }
+
+    /**
+     * Return all bad explanations for the live session or the given phase
+     * LiveSessionResponses in returned structure can be accessed this way:
+     * map[score][answerGroup][index] where
+     * score is a Float eg: 100.0, 0.0, -50.0
+     * answerGroup is a String eg: "1", "1,3", ""
+     * index is an index on the LiveSessionResponse list for answerGroup eg: 0, 4
+     * @param sessionPhase
+     * @return
+     */
+    Map<Float, Map<String, List<LiveSessionResponse>>> findAllBadResponses(SessionPhase sessionPhase = null) {
+        def list
+        Map map = [:]
+        if (sessionPhase) {
+            list = LiveSessionResponse.withCriteria {
+                eq('sessionPhase', sessionPhase)
+                lt('percentCredit', 100.0f)
+                order('percentCredit','desc')
+                'user' {
+                    order('normalizedUsername','asc')
+                }
+                fetchMode('explanation', FetchMode.JOIN)
+                fetchMode('user', FetchMode.JOIN)
+            }
+
+        } else {
+            list = LiveSessionResponse.withCriteria {
+                eq('liveSession', this)
+                lt('percentCredit', 100.0f)
+                order('percentCredit','desc')
+                'user' {
+                    order('normalizedUsername','asc')
+                }
+                fetchMode('explanation', FetchMode.JOIN)
+                fetchMode('user', FetchMode.JOIN)
+            }
+
+        }
+        list.each {
+            def answers = it.prettyAnswers()
+            if (!map[it.percentCredit]) {
+                def answerMap = [:]
+                answerMap.put(answers, [it])
+                map[it.percentCredit] = answerMap
+            } else {
+                if (!map[it.percentCredit][answers]) {
+                    map[it.percentCredit][answers] = [it]
+                } else {
+                    map[it.percentCredit][answers].push(it)
+                }
+            }
+        }
+        map
+    }
+
 
     static transients = ['resultMatrix', 'resultMatrixService']
 }

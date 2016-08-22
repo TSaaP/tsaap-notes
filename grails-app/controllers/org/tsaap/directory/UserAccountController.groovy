@@ -147,7 +147,7 @@ class UserAccountController {
             sql = new Sql(dataSource)
             lmsUserHelper = new LmsUserHelper()
             lmsUserHelper.enableUser(sql, params.username)
-            redirect(controller: "notes", params: [contextId: params.contextId, contextName: params.contextName, displaysAll: params.displaysAll, kind: params.kind])
+            redirect(controller: "questions", params: [contextId: params.contextId, contextName: params.contextName, displaysAll: params.displaysAll])
         } else {
             throw new LtiUserException("error.lti.user.agreement")
         }

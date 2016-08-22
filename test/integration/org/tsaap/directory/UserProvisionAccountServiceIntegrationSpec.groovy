@@ -18,6 +18,7 @@
 package org.tsaap.directory
 
 import groovy.sql.Sql
+import org.tsaap.lti.LmsUser
 import org.tsaap.lti.LmsUserHelper
 import spock.lang.Specification
 
@@ -48,7 +49,8 @@ class UserProvisionAccountServiceIntegrationSpec extends Specification {
         username == 'johdore'
 
         when:"when the username exists"
-        lmsUserHelper.insertUserInDatabase(sql, 'jdoe@mail.com', 'john', "doel'hh", 'johdore', 'pass', true)
+        LmsUser lmsUser = new LmsUser('email':'jdoe@mail.com', 'firstname':'john','lastname':"doel'hh",'username':'johdore','password':'pass','isEnabled':true)
+        lmsUserHelper.insertUserInDatabase(sql, lmsUser)
 
         and:"I generate a username"
         def username2 = userProvisionAccountService.generateUsername(sql, 'johan', 'dorelia')
@@ -57,7 +59,8 @@ class UserProvisionAccountServiceIntegrationSpec extends Specification {
         username2 == 'johdore2'
 
         when:"the username exists with numerical suffix"
-        lmsUserHelper.insertUserInDatabase(sql, 'jane@mail.com', 'jane', 'doe', 'johdore15', 'passw', true)
+        LmsUser lmsUser2 = new LmsUser('email':'jane@mail.com', 'firstname':'jane','lastname':'doe','username':'johdore15','password':'passw','isEnabled':true)
+        lmsUserHelper.insertUserInDatabase(sql,lmsUser2)
 
         and:"I generate a username"
         def username3 = userProvisionAccountService.generateUsername(sql, 'johaquim', 'dorelabel')
@@ -66,7 +69,8 @@ class UserProvisionAccountServiceIntegrationSpec extends Specification {
         username3 == 'johdore16'
 
         when:"the username exists with a litteral suffix"
-        lmsUserHelper.insertUserInDatabase(sql, 'janine@mail.com', 'janine', 'doerel', 'johdoreabcd', 'passw', true)
+        LmsUser lmsUser3 = new LmsUser('email':'janine@mail.com', 'firstname':'janine','lastname':'doerel','username':'johdoreabcd','password':'passw','isEnabled':true)
+        lmsUserHelper.insertUserInDatabase(sql,lmsUser3)
 
         and:"I generate a username"
         def username4 = userProvisionAccountService.generateUsername(sql, 'joham', 'doredeli')
@@ -85,9 +89,11 @@ class UserProvisionAccountServiceIntegrationSpec extends Specification {
         username == "jodo"
 
         when: "a user with quadrigramm already used exists"
-        lmsUserHelper.insertUserInDatabase(sql, 'jdoe@mail.com', 'john', "do", 'jodo21', 'pass', true)
+        LmsUser lmsUser = new LmsUser('email':'jdoe@mail.com', 'firstname':'john','lastname':"do",'username':'jodo21','password':'pass','isEnabled':true)
+        lmsUserHelper.insertUserInDatabase(sql, lmsUser)
         def username2 = userProvisionAccountService.generateUsername(sql, "jo", "do")
-        lmsUserHelper.insertUserInDatabase(sql, 'jdoe@mail.com', 'john', "do", 'jodoka', 'pass', true)
+        LmsUser lmsUser2 = new LmsUser('email':'jdoe@mail.com', 'firstname':'john','lastname':"do",'username':'jodoka','password':'pass','isEnabled':true)
+        lmsUserHelper.insertUserInDatabase(sql, lmsUser2)
         def username3 = userProvisionAccountService.generateUsername(sql, "jo", "do")
 
         then: "I got a username with the adhoc result"

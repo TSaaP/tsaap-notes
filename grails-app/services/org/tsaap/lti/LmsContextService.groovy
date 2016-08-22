@@ -27,38 +27,18 @@ class LmsContextService {
     /**
      * Find or create a context for a given lti_instance and a given lti_course from this instance
      * @param sql
-     * @param consumerKey consumer key
-     * @param ltiCourseId lti course id (context_id)
-     * @param ltiActivityId lti activity id (lti_context_id)
-     * @param consumerName consumer name
-     * @param username user who's connect from moodle, tsaap notes username
-     * @param isLearner user is a learner or not
-     * @return res an arrayList who contain tsaap notes context name and context id
+     * @param lmsContext the lms context to find or create
+     * @return the lms context
      */
-    def findOrCreateContext(Sql sql, String consumerKey, String ltiCourseId, String ltiActivityId, String consumerName, String contextTitle, String username, Boolean isLearner) {
-        def contextName = null
-        def contextId = lmsContextHelper.selectLmsContext(sql, consumerKey, ltiCourseId, ltiActivityId)
-        def userId = lmsUserHelper.selectUserId(sql, username)
-        if (contextId == null) {
-            contextName = contextTitle
-            // We create a new context
-            if (!isLearner) {
-                lmsContextHelper.insertContext(sql, contextName, "", userId, true, "", consumerName)
-                contextId = lmsContextHelper.selectContextId(sql, contextName, consumerName)
-                lmsContextHelper.insertLmsContext(sql, contextId, ltiCourseId, ltiActivityId, consumerKey, consumerName)
-            } else {
-                throw new LtiContextInitialisationException("error.lti.context.initialisation")
-            }
+    LmsContext findOrCreateContext(Sql sql, LmsContext lmsContext) {
+        lmsContext.contextId = lmsContextHelper.selectLmsContextId(sql, lmsContext.ltiConsumerKey, lmsContext.ltiCourseId, lmsContext.ltiActivityId)
+        lmsContext.owner.userId = lmsUserHelper.findUserIdForUsername(sql, lmsContext.owner.username)
+        if (lmsContext.contextId == null) {
+            createLmsContext(sql, lmsContext)
         } else {
-            contextName = lmsContextHelper.selectContextName(sql, contextId)
-            if (isLearner) {
-                def isFollower = lmsContextHelper.checkIfUserIsAContextFollower(sql, userId, contextId)
-                if (!isFollower) {
-                    lmsContextHelper.addUserToContextFollower(sql, userId, contextId)
-                }
-            }
+            updateContextTitleAndFollower(sql, lmsContext)
         }
-        [contextName, contextId]
+        lmsContext
     }
 
     /**
@@ -67,9 +47,30 @@ class LmsContextService {
      * @param contextId tsaap note context id
      */
     def deleteLmsContextForContext(Sql sql, long contextId) {
-        def exist = lmsContextHelper.selectLmsContextForContextId(sql, contextId)
-        if (exist != null) {
+        def fetchedContext = lmsContextHelper.selectLmsContextForContextId(sql, contextId)
+        if (fetchedContext != null) {
             lmsContextHelper.deleteLmsContext(sql, contextId)
+        }
+    }
+
+    private void updateContextTitleAndFollower(Sql sql, LmsContext lmsContext) {
+        lmsContext.contextTitle = lmsContextHelper.selectContextName(sql, lmsContext.contextId)
+        def owner = lmsContext.owner
+        if (owner.isLearner) {
+            def isFollower = lmsContextHelper.checkIfUserIsAContextFollower(sql, owner.userId, lmsContext.contextId)
+            if (!isFollower) {
+                lmsContextHelper.addUserToContextFollower(sql, owner.userId, lmsContext.contextId)
+            }
+        }
+    }
+
+    private void createLmsContext(Sql sql, LmsContext lmsContext) {
+        def owner = lmsContext.owner
+        if (!owner.isLearner) {
+            lmsContextHelper.insertContext(sql, lmsContext)
+            lmsContextHelper.insertLmsContext(sql, lmsContext)
+        } else {
+            throw new LtiContextInitialisationException("error.lti.context.initialisation")
         }
     }
 }

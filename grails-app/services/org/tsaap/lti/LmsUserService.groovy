@@ -31,45 +31,36 @@ class LmsUserService {
 
     /**
      * Find or create a tsaap account for a given lti user
-     * @param ltiUserId lti user id
-     * @param firstName lti user first name
-     * @param lastName lti user last name
-     * @param email lti user email
-     * @param key lti consumer key
-     * @param role true if the lti user is a learner else false
+     * @param sql the sql object
+     * @param lmsUser the lms user to find or create
+     * @return the lms user
      */
-    def findOrCreateUser(Sql sql, String ltiUserId, String firstName, String lastName, String email, String key, Boolean isLearner) {
-        String username
-        def password
-        Boolean enable
-        // Verify if the user have already an account
-        def result = lmsUserHelper.selectLmsUser(sql, ltiUserId)
-        if (result == null) {
-            // If not, create an account for it
-            username = userProvisionAccountService.generateUsername(sql, firstName, lastName)
-            password = userProvisionAccountService.generatePassword()
-
-            // Add user in database
-            lmsUserHelper.insertUserInDatabase(sql, email, firstName, lastName, username, password, false)
-            Long tsaapUserId = lmsUserHelper.selectUserId(sql, username)
-            if (isLearner) {
-                lmsUserHelper.insertUserRoleInDatabase(sql, RoleEnum.STUDENT_ROLE.id, tsaapUserId)
-            } else {
-                lmsUserHelper.insertUserRoleInDatabase(sql, RoleEnum.TEACHER_ROLE.id, tsaapUserId)
-            }
-            lmsUserHelper.insertLmsUserInDatabase(sql, tsaapUserId, key, ltiUserId)
-            enable = false
-
+    LmsUser findOrCreateUser(Sql sql, LmsUser lmsUser) {
+        lmsUser.userId = lmsUserHelper.findUserIdForLtiUserId(sql, lmsUser.ltiUserId, lmsUser.ltiConsumerKey)
+        if (lmsUser.userId == null) {
+            createUser(sql, lmsUser)
         } else {
-            // Get the user username and password to connect it
-            def user = lmsUserHelper.selectUsernameAndPassword(sql, ltiUserId)
-            username = user.username
-            password = user.password
-            enable = lmsUserHelper.selectUserIsEnable(sql, username)
+            updateUsernamePasswordAndIsEnabled(sql, lmsUser)
         }
-        if (enable) {
-            springSecurityService.reauthenticate(username, password)
+        if (lmsUser.isEnabled) {
+            springSecurityService.reauthenticate(lmsUser.username, lmsUser.password)
         }
-        [username, enable]
+        lmsUser
+    }
+
+    private void updateUsernamePasswordAndIsEnabled(Sql sql, LmsUser lmsUser) {
+        def usernameAndPassword = lmsUserHelper.selectUsernameAndPassword(sql, lmsUser.ltiUserId)
+        lmsUser.username = usernameAndPassword.username
+        lmsUser.password = usernameAndPassword.password
+        lmsUser.isEnabled = lmsUserHelper.selectUserIsEnable(sql, lmsUser.username)
+    }
+
+    private void createUser(Sql sql, LmsUser lmsUser) {
+        lmsUser.username = userProvisionAccountService.generateUsername(sql, lmsUser.firstname, lmsUser.lastname)
+        lmsUser.password = userProvisionAccountService.generatePassword()
+        lmsUserHelper.insertUserInDatabase(sql, lmsUser)
+        def roleId = lmsUser.isLearner ? RoleEnum.STUDENT_ROLE.id : RoleEnum.TEACHER_ROLE.id
+        lmsUserHelper.insertUserRoleInDatabase(sql, roleId,  lmsUser.userId)
+        lmsUserHelper.insertLmsUserInDatabase(sql, lmsUser.userId, lmsUser.ltiConsumerKey, lmsUser.ltiUserId)
     }
 }

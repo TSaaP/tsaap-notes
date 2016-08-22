@@ -52,10 +52,9 @@ class UserProvisionAccountService {
         def indexFirstName = Math.min(MAX_INDEX_FIRSTNAME, firstName.length())
         def username = replaceAccent(firstName.replaceAll("\\s","").toLowerCase().substring(0, indexFirstName)) +
                 replaceAccent(lastName.replaceAll("\\s","").toLowerCase().substring(0, indexLastname))
-        // Check if the new username is not already use
-        def checkUsername = lmsUserHelper.selectUsernameIfExist(sql, username)
-        if (checkUsername) {
-            def matcher = checkUsername =~ /[0-9]+/
+        def existingUsername = lmsUserHelper.findMostRecentUsernameStartingWithUsername(sql, username)
+        if (existingUsername) {
+            def matcher = existingUsername =~ /[0-9]+/
             if (matcher.count == 0) {
                 username = username + 2
             } else {
@@ -65,13 +64,6 @@ class UserProvisionAccountService {
             }
         }
         username
-
-//        def matcher = "jdoe14" =~ /[0-9]+/
-//        println matcher.getCount()
-//        println matcher[0]
-//
-//        matcher = "jdoe" =~ /[0-9]+/
-//        println matcher.getCount()
     }
 
     private static final MAX_INDEX_LASTNAME = 4

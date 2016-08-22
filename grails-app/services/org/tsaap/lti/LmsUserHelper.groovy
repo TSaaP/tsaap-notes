@@ -20,7 +20,7 @@ package org.tsaap.lti
 import groovy.sql.Sql
 
 /**
- * Created by dorian on 18/06/15.
+ * Lti consumer (LMS) helper class
  */
 class LmsUserHelper {
 
@@ -30,8 +30,8 @@ class LmsUserHelper {
      * @param ltiUserId lti user id
      * @return an user id if exist else null
      */
-    def selectLmsUser(Sql sql, String ltiUserId) {
-        def req = sql.firstRow("SELECT * FROM lms_user WHERE lti_user_id = $ltiUserId")
+    Long findUserIdForLtiUserId(Sql sql, String ltiUserId, String ltiConsumerKey) {
+        def req = sql.firstRow("SELECT tsaap_user_id FROM lms_user WHERE lti_user_id = $ltiUserId and lti_consumer_key = $ltiConsumerKey")
         def res = null
         if (req != null) {
             res = req.tsaap_user_id
@@ -41,11 +41,11 @@ class LmsUserHelper {
 
     /**
      * Get the most recent user who begin with username param
-     * @param sql
-     * @param username user username
-     * @return an username if found else null
+     * @param sql the sql object
+     * @param username the username
+     * @return a username if found else null
      */
-    def selectUsernameIfExist(Sql sql, String username) {
+    String findMostRecentUsernameStartingWithUsername(Sql sql, String username) {
         def userNameLike = '^' + username + '[0-9]*$'
         def req = sql.firstRow("SELECT username FROM user WHERE username RLIKE $userNameLike ORDER BY username DESC")
         def res = req?.username
@@ -53,25 +53,24 @@ class LmsUserHelper {
     }
 
     /**
-     * Insert an user
+     * Insert a user
      * @param sql
-     * @param email user email
-     * @param firstname user first name
-     * @param lastname user last name
-     * @param username user username
-     * @param password user password
+     * @param LmsUser the lms user to insert
+     * @return the lms user with user id set
      */
-    def insertUserInDatabase(Sql sql, String email, String firstname, String lastname, String username, String password, Boolean enable) {
-        sql.execute("INSERT INTO user (account_expired,account_locked,email,enabled,first_name,last_name,normalized_username,password,password_expired,username,version) VALUES (0,0,$email,$enable,$firstname,$lastname,$username,$password,0,$username,0)")
+    LmsUser insertUserInDatabase(Sql sql, LmsUser lmsUser) {
+        sql.execute("INSERT INTO user (account_expired,account_locked,email,enabled,first_name,last_name,normalized_username,password,password_expired,username,version) VALUES (0,0,$lmsUser.email,$lmsUser.isEnabled,$lmsUser.firstname,$lmsUser.lastname,$lmsUser.username,$lmsUser.password,0,$lmsUser.username,0)")
+        lmsUser.userId = findUserIdForUsername(sql, lmsUser.username)
+        lmsUser
     }
 
     /**
-     * Get user id for an username
+     * Get local user id for an username
      * @param sql
      * @param username user username
      * @return the user id
      */
-    def selectUserId(Sql sql, String username) {
+    Long findUserIdForUsername(Sql sql, String username) {
         def req = sql.firstRow("SELECT id FROM user where username = $username ")
         Long res = req.id
         res

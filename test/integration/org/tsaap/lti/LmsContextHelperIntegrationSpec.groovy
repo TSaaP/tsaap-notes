@@ -32,11 +32,22 @@ class LmsContextHelperIntegrationSpec extends Specification {
     Sql sql
     LmsContextHelper lmsContextHelper
     LmsUserHelper lmsUserHelper
+    LmsUser lmsUser
+    LmsUser lmsUser2
+    LmsContext lmsContext
+    LmsContext lmsContext2
+    LmsContext lmsContext3
 
     def setup() {
         lmsContextHelper = new LmsContextHelper()
         lmsUserHelper = new LmsUserHelper()
         sql = new Sql(dataSource)
+        lmsUser = new LmsUser(email: "jdoe@nomail.com", firstname: "john", lastname: 'doe',username: 'jdoe', password: 'pass', isEnabled: true)
+        lmsUser2 = new LmsUser(email:  "jtes@nomail.com", firstname:  "jess", lastname:  "test", username:  "jtes", password:  "pass", isEnabled: true)
+        lmsContext = new LmsContext(contextTitle: "Context", ltiConsumerName: "Source", owner: lmsUser)
+        lmsContext2 = new LmsContext(contextTitle: "test 2 with ' special caractère", ltiConsumerName: "Source", owner: lmsUser)
+        lmsContext3 = new LmsContext(contextTitle: "Tsaap teach: Tsaap", ltiConsumerName: "Moodle-Tsaap",
+                owner: lmsUser, ltiCourseId: "3", ltiActivityId: "4", ltiConsumerKey: 'key')
     }
 
 
@@ -47,9 +58,9 @@ class LmsContextHelperIntegrationSpec extends Specification {
         def res = null
         try {
             sql.withTransaction { ->
-                lmsUserHelper.insertUserInDatabase(sql, "jdoe@nomail.com", "john", "doe", "jdoe", "pass", true)
-                userId = lmsUserHelper.selectUserId(sql, "jdoe")
-                lmsContextHelper.insertContext(sql, "Context", "", userId, true, "", "Source")
+                lmsUserHelper.insertUserInDatabase(sql, lmsUser)
+                userId = lmsUserHelper.findUserIdForUsername(sql, "jdoe")
+                lmsContextHelper.insertContext(sql, lmsContext)
                 res = lmsContextHelper.selectContextId(sql, "Context", "Source")
                 throw new SQLException()
             }
@@ -69,9 +80,9 @@ class LmsContextHelperIntegrationSpec extends Specification {
         def userId = null
         try {
             sql.withTransaction { ->
-                lmsUserHelper.insertUserInDatabase(sql, "jdoe@nomail.com", "john", "doe", "jdoe", "pass", true)
-                userId = lmsUserHelper.selectUserId(sql, "jdoe")
-                lmsContextHelper.insertContext(sql, "Context", "", userId, true, "", "Source")
+                lmsUserHelper.insertUserInDatabase(sql, lmsUser)
+                userId = lmsUserHelper.findUserIdForUsername(sql, "jdoe")
+                lmsContextHelper.insertContext(sql, lmsContext)
                 contextId = lmsContextHelper.selectContextId(sql, "Context", "Source")
                 res = lmsContextHelper.selectContextName(sql, contextId)
                 throw new SQLException()
@@ -91,9 +102,9 @@ class LmsContextHelperIntegrationSpec extends Specification {
         def userId = null
         try {
             sql.withTransaction { ->
-                lmsUserHelper.insertUserInDatabase(sql, "jdoe@nomail.com", "john", "doe", "jdoe", "pass", true)
-                userId = lmsUserHelper.selectUserId(sql, "jdoe")
-                lmsContextHelper.insertContext(sql, "test 2 with ' special caractère", "", userId, true, "", 'Source')
+                lmsUserHelper.insertUserInDatabase(sql, lmsUser)
+                userId = lmsUserHelper.findUserIdForUsername(sql, "jdoe")
+                lmsContextHelper.insertContext(sql, lmsContext2)
                 res = lmsContextHelper.selectContextId(sql, "test 2 with ' special caractère", 'Source')
                 throw new SQLException()
             }
@@ -119,14 +130,12 @@ class LmsContextHelperIntegrationSpec extends Specification {
             sql.withTransaction { ->
                 lmsUserHelper.insertLtiConsumerInDatabase(sql, 'key', 'Moodle', 'azer', 'LTI-1p0', 'Moodle-Tsaap', 'moodle-2015051100.06', '130.120.214.80', null, 0, 1, null, null)
                 lmsUserHelper.insertLtiContextInDatabase(sql, "key", "3", "4", "3", "Tsaap teach: Tsaap", "{\"lis_outcome_service_url\":\"http://130.120.214.80/moodle/mod/lti/service.php\",\"lis_result_sourcedid\":\"{\\\"data\\\":{\\\"instanceid\\\":\\\"3\\\",\\\"userid\\\":\\\"5\\\",\\\"typeid\\\":\\\"1\\\",\\\"launchid\\\":827256523},\\\"hash\\\":\\\"26cdb9af21a105ee3c7d9211ca7809d6a43f34489f32cfc715ff9718a7193da5\\\"}\"}")
-                lmsUserHelper.insertUserInDatabase(sql, "jdoe@nomail.com", "john", "doe", "jdoe", "pass", true)
-                userId = lmsUserHelper.selectUserId(sql, "jdoe")
-                lmsContextHelper.insertContext(sql, "Tsaap teach: Tsaap", "", userId, true, "", 'Moodle-Tsaap')
-                req = lmsContextHelper.selectContextId(sql, "Tsaap teach: Tsaap", 'Moodle-Tsaap')
-                contextId = req
-                lmsContextHelper.insertLmsContext(sql, contextId, "3", "4", 'key', 'Moodle-Tsaap')
-                res = lmsContextHelper.selectLmsContext(sql, 'key', "3", "4")
-                res2 = lmsContextHelper.selectLmsContext(sql, 'key', '8', '12')
+                lmsUserHelper.insertUserInDatabase(sql,lmsUser)
+                userId = lmsUserHelper.findUserIdForUsername(sql, "jdoe")
+                lmsContextHelper.insertContext(sql, lmsContext3)
+                lmsContextHelper.insertLmsContext(sql, lmsContext3)
+                res = lmsContextHelper.selectLmsContextId(sql, 'key', "3", "4")
+                res2 = lmsContextHelper.selectLmsContextId(sql, 'key', '8', '12')
                 throw new SQLException()
             }
         }
@@ -135,7 +144,7 @@ class LmsContextHelperIntegrationSpec extends Specification {
 
         then: "I get an id for an existing lms context and null for the other"
         res != null
-        res == contextId
+        res == lmsContext3.contextId
         res2 == null
 
     }
@@ -151,13 +160,11 @@ class LmsContextHelperIntegrationSpec extends Specification {
             sql.withTransaction { ->
                 lmsUserHelper.insertLtiConsumerInDatabase(sql, 'key', 'Moodle', 'azer', 'LTI-1p0', 'Moodle-Tsaap', 'moodle-2015051100.06', '130.120.214.80', null, 0, 1, null, null)
                 lmsUserHelper.insertLtiContextInDatabase(sql, "key", "3", "4", "3", "Tsaap teach: Tsaap", "{\"lis_outcome_service_url\":\"http://130.120.214.80/moodle/mod/lti/service.php\",\"lis_result_sourcedid\":\"{\\\"data\\\":{\\\"instanceid\\\":\\\"3\\\",\\\"userid\\\":\\\"5\\\",\\\"typeid\\\":\\\"1\\\",\\\"launchid\\\":827256523},\\\"hash\\\":\\\"26cdb9af21a105ee3c7d9211ca7809d6a43f34489f32cfc715ff9718a7193da5\\\"}\"}")
-                lmsUserHelper.insertUserInDatabase(sql, "jdoe@nomail.com", "john", "doe", "jdoe", "pass", true)
-                userId = lmsUserHelper.selectUserId(sql, "jdoe")
-                lmsContextHelper.insertContext(sql, "Tsaap teach: Tsaap", "", userId, true, "", 'Moodle-Tsaap')
-                req = lmsContextHelper.selectContextId(sql, "Tsaap teach: Tsaap", 'Moodle-Tsaap')
-                contextId = req
-                lmsContextHelper.insertLmsContext(sql, contextId, "3", "4", 'key', 'Moodle-Tsaap')
-                res = lmsContextHelper.selectLmsContext(sql, 'key', "3", "4")
+                lmsUserHelper.insertUserInDatabase(sql, lmsUser)
+                userId = lmsUserHelper.findUserIdForUsername(sql, "jdoe")
+                lmsContextHelper.insertContext(sql, lmsContext3)
+                lmsContextHelper.insertLmsContext(sql, lmsContext3)
+                res = lmsContextHelper.selectLmsContextId(sql, 'key', "3", "4")
                 throw new SQLException()
             }
         }
@@ -166,7 +173,7 @@ class LmsContextHelperIntegrationSpec extends Specification {
 
         then: "The lms context is correctly insert"
         res != null
-        res == contextId
+        res == lmsContext3.contextId
 
     }
 
@@ -181,13 +188,11 @@ class LmsContextHelperIntegrationSpec extends Specification {
             sql.withTransaction { ->
                 lmsUserHelper.insertLtiConsumerInDatabase(sql, 'key', 'Moodle', 'azer', 'LTI-1p0', 'Moodle-Tsaap', 'moodle-2015051100.06', '130.120.214.80', null, 0, 1, null, null)
                 lmsUserHelper.insertLtiContextInDatabase(sql, "key", "3", "4", "3", "Tsaap teach: Tsaap", "{\"lis_outcome_service_url\":\"http://130.120.214.80/moodle/mod/lti/service.php\",\"lis_result_sourcedid\":\"{\\\"data\\\":{\\\"instanceid\\\":\\\"3\\\",\\\"userid\\\":\\\"5\\\",\\\"typeid\\\":\\\"1\\\",\\\"launchid\\\":827256523},\\\"hash\\\":\\\"26cdb9af21a105ee3c7d9211ca7809d6a43f34489f32cfc715ff9718a7193da5\\\"}\"}")
-                lmsUserHelper.insertUserInDatabase(sql, "jdoe@nomail.com", "john", "doe", "jdoe", "pass", true)
-                userId = lmsUserHelper.selectUserId(sql, "jdoe")
-                lmsContextHelper.insertContext(sql, "Tsaap teach: Tsaap", "", userId, true, "", 'Moodle-Tsaap')
-                req = lmsContextHelper.selectContextId(sql, "Tsaap teach: Tsaap", 'Moodle-Tsaap')
-                contextId = req
-                lmsContextHelper.insertLmsContext(sql, contextId, "3", "4", 'key', 'Moodle-Tsaap')
-                res = lmsContextHelper.selectLmsContextForContextId(sql, contextId)
+                lmsUserHelper.insertUserInDatabase(sql, lmsUser)
+                userId = lmsUserHelper.findUserIdForUsername(sql, "jdoe")
+                lmsContextHelper.insertContext(sql, lmsContext3)
+                lmsContextHelper.insertLmsContext(sql, lmsContext3)
+                res = lmsContextHelper.selectLmsContextForContextId(sql, lmsContext3.contextId)
                 throw new SQLException()
             }
         }
@@ -196,7 +201,7 @@ class LmsContextHelperIntegrationSpec extends Specification {
 
         then: "I get the lms context"
         res != null
-        res.tsaap_context_id == contextId
+        res.tsaap_context_id == lmsContext3.contextId
     }
 
     def "test delete lms context for a context"() {
@@ -210,14 +215,12 @@ class LmsContextHelperIntegrationSpec extends Specification {
             sql.withTransaction { ->
                 lmsUserHelper.insertLtiConsumerInDatabase(sql, 'key', 'Moodle', 'azer', 'LTI-1p0', 'Moodle-Tsaap', 'moodle-2015051100.06', '130.120.214.80', null, 0, 1, null, null)
                 lmsUserHelper.insertLtiContextInDatabase(sql, "key", "3", "4", "3", "Tsaap teach: Tsaap", "{\"lis_outcome_service_url\":\"http://130.120.214.80/moodle/mod/lti/service.php\",\"lis_result_sourcedid\":\"{\\\"data\\\":{\\\"instanceid\\\":\\\"3\\\",\\\"userid\\\":\\\"5\\\",\\\"typeid\\\":\\\"1\\\",\\\"launchid\\\":827256523},\\\"hash\\\":\\\"26cdb9af21a105ee3c7d9211ca7809d6a43f34489f32cfc715ff9718a7193da5\\\"}\"}")
-                lmsUserHelper.insertUserInDatabase(sql, "jdoe@nomail.com", "john", "doe", "jdoe", "pass", true)
-                userId = lmsUserHelper.selectUserId(sql, "jdoe")
-                lmsContextHelper.insertContext(sql, "Tsaap teach: Tsaap", "", userId, true, "", 'Moodle-Tsaap')
-                req = lmsContextHelper.selectContextId(sql, "Tsaap teach: Tsaap", 'Moodle-Tsaap')
-                contextId = req
-                lmsContextHelper.insertLmsContext(sql, contextId, "3", "4", 'key', 'Moodle-Tsaap')
-                lmsContextHelper.deleteLmsContext(sql, contextId)
-                res = lmsContextHelper.selectLmsContextForContextId(sql, contextId)
+                lmsUserHelper.insertUserInDatabase(sql, lmsUser)
+                userId = lmsUserHelper.findUserIdForUsername(sql, "jdoe")
+                lmsContextHelper.insertContext(sql, lmsContext3)
+                lmsContextHelper.insertLmsContext(sql, lmsContext3)
+                lmsContextHelper.deleteLmsContext(sql, lmsContext3.contextId)
+                res = lmsContextHelper.selectLmsContextForContextId(sql, lmsContext3.contextId)
                 throw new SQLException()
             }
         }
@@ -238,12 +241,11 @@ class LmsContextHelperIntegrationSpec extends Specification {
             sql.withTransaction { ->
                 lmsUserHelper.insertLtiConsumerInDatabase(sql, 'key', 'Moodle', 'azer', 'LTI-1p0', 'Moodle-Tsaap', 'moodle-2015051100.06', '130.120.214.80', null, 0, 1, null, null)
                 lmsUserHelper.insertLtiContextInDatabase(sql, "key", "3", "4", "3", "Tsaap teach: Tsaap", "{\"lis_outcome_service_url\":\"http://130.120.214.80/moodle/mod/lti/service.php\",\"lis_result_sourcedid\":\"{\\\"data\\\":{\\\"instanceid\\\":\\\"3\\\",\\\"userid\\\":\\\"5\\\",\\\"typeid\\\":\\\"1\\\",\\\"launchid\\\":827256523},\\\"hash\\\":\\\"26cdb9af21a105ee3c7d9211ca7809d6a43f34489f32cfc715ff9718a7193da5\\\"}\"}")
-                lmsUserHelper.insertUserInDatabase(sql, "jdoe@nomail.com", "john", "doe", "jdoe", "pass", true)
-                userId = lmsUserHelper.selectUserId(sql, "jdoe")
-                lmsContextHelper.insertContext(sql, "Tsaap teach: Tsaap", "", userId, true, "", 'Moodle-Tsaap')
-                contextId = lmsContextHelper.selectContextId(sql, "Tsaap teach: Tsaap", 'Moodle-Tsaap')
-                lmsContextHelper.insertLmsContext(sql, contextId, "3", "4", 'key', 'Moodle-Tsaap')
-                res = lmsContextHelper.selectConsumerKeyAndCourseId(sql, contextId)
+                lmsUserHelper.insertUserInDatabase(sql, lmsUser)
+                userId = lmsUserHelper.findUserIdForUsername(sql, "jdoe")
+                lmsContextHelper.insertContext(sql, lmsContext3)
+                lmsContextHelper.insertLmsContext(sql, lmsContext3)
+                res = lmsContextHelper.selectConsumerKeyAndCourseId(sql, lmsContext3.contextId)
                 throw new SQLException()
             }
         }
@@ -254,7 +256,7 @@ class LmsContextHelperIntegrationSpec extends Specification {
         res == ["key", "3"]
     }
 
-    def "test check if an user is a context follower"() {
+    def "test check if a user is a context follower"() {
 
         when: "I want to know if users are context follower or not"
         def userId
@@ -264,12 +266,12 @@ class LmsContextHelperIntegrationSpec extends Specification {
         def res2 = null
         try {
             sql.withTransaction { ->
-                lmsUserHelper.insertUserInDatabase(sql, "jdoe@nomail.com", "john", "doe", "jdoe", "pass", true)
-                userId = lmsUserHelper.selectUserId(sql, "jdoe")
-                lmsContextHelper.insertContext(sql, "Tsaap teach: Tsaap", "", userId, true, "", 'Moodle-Tsaap')
+                lmsUserHelper.insertUserInDatabase(sql, lmsUser)
+                userId = lmsUserHelper.findUserIdForUsername(sql, "jdoe")
+                lmsContextHelper.insertContext(sql, lmsContext3)
                 contextId = lmsContextHelper.selectContextId(sql, "Tsaap teach: Tsaap", 'Moodle-Tsaap')
-                lmsUserHelper.insertUserInDatabase(sql, "jtes@nomail.com", "jess", "test", "jtes", "pass", true)
-                userId2 = lmsUserHelper.selectUserId(sql, "jtes")
+                lmsUserHelper.insertUserInDatabase(sql, lmsUser2)
+                userId2 = lmsUserHelper.findUserIdForUsername(sql, "jtes")
                 res = lmsContextHelper.checkIfUserIsAContextFollower(sql, userId2, contextId)
                 lmsContextHelper.addUserToContextFollower(sql, userId2, contextId)
                 res2 = lmsContextHelper.checkIfUserIsAContextFollower(sql, userId2, contextId)
@@ -293,12 +295,12 @@ class LmsContextHelperIntegrationSpec extends Specification {
         def res = null
         try {
             sql.withTransaction { ->
-                lmsUserHelper.insertUserInDatabase(sql, "jdoe@nomail.com", "john", "doe", "jdoe", "pass", true)
-                userId = lmsUserHelper.selectUserId(sql, "jdoe")
-                lmsContextHelper.insertContext(sql, "Tsaap teach: Tsaap", "", userId, true, "", 'Moodle-Tsaap')
+                lmsUserHelper.insertUserInDatabase(sql, lmsUser)
+                userId = lmsUserHelper.findUserIdForUsername(sql, "jdoe")
+                lmsContextHelper.insertContext(sql, lmsContext3)
                 contextId = lmsContextHelper.selectContextId(sql, "Tsaap teach: Tsaap", 'Moodle-Tsaap')
-                lmsUserHelper.insertUserInDatabase(sql, "jtes@nomail.com", "jess", "test", "jtes", "pass", true)
-                userId2 = lmsUserHelper.selectUserId(sql, "jtes")
+                lmsUserHelper.insertUserInDatabase(sql, lmsUser2)
+                userId2 = lmsUserHelper.findUserIdForUsername(sql, "jtes")
                 lmsContextHelper.addUserToContextFollower(sql, userId2, contextId)
                 res = lmsContextHelper.checkIfUserIsAContextFollower(sql, userId2, contextId)
                 throw new SQLException()

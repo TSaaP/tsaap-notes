@@ -79,17 +79,13 @@ public class Launch extends HttpServlet implements Callback {
             return false;
         }
         try {
-            initializeUserSession(toolProvider);
-
-            initialiseLmsUserService();
             Sql sql = getSql();
+            initializeUserSession(toolProvider);
+            initialiseLmsUserService();
             LmsUser lmsUser = getLmsUser(sql, toolProvider);
-
             initialiseLmsContextService();
             LmsContext lmsContext = getLmsContext(sql, toolProvider, lmsUser);
-
-            String serverUrl = getServerUrl(toolProvider, lmsUser, lmsContext) ;
-            toolProvider.setRedirectUrl(serverUrl);
+            updateServerUrl(toolProvider, lmsUser, lmsContext);
         } finally {
             closeConnection();
         }
@@ -101,7 +97,17 @@ public class Launch extends HttpServlet implements Callback {
                 toolProvider.getResourceLink().getId(),toolProvider.getConsumer().getKey(),
                 toolProvider.getConsumer().getConsumerName(),toolProvider.getResourceLink().getTitle(),
                 lmsUser) ;
-        lmsContextService.findOrCreateContext(sql, lmsContext);
+        String customContextId = toolProvider.getRequest().getParameter("custom_contextid") ;
+        if (customContextId != null) {
+            try {
+                Long contextId = Long.valueOf(customContextId);
+                lmsContext.setContextId(contextId) ;
+            } catch(Exception e) {
+                logger.error("Custom context id not valid with value: "+customContextId) ;
+                logger.error(e.getMessage()) ;
+            }
+        }
+        lmsContextService.findOrCreateContext(sql, lmsContext) ;
         return lmsContext;
     }
 
@@ -113,7 +119,7 @@ public class Launch extends HttpServlet implements Callback {
         return lmsUser;
     }
 
-    private String getServerUrl(ToolProvider toolProvider, LmsUser lmsUser, LmsContext lmsContext) {
+    private void updateServerUrl(ToolProvider toolProvider, LmsUser lmsUser, LmsContext lmsContext) {
         String serverUrlFromTP = toolProvider.getRequest().getRequestURL().toString() ;
         String serverUrlRoot = serverUrlFromTP.substring(0, serverUrlFromTP.lastIndexOf("/")) ;
         String result = "&contextName=" + lmsContext.getContextTitle() + "&contextId=" + lmsContext.getContextId() ;
@@ -122,7 +128,7 @@ public class Launch extends HttpServlet implements Callback {
         } else {
             result = serverUrlRoot + "/lti/terms?username=" + lmsUser.getUsername() + result;
         }
-        return result ;
+        toolProvider.setRedirectUrl(result);
     }
 
     private void closeConnection() {

@@ -91,6 +91,7 @@ class LmsContextServiceSpec extends Specification {
 
         when: "I try to find a tsaap note context and user is a learner"
         lmsContext.owner.isLearner = true
+        lmsContext.contextId = null
         def res2 = lmsContextService.findOrCreateContext(sql, lmsContext)
 
         then: "a context is found and I get his id and his name"

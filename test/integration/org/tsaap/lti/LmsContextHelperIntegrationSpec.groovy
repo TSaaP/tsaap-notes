@@ -18,6 +18,9 @@
 package org.tsaap.lti
 
 import groovy.sql.Sql
+import org.tsaap.directory.User
+import org.tsaap.notes.Context
+import org.tsaap.notes.ContextService
 import spock.lang.Specification
 
 import javax.sql.DataSource
@@ -30,6 +33,7 @@ class LmsContextHelperIntegrationSpec extends Specification {
 
     DataSource dataSource
     Sql sql
+    ContextService contextService
     LmsContextHelper lmsContextHelper
     LmsUserHelper lmsUserHelper
     LmsUser lmsUser
@@ -121,10 +125,8 @@ class LmsContextHelperIntegrationSpec extends Specification {
     def "test select lms context in database"() {
 
         when: "I want to select an lms context id if the lms context is attach to the given lti context"
-        def req = null
         def res = null
         def res2 = null
-        def contextId
         def userId = null
         try {
             sql.withTransaction { ->
@@ -152,10 +154,8 @@ class LmsContextHelperIntegrationSpec extends Specification {
     def "test insert lms context in database"() {
 
         when: "I want to insert a lms context for a given lti_context and context"
-        def req = null
         def res = null
         def userId = null
-        def contextId
         try {
             sql.withTransaction { ->
                 lmsUserHelper.insertLtiConsumerInDatabase(sql, 'key', 'Moodle', 'azer', 'LTI-1p0', 'Moodle-Tsaap', 'moodle-2015051100.06', '130.120.214.80', null, 0, 1, null, null)
@@ -311,5 +311,78 @@ class LmsContextHelperIntegrationSpec extends Specification {
 
         then: "The user is correctly add to followers for this context"
         res
+    }
+
+
+    def "test context exists"() {
+        when: "an existing context is checked for existence"
+        def res = false
+        try {
+            sql.withTransaction {
+                lmsUserHelper.insertUserInDatabase(sql, lmsUser)
+                Context aContext = contextService.saveContext(new Context(contextName: "aContext", owner: User.get(lmsUser.userId)))
+                LmsContext anLmsContext = new LmsContext(contextId: aContext.id)
+                res = lmsContextHelper.contextExists(sql, anLmsContext)
+                throw new SQLException()
+            }
+        }
+        catch (SQLException e) {
+        }
+
+        then: "existence check is OK"
+        res
+
+
+        when: "checking existence on a non existing context"
+        def res2 = lmsContextHelper.contextExists(sql, new LmsContext(contextId: -1))
+
+        then: "checking return false"
+        !res2
+
+    }
+
+    def "test lms context doesn't exists"() {
+        when: "a context exists without a lms_context and we check lms context existence"
+        def contextExists = false
+        def lmsContextExists = true
+        try {
+            sql.withTransaction {
+                lmsUserHelper.insertUserInDatabase(sql, lmsUser)
+                Context aContext = contextService.saveContext(new Context(contextName: "aContext", owner: User.get(lmsUser.userId)))
+                lmsContext3.contextId = aContext.id
+                contextExists = lmsContextHelper.contextExists(sql, lmsContext3)
+                lmsContextExists = lmsContextHelper.lmsContextExists(sql, lmsContext3)
+                throw new SQLException()
+            }
+        }
+        catch (SQLException e) {
+        }
+
+        then: "existence check is KO for lms context"
+        contextExists
+        !lmsContextExists
+    }
+
+    def "test lms context exists"() {
+        when: "a context exists without a lms_context and we check lms context existence"
+        def contextExists = false
+        def lmsContextExists = true
+        try {
+            sql.withTransaction {
+                lmsUserHelper.insertUserInDatabase(sql, lmsUser)
+                Context aContext = contextService.saveContext(new Context(contextName: "aContext", owner: User.get(lmsUser.userId)))
+                lmsContext3.contextId = aContext.id
+                contextExists = lmsContextHelper.contextExists(sql, lmsContext3)
+                lmsContextHelper.insertLmsContext(sql,lmsContext3)
+                lmsContextExists = lmsContextHelper.lmsContextExists(sql, lmsContext3)
+                throw new SQLException()
+            }
+        }
+        catch (SQLException e) {
+        }
+
+        then: "existence check is KO for lms context"
+        contextExists
+        lmsContextExists
     }
 }

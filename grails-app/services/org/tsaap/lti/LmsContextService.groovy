@@ -31,15 +31,26 @@ class LmsContextService {
      * @return the lms context
      */
     LmsContext findOrCreateContext(Sql sql, LmsContext lmsContext) {
-        lmsContext.contextId = lmsContextHelper.selectLmsContextId(sql, lmsContext.ltiConsumerKey, lmsContext.ltiCourseId, lmsContext.ltiActivityId)
         lmsContext.owner.userId = lmsUserHelper.findUserIdForUsername(sql, lmsContext.owner.username)
-        if (lmsContext.contextId == null) {
-            createLmsContext(sql, lmsContext)
+        if (lmsContext.contextId) {
+            if (contextExists(sql, lmsContext)) {
+                if (!lmsContextExists(sql,lmsContext)) {
+                    createLmsContext(sql, lmsContext)
+                }
+                updateContextTitleAndFollower(sql, lmsContext)
+            }
         } else {
-            updateContextTitleAndFollower(sql, lmsContext)
+            lmsContext.contextId = lmsContextHelper.selectLmsContextId(sql, lmsContext.ltiConsumerKey,
+                    lmsContext.ltiCourseId, lmsContext.ltiActivityId)
+            if (lmsContext.contextId == null) {
+                createContextAndLmsContext(sql, lmsContext)
+            } else {
+                updateContextTitleAndFollower(sql, lmsContext)
+            }
         }
         lmsContext
     }
+
 
     /**
      * Delete an Lms context for a given tsaap note context
@@ -51,6 +62,14 @@ class LmsContextService {
         if (fetchedContext != null) {
             lmsContextHelper.deleteLmsContext(sql, contextId)
         }
+    }
+
+    private boolean contextExists(Sql sql, LmsContext lmsContext) {
+        lmsContextHelper.contextExists(sql, lmsContext)
+    }
+
+    private boolean lmsContextExists(Sql sql, LmsContext lmsContext) {
+        lmsContextHelper.lmsContextExists(sql, lmsContext)
     }
 
     private void updateContextTitleAndFollower(Sql sql, LmsContext lmsContext) {
@@ -65,6 +84,10 @@ class LmsContextService {
     }
 
     private void createLmsContext(Sql sql, LmsContext lmsContext) {
+        lmsContextHelper.insertLmsContext(sql, lmsContext)
+    }
+
+    private void createContextAndLmsContext(Sql sql, LmsContext lmsContext) {
         def owner = lmsContext.owner
         if (!owner.isLearner) {
             lmsContextHelper.insertContext(sql, lmsContext)

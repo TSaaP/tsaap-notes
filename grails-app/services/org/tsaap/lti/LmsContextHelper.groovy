@@ -47,7 +47,7 @@ class LmsContextHelper {
      */
     LmsContext insertContext(Sql sql, LmsContext lmsContext) {
         sql.execute("INSERT INTO context (context_name, date_created, description_as_note, last_updated, owner_id, owner_is_teacher, url, source, note_taking_enabled, closed, removed) VALUES ($lmsContext.contextTitle,now(),null,now(),$lmsContext.owner.userId,${!lmsContext.owner.isLearner},null,$lmsContext.ltiConsumerName,$lmsContext.noteTakingEnabled,0,0)")
-        lmsContext.contextId = selectContextId(sql,lmsContext.contextTitle, lmsContext.ltiConsumerName)
+        lmsContext.contextId = selectContextId(sql, lmsContext.contextTitle, lmsContext.ltiConsumerName)
         lmsContext
     }
 
@@ -139,6 +139,30 @@ class LmsContextHelper {
         if (req != null) {
             res = true
         }
+        res
+    }
+
+    /**
+     * Check the existance of a local context
+     * @param sql
+     * @param lmsContext
+     * @return true if the context exists
+     */
+    boolean contextExists(Sql sql, LmsContext lmsContext) {
+        def req = sql.firstRow("select count(*) as count_context FROM context WHERE id = $lmsContext.contextId")
+        def res = req.count_context == 1 ? true : false
+        res
+    }
+
+    /**
+     * Check existence of a local lms context
+     * @param sql
+     * @param lmsContext
+     * @return true if the local lms context exists
+     */
+    boolean lmsContextExists(Sql sql, LmsContext lmsContext) {
+        def req = sql.firstRow("select count(*) as count_context FROM lms_context WHERE tsaap_context_id = $lmsContext.contextId and lti_course_id = $lmsContext.ltiCourseId and lti_activity_id = $lmsContext.ltiActivityId and lti_consumer_key = $lmsContext.ltiConsumerKey")
+        def res = req.count_context == 1 ? true : false
         res
     }
 }

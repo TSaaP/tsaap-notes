@@ -31,10 +31,14 @@ class LmsUserHelperIntegrationSpec extends Specification {
     DataSource dataSource
     LmsUserHelper lmsUserHelper
     Sql sql
+    LmsUser lmsUser
+    LmsUser lmsUser2
 
     def setup() {
         lmsUserHelper = new LmsUserHelper()
         sql = new Sql(dataSource)
+        lmsUser = new LmsUser(email:"user@mail.com", firstname: "john", lastname:"doe", username:"jdoe", password:"pass", isEnabled:true)
+        lmsUser2 = new LmsUser(email:"user@mail.com", firstname: "jane", lastname:"doe", username:"jdoe2", password:"pass", isEnabled:false)
     }
 
     def "test select an username and password in database"() {
@@ -46,7 +50,7 @@ class LmsUserHelperIntegrationSpec extends Specification {
         def userId
         try {
             sql.withTransaction { ->
-                lmsUserHelper.insertUserInDatabase(sql, "user@mail.com", "john", "doe", "jdoe", "pass", true)
+                lmsUserHelper.insertUserInDatabase(sql, lmsUser)
                 req = sql.firstRow("SELECT id FROM user WHERE username = 'jdoe'")
                 userId = req.id
                 lmsUserHelper.insertLtiConsumerInDatabase(sql, 'key', 'Moodle', 'azer', 'LTI-1p0', 'Moodle-Tsaap', 'moodle-2015051100.06', '130.120.214.80', null, 0, 1, null, null)
@@ -73,10 +77,10 @@ class LmsUserHelperIntegrationSpec extends Specification {
         def res = null
         try {
             sql.withTransaction { ->
-                lmsUserHelper.insertUserInDatabase(sql, "user@mail.com", "john", "doe", "jdoe", "pass", true)
+                lmsUserHelper.insertUserInDatabase(sql, lmsUser)
                 req = sql.firstRow("SELECT * FROM user WHERE username = 'jdoe'")
                 userId = req.id
-                res = lmsUserHelper.selectUserId(sql, "jdoe")
+                res = lmsUserHelper.findUserIdForUsername(sql, "jdoe")
                 throw new SQLException()
             }
         }
@@ -95,9 +99,9 @@ class LmsUserHelperIntegrationSpec extends Specification {
         def res2 = null
         try {
             sql.withTransaction { ->
-                lmsUserHelper.insertUserInDatabase(sql, "user@mail.com", "john", "doe", "jdoe", "pass", true)
-                res = lmsUserHelper.selectUsernameIfExist(sql, "jdoe")
-                res2 = lmsUserHelper.selectUsernameIfExist(sql, "drol")
+                lmsUserHelper.insertUserInDatabase(sql, lmsUser)
+                res = lmsUserHelper.findMostRecentUsernameStartingWithUsername(sql, "jdoe")
+                res2 = lmsUserHelper.findMostRecentUsernameStartingWithUsername(sql, "drol")
                 throw new SQLException()
             }
         }
@@ -116,7 +120,7 @@ class LmsUserHelperIntegrationSpec extends Specification {
         def userId
         try {
             sql.withTransaction { ->
-                lmsUserHelper.insertUserInDatabase(sql, "user@mail.com", "john", "doe", "jdoe", "pass", true)
+                lmsUserHelper.insertUserInDatabase(sql, lmsUser)
                 req = sql.firstRow("SELECT id FROM user WHERE username = 'jdoe'")
                 userId = req.id
                 lmsUserHelper.insertLtiConsumerInDatabase(sql, 'key', 'Moodle', 'azer', 'LTI-1p0', 'Moodle-Tsaap', 'moodle-2015051100.06', '130.120.214.80', null, 0, 1, null, null)
@@ -145,15 +149,15 @@ class LmsUserHelperIntegrationSpec extends Specification {
         def userId
         try {
             sql.withTransaction { ->
-                lmsUserHelper.insertUserInDatabase(sql, "user@mail.com", "john", "doe", "jdoe", "pass", true)
+                lmsUserHelper.insertUserInDatabase(sql,lmsUser)
                 req = sql.firstRow("SELECT id FROM user WHERE username = 'jdoe'")
                 userId = req.id
                 lmsUserHelper.insertLtiConsumerInDatabase(sql, 'key', 'Moodle', 'azer', 'LTI-1p0', 'Moodle-Tsaap', 'moodle-2015051100.06', '130.120.214.80', null, 0, 1, null, null)
                 lmsUserHelper.insertLtiContextInDatabase(sql, "key", "3", "4", "3", "Tsaap teach: Tsaap", "{\"lis_outcome_service_url\":\"http://130.120.214.80/moodle/mod/lti/service.php\",\"lis_result_sourcedid\":\"{\\\"data\\\":{\\\"instanceid\\\":\\\"3\\\",\\\"userid\\\":\\\"5\\\",\\\"typeid\\\":\\\"1\\\",\\\"launchid\\\":827256523},\\\"hash\\\":\\\"26cdb9af21a105ee3c7d9211ca7809d6a43f34489f32cfc715ff9718a7193da5\\\"}\"}")
                 lmsUserHelper.insertLtiUserInDatabase(sql, "key", "3", "10", "{\"data\":{\"instanceid\":\"3\",\"userid\":\"10\",\"typeid\":\"1\",\"launchid\":1369810096},\"hash\":\"e6e30cc48a52c8344c0f5be4ffc3ea2194490a86cf42aa811d843f375c5e1cea\"}")
                 lmsUserHelper.insertLmsUserInDatabase(sql, userId, 'key', '10')
-                res = lmsUserHelper.selectLmsUser(sql, '10')
-                res2 = lmsUserHelper.selectLmsUser(sql, '12')
+                res = lmsUserHelper.findUserIdForLtiUserId(sql, '10','key')
+                res2 = lmsUserHelper.findUserIdForLtiUserId(sql, '12','key')
                 throw new SQLException()
             }
         }
@@ -174,7 +178,7 @@ class LmsUserHelperIntegrationSpec extends Specification {
         def userId
         try {
             sql.withTransaction { ->
-                lmsUserHelper.insertUserInDatabase(sql, "user@mail.com", "john", "doe", "jdoe", "pass", true)
+                lmsUserHelper.insertUserInDatabase(sql, lmsUser)
                 req = sql.firstRow("SELECT id FROM user WHERE username = 'jdoe'")
                 userId = req.id
                 lmsUserHelper.insertUserRoleInDatabase(sql, 2, userId)
@@ -196,7 +200,7 @@ class LmsUserHelperIntegrationSpec extends Specification {
         def res = null
         try {
             sql.withTransaction { ->
-                lmsUserHelper.insertUserInDatabase(sql, "user@mail.com", "john", "doe", "jdoe", "pass", true)
+                lmsUserHelper.insertUserInDatabase(sql, lmsUser)
                 res = sql.firstRow("SELECT * FROM user WHERE username = 'jdoe'")
                 throw new SQLException()
             }
@@ -277,8 +281,8 @@ class LmsUserHelperIntegrationSpec extends Specification {
         def res2 = null
         try {
             sql.withTransaction { ->
-                lmsUserHelper.insertUserInDatabase(sql, "user@mail.com", "john", "doe", "jdoe", "pass", true)
-                lmsUserHelper.insertUserInDatabase(sql, "user@mail.com", "jane", "doe", "jdoe2", "pass", false)
+                lmsUserHelper.insertUserInDatabase(sql, lmsUser)
+                lmsUserHelper.insertUserInDatabase(sql, lmsUser2)
                 res = lmsUserHelper.selectUserIsEnable(sql, "jdoe")
                 res2 = lmsUserHelper.selectUserIsEnable(sql, "jdoe2")
                 throw new SQLException()
@@ -299,10 +303,10 @@ class LmsUserHelperIntegrationSpec extends Specification {
         def res2 = null
         try {
             sql.withTransaction { ->
-                lmsUserHelper.insertUserInDatabase(sql, "user@mail.com", "jane", "doe", "jdoe", "pass", false)
-                res = lmsUserHelper.selectUserIsEnable(sql, "jdoe")
-                lmsUserHelper.enableUser(sql, "jdoe")
-                res2 = lmsUserHelper.selectUserIsEnable(sql, "jdoe")
+                lmsUserHelper.insertUserInDatabase(sql, lmsUser2)
+                res = lmsUserHelper.selectUserIsEnable(sql, "jdoe2")
+                lmsUserHelper.enableUser(sql, "jdoe2")
+                res2 = lmsUserHelper.selectUserIsEnable(sql, "jdoe2")
                 throw new SQLException()
             }
         }
@@ -322,7 +326,7 @@ class LmsUserHelperIntegrationSpec extends Specification {
         def userId
         try {
             sql.withTransaction { ->
-                lmsUserHelper.insertUserInDatabase(sql, "user@mail.com", "john", "doe", "jdoe", "pass", true)
+                lmsUserHelper.insertUserInDatabase(sql, lmsUser)
                 req = sql.firstRow("SELECT id FROM user WHERE username = 'jdoe'")
                 userId = req.id
                 lmsUserHelper.insertLtiConsumerInDatabase(sql, 'key', 'Moodle', 'azer', 'LTI-1p0', 'Moodle-Tsaap', 'moodle-2015051100.06', '130.120.214.80', null, 0, 1, null, null)

@@ -31,9 +31,13 @@ class LmsContextServiceSpec extends Specification {
     LmsContextHelper lmsContextHelper
     LmsUserHelper lmsUserHelper
     Sql sql
+    LmsContext lmsContext
 
     def setup() {
         lmsContextService = new LmsContextService()
+        lmsContext = new LmsContext(ltiConsumerKey:'key', ltiCourseId:'3', ltiActivityId:'4',
+                ltiConsumerName: 'Moodle Tsaap', contextTitle:'Tsaap Teach: Tsaap',
+                owner: new LmsUser(username: 'jdoe',isLearner: false))
     }
 
     void "test to create a tsaap note context for given lti context and consumer "() {
@@ -46,23 +50,23 @@ class LmsContextServiceSpec extends Specification {
         lmsContextService.lmsUserHelper = lmsUserHelper
 
         when: "I try to create a tsaap note context and user is a teacher"
-        def res = lmsContextService.findOrCreateContext(sql, 'key', '3', '4', 'Moodle Tsaap', 'Tsaap Teach: Tsaap', "jdoe", false)
+        def res = lmsContextService.findOrCreateContext(sql, lmsContext)
 
         then: "a context is created and I get his id and his name"
-        1 * lmsContextHelper.selectLmsContext(sql, 'key', '3', '4') >> null
-        1 * lmsUserHelper.selectUserId(sql, "jdoe") >> 88
-        1 * lmsContextHelper.insertContext(sql, 'Tsaap Teach: Tsaap', "", 88, true, "", 'Moodle Tsaap')
-        1 * lmsContextHelper.selectContextId(sql, 'Tsaap Teach: Tsaap', 'Moodle Tsaap') >> 55
-        1 * lmsContextHelper.insertLmsContext(sql, 55, '3', '4', 'key', 'Moodle Tsaap')
-        res.get(0) == 'Tsaap Teach: Tsaap'
-        res.get(1) == 55
+        1 * lmsContextHelper.selectLmsContextId(sql, 'key', '3', '4') >> null
+        1 * lmsUserHelper.findUserIdForUsername(sql, "jdoe") >> 88
+        1 * lmsContextHelper.insertContext(sql, lmsContext)
+        1 * lmsContextHelper.insertLmsContext(sql, lmsContext)
+        res.contextTitle == 'Tsaap Teach: Tsaap'
+
 
         when: "I try to create a tsaap note context and user is a learner"
-        lmsContextService.findOrCreateContext(sql, 'key', '3', '4', 'Moodle Tsaap', 'Tsaap Teach: Tsaap', "jdoe", true)
+        lmsContext.owner.isLearner = true
+        lmsContextService.findOrCreateContext(sql, lmsContext)
 
         then: "I get an exception"
-        1 * lmsContextHelper.selectLmsContext(sql, 'key', '3', '4') >> null
-        1 * lmsUserHelper.selectUserId(sql, "jdoe") >> 88
+        1 * lmsContextHelper.selectLmsContextId(sql, 'key', '3', '4') >> null
+        1 * lmsUserHelper.findUserIdForUsername(sql, "jdoe") >> 88
         thrown(LtiContextInitialisationException)
     }
 
@@ -76,26 +80,28 @@ class LmsContextServiceSpec extends Specification {
         lmsContextService.lmsUserHelper = lmsUserHelper
 
         when: "I try to find a tsaap note context and user is a teacher"
-        def res = lmsContextService.findOrCreateContext(sql, 'key', '3', '4', 'Moodle Tsaap', 'Tsaap Teach: Tsaap', "jdoe", false)
+        def res = lmsContextService.findOrCreateContext(sql, lmsContext)
 
         then: "a context is found and I get his id and his name"
-        1 * lmsContextHelper.selectLmsContext(sql, 'key', '3', '4') >> 55
-        1 * lmsUserHelper.selectUserId(sql, "jdoe") >> 88
+        1 * lmsContextHelper.selectLmsContextId(sql, 'key', '3', '4') >> 55
+        1 * lmsUserHelper.findUserIdForUsername(sql, "jdoe") >> 88
         1 * lmsContextHelper.selectContextName(sql, 55) >> 'Tsaap Teach: Tsaap'
-        res.get(0) == 'Tsaap Teach: Tsaap'
-        res.get(1) == 55
+        res.contextTitle == 'Tsaap Teach: Tsaap'
+        res.contextId == 55
 
-        when: "I try to find a tsaap note context and user is a teacher"
-        def res2 = lmsContextService.findOrCreateContext(sql, 'key', '3', '4', 'Moodle Tsaap', 'Tsaap Teach: Tsaap', "jdoe", true)
+        when: "I try to find a tsaap note context and user is a learner"
+        lmsContext.owner.isLearner = true
+        lmsContext.contextId = null
+        def res2 = lmsContextService.findOrCreateContext(sql, lmsContext)
 
         then: "a context is found and I get his id and his name"
-        1 * lmsContextHelper.selectLmsContext(sql, 'key', '3', '4') >> 55
-        1 * lmsUserHelper.selectUserId(sql, "jdoe") >> 88
+        1 * lmsContextHelper.selectLmsContextId(sql, 'key', '3', '4') >> 55
+        1 * lmsUserHelper.findUserIdForUsername(sql, "jdoe") >> 88
         1 * lmsContextHelper.selectContextName(sql, 55) >> 'Tsaap Teach: Tsaap'
         1 * lmsContextHelper.checkIfUserIsAContextFollower(sql, 88, 55) >> false
         1 * lmsContextHelper.addUserToContextFollower(sql, 88, 55)
-        res2.get(0) == 'Tsaap Teach: Tsaap'
-        res2.get(1) == 55
+        res2.contextTitle == 'Tsaap Teach: Tsaap'
+        res2.contextId == 55
     }
 
     void "test to delete a lms context for a tsaap context"() {

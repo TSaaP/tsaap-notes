@@ -33,9 +33,9 @@
     </p>
 
     <p>${message(code: "tsaap.terms.question")}</p>
-    <g:link controller="userAccount" action="ltiConnection"
-            params='[agree: "true", username: params.username, contextId: params.contextId, contextName: params.contextName, displaysAll: "on", kind: "standard"]'>${message(code: "tsaap.terms.agree")}</g:link>
-    <g:link controller="userAccount" action="ltiConnection"
+    <g:link class="btn btn-info" controller="userAccount" action="ltiConnection"
+            params='[agree: "true", username: params.username, contextId: params.contextId, contextName: params.contextName, displaysAll: "on"]'>${message(code: "tsaap.terms.agree")}</g:link>
+    <g:link class="btn btn-default" controller="userAccount" action="ltiConnection"
             params='[agree: "false"]'>${message(code: "tsaap.terms.disagree")}</g:link>
 </div>
 </body>

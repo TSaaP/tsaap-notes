@@ -32,23 +32,148 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 
 /**
- * Created by dorian on 15/06/15.
+ * Servlet dedicated to the activity launch through LTI protocol
+ * @author DROL
+ * @author FSIL
  */
 public class Launch extends HttpServlet implements Callback {
 
     private static final long serialVersionUID = 7955577706944298060L;
-    Db db;
-    LmsUserService lmsUserService;
-    LmsContextService lmsContextService;
+    private Db db;
+    private LmsUserService lmsUserService;
+    private LmsContextService lmsContextService;
     private static Logger logger = Logger.getLogger(Launch.class);
 
-    public void initialiseLmsUserService() {
+
+    /**
+     * Process the http post request for launching the tool provider activity
+     * @param request the request
+     * @param response the response
+     * @throws ServletException
+     * @throws IOException
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        startNewSession(request);
+        DataConnector dc = getDataConnector(request);
+        ToolProvider tp = getToolProvider(request, response, dc);
+        tp.execute();
+    }
+
+    /**
+     * Execute the launch of the tool provider activity
+     * @param toolProvider the tool provider
+     * @return true if the launch is OK
+     */
+    @Override
+    public boolean execute(ToolProvider toolProvider) {
+        if (!isAnAuthorizedUserRole(toolProvider)) {
+            toolProvider.setReason("Invalid role.");
+            return false;
+        }
+        try {
+            Sql sql = getSql();
+            initializeUserSession(toolProvider);
+            initialiseLmsUserService();
+            LmsUser lmsUser = getLmsUser(sql, toolProvider);
+            initialiseLmsContextService();
+            LmsContext lmsContext = getLmsContext(sql, toolProvider, lmsUser);
+            updateServerUrl(toolProvider, lmsUser, lmsContext);
+        } finally {
+            closeConnection();
+        }
+        return true;
+    }
+
+    private LmsContext getLmsContext(Sql sql, ToolProvider toolProvider, LmsUser lmsUser) {
+        LmsContext lmsContext = new LmsContext(toolProvider.getResourceLink().getLtiContextId(),
+                toolProvider.getResourceLink().getId(),toolProvider.getConsumer().getKey(),
+                toolProvider.getConsumer().getConsumerName(),toolProvider.getResourceLink().getTitle(),
+                lmsUser) ;
+        String customContextId = toolProvider.getRequest().getParameter("custom_contextid") ;
+        if (customContextId != null) {
+            try {
+                Long contextId = Long.valueOf(customContextId);
+                lmsContext.setContextId(contextId) ;
+            } catch(Exception e) {
+                logger.error("Custom context id not valid with value: "+customContextId) ;
+                logger.error(e.getMessage()) ;
+            }
+        }
+        lmsContextService.findOrCreateContext(sql, lmsContext) ;
+        return lmsContext;
+    }
+
+    private LmsUser getLmsUser(Sql sql, ToolProvider toolProvider) {
+        LmsUser lmsUser = new LmsUser(toolProvider.getUser().getIdForDefaultScope(),toolProvider.getConsumer().getKey(),
+                toolProvider.getUser().getFirstname(), toolProvider.getUser().getLastname(),
+                toolProvider.getUser().getEmail(), toolProvider.getUser().isLearner()) ;
+        lmsUser =  lmsUserService.findOrCreateUser(sql, lmsUser);
+        return lmsUser;
+    }
+
+    private void updateServerUrl(ToolProvider toolProvider, LmsUser lmsUser, LmsContext lmsContext) {
+        String serverUrlFromTP = toolProvider.getRequest().getRequestURL().toString() ;
+        String serverUrlRoot = serverUrlFromTP.substring(0, serverUrlFromTP.lastIndexOf("/")) ;
+        String result = "&contextName=" + lmsContext.getContextTitle() + "&contextId=" + lmsContext.getContextId() ;
+        if (lmsUser.isIsEnabled()) {
+            result = serverUrlRoot + "/questions/index?displaysAll=on" + result ;
+        } else {
+            result = serverUrlRoot + "/lti/terms?username=" + lmsUser.getUsername() + result;
+        }
+        toolProvider.setRedirectUrl(result);
+    }
+
+    private void closeConnection() {
+        try {
+            db.closeConnection();
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+        }
+    }
+
+    private Sql getSql() {
+        Connection connection = db.getConnection();
+        return new Sql(connection);
+    }
+
+    private boolean isAnAuthorizedUserRole(ToolProvider toolProvider) {
+        return toolProvider.getUser().isLearner() || toolProvider.getUser().isStaff();
+    }
+
+    private ToolProvider getToolProvider(HttpServletRequest request, HttpServletResponse response, DataConnector dc) {
+        ToolProvider tp = new ToolProvider(request, response, this, dc);
+        tp.setParameterConstraint("oauth_consumer_key", true, 50);
+        tp.setParameterConstraint("resource_link_id", true, 50);
+        tp.setParameterConstraint("user_id", true, 50);
+        tp.setParameterConstraint("roles", true, null);
+        return tp;
+    }
+
+    private DataConnector getDataConnector(HttpServletRequest request) {
+        db = Utils.initialise(request.getSession(), false);
+        DataConnector dc = null;
+        if (db != null) {
+            dc = new JDBC(Config.DB_TABLENAME_PREFIX, db.getConnection());
+        }
+        return dc;
+    }
+
+    private void startNewSession(HttpServletRequest request) throws UnsupportedEncodingException {
+        request.getSession().invalidate();
+        request.getSession(true);
+        request.setCharacterEncoding("UTF-8");
+    }
+
+
+    private void initialiseLmsUserService() {
         lmsUserService = new LmsUserService();
         LmsUserHelper lmsUserHelper = new LmsUserHelper();
         UserProvisionAccountService userProvisionAccountService = new UserProvisionAccountService();
@@ -63,95 +188,23 @@ public class Launch extends HttpServlet implements Callback {
 
     }
 
-    public void initialiseLmsContextService() {
+    private void initialiseLmsContextService() {
         lmsContextService = new LmsContextService();
         LmsContextHelper lmsContextHelper = new LmsContextHelper();
         lmsContextService.setLmsContextHelper(lmsContextHelper);
         LmsUserHelper lmsUserHelper = new LmsUserHelper();
         lmsContextService.setLmsUserHelper(lmsUserHelper);
-
     }
 
-    @Override
-    public boolean execute(ToolProvider toolProvider) {
-        // Check the user has an appropriate role
-        boolean isAnUser = toolProvider.getUser().isLearner() || toolProvider.getUser().isStaff();
-        if (isAnUser) {
-            try {
-                // Initialise the user session
-                toolProvider.getRequest().getSession().setAttribute("consumer_key", toolProvider.getConsumer().getKey());
-                toolProvider.getRequest().getSession().setAttribute("resource_id", toolProvider.getResourceLink().getId());
-                toolProvider.getRequest().getSession().setAttribute("user_consumer_key",
-                        toolProvider.getUser().getResourceLink().getConsumer().getKey());
-                toolProvider.getRequest().getSession().setAttribute("user_id", toolProvider.getUser().getIdForDefaultScope());
-                toolProvider.getRequest().getSession().setAttribute("isStudent", toolProvider.getUser().isLearner());
-                toolProvider.getRequest().getSession().setAttribute("lti_context_id", toolProvider.getResourceLink().getLtiContextId());
-
-                Connection connection = db.getConnection();
-                Sql sql = new Sql(connection);
-                String consumerKey = toolProvider.getConsumer().getKey();
-                Boolean isLearner = toolProvider.getUser().isLearner();
-
-                //Check the user
-                initialiseLmsUserService();
-                ArrayList user = (ArrayList) lmsUserService.findOrCreateUser(sql, toolProvider.getUser().getIdForDefaultScope(), toolProvider.getUser().getFirstname(), toolProvider.getUser().getLastname(),
-                        toolProvider.getUser().getEmail(), consumerKey, isLearner);
-                String username = (String) user.get(0);
-                Boolean userEnable = (Boolean) user.get(1);
-
-                String serverUrl = toolProvider.getRequest().getRequestURL().toString();
-                serverUrl = serverUrl.substring(0, serverUrl.lastIndexOf("/"));
-
-                //Check the context
-                initialiseLmsContextService();
-                ArrayList context = (ArrayList) lmsContextService.findOrCreateContext(sql, consumerKey, toolProvider.getResourceLink().getId(), toolProvider.getResourceLink().getLtiContextId(), toolProvider.getConsumer().getConsumerName(),
-                        toolProvider.getResourceLink().getTitle(), username, isLearner);
-
-                // Give redirect url
-                if (userEnable) {
-                    serverUrl = serverUrl + "/notes/index?displaysAll=on&contextName=" + context.get(0) + "&contextId=" + context.get(1) + "&kind=standard";
-                } else {
-                    serverUrl = serverUrl + "/lti/terms?username=" + username + "&contextName=" + context.get(0) + "&contextId=" + context.get(1);
-                }
-                toolProvider.setRedirectUrl(serverUrl);
-            } finally {
-                try {
-                    db.closeConnection();
-                } catch (SQLException e) {
-                    logger.error(e.getMessage());
-                }
-            }
-        } else {
-            toolProvider.setReason("Invalid role.");
-        }
-        return isAnUser;
-
+    private void initializeUserSession(ToolProvider toolProvider) {
+        toolProvider.getRequest().getSession().setAttribute("consumer_key", toolProvider.getConsumer().getKey());
+        toolProvider.getRequest().getSession().setAttribute("resource_id", toolProvider.getResourceLink().getId());
+        toolProvider.getRequest().getSession().setAttribute("user_consumer_key",
+                toolProvider.getUser().getResourceLink().getConsumer().getKey());
+        toolProvider.getRequest().getSession().setAttribute("user_id", toolProvider.getUser().getIdForDefaultScope());
+        toolProvider.getRequest().getSession().setAttribute("isStudent", toolProvider.getUser().isLearner());
+        toolProvider.getRequest().getSession().setAttribute("lti_context_id", toolProvider.getResourceLink().getLtiContextId());
     }
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-
-        // Cancel any existing session and start a new session
-        request.getSession().invalidate();
-        request.getSession(true);
-
-        request.setCharacterEncoding("UTF-8");
-
-        // Initialise database
-        db = Utils.initialise(request.getSession(), false);
-
-        DataConnector dc = null;
-        if (db != null) {
-            dc = new JDBC(Config.DB_TABLENAME_PREFIX, db.getConnection());
-        }
-        ToolProvider tp = new ToolProvider(request, response, this, dc);
-        tp.setParameterConstraint("oauth_consumer_key", true, 50);
-        tp.setParameterConstraint("resource_link_id", true, 50);
-        tp.setParameterConstraint("user_id", true, 50);
-        tp.setParameterConstraint("roles", true, null);
-        tp.execute();
-
-    }
 
 }

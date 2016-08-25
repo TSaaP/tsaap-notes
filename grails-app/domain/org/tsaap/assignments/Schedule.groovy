@@ -18,8 +18,10 @@ class Schedule {
 
     static constraints = {
         isManual nullable: false
-        startDate nullable: true
-        endDate nullable: true
+        startDate nullable: false
+        endDate nullable: true, validator: { val, obj ->
+            if (val != null && val <= obj.startDate) return ['endDateBeforeStartDate']
+        }
         durationInMinutes nullable: true
         assignment nullable: true
     }

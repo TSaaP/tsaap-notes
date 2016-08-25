@@ -59,7 +59,7 @@ class AssignmentServiceIntegrationSpec extends Specification {
     void "test save assignment with schedule"() {
         given: "an assignment and  a schedule"
         Assignment assignment = new Assignment(title: "an assignment", owner: teacher)
-        Schedule schedule = new Schedule()
+        Schedule schedule = new Schedule(startDate: new Date())
 
         when: "saving the assignment"
         Assignment savedAssignment = assignmentService.saveAssignment(assignment,schedule)

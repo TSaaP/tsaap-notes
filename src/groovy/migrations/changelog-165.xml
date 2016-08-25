@@ -50,4 +50,47 @@
                                  referencedTableName="user"
                                  referencedColumnNames="id"/>
     </changeSet>
+
+    <changeSet id="2" author="fsil">
+        <comment>Create schedule table</comment>
+        <createTable tableName="schedule">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_created" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_manual" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="start_date" type="DATETIME">
+                <constraints nullable="true"/>
+            </column>
+            <column name="end_date" type="DATETIME">
+                <constraints nullable="true"/>
+            </column>
+            <column name="duration_in_minutes" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="is_started" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_ended" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="assignment_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+        <createIndex tableName="schedule" indexName="idx_schedule_assignment_id">
+            <column name="assignment_id"></column>
+        </createIndex>
+        <addForeignKeyConstraint baseTableName="schedule" baseColumnNames="assignment_id"
+                                 constraintName="fk_schedule_assignment"
+                                 referencedTableName="assignment"
+                                 referencedColumnNames="id"/>
+    </changeSet>
 </databaseChangeLog>

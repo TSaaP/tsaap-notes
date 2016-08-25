@@ -54,8 +54,23 @@ class AssignmentServiceIntegrationSpec extends Specification {
         then: "the  assignement has  errors and no id"
         savedAssignment.hasErrors()
         savedAssignment.id == null
+    }
 
+    void "test save assignment with schedule"() {
+        given: "an assignment and  a schedule"
+        Assignment assignment = new Assignment(title: "an assignment", owner: teacher)
+        Schedule schedule = new Schedule()
 
+        when: "saving the assignment"
+        Assignment savedAssignment = assignmentService.saveAssignment(assignment,schedule)
+        Schedule savedSchedule = savedAssignment.schedule
+
+        then: "schedule and assignment are saved without errors"
+        !savedAssignment.hasErrors()
+        savedAssignment.id
+        !savedSchedule.hasErrors()
+        savedSchedule.id
 
     }
+
 }

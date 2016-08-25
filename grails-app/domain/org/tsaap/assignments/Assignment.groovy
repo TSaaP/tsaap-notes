@@ -15,4 +15,14 @@ class Assignment {
     static constraints = {
         title blank: false
     }
+
+    /**
+     * Get the schedule associated with this assignment if any
+     * @return the schedule
+     */
+    Schedule getSchedule() {
+        Schedule.findByAssignment(this)
+    }
+
+    static transients = ['schedule']
 }

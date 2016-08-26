@@ -122,4 +122,145 @@
         </sql>
     </changeSet>
 
+    <changeSet id="6" author="fsil">
+        <comment>Add tables relatives to interactions</comment>
+
+
+        <createTable tableName="statement">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_created" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_updated" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="varchar(512)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="owner_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="statement" indexName="idx_statement_owner_id">
+            <column name="owner_id"/>
+        </createIndex>
+        <addForeignKeyConstraint baseTableName="statement" baseColumnNames="owner_id"
+                                 constraintName="fk_statement_owner"
+                                 referencedTableName="user"
+                                 referencedColumnNames="id"/>
+
+
+        <createTable tableName="sequence">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_created" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_updated" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rank" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="owner_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="assignment_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="statement_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="sequence" indexName="idx_sequence_owner_id">
+            <column name="owner_id"/>
+        </createIndex>
+        <addForeignKeyConstraint baseTableName="sequence" baseColumnNames="owner_id"
+                                 constraintName="fk_sequence_owner"
+                                 referencedTableName="user"
+                                 referencedColumnNames="id"/>
+        <createIndex tableName="sequence" indexName="idx_sequence_assignment_id">
+            <column name="assignment_id"/>
+        </createIndex>
+        <addForeignKeyConstraint baseTableName="sequence" baseColumnNames="assignment_id"
+                                 constraintName="fk_sequence_assignment"
+                                 referencedTableName="assignment"
+                                 referencedColumnNames="id"/>
+        <createIndex tableName="sequence" indexName="idx_sequence_statement_id">
+            <column name="statement_id"/>
+        </createIndex>
+        <addForeignKeyConstraint baseTableName="sequence" baseColumnNames="statement_id"
+                                 constraintName="fk_sequence_statement"
+                                 referencedTableName="statement"
+                                 referencedColumnNames="id"/>
+
+
+        <createTable tableName="interaction">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_created" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_updated" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rank" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="specification" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="owner_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sequence_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="interaction" indexName="idx_interaction_owner_id">
+            <column name="owner_id"></column>
+        </createIndex>
+        <createIndex tableName="interaction" indexName="idx_interaction_sequence_id">
+            <column name="sequence_id"></column>
+        </createIndex>
+        <addForeignKeyConstraint baseTableName="interaction" baseColumnNames="owner_id"
+                                 constraintName="fk_interaction_owner"
+                                 referencedTableName="user"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="interaction" baseColumnNames="sequence_id"
+                                 constraintName="fk_interaction_sequence"
+                                 referencedTableName="sequence"
+                                 referencedColumnNames="id"/>
+
+        <addColumn tableName="schedule">
+            <column name="interaction_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        <createIndex tableName="schedule" indexName="idx_schedule_interaction_id">
+            <column name="interaction_id"/>
+        </createIndex>
+        <addForeignKeyConstraint baseTableName="schedule" baseColumnNames="interaction_id"
+                                 constraintName="fk_schedule_interaction"
+                                 referencedTableName="interaction"
+                                 referencedColumnNames="id"/>
+
+    </changeSet>
+
 </databaseChangeLog>

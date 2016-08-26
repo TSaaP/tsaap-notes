@@ -15,6 +15,7 @@ class Schedule {
     Boolean isEnded = false
 
     Assignment assignment
+    Interaction interaction
 
     static constraints = {
         isManual nullable: false
@@ -24,6 +25,7 @@ class Schedule {
         }
         durationInMinutes nullable: true
         assignment nullable: true
+        interaction nullable: true
     }
 
     /**

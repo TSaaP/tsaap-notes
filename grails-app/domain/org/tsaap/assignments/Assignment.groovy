@@ -28,5 +28,13 @@ class Assignment {
         Schedule.findByAssignment(this)
     }
 
-    static transients = ['schedule']
+    /**
+     * Get the sequences
+     * @return the sequences
+     */
+    List<Sequence> getSequences() {
+        Sequence.findAllByAssignment(this,sort:'rank', order:'asc')
+    }
+
+    static transients = ['schedule', 'sequences']
 }

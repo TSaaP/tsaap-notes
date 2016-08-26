@@ -2,9 +2,6 @@ package org.tsaap.assignments
 
 import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
-
-import java.text.DateFormat
-
 import static org.springframework.http.HttpStatus.*
 import grails.transaction.Transactional
 
@@ -99,6 +96,26 @@ class AssignmentController {
                 redirect assignmentInstance
             }
             '*'{ respond assignmentInstance, [status: OK] }
+        }
+    }
+
+    @Transactional
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def delete(Assignment assignmentInstance) {
+
+        if (assignmentInstance == null) {
+            notFound()
+            return
+        }
+        def user = springSecurityService.currentUser
+        assignmentService.deleteAssignment(assignmentInstance, user, true)
+
+        request.withFormat {
+            form {
+                flash.message = message(code: 'default.deleted.message', args: [message(code: 'assignment.label', default: 'Assignment'), assignmentInstance.id])
+                redirect action: "index", method: "GET"
+            }
+            '*' { render status: NO_CONTENT }
         }
     }
 

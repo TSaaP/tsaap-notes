@@ -4,37 +4,42 @@
 <html>
 	<head>
 		<meta name="layout" content="main">
-		<g:set var="entityName" value="${message(code: 'schedule.label', default: 'Schedule')}" />
-		<title><g:message code="default.show.label" args="[entityName]" /></title>
+		<r:require modules="tsaap_ui_notes,tsaap_icons"/>
+		<g:set var="entityName" value="${message(code: 'assignment.label', default: 'Assignment')}" />
+		<title><g:message code="assignment.label" args="[entityName]" /></title>
 	</head>
 	<body>
-		<a href="#show-schedule" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
-		<div class="nav" role="navigation">
-			<ul>
-				<li><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></li>
-				<li><g:link class="list" action="index"><g:message code="default.list.label" args="[entityName]" /></g:link></li>
-				<li><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]" /></g:link></li>
-			</ul>
-		</div>
-		<div id="show-schedule" class="content scaffold-show" role="main">
-			<h1><g:message code="default.show.label" args="[entityName]" /></h1>
+
+	<div class="container context-nav" role="navigation">
+		<ol class="breadcrumb">
+			<li><g:link class="list" action="index"><g:message code="assignment.list.label"
+															   args="[entityName]"/></g:link></li>
+			<li class="active">${message(code: 'assignment.label')} "${assignmentInstance?.title}"</li>
+		</ol>
+	</div>
+
+		<div id="show-assignment" class="container" role="main">
 			<g:if test="${flash.message}">
-			<div class="message" role="status">${flash.message}</div>
+                <div class="alert alert-info" role="status">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    ${flash.message}
+                </div>
 			</g:if>
-			<ol class="property-list schedule">
-			
-				<g:if test="${scheduleInstance?.isManual}">
-				<li class="fieldcontain">
-					<span id="isManual-label" class="property-label"><g:message code="schedule.isManual.label" default="Is Manual" /></span>
-					
-						<span class="property-value" aria-labelledby="isManual-label"><g:formatBoolean boolean="${scheduleInstance?.isManual}" /></span>
-					
-				</li>
-				</g:if>
+            <g:set var="scheduleInstance" value="${assignmentInstance.schedule}"/>
+			<ol class="property-list assignment">
+
+                <g:if test="${assignmentInstance?.title}">
+                    <li class="fieldcontain">
+                        <span id="assignment-label" class="property-label"><g:message code="assignment.title.label" default="Title" /></span>
+
+                        <span class="property-value" aria-labelledby="assignment-label">${assignmentInstance.title}</span>
+
+                    </li>
+                </g:if>
 			
 				<g:if test="${scheduleInstance?.startDate}">
 				<li class="fieldcontain">
-					<span id="startDate-label" class="property-label"><g:message code="schedule.startDate.label" default="Start Date" /></span>
+					<span id="startDate-label" class="property-label"><g:message code="schedule.startdate.label" default="Start Date" /></span>
 					
 						<span class="property-value" aria-labelledby="startDate-label"><g:formatDate date="${scheduleInstance?.startDate}" /></span>
 					
@@ -43,63 +48,20 @@
 			
 				<g:if test="${scheduleInstance?.endDate}">
 				<li class="fieldcontain">
-					<span id="endDate-label" class="property-label"><g:message code="schedule.endDate.label" default="End Date" /></span>
+					<span id="endDate-label" class="property-label"><g:message code="schedule.enddate.label" default="End Date" /></span>
 					
 						<span class="property-value" aria-labelledby="endDate-label"><g:formatDate date="${scheduleInstance?.endDate}" /></span>
 					
 				</li>
 				</g:if>
-			
-				<g:if test="${scheduleInstance?.durationInMinutes}">
-				<li class="fieldcontain">
-					<span id="durationInMinutes-label" class="property-label"><g:message code="schedule.durationInMinutes.label" default="Duration In Minutes" /></span>
-					
-						<span class="property-value" aria-labelledby="durationInMinutes-label"><g:fieldValue bean="${scheduleInstance}" field="durationInMinutes"/></span>
-					
-				</li>
-				</g:if>
-			
-				<g:if test="${scheduleInstance?.assignment}">
-				<li class="fieldcontain">
-					<span id="assignment-label" class="property-label"><g:message code="schedule.assignment.label" default="Assignment" /></span>
-					
-						<span class="property-value" aria-labelledby="assignment-label"><g:link controller="assignment" action="show" id="${scheduleInstance?.assignment?.id}">${scheduleInstance?.assignment?.encodeAsHTML()}</g:link></span>
-					
-				</li>
-				</g:if>
-			
-				<g:if test="${scheduleInstance?.dateCreated}">
-				<li class="fieldcontain">
-					<span id="dateCreated-label" class="property-label"><g:message code="schedule.dateCreated.label" default="Date Created" /></span>
-					
-						<span class="property-value" aria-labelledby="dateCreated-label"><g:formatDate date="${scheduleInstance?.dateCreated}" /></span>
-					
-				</li>
-				</g:if>
-			
-				<g:if test="${scheduleInstance?.isEnded}">
-				<li class="fieldcontain">
-					<span id="isEnded-label" class="property-label"><g:message code="schedule.isEnded.label" default="Is Ended" /></span>
-					
-						<span class="property-value" aria-labelledby="isEnded-label"><g:formatBoolean boolean="${scheduleInstance?.isEnded}" /></span>
-					
-				</li>
-				</g:if>
-			
-				<g:if test="${scheduleInstance?.isStarted}">
-				<li class="fieldcontain">
-					<span id="isStarted-label" class="property-label"><g:message code="schedule.isStarted.label" default="Is Started" /></span>
-					
-						<span class="property-value" aria-labelledby="isStarted-label"><g:formatBoolean boolean="${scheduleInstance?.isStarted}" /></span>
-					
-				</li>
-				</g:if>
-			
+
+
 			</ol>
-			<g:form url="[resource:scheduleInstance, action:'delete']" method="DELETE">
+
+			<g:form action="delete" controller="assignment" id="${assignmentInstance.id}" method="DELETE">
 				<fieldset class="buttons">
-					<g:link class="edit" action="edit" resource="${scheduleInstance}"><g:message code="default.button.edit.label" default="Edit" /></g:link>
-					<g:actionSubmit class="delete" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" />
+					<g:link class="btn btn-primary" action="edit" resource="${assignmentInstance}"><g:message code="default.button.edit.label" default="Edit" /></g:link>
+					<g:actionSubmit class="btn btn-default" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" />
 				</fieldset>
 			</g:form>
 		</div>

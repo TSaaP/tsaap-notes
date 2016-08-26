@@ -93,4 +93,33 @@
                                  referencedTableName="assignment"
                                  referencedColumnNames="id"/>
     </changeSet>
+
+    <changeSet id="3" author="fsil">
+        <comment>Add last updated column in assignment table</comment>
+        <addColumn tableName="assignment">
+            <column name="last_updated" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="4" author="fsil">
+        <comment>Update last updated column on assignment table</comment>
+        <sql>
+            update assignment set last_updated = NOW();
+        </sql>
+    </changeSet>
+
+    <changeSet id="5" author="fsil">
+        <comment>Add global id to assignments</comment>
+        <addColumn tableName="assignment">
+            <column name="global_id" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <sql>
+            update assignment set global_id = UUID();
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

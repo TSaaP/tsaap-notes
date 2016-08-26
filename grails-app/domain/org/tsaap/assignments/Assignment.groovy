@@ -11,9 +11,13 @@ class Assignment {
     User owner
 
     Date dateCreated
+    Date lastUpdated
+
+    String globalId
 
     static constraints = {
         title blank: false
+        globalId nullable: true
     }
 
     /**

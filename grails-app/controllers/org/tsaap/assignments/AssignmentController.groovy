@@ -16,6 +16,8 @@ class AssignmentController {
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
+        params.sort = params.sort ?: 'lastUpdated'
+        params.order = params.order ?: 'desc'
         respond Assignment.list(params), model:[assignmentInstanceCount: Schedule.count()]
     }
 
@@ -26,7 +28,8 @@ class AssignmentController {
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def create() {
-        [assignmentInstance:new Assignment(params), scheduleInstance: new Schedule(params)]
+        Date now = new Date()
+        [assignmentInstance:new Assignment(), scheduleInstance: new Schedule(startDate: now, endDate: now+1)]
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
@@ -35,22 +38,10 @@ class AssignmentController {
         Assignment assignmentInstance = new Assignment(params)
         assignmentInstance.owner = springSecurityService.currentUser
         assignmentInstance.validate()
-        if (assignmentInstance.hasErrors()) {
-            respond assignmentInstance.errors, view:'create'
-            return
-        }
-        Date startDate = null
-        Date endDate = null
-        if (params.startDate) {
-            startDate = new Date().parse(message(code:'date.startDate.format'),params.('startDate'))
-        }
-        if (params.endDate) {
-            endDate = new Date().parse(message(code:'date.endDate.format'),params.('endDate'))
-        }
-        Schedule scheduleInstance = new Schedule(startDate:startDate, endDate:endDate)
+        Schedule scheduleInstance = new Schedule(startDate:getStartDate(params), endDate:getEndDate(params))
         scheduleInstance.validate()
-        if (scheduleInstance.hasErrors()) {
-            respond scheduleInstance.errors, view:'create'
+        if (assignmentInstance.hasErrors() || scheduleInstance.hasErrors()) {
+            respond assignmentInstance, model:[scheduleInstance:scheduleInstance], view:'create'
             return
         }
 
@@ -58,41 +49,46 @@ class AssignmentController {
 
         request.withFormat {
             form {
-                flash.message = message(code: 'default.created.message', args: [message(code: 'assignment.label', default: 'Assignment'), scheduleInstance.id])
+                flash.message = message(code: 'default.created.message', args: [message(code: 'assignment.label', default: 'Assignment'), assignmentInstance.id])
                 redirect assignmentInstance
             }
             '*' { respond assignmentInstance, [status: CREATED] }
         }
     }
 
+
+
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def edit(Assignment assignmentInstance) {
-        respond assignmentInstance
+        Date now = new Date()
+        Schedule scheduleInstance = assignmentInstance.schedule ?: new Schedule(startDate: now, endDate: now+1)
+        [assignmentInstance: assignmentInstance, scheduleInstance: scheduleInstance]
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     @Transactional
-    def update(Assignment assignmentInstance, Schedule scheduleInstance) {
+    def update() {
+        Assignment assignmentInstance = Assignment.get(params.id)
         if (assignmentInstance == null) {
             notFound()
             return
         }
-
-        if (assignmentInstance.hasErrors()) {
-            respond assignmentInstance.errors, view:'edit'
+        assignmentInstance.title = params.title
+        assignmentInstance.validate()
+        Schedule scheduleInstance = assignmentInstance.schedule ?: new Schedule()
+        scheduleInstance.startDate = getStartDate(params)
+        scheduleInstance.endDate = getEndDate(params)
+        scheduleInstance.validate()
+        if (assignmentInstance.hasErrors() || scheduleInstance.hasErrors()) {
+            respond assignmentInstance, model:[scheduleInstance:scheduleInstance], view:'edit'
             return
         }
 
-        if (scheduleInstance.hasErrors()) {
-            respond scheduleInstance.errors, view:'edit'
-            return
-        }
-
-        scheduleInstance.save flush:true
+        assignmentService.saveAssignment(assignmentInstance, scheduleInstance)
 
         request.withFormat {
             form {
-                flash.message = message(code: 'default.updated.message', args: [message(code: 'assignment.label', default: 'Assignment'), scheduleInstance.id])
+                flash.message = message(code: 'default.updated.message', args: [message(code: 'assignment.label', default: 'Assignment'), assignmentInstance.id])
                 redirect assignmentInstance
             }
             '*'{ respond assignmentInstance, [status: OK] }
@@ -128,5 +124,19 @@ class AssignmentController {
             }
             '*'{ render status: NOT_FOUND }
         }
+    }
+
+    private Date getStartDate(def params) {
+        if (params.startDate) {
+            return new Date().parse(message(code: 'date.startDate.format'), params.('startDate'))
+        }
+        null
+    }
+
+    private Date getEndDate(def params) {
+        if (params.endDate) {
+            return new Date().parse(message(code: 'date.endDate.format'), params.('endDate'))
+        }
+        null
     }
 }

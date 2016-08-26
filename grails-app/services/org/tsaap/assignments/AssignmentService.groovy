@@ -18,6 +18,10 @@ class AssignmentService {
             schedule.save()
             schedule.assignment = assignment
         }
+        if (assignment.globalId == null) {
+            assignment.globalId = UUID.randomUUID().toString()
+        }
+        assignment.lastUpdated = new Date();
         assignment.save(flush: true)
         assignment
     }

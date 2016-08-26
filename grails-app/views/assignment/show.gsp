@@ -26,17 +26,11 @@
                 </div>
 			</g:if>
             <g:set var="scheduleInstance" value="${assignmentInstance.schedule}"/>
-			<ol class="property-list assignment">
 
-                <g:if test="${assignmentInstance?.title}">
-                    <li class="fieldcontain">
-                        <span id="assignment-label" class="property-label"><g:message code="assignment.title.label" default="Title" /></span>
+            <h3>${assignmentInstance.title}</h3>
+			<ul class="property-list assignment">
 
-                        <span class="property-value" aria-labelledby="assignment-label">${assignmentInstance.title}</span>
 
-                    </li>
-                </g:if>
-			
 				<g:if test="${scheduleInstance?.startDate}">
 				<li class="fieldcontain">
 					<span id="startDate-label" class="property-label"><g:message code="schedule.startdate.label" default="Start Date" /></span>
@@ -55,8 +49,16 @@
 				</li>
 				</g:if>
 
+				<g:if test="${assignmentInstance?.globalId}">
+					<li class="fieldcontain">
+						<span id="globalId-label" class="property-label"><g:message code="assignment.globalid.label" default="Global Id" /></span>
 
-			</ol>
+						<span class="property-value" aria-labelledby="endDate-label">${assignmentInstance?.globalId}</span>
+
+					</li>
+				</g:if>
+
+			</ul>
 
 			<g:form action="delete" controller="assignment" id="${assignmentInstance.id}" method="DELETE">
 				<fieldset class="buttons">

@@ -37,6 +37,7 @@ class AssignmentServiceIntegrationSpec extends Specification {
         savedAssignment.owner == teacher
         savedAssignment.id != null
         savedAssignment.dateCreated != null
+        savedAssignment.globalId != null
     }
 
     void "test save fail with invalid assignments"() {

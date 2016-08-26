@@ -25,16 +25,16 @@
     <table class="table table-striped table-hover">
         <thead>
         <tr>
-            <th><g:message code="assignment.label" default="Assignment"/></th>
 
-            <g:sortableColumn property="startDate"
-                              title="${message(code: message(code:"schedule.startdate.label"))}"/>
 
-            <g:sortableColumn property="endDate"
-                              title="${message(code: message(code:"schedule.enddate.label"))}"/>
+            <g:sortableColumn property="title"
+                              title="${message(code: "assignment.label")}"/>
 
-            <g:sortableColumn property="dateCreated"
-                              title="${message(code: message(code:"schedule.datecreated.label"))}"/>
+            <th><g:message code="schedule.startdate.label" default="Start date"/></th>
+            <th><g:message code="schedule.enddate.label" default="End date"/></th>
+
+            <g:sortableColumn property="lastUpdated"
+                              title="${message(code: "assignment.lastupdated.label")}"/>
 
         </tr>
         </thead>
@@ -50,7 +50,7 @@
 
                 <td><g:formatDate date="${scheduleInstance?.endDate}"/></td>
 
-                <td><g:formatDate date="${assignmentInstance.dateCreated}"/></td>
+                <td><g:formatDate date="${assignmentInstance.lastUpdated}"/></td>
 
             </tr>
         </g:each>

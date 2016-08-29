@@ -8,8 +8,6 @@ import org.tsaap.directory.User
 @Transactional
 class AssignmentService {
 
-    SequenceService sequenceService
-
     /**
      * Save an assignment
      * @param assignment the assignment to save
@@ -38,32 +36,14 @@ class AssignmentService {
     def deleteAssignment(Assignment assignment, User user, boolean flush = false) {
         Contract.requires(assignment.owner == user, USER__MUST__BE__ASSIGNMENT__OWNER)
         assignment.schedule?.delete(flush: flush)
+        def query = Sequence.where {
+            assignment == assignment
+        }
+        query.deleteAll()
         assignment.delete(flush: flush)
     }
 
-    /**
-     * Add a sequence to an assignment
-     * @param assignment the assignment to add the sequence
-     * @param statement the statement the sequence is based on
-     * @param user the user adding the sequence
-     * @return the assignment with the new sequence or the assignments with errors
-     */
-    Assignment addSequenceToAssignment(Assignment assignment, User user, Statement statement) {
-        Contract.requires(assignment.owner == user, USER__MUST__BE__ASSIGNMENT__OWNER)
-        statement.save()
-        if (!statement.hasErrors()) {
-            def rank = assignment.lastSequence ? assignment.lastSequence.rank + 1 : 1
-            Sequence sequence = new Sequence(rank: rank)
-            sequenceService.saveSequence(sequence,user,assignment,statement)
-            assignment.lastUpdated = new Date()
-            assignment.save()
-        } else {
-            statement.errors.allErrors.each { FieldError error ->
-                assignment.errors.rejectValue(error.field, error.code)
-            }
-        }
-        assignment
-    }
+
 
 
     /**

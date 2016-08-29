@@ -13,5 +13,7 @@ class Statement {
     User owner
 
     static constraints = {
+        title blank: false
+        content blank: false
     }
 }

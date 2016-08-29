@@ -8,16 +8,15 @@
 </head>
 
 <body>
-<div class="container context-nav" role="navigation">
+
+<div id="create-assignment" class="container" role="main">
+
     <ol class="breadcrumb">
         <li><g:link class="list" action="index"><g:message code="assignment.list.label"
                                                            args="[entityName]"/></g:link></li>
         <li class="active">${message(code: message(code: "assignment.edition.label"))}</li>
     </ol>
-</div>
 
-
-<div id="create-assignment" class="container" role="main">
     <g:if test="${flash.message}">
         <div class="message" role="status">${flash.message}</div>
     </g:if>

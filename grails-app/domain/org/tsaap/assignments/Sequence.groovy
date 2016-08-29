@@ -17,7 +17,7 @@ class Sequence {
 
     }
 
-    static transients = ['interactions']
+    static transients = ['interactions','content', 'title']
 
     /**
      * Find all interactions
@@ -26,4 +26,22 @@ class Sequence {
     List<Interaction> getInteractions() {
         Interaction.findAllBySequence(this, [sort:'rank', order:'asc'])
     }
+
+    /**
+     * Get the title of the statement
+     * @return the title
+     */
+    String getTitle() {
+        statement?.title
+    }
+
+    /**
+     * Get the content of the statement
+     * @return the content
+     */
+    String getContent() {
+        statement?.content
+    }
+
+
 }

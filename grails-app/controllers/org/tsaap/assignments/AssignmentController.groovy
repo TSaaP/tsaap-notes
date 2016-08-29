@@ -2,6 +2,10 @@ package org.tsaap.assignments
 
 import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
+import org.grails.plugins.sanitizer.MarkupSanitizerResult
+import org.grails.plugins.sanitizer.MarkupSanitizerService
+import org.tsaap.directory.User
+
 import static org.springframework.http.HttpStatus.*
 import grails.transaction.Transactional
 
@@ -10,8 +14,10 @@ class AssignmentController {
 
     SpringSecurityService springSecurityService
     AssignmentService assignmentService
+    SequenceService sequenceService
+    MarkupSanitizerService markupSanitizerService
 
-    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+    static allowedMethods = [save: "POST", update: "PUT"]
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def index(Integer max) {
@@ -112,6 +118,149 @@ class AssignmentController {
                 redirect action: "index", method: "GET"
             }
             '*' { render status: NO_CONTENT }
+        }
+    }
+
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def addSequence(Assignment assignmentInstance) {
+        if (assignmentInstance == null) {
+            notFound()
+            return
+        }
+        Statement statementInstance = new Statement()
+        render(view: "create_sequence", model: [assignmentInstance: assignmentInstance, statementInstance:statementInstance])
+    }
+
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    @Transactional
+    def saveSequence() {
+        Assignment assignmentInstance = Assignment.get(params.assignment_instance_id)
+        if (assignmentInstance == null) {
+            notFound()
+            return
+        }
+        User owner = springSecurityService.currentUser
+        Statement statementInstance = new Statement(title: params.title)
+        statementInstance.content = markupSanitizerService.sanitize(params.content)?.cleanString
+        statementInstance.owner = owner
+
+        Sequence sequenceInstance = sequenceService.addSequenceToAssignment(assignmentInstance,owner, statementInstance)
+
+        if (sequenceInstance.hasErrors()) {
+            respond assignmentInstance, model:[statementInstance: statementInstance], view:'create_sequence'
+            return
+        }
+
+        request.withFormat {
+            form {
+                flash.message = message(code: 'default.created.message', args: [message(code: 'sequence.label', default: 'Question'), sequenceInstance.id])
+                redirect assignmentInstance
+            }
+            '*' { respond assignmentInstance, [status: CREATED] }
+        }
+
+
+    }
+
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def editSequence(Sequence sequenceInstance) {
+        respond sequenceInstance, view: "edit_sequence"
+    }
+
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    @Transactional
+    def updateSequence() {
+        Sequence sequenceInstance = Sequence.get(params.sequence_instance_id)
+        if (sequenceInstance == null) {
+            notFound()
+            return
+        }
+        User user = springSecurityService.currentUser
+        Statement statementInstance = sequenceInstance.statement
+        statementInstance.title = params.title
+        statementInstance.content = markupSanitizerService.sanitize(params.content)?.cleanString
+
+        sequenceService.updateStatementSequence(sequenceInstance, user)
+
+        if (sequenceInstance.hasErrors()) {
+            respond sequenceInstance, view:'edit_sequence'
+            return
+        }
+
+        Assignment assignmentInstance = sequenceInstance.assignment
+        request.withFormat {
+            form {
+                flash.message = message(code: 'sequence.updated.message', args: [message(code: 'sequence.label', default: 'Question'), sequenceInstance.id])
+                redirect assignmentInstance
+            }
+            '*' { respond assignmentInstance, [status: OK] }
+        }
+
+
+    }
+
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    @Transactional
+    def deleteSequence(Sequence sequenceInstance) {
+        if (sequenceInstance == null) {
+            notFound()
+            return
+        }
+        def assignmentInstance = sequenceInstance.assignment
+        def user = springSecurityService.currentUser
+        assignmentService.removeSequenceFromAssignment(sequenceInstance, assignmentInstance,user)
+
+        request.withFormat {
+            form {
+                flash.message = message(code: 'default.deleted.message', args: [message(code: 'sequence.label', default: 'Question'), sequenceInstance.id])
+                redirect assignmentInstance
+            }
+            '*' { render status: NO_CONTENT }
+        }
+
+    }
+
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    @Transactional
+    def upSequence(Sequence sequenceInstance) {
+        if (sequenceInstance == null) {
+            notFound()
+            return
+        }
+        Assignment assignmentInstance = sequenceInstance.assignment
+        User user = springSecurityService.currentUser
+        def sequenceInstanceList = assignmentInstance.sequences
+        def indexInList = sequenceInstanceList.indexOf(sequenceInstance)
+
+        assignmentService.swapSequences(assignmentInstance, user,sequenceInstance,sequenceInstanceList[indexInList-1])
+
+        request.withFormat {
+            form {
+                redirect assignmentInstance
+            }
+            '*' { render status: OK }
+        }
+    }
+
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    @Transactional
+    def downSequence(Sequence sequenceInstance) {
+        if (sequenceInstance == null) {
+            notFound()
+            return
+        }
+        Assignment assignmentInstance = sequenceInstance.assignment
+        User user = springSecurityService.currentUser
+        def sequenceInstanceList = assignmentInstance.sequences
+        def indexInList = sequenceInstanceList.indexOf(sequenceInstance)
+
+        assignmentService.swapSequences(assignmentInstance, user,sequenceInstance,sequenceInstanceList[indexInList+1])
+
+        request.withFormat {
+            form {
+                redirect assignmentInstance
+            }
+            '*' { render status: OK }
         }
     }
 

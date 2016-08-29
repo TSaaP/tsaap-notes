@@ -113,8 +113,8 @@ class BootstrapTestService {
         }
         if (!Assignment.findByTitle("Assignment 2")) {
             assignment2With2Sequences = assignmentService.saveAssignment(new Assignment(title: "Assignment 2", owner: teacherJeanne))
-            assignmentService.addSequenceToAssignment(assignment2With2Sequences, teacherJeanne, statement1)
-            assignmentService.addSequenceToAssignment(assignment2With2Sequences, teacherJeanne, statement2)
+            sequenceService.addSequenceToAssignment(assignment2With2Sequences, teacherJeanne, statement1)
+            sequenceService.addSequenceToAssignment(assignment2With2Sequences, teacherJeanne, statement2)
         }
     }
 

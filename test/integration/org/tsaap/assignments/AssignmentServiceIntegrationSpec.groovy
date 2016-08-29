@@ -107,65 +107,33 @@ class AssignmentServiceIntegrationSpec extends Specification {
         when: "deleting assignment is  performed by the owner"
         assignmentService.deleteAssignment(assignment, teacher)
 
-        then: "the assignment is deleted"
+        then: "the assignment and the schedule are deleted"
         Assignment.findById(assignment.id) == null
         Schedule.findByAssignment(assignment) == null
 
     }
 
-    void "test add a valid sequence to an assignment"() {
-        given: "an assignment and a statement"
-        Assignment assignment = bootstrapTestService.assignment1
-        Statement statement = bootstrapTestService.statement1
+    void "test delete assignment with sequences"() {
+        given: "an ssignment with sequences"
+        Assignment assignment = bootstrapTestService.assignment2With2Sequences
+        def sequence1 = assignment.sequences[0]
+        def sequence2 = assignment.sequences[1]
 
-        when: "when adding a first sequence"
-        assignmentService.addSequenceToAssignment(assignment, assignment.owner, statement)
+        when: "deleting assignment is  performed by the owner"
+        assignmentService.deleteAssignment(assignment, teacher)
 
-        then: "the assignment has no errors"
-        !assignment.hasErrors()
+        then: "the assignment and the sequences are deleted"
+        Assignment.findById(assignment.id) == null
+        Sequence.findById(sequence1.id) == null
+        Sequence.findById(sequence2.id) == null
 
-        and: "the assignment has one sequence"
-        assignment.sequences.size() == 1
-
-        and: "the rank of the last sequence is 1"
-        assignment.lastSequence.rank == 1
-
-        when: "adding a new sequence"
-        Statement statement2 = bootstrapTestService.statement2
-        assignmentService.addSequenceToAssignment(assignment, assignment.owner, statement2)
-
-        then:"the assignment has no errors"
-        !assignment.hasErrors()
-
-        and: "the assignment has two sequences"
-        assignment.sequences.size() == 2
-
-        and: "the rank of the last sequence is 2"
-        assignment.lastSequence.rank == 2
+        and: "the statements has not been deleted from the database"
+        Statement.findById(sequence1.statementId)
+        Statement.findById(sequence2.statementId)
 
     }
 
-    void "test add an invalid sequence to an assignment"() {
-        given: "an assignment with a sequence"
-        Assignment assignment = bootstrapTestService.assignment1
-        Statement statement = bootstrapTestService.statement1
-        assignmentService.addSequenceToAssignment(assignment, assignment.owner, statement)
 
-        and: "an invalid statement"
-        Statement statement2 =new Statement(title: null, content: "a content", owner: null)
-
-        when: "adding a sequence with the invalid statement"
-        assignmentService.addSequenceToAssignment(assignment,assignment.owner,statement2)
-
-        then: "assignment has only one sequence"
-        assignment.sequences.size() == 1
-        assignment.lastSequence.rank == 1
-
-        and: "assignment has errors coming from the statement"
-        assignment.hasErrors()
-        println ">>>>>>>>>> ${assignment.errors.allErrors}"
-
-    }
 
     void "test remove sequence from an assignment"() {
         given: "an assignment with 2 sequences"

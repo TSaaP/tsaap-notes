@@ -33,8 +33,20 @@ class Assignment {
      * @return the sequences
      */
     List<Sequence> getSequences() {
-        Sequence.findAllByAssignment(this,sort:'rank', order:'asc')
+        Sequence.findAllByAssignment(this,[sort:'rank', order:'asc'])
     }
 
-    static transients = ['schedule', 'sequences']
+    /**
+     * Get the last sequence of the current assignment
+     * @return
+     */
+    Sequence getLastSequence() {
+        def res = null
+        if (sequences) {
+            res = sequences.last()
+        }
+        res
+    }
+
+    static transients = ['schedule', 'sequences', 'lastSequence']
 }

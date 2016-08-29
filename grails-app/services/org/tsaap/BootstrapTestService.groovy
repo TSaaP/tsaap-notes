@@ -17,6 +17,10 @@
 
 package org.tsaap
 
+import org.tsaap.assignments.Assignment
+import org.tsaap.assignments.AssignmentService
+import org.tsaap.assignments.SequenceService
+import org.tsaap.assignments.Statement
 import org.tsaap.directory.SettingsService
 import org.tsaap.directory.User
 import org.tsaap.notes.Context
@@ -29,6 +33,8 @@ class BootstrapTestService {
     NoteService noteService
     ContextService contextService
     SettingsService settingsService
+    SequenceService sequenceService
+    AssignmentService assignmentService
 
     User learnerPaul
     User teacherJeanne
@@ -39,11 +45,20 @@ class BootstrapTestService {
     Context context1
     Context context2
 
+    Statement statement1
+    Statement statement2
+
+    Assignment assignment1
+    Assignment assignment2With2Sequences
+
+
 
     def initializeTests() {
         initializeUsers()
         initializeNotes()
         initializeContexts()
+        initializeStatements()
+        initializeAssignments()
     }
 
     def initializeUsers() {
@@ -90,4 +105,28 @@ class BootstrapTestService {
         }
 
     }
+
+
+    def initializeAssignments() {
+        if (!Assignment.findByTitle("Assignment 1")) {
+            assignment1 = assignmentService.saveAssignment(new Assignment(title: "Assignment 1", owner: teacherJeanne))
+        }
+        if (!Assignment.findByTitle("Assignment 2")) {
+            assignment2With2Sequences = assignmentService.saveAssignment(new Assignment(title: "Assignment 2", owner: teacherJeanne))
+            assignmentService.addSequenceToAssignment(assignment2With2Sequences, teacherJeanne, statement1)
+            assignmentService.addSequenceToAssignment(assignment2With2Sequences, teacherJeanne, statement2)
+        }
+    }
+
+    def initializeStatements() {
+        if (!Statement.findByTitle("Statement 1")) {
+            statement1 = sequenceService.saveStatement(new Statement(title: "Statement 1", content:"Content of statement 1"),teacherJeanne)
+        }
+        if (!Statement.findByTitle("Statement 2")) {
+            statement2 = sequenceService.saveStatement(new Statement(title: "Statement 2", content:"Content of statement 2"),teacherJeanne)
+        }
+    }
+
+
+
 }

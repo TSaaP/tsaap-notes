@@ -16,7 +16,7 @@ class AssignmentServiceIntegrationSpec extends Specification {
 
 
     def setup() {
-        bootstrapTestService.initializeUsers()
+        bootstrapTestService.initializeTests()
         teacher = bootstrapTestService.teacherJeanne
         anOtherUser = bootstrapTestService.learnerMary
     }
@@ -111,6 +111,103 @@ class AssignmentServiceIntegrationSpec extends Specification {
         Assignment.findById(assignment.id) == null
         Schedule.findByAssignment(assignment) == null
 
+    }
+
+    void "test add a valid sequence to an assignment"() {
+        given: "an assignment and a statement"
+        Assignment assignment = bootstrapTestService.assignment1
+        Statement statement = bootstrapTestService.statement1
+
+        when: "when adding a first sequence"
+        assignmentService.addSequenceToAssignment(assignment, assignment.owner, statement)
+
+        then: "the assignment has no errors"
+        !assignment.hasErrors()
+
+        and: "the assignment has one sequence"
+        assignment.sequences.size() == 1
+
+        and: "the rank of the last sequence is 1"
+        assignment.lastSequence.rank == 1
+
+        when: "adding a new sequence"
+        Statement statement2 = bootstrapTestService.statement2
+        assignmentService.addSequenceToAssignment(assignment, assignment.owner, statement2)
+
+        then:"the assignment has no errors"
+        !assignment.hasErrors()
+
+        and: "the assignment has two sequences"
+        assignment.sequences.size() == 2
+
+        and: "the rank of the last sequence is 2"
+        assignment.lastSequence.rank == 2
+
+    }
+
+    void "test add an invalid sequence to an assignment"() {
+        given: "an assignment with a sequence"
+        Assignment assignment = bootstrapTestService.assignment1
+        Statement statement = bootstrapTestService.statement1
+        assignmentService.addSequenceToAssignment(assignment, assignment.owner, statement)
+
+        and: "an invalid statement"
+        Statement statement2 =new Statement(title: null, content: "a content", owner: null)
+
+        when: "adding a sequence with the invalid statement"
+        assignmentService.addSequenceToAssignment(assignment,assignment.owner,statement2)
+
+        then: "assignment has only one sequence"
+        assignment.sequences.size() == 1
+        assignment.lastSequence.rank == 1
+
+        and: "assignment has errors coming from the statement"
+        assignment.hasErrors()
+        println ">>>>>>>>>> ${assignment.errors.allErrors}"
+
+    }
+
+    void "test remove sequence from an assignment"() {
+        given: "an assignment with 2 sequences"
+        Assignment assignment = bootstrapTestService.assignment2With2Sequences
+
+        and: "the first sequence"
+        Sequence sequence = assignment.sequences[0]
+
+        when: "removing the first sequence"
+        assignmentService.removeSequenceFromAssignment(sequence, assignment, assignment.owner)
+
+        then: "the assignment has only one sequence"
+        assignment.sequences.size() == 1
+
+        and: "the rank of the last sequence is always 2"
+        assignment.lastSequence.rank == 2
+
+        and: "the sequence is deleted from the database"
+        !Sequence.findById(sequence.id)
+
+        and: "the statement has not been deleted from the database"
+        Statement.findById(sequence.statementId)
+    }
+
+    void "test swap 2 sequences in an assignment"() {
+        given: "an assigment with 2 sequences"
+        Assignment assignment = bootstrapTestService.assignment2With2Sequences
+        Sequence sequence1 = assignment.sequences[0]
+        Integer rank1 = sequence1.rank
+        Sequence sequence2 = assignment.sequences[1]
+        Integer rank2 = sequence2.rank
+
+        when: "swapping 2 sequences"
+        assignmentService.swapSequences(assignment, assignment.owner, sequence1, sequence2)
+
+        then: "ranks are swapped"
+        sequence1.rank == rank2
+        sequence2.rank == rank1
+
+        and: "order are swapped"
+        assignment.sequences[0] == sequence2
+        assignment.sequences[1] == sequence1
     }
 
 }

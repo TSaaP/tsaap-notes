@@ -24,6 +24,6 @@ class Sequence {
      * @return the interactions
      */
     List<Interaction> getInteractions() {
-        Interaction.findAllBySequence(this, sort:'rank', order:'asc')
+        Interaction.findAllBySequence(this, [sort:'rank', order:'asc'])
     }
 }

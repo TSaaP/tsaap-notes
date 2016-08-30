@@ -21,6 +21,7 @@ import groovy.transform.ToString
 import org.gcontracts.annotations.Requires
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
+import org.tsaap.assignments.Statement
 import org.tsaap.directory.User
 import org.tsaap.notes.Note
 import org.tsaap.uploadImage.DataIdentifier
@@ -181,6 +182,31 @@ class AttachementService {
         myAttachement
     }
 
+    /**
+     * Add file to statement
+     * @param file the file to attach
+     * @param statemement the statement
+     * @return the attached attachment
+     */
+    Attachement addFileToStatement(MultipartFile file, Statement statement) {
+        Attachement attachment = createAttachementForMultipartFile(file)
+        addStatementToAttachment(statement, attachment)
+        attachment
+    }
+
+    /**
+     * Add a statement to an attachment
+     * @param statement the statement
+     * @param attachment the attachment
+     * @return the modified attachment
+     */
+    Attachement addStatementToAttachment(Statement statement, Attachement attachment) {
+       attachment.statement = statement
+        attachment.toDelete = false
+        attachment.save()
+        attachment
+    }
+
     Map<Note, Attachement> searchAttachementInNoteList(List<Note> noteList) {
         Map<Note, Attachement> result = new HashMap<Note, Attachement>()
         noteList.each {
@@ -203,6 +229,7 @@ class AttachementService {
             myAttachement.context = null
         }
         myAttachement.note = null
+        myAttachement.statement = null
         myAttachement.toDelete = true
         myAttachement.save(flush: true)
         myAttachement
@@ -234,6 +261,8 @@ class AttachementService {
             attachementToDelete.delete(flush: true)
         }
     }
+
+
 }
 
 /**

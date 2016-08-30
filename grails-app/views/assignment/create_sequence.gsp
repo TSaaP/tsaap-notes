@@ -33,7 +33,7 @@
             </ul>
         </div>
     </g:hasErrors>
-    <g:form controller="assignment" action="saveSequence" method="POST">
+    <g:form controller="assignment" action="saveSequence" method="POST" enctype="multipart/form-data">
         <g:hiddenField name="assignment_instance_id" value="${assignmentInstance?.id}"/>
         <fieldset class="form">
             <g:render template="statement_form" bean="${statementInstance}" model="[assignmentInstance:assignmentInstance]"/>

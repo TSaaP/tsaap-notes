@@ -20,6 +20,7 @@ package org.tsaap.attachement
 import org.springframework.mock.web.MockMultipartFile
 import org.springframework.web.multipart.MultipartFile
 import org.tsaap.BootstrapTestService
+import org.tsaap.assignments.Statement
 import org.tsaap.notes.Note
 import spock.lang.Specification
 
@@ -155,6 +156,7 @@ class AttachementServiceIntegrationSpec extends Specification {
         then: "the attachement is correctly detach"
         detachedAttachment.context == null
         detachedAttachment.note == null
+        detachedAttachment.statement == null
         detachedAttachment.toDelete
         !detachedAttachment.hasErrors()
     }
@@ -287,5 +289,22 @@ class AttachementServiceIntegrationSpec extends Specification {
         Attachement.findById(attachement1.id) == null
         Attachement.findById(attachement2.id)
         new File(path).exists()
+    }
+
+    def "test add file to statement"() {
+
+        given: "a note and a multipart file"
+        Statement statement = bootstrapTestService.statement1
+        byte[] content = "Attachment".getBytes()
+        MultipartFile multipartFile = new MockMultipartFile("grails", "grails", "text/plain", content)
+
+        when: "I want to add multipart file to statement"
+        Attachement attachement = attachementService.addFileToStatement(multipartFile, statement)
+
+        then: "The file is correctly add to note"
+        attachement != null
+        attachement.statement == statement
+        statement.attachment
+
     }
 }

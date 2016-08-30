@@ -34,14 +34,14 @@
             </ul>
         </div>
     </g:hasErrors>
-    <g:form controller="assignment" action="updateSequence" method="PUT">
+    <g:form controller="assignment" action="updateSequence" method="post" enctype="multipart/form-data">
         <g:hiddenField name="sequence_instance_id" value="${sequenceInstance?.id}"/>
-        <fieldset class="form">
-            <g:render template="statement_form" bean="${statementInstance}" model="[assignmentInstance:assignmentInstance]"/>
-        </fieldset>
-        <fieldset class="buttons">
-            <g:actionSubmit class="btn btn-info" action="updateSequence"
-                            value="${message(code: 'default.button.update.label', default: 'Update')}"/>
+        <g:render template="statement_form" bean="${statementInstance}"
+                  model="[assignmentInstance: assignmentInstance]"/>
+        <button type="submit"
+                class="btn btn-default">
+            ${message(code: 'default.button.update.label', default: 'Update')}
+        </button>
         </fieldset>
     </g:form>
 </div>

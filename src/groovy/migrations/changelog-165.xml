@@ -263,4 +263,20 @@
 
     </changeSet>
 
+    <changeSet id="7" author="fsil">
+        <comment>Add column statement_id to attachment</comment>
+        <addColumn tableName="attachement">
+            <column name="statement_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        <createIndex tableName="attachement" indexName="idx_attachement_statement_id">
+            <column name="statement_id"/>
+        </createIndex>
+        <addForeignKeyConstraint baseTableName="attachement" baseColumnNames="statement_id"
+                                 constraintName="fk_attachement_statement"
+                                 referencedTableName="statement"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
 </databaseChangeLog>

@@ -4,6 +4,7 @@ import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
 import org.grails.plugins.sanitizer.MarkupSanitizerResult
 import org.grails.plugins.sanitizer.MarkupSanitizerService
+import org.tsaap.attachement.AttachementService
 import org.tsaap.directory.User
 
 import static org.springframework.http.HttpStatus.*
@@ -16,6 +17,7 @@ class AssignmentController {
     AssignmentService assignmentService
     SequenceService sequenceService
     MarkupSanitizerService markupSanitizerService
+    AttachementService attachementService
 
     static allowedMethods = [save: "POST", update: "PUT"]
 
@@ -53,13 +55,9 @@ class AssignmentController {
 
         assignmentService.saveAssignment(assignmentInstance, scheduleInstance)
 
-        request.withFormat {
-            form {
-                flash.message = message(code: 'default.created.message', args: [message(code: 'assignment.label', default: 'Assignment'), assignmentInstance.id])
-                redirect assignmentInstance
-            }
-            '*' { respond assignmentInstance, [status: CREATED] }
-        }
+        flash.message = message(code: 'assignment.created.message', args: [message(code: 'assignment.label', default: 'Assignment'), assignmentInstance.title])
+        redirect assignmentInstance
+
     }
 
 
@@ -92,13 +90,9 @@ class AssignmentController {
 
         assignmentService.saveAssignment(assignmentInstance, scheduleInstance)
 
-        request.withFormat {
-            form {
-                flash.message = message(code: 'default.updated.message', args: [message(code: 'assignment.label', default: 'Assignment'), assignmentInstance.id])
-                redirect assignmentInstance
-            }
-            '*'{ respond assignmentInstance, [status: OK] }
-        }
+        flash.message = message(code: 'assignment.updated.message', args: [message(code: 'assignment.label', default: 'Assignment'), assignmentInstance.title])
+        redirect assignmentInstance
+
     }
 
     @Transactional
@@ -112,13 +106,9 @@ class AssignmentController {
         def user = springSecurityService.currentUser
         assignmentService.deleteAssignment(assignmentInstance, user, true)
 
-        request.withFormat {
-            form {
-                flash.message = message(code: 'default.deleted.message', args: [message(code: 'assignment.label', default: 'Assignment'), assignmentInstance.id])
-                redirect action: "index", method: "GET"
-            }
-            '*' { render status: NO_CONTENT }
-        }
+        flash.message = message(code: 'assignment.deleted.message', args: [message(code: 'assignment.label', default: 'Assignment'), assignmentInstance.title])
+        redirect action: "index", method: "GET"
+
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
@@ -151,14 +141,13 @@ class AssignmentController {
             return
         }
 
-        request.withFormat {
-            form {
-                flash.message = message(code: 'default.created.message', args: [message(code: 'sequence.label', default: 'Question'), sequenceInstance.id])
-                redirect assignmentInstance
-            }
-            '*' { respond assignmentInstance, [status: CREATED] }
+        def file = request.getFile('myFile')
+        if (file && !file.isEmpty()) {
+            attachementService.addFileToStatement(file, statementInstance)
         }
 
+        flash.message = message(code: 'sequence.updated.message', args: [message(code: 'sequence.label', default: 'Question'), sequenceInstance.title])
+        redirect action: "show", controller: "assignment", params: [id:assignmentInstance.id]
 
     }
 
@@ -187,15 +176,14 @@ class AssignmentController {
             return
         }
 
-        Assignment assignmentInstance = sequenceInstance.assignment
-        request.withFormat {
-            form {
-                flash.message = message(code: 'sequence.updated.message', args: [message(code: 'sequence.label', default: 'Question'), sequenceInstance.id])
-                redirect assignmentInstance
-            }
-            '*' { respond assignmentInstance, [status: OK] }
+        def file = request.getFile('myFile')
+        if (file && !file.isEmpty()) {
+            attachementService.addFileToStatement(file, statementInstance)
         }
 
+        Assignment assignmentInstance = sequenceInstance.assignment
+        flash.message = message(code: 'sequence.updated.message', args: [message(code: 'sequence.label', default: 'Question'), sequenceInstance.title])
+        redirect action: "show", controller: "assignment", params: [id:assignmentInstance.id]
 
     }
 
@@ -210,13 +198,8 @@ class AssignmentController {
         def user = springSecurityService.currentUser
         assignmentService.removeSequenceFromAssignment(sequenceInstance, assignmentInstance,user)
 
-        request.withFormat {
-            form {
-                flash.message = message(code: 'default.deleted.message', args: [message(code: 'sequence.label', default: 'Question'), sequenceInstance.id])
-                redirect assignmentInstance
-            }
-            '*' { render status: NO_CONTENT }
-        }
+        flash.message = message(code: 'sequence.deleted.message', args: [message(code: 'sequence.label', default: 'Question'), sequenceInstance.title])
+        redirect assignmentInstance
 
     }
 
@@ -234,12 +217,8 @@ class AssignmentController {
 
         assignmentService.swapSequences(assignmentInstance, user,sequenceInstance,sequenceInstanceList[indexInList-1])
 
-        request.withFormat {
-            form {
-                redirect assignmentInstance
-            }
-            '*' { render status: OK }
-        }
+        redirect assignmentInstance
+
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
@@ -255,24 +234,29 @@ class AssignmentController {
         def indexInList = sequenceInstanceList.indexOf(sequenceInstance)
 
         assignmentService.swapSequences(assignmentInstance, user,sequenceInstance,sequenceInstanceList[indexInList+1])
-
-        request.withFormat {
-            form {
-                redirect assignmentInstance
-            }
-            '*' { render status: OK }
-        }
+        redirect assignmentInstance
     }
 
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    @Transactional
+    def removeAttachement(Statement statementInstance) {
+        if (statementInstance == null) {
+            notFound()
+            return
+        }
+        def attachment = statementInstance.attachment
+        def user = springSecurityService.currentUser
+        if ( attachment && statementInstance.owner == user) {
+            attachementService.detachAttachement(attachment)
+        }
+
+        render """<input type="file" id="myFile" name="myFile" title="Image: gif, jpeg and png only"
+       style="margin-top: 5px"/>"""
+    }
 
     protected void notFound() {
-        request.withFormat {
-            form {
-                flash.message = message(code: 'default.not.found.message', args: [message(code: 'assignment.label', default: 'Assignment'), params.id])
-                redirect action: "index", method: "GET"
-            }
-            '*'{ render status: NOT_FOUND }
-        }
+        flash.message = message(code: 'default.not.found.message', args: [message(code: 'assignment.label', default: 'Assignment'), params.id])
+        redirect action: "index", method: "GET"
     }
 
     private Date getStartDate(def params) {

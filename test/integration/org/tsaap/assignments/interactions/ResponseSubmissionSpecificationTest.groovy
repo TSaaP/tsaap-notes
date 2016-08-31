@@ -15,6 +15,7 @@ class ResponseSubmissionSpecificationTest extends Specification {
         spec.studentsProvideExplanation = true
         spec.choiceInteractionType = ChoiceInteractionType.EXCLUSIVE.name()
         spec.itemCount = 4
+        spec.expectedChoiceList = [1, 3]
 
         when: "validating the spec"
         def isValid = spec.validateSpecification()
@@ -36,6 +37,7 @@ class ResponseSubmissionSpecificationTest extends Specification {
         map.studentsProvideExplanation == true
         map.choiceInteractionType == ChoiceInteractionType.EXCLUSIVE.name()
         map.itemCount == 4
+        map.expectedChoiceList == [1, 3]
     }
 
     void "test json output for an invalid spec"() {

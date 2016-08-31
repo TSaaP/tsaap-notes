@@ -4,6 +4,7 @@ import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
 import org.grails.plugins.sanitizer.MarkupSanitizerResult
 import org.grails.plugins.sanitizer.MarkupSanitizerService
+import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
 import org.tsaap.attachement.AttachementService
 import org.tsaap.directory.User
 
@@ -133,6 +134,9 @@ class AssignmentController {
         Statement statementInstance = new Statement(title: params.title)
         statementInstance.content = markupSanitizerService.sanitize(params.content)?.cleanString
         statementInstance.owner = owner
+
+        ResponseSubmissionSpecification subSpec = new ResponseSubmissionSpecification()
+        subSpec.choiceInteractionType = params.choiceInteractionType
 
         Sequence sequenceInstance = sequenceService.addSequenceToAssignment(assignmentInstance,owner, statementInstance)
 

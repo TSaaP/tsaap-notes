@@ -11,6 +11,9 @@ class ResponseSubmissionSpecification extends JsonInteractionSpecification {
     /**
      * Default constructor
      */
+
+    public static final String EXPECTED_CHOICE_LIST = "expectedChoiceList"
+
     ResponseSubmissionSpecification() {}
 
     /**
@@ -62,6 +65,14 @@ class ResponseSubmissionSpecification extends JsonInteractionSpecification {
     }
 
     /**
+     * Get the list of expected choices
+     * @return
+     */
+    List<Integer> getExpectedChoiceList() {
+        getSpecificationProperty(EXPECTED_CHOICE_LIST)
+    }
+
+    /**
      * Set the choice interaction type
      * @param choiceInteractionType the choice interaction type (exclusive or multiple)
      */
@@ -93,11 +104,20 @@ class ResponseSubmissionSpecification extends JsonInteractionSpecification {
         setSpecificationProperty(STUDENTS_PROVIDE_CONFIDENCE_DEGREE, studentsProvideConfidenceDegree)
     }
 
+    /**
+     * Set the expected choice list
+     * @param choiceList the choice list
+     */
+    void setExpectedChoiceList(List<Integer> choiceList) {
+        setSpecificationProperty(EXPECTED_CHOICE_LIST, choiceList)
+    }
+
     static constraints = {
         choiceInteractionType nullable: true, inList: ChoiceInteractionType.values()*.name()
         itemCount nullable: true, max: 10
         studentsProvideExplanation nullable: false
         studentsProvideConfidenceDegree nullable: false
+        expectedChoiceList nullable: false, minSize: 1
     }
 
 

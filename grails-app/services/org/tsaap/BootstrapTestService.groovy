@@ -19,8 +19,13 @@ package org.tsaap
 
 import org.tsaap.assignments.Assignment
 import org.tsaap.assignments.AssignmentService
+import org.tsaap.assignments.Interaction
+import org.tsaap.assignments.InteractionType
 import org.tsaap.assignments.SequenceService
 import org.tsaap.assignments.Statement
+import org.tsaap.assignments.interactions.ChoiceInteractionType
+import org.tsaap.assignments.interactions.EvaluationSpecification
+import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
 import org.tsaap.directory.SettingsService
 import org.tsaap.directory.User
 import org.tsaap.notes.Context
@@ -51,6 +56,9 @@ class BootstrapTestService {
     Assignment assignment1
     Assignment assignment2With2Sequences
 
+    Interaction responseSubmissionInteraction
+    Interaction evaluationInteraction
+
 
 
     def initializeTests() {
@@ -59,6 +67,7 @@ class BootstrapTestService {
         initializeContexts()
         initializeStatements()
         initializeAssignments()
+        initializeInteractions()
     }
 
     def initializeUsers() {
@@ -127,6 +136,28 @@ class BootstrapTestService {
         }
     }
 
+    def initializeInteractions() {
+        initializeResponseSubmissionInteraction()
+        initialiseEvaluationInteraction()
+    }
+
+    private void initialiseEvaluationInteraction() {
+        EvaluationSpecification evalSpec = new EvaluationSpecification()
+        evalSpec.responseToEvaluateCount = 3
+        evaluationInteraction = new Interaction(rank: 2, specification: evalSpec.jsonString,
+                interactionType: InteractionType.Evaluation.name())
+    }
+
+    private void initializeResponseSubmissionInteraction() {
+        ResponseSubmissionSpecification respSpec = new ResponseSubmissionSpecification()
+        respSpec.choiceInteractionType = ChoiceInteractionType.MULTIPLE.name()
+        respSpec.itemCount = 5
+        respSpec.expectedChoiceList = [2, 3, 5]
+        respSpec.studentsProvideExplanation = true
+        respSpec.studentsProvideConfidenceDegree = true
+        responseSubmissionInteraction = new Interaction(rank: 1, specification: respSpec.jsonString,
+                interactionType: InteractionType.ResponseSubmission.name())
+    }
 
 
 }

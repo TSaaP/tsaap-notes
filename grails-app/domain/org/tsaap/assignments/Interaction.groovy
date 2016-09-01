@@ -1,5 +1,8 @@
 package org.tsaap.assignments
 
+import org.tsaap.assignments.interactions.EvaluationSpecification
+import org.tsaap.assignments.interactions.InteractionSpecification
+import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
 import org.tsaap.directory.User
 
 class Interaction {
@@ -18,7 +21,7 @@ class Interaction {
         interactionType inList: InteractionType.values()*.name()
     }
 
-    static transients = ['schedule']
+    static transients = ['schedule','interactionSpecification']
 
     /**
      * Get the schedule
@@ -27,6 +30,31 @@ class Interaction {
     Schedule getSchedule() {
         Schedule.findByInteraction(this)
     }
+
+    InteractionSpecification getInteractionSpecification() {
+        if (interactionType == InteractionType.ResponseSubmission.name()) {
+            return new ResponseSubmissionSpecification(specification)
+        } else {
+            return new EvaluationSpecification(specification)
+        }
+    }
+
+    /**
+     * Indicate if the interaction is a response submission
+     * @return true if the interaction is a response submission
+     */
+    boolean isResponseSubmission() {
+        interactionType == InteractionType.ResponseSubmission.name()
+    }
+
+    /**
+     * Indicate if the interaction is an evaluation
+     * @return true if the interaction is an evaluation
+     */
+    boolean isEvaluation() {
+        interactionType == InteractionType.Evaluation.name()
+    }
+
 }
 
 enum InteractionType {

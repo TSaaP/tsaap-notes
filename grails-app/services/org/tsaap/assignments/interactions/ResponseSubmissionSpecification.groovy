@@ -112,6 +112,14 @@ class ResponseSubmissionSpecification extends JsonInteractionSpecification {
         setSpecificationProperty(EXPECTED_CHOICE_LIST, choiceList)
     }
 
+    /**
+     * Check if student can submit multiple choice
+     * @return
+     */
+    Boolean isMultipleChoice() {
+        choiceInteractionType == ChoiceInteractionType.MULTIPLE.name()
+    }
+
     static constraints = {
         choiceInteractionType nullable: true, inList: ChoiceInteractionType.values()*.name()
         itemCount nullable: true, max: 10

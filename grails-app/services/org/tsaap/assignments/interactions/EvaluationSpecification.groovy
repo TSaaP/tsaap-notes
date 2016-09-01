@@ -46,7 +46,7 @@ class EvaluationSpecification extends JsonInteractionSpecification {
     }
 
     static constraints = {
-        responseToEvaluateCount nullable: false, max: 10
+        responseToEvaluateCount nullable: false, max: 3
     }
 
     private static final String RESPONSE_COUNT = "responseToEvaluateCount"

@@ -1,6 +1,9 @@
 package org.tsaap.assignments
 
 import org.tsaap.BootstrapTestService
+import org.tsaap.assignments.interactions.ChoiceInteractionType
+import org.tsaap.assignments.interactions.EvaluationSpecification
+import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
 import org.tsaap.directory.User
 import spock.lang.*
 
@@ -153,6 +156,33 @@ class SequenceServiceIntegrationSpec extends Specification {
         then: "the statement title of the sequence is modified"
         Statement.findById(sequence.statementId).title == "new title"
         Interaction.findById(sequence.interactions[0].id).specification == "new spec"
+
+    }
+
+    void "test obtaining interaction specifications"() {
+        given: "an assignment with a sequence"
+        Assignment assignment = bootstrapTestService.assignment1
+        Statement statement = bootstrapTestService.statement1
+
+        and: "a sequence added to the assignment with interactions"
+        def interactions = [bootstrapTestService.responseSubmissionInteraction, bootstrapTestService.evaluationInteraction]
+        Sequence sequence = sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement, interactions)
+
+        when:"getting the response submission spec from the sequence"
+        ResponseSubmissionSpecification respSpec = sequence.responseSubmissionSpecification
+
+        then:"the specification is OK"
+        respSpec.choiceInteractionType == ChoiceInteractionType.MULTIPLE.name()
+        respSpec.itemCount == 5
+        respSpec.expectedChoiceList == [2, 3, 5]
+        respSpec.studentsProvideExplanation
+        respSpec.studentsProvideConfidenceDegree
+
+        when:"getting the evaluation spec from the sequence"
+        EvaluationSpecification evalSpec = sequence.evaluationSpecification
+
+        then:"the specification is OK"
+        evalSpec.responseToEvaluateCount == 3
 
     }
 

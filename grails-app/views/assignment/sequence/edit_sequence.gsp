@@ -34,13 +34,13 @@
             </ul>
         </div>
     </g:hasErrors>
-    <g:form controller="assignment" action="updateSequence" method="post" enctype="multipart/form-data">
+    <g:form controller="sequence" action="updateSequence" method="post" enctype="multipart/form-data">
         <g:hiddenField name="sequence_instance_id" value="${sequenceInstance?.id}"/>
-        <g:render template="statement_form" bean="${statementInstance}"
+        <g:render template="/assignment/sequence/statement_form" bean="${statementInstance}"
                   model="[assignmentInstance: assignmentInstance]"/>
-        <g:render template="phase_submission_1"/>
-        <g:render template="phase_confrontation_2"/>
-        <g:render template="phase_results_display_3"/>
+        <g:render template="/assignment/sequence/phase_submission_1" model="[responseSubmissionSpecificationInstance:sequenceInstance?.responseSubmissionSpecification]"/>
+        <g:render template="/assignment/sequence/phase_confrontation_2" model="[evaluationSpecificationInstance:sequenceInstance?.evaluationSpecification]"/>
+        <g:render template="/assignment/sequence/phase_results_display_3"/>
         <button type="submit"
                 class="btn btn-default">
             ${message(code: 'default.button.update.label', default: 'Update')}

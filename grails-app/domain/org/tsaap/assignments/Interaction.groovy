@@ -4,6 +4,7 @@ import org.tsaap.directory.User
 
 class Interaction {
 
+    String interactionType
     Integer rank
     String specification
 
@@ -14,6 +15,7 @@ class Interaction {
     Sequence sequence
 
     static constraints = {
+        interactionType inList: InteractionType.values()*.name()
     }
 
     static transients = ['schedule']
@@ -25,4 +27,21 @@ class Interaction {
     Schedule getSchedule() {
         Schedule.findByInteraction(this)
     }
+}
+
+enum InteractionType {
+
+    ResponseSubmission("org.tsaap.interactions.ResponseSubmissionSpecification"),
+    Evaluation("org.tsaap.interactions.EvaluationSpecification")
+
+    private String specificationQualifiedType
+
+    String getSpecificationQualifiedType() {
+        specificationQualifiedType
+    }
+
+    InteractionType(String specificationQualifiedType) {
+        this.specificationQualifiedType = specificationQualifiedType
+    }
+
 }

@@ -279,4 +279,13 @@
                                  referencedColumnNames="id"/>
     </changeSet>
 
+    <changeSet id="8" author="fsil">
+        <comment>Add column interaction_type to interaction table</comment>
+        <addColumn tableName="interaction">
+            <column name="interaction_type" type="varchar(512)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

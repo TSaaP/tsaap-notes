@@ -106,4 +106,54 @@ class SequenceServiceIntegrationSpec extends Specification {
 
     }
 
+    void "test add a valid sequence with interactions to an assignment"() {
+        given: "an assignment and a statement"
+        Assignment assignment = bootstrapTestService.assignment1
+        Statement statement = bootstrapTestService.statement1
+
+        and:"an interaction"
+        Interaction interaction = new Interaction(interactionType: InteractionType.Evaluation.name(),rank: 1, specification: "an evaluation spec")
+
+        when: "when adding a sequence with interaction"
+        Sequence sequence = sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement, [interaction])
+
+        then: "the sequence has no errors"
+        !sequence.hasErrors()
+
+        and: "the assignment has one sequence"
+        assignment.sequences.size() == 1
+
+        and: "the rank of the last sequence is 1"
+        assignment.lastSequence.rank == 1
+
+        and: "the sequence has 1 interaction"
+        sequence.interactions.size() == 1
+        sequence.interactions[0] == interaction
+        interaction.id
+    }
+
+    void "test update statement and interactions of a sequence"() {
+        given: "an assignment and a statement"
+        Assignment assignment = bootstrapTestService.assignment1
+        Statement statement = bootstrapTestService.statement1
+
+        and:"an interaction"
+        Interaction interaction = new Interaction(interactionType: InteractionType.Evaluation.name(),rank: 1, specification: "an evaluation spec")
+
+        and: "a sequence added to the assignment with interaction"
+        Sequence sequence = sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement, [interaction])
+
+        when: "statement and interaction is modified"
+        interaction.specification = "new spec"
+        statement.title = "new title"
+
+        and: "update id triggered on the sequence"
+        sequenceService.updateStatementAndInteractionsOfSequence(sequence,assignment.owner)
+
+        then: "the statement title of the sequence is modified"
+        Statement.findById(sequence.statementId).title == "new title"
+        Interaction.findById(sequence.interactions[0].id).specification == "new spec"
+
+    }
+
 }

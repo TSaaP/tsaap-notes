@@ -35,23 +35,6 @@ class SequenceService {
         statement
     }
 
-    /**
-     * Save an interaction
-     * @param assignment the assignment to save
-     *
-     * @return the assignment saved or with errors
-     */
-    Assignment saveInteraction(Interaction interaction, User owner, Sequence sequence, Schedule schedule = null) {
-        if (schedule) {
-            schedule.save()
-            schedule.interaction = interaction
-        }
-        interaction.owner = owner
-        interaction.sequence = sequence
-        interaction.lastUpdated = new Date();
-        interaction.save()
-        interaction
-    }
 
     /**
      * Add a sequence to an assignment
@@ -60,13 +43,18 @@ class SequenceService {
      * @param user the user adding the sequence
      * @return the sequence
      */
-    Sequence addSequenceToAssignment(Assignment assignment, User user, Statement statement) {
+    Sequence addSequenceToAssignment(Assignment assignment, User user, Statement statement, List<Interaction> interactions = null) {
         Contract.requires(assignment.owner == user, AssignmentService.USER__MUST__BE__ASSIGNMENT__OWNER)
         def rank = assignment.lastSequence ? assignment.lastSequence.rank + 1 : 1
         Sequence sequence = new Sequence(rank: rank)
         statement.save()
         if (!statement.hasErrors()) {
             saveSequence(sequence,user,assignment,statement)
+            interactions.each {
+                it.owner = user
+                it.sequence = sequence
+                it.save(failOnError: true)
+            }
             assignment.lastUpdated = new Date()
             assignment.save()
         } else {
@@ -78,16 +66,17 @@ class SequenceService {
     }
 
     /**
-     * Update statement of a sequence
+     * Update statement and interactions of a sequence
      * @param sequence the sequence
      * @param user the user performing the operation
      * @return the sequence
      */
-    Sequence updateStatementSequence(Sequence sequence, User user) {
+    Sequence updateStatementAndInteractionsOfSequence(Sequence sequence, User user) {
         Statement statement = sequence.statement
         Contract.requires(statement.owner == user, AssignmentService.USER__MUST__BE__ASSIGNMENT__OWNER)
         statement.save()
         if (!statement.hasErrors()) {
+            sequence.interactions.each { it.save(failOnError: true)}
             Assignment assignment = sequence.assignment
             assignment.lastUpdated = new Date()
             assignment.save()

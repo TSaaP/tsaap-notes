@@ -10,6 +10,7 @@ class AssignmentServiceIntegrationSpec extends Specification {
 
     BootstrapTestService bootstrapTestService
     AssignmentService assignmentService
+    SequenceService sequenceService
 
     User teacher
     User anOtherUser
@@ -133,7 +134,69 @@ class AssignmentServiceIntegrationSpec extends Specification {
 
     }
 
+    void "test delete assignment with sequences and interactions"() {
+        given: "an assignment with a sequence"
+        Assignment assignment = bootstrapTestService.assignment1
+        Statement statement1 = bootstrapTestService.statement1
+        Statement statement2 = bootstrapTestService.statement2
 
+        and: "a sequence added to the assignment with interactions"
+        def interactions = [bootstrapTestService.responseSubmissionInteraction, bootstrapTestService.evaluationInteraction]
+        Sequence sequence1 = sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement1, interactions)
+        Sequence sequence2 = sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement2)
+
+
+        when: "deleting assignment is  performed by the owner"
+        assignmentService.deleteAssignment(assignment, teacher)
+
+        then: "the assignment and the sequences are deleted"
+        Assignment.findById(assignment.id) == null
+        Sequence.findById(sequence1.id) == null
+        Sequence.findById(sequence2.id) == null
+
+        and: "the statements has not been deleted from the database"
+        Statement.findById(sequence1.statementId)
+        Statement.findById(sequence2.statementId)
+
+        and: "the interactions have been deleted from the datable"
+        Interaction.findById(bootstrapTestService.responseSubmissionInteraction.id) == null
+        Interaction.findById(bootstrapTestService.evaluationInteraction.id) == null
+
+    }
+
+
+
+    void "test remove sequence from an assignment with interactions"() {
+        given: "an assignment with a sequence"
+        Assignment assignment = bootstrapTestService.assignment1
+        Statement statement1 = bootstrapTestService.statement1
+        Statement statement2 = bootstrapTestService.statement2
+
+        and: "a sequence added to the assignment with interactions"
+        def interactions = [bootstrapTestService.responseSubmissionInteraction, bootstrapTestService.evaluationInteraction]
+        Sequence sequence1 = sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement1, interactions)
+        Sequence sequence2 = sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement2)
+
+
+        when: "removing the first sequence"
+        assignmentService.removeSequenceFromAssignment(sequence1, assignment, assignment.owner)
+
+        then: "the assignment has only one sequence"
+        assignment.sequences.size() == 1
+
+        and: "the rank of the last sequence is always 2"
+        assignment.lastSequence.rank == 2
+
+        and: "the sequence is deleted from the database"
+        !Sequence.findById(sequence1.id)
+
+        and: "the interactions are deleted from the database"
+        Interaction.findById(bootstrapTestService.responseSubmissionInteraction.id) == null
+        Interaction.findById(bootstrapTestService.evaluationInteraction.id) == null
+
+        and: "the statement has not been deleted from the database"
+        Statement.findById(sequence1.statementId)
+    }
 
     void "test remove sequence from an assignment"() {
         given: "an assignment with 2 sequences"
@@ -157,6 +220,7 @@ class AssignmentServiceIntegrationSpec extends Specification {
         and: "the statement has not been deleted from the database"
         Statement.findById(sequence.statementId)
     }
+
 
     void "test swap 2 sequences in an assignment"() {
         given: "an assigment with 2 sequences"

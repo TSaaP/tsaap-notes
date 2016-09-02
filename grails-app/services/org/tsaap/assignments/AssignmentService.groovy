@@ -36,14 +36,13 @@ class AssignmentService {
     def deleteAssignment(Assignment assignment, User user, boolean flush = false) {
         Contract.requires(assignment.owner == user, USER__MUST__BE__ASSIGNMENT__OWNER)
         assignment.schedule?.delete(flush: flush)
+        Interaction.executeUpdate("delete Interaction i where i.sequence in (from Sequence s where s.assignment = ?)",[assignment])
         def query = Sequence.where {
             assignment == assignment
         }
         query.deleteAll()
         assignment.delete(flush: flush)
     }
-
-
 
 
     /**
@@ -56,7 +55,10 @@ class AssignmentService {
     Assignment removeSequenceFromAssignment(Sequence sequence, Assignment assignment, User user) {
         Contract.requires(assignment.owner == user, USER__MUST__BE__ASSIGNMENT__OWNER)
         Contract.requires(assignment.sequences?.contains(sequence), SEQUENCE__DOESN__T__BELONG__TO__ASSIGNMENT)
-        // todo delete interactions when they will be there
+        def query = Interaction.where {
+            sequence == sequence
+        }
+        query.deleteAll()
         sequence.delete()
         assignment.lastUpdated = new Date()
         assignment.save()

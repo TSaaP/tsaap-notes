@@ -71,11 +71,16 @@ class SequenceService {
      * @param user the user performing the operation
      * @return the sequence
      */
-    Sequence updateStatementAndInteractionsOfSequence(Sequence sequence, User user) {
+    Sequence updateStatementAndInteractionsOfSequence(Sequence sequence, User user, List<Interaction> interactionsToAdd = null) {
         Statement statement = sequence.statement
         Contract.requires(statement.owner == user, AssignmentService.USER__MUST__BE__ASSIGNMENT__OWNER)
         statement.save()
         if (!statement.hasErrors()) {
+            interactionsToAdd.each {
+                it.owner = user
+                it.sequence = sequence
+                it.save(failOnError: true)
+            }
             sequence.interactions.each { it.save(failOnError: true)}
             Assignment assignment = sequence.assignment
             assignment.lastUpdated = new Date()

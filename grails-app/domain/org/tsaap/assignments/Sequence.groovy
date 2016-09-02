@@ -19,7 +19,8 @@ class Sequence {
 
     }
 
-    static transients = ['interactions','content', 'title']
+    static transients = ['interactions','content', 'title',
+                         'responseSubmissionSpecification','evaluationSpecification', 'responseSubmissionInteraction']
 
     /**
      * Find all interactions
@@ -27,6 +28,40 @@ class Sequence {
      */
     List<Interaction> getInteractions() {
         Interaction.findAllBySequence(this, [sort:'rank', order:'asc'])
+    }
+
+    /**
+     * Get the response submission interaction
+     * @return the response submission interaction
+     */
+    Interaction getResponseSubmissionInteraction() {
+        def result = null
+        if (interactions?.size() > 0) {
+            for(int i =0; i < interactions.size();i++) {
+                if (interactions[i].isResponseSubmission()) {
+                    result = interactions[i]
+                    break
+                }
+            }
+        }
+        result
+    }
+
+    /**
+     * Get the evaluation interaction
+     * @return the evaluation interaction
+     */
+    Interaction getEvaluationInteraction() {
+        def result = null
+        if (interactions?.size() > 0) {
+            for(int i =0; i < interactions.size();i++) {
+                if (interactions[i].isEvaluation()) {
+                    result = interactions[i]
+                    break
+                }
+            }
+        }
+        result
     }
 
     /**

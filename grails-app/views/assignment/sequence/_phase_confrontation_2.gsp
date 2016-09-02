@@ -1,4 +1,4 @@
-<div class="panel panel-default ${evaluationSpecificationInstance ? '' : 'hidden'}" id="phase_2">
+<div class="panel panel-default ${hidden ? 'hidden' : ''}" id="phase_2">
     <div class="panel-heading"><g:message code="sequence.interaction.phase"/> 2</div>
 
     <div class="panel-body">

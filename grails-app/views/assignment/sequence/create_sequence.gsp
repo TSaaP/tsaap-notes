@@ -38,7 +38,7 @@
         <fieldset class="form">
             <g:render template="sequence/statement_form" bean="${statementInstance}" model="[assignmentInstance:assignmentInstance]"/>
             <g:render template="sequence/phase_submission_1"/>
-            <g:render template="sequence/phase_confrontation_2"/>
+            <g:render template="sequence/phase_confrontation_2" model="[hidden:true]"/>
             <g:render template="sequence/phase_results_display_3"/>
         </fieldset>
         <fieldset class="buttons">

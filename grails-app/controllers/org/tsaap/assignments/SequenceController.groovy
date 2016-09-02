@@ -2,6 +2,7 @@ package org.tsaap.assignments
 
 import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 import org.grails.plugins.sanitizer.MarkupSanitizerService
 import org.tsaap.assignments.interactions.EvaluationSpecification
 import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
@@ -32,7 +33,7 @@ class SequenceController {
         User owner = springSecurityService.currentUser
         Statement statementInstance = getStatementInstanceToSave(owner, params)
 
-        ResponseSubmissionSpecification subSpec = getResponseSubmissionSpecificationToSave(params)
+        ResponseSubmissionSpecification subSpec = getResponseSubmissionSpecificationToSaveOrUpdate(params)
         EvaluationSpecification evalSpec = getEvaluationSpecificationToSave(subSpec, params)
 
         List<Interaction> interactions = getInteractionsToSave(subSpec, evalSpec)
@@ -71,7 +72,12 @@ class SequenceController {
         User user = springSecurityService.currentUser
         Statement statementInstance = getStatementInstanceToUpdate(sequenceInstance, params)
 
-        sequenceService.updateStatementAndInteractionsOfSequence(sequenceInstance, user)
+        ResponseSubmissionSpecification subSpec = getResponseSubmissionSpecificationToSaveOrUpdate(params, sequenceInstance)
+        EvaluationSpecification evalSpec = getEvaluationSpecificationToUpdate(subSpec, params, sequenceInstance)
+
+        List<Interaction> interactions = getInteractionsToAddAtUpdate(subSpec, evalSpec,sequenceInstance)
+
+        sequenceService.updateStatementAndInteractionsOfSequence(sequenceInstance, user, interactions)
 
         if (sequenceInstance.hasErrors()) {
             respond sequenceInstance, view:'edit_sequence'
@@ -86,6 +92,8 @@ class SequenceController {
         redirect action: "show", controller: "assignment", params: [id:assignmentInstance.id]
 
     }
+
+
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     @Transactional
@@ -175,8 +183,9 @@ class SequenceController {
         statementInstance
     }
 
-    private ResponseSubmissionSpecification getResponseSubmissionSpecificationToSave(def params) {
-        ResponseSubmissionSpecification subSpec = new ResponseSubmissionSpecification()
+
+    private ResponseSubmissionSpecification getResponseSubmissionSpecificationToSaveOrUpdate(GrailsParameterMap params, Sequence sequence = null) {
+        ResponseSubmissionSpecification subSpec = sequence?.responseSubmissionSpecification ?: new ResponseSubmissionSpecification()
         subSpec.choiceInteractionType = params.choiceInteractionType
         subSpec.itemCount = params.itemCount as Integer
         if (subSpec.isMultipleChoice()) {
@@ -209,6 +218,17 @@ class SequenceController {
         evalSpec
     }
 
+    private EvaluationSpecification getEvaluationSpecificationToUpdate(ResponseSubmissionSpecification subSpec, GrailsParameterMap params, Sequence sequence) {
+        EvaluationSpecification evalSpec = sequence?.evaluationSpecification
+        if (subSpec.studentsProvideExplanation) {
+            if (!evalSpec) {
+                evalSpec = new EvaluationSpecification()
+            }
+            evalSpec.responseToEvaluateCount = params.responseToEvaluateCount as Integer
+        }
+        evalSpec
+    }
+
     private List<Interaction> getInteractionsToSave(ResponseSubmissionSpecification subSpec, EvaluationSpecification evalSpec) {
         List<Interaction> interactions
         def interaction1 = new Interaction(interactionType: InteractionType.ResponseSubmission.name(), rank: 1,
@@ -218,6 +238,36 @@ class SequenceController {
             def interaction2 = new Interaction(interactionType: InteractionType.Evaluation.name(), rank: 2,
                     specification: evalSpec.jsonString)
             interactions.add(interaction2)
+        }
+        interactions
+    }
+
+    private List<Interaction> getInteractionsToAddAtUpdate(ResponseSubmissionSpecification responseSubmissionSpecification, EvaluationSpecification evaluationSpecification, Sequence sequence) {
+        List<Interaction> interactions = []
+
+        Interaction interaction1 = sequence.responseSubmissionInteraction
+        if (interaction1) {
+            interaction1.specification = responseSubmissionSpecification.jsonString
+            interaction1.enabled = true
+        } else {
+            interaction1 = new Interaction(interactionType: InteractionType.ResponseSubmission.name(), rank: 1,
+                    specification: responseSubmissionSpecification.jsonString)
+            interactions.add(interaction1)
+        }
+
+
+        Interaction interaction2 = sequence.evaluationInteraction
+        if (!responseSubmissionSpecification.studentsProvideExplanation) {
+            if (interaction2) {
+                interaction2.enabled = false
+            }
+        } else if (interaction2) {
+                interaction2.specification = evaluationSpecification.jsonString
+                interaction2.enabled = true
+        } else {
+                interaction2 = new Interaction(interactionType: InteractionType.Evaluation.name(), rank: 2,
+                        specification: evaluationSpecification.jsonString)
+                interactions.add(interaction2)
         }
         interactions
     }

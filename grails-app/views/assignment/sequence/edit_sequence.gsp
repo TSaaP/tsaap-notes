@@ -39,7 +39,9 @@
         <g:render template="/assignment/sequence/statement_form" bean="${statementInstance}"
                   model="[assignmentInstance: assignmentInstance]"/>
         <g:render template="/assignment/sequence/phase_submission_1" model="[responseSubmissionSpecificationInstance:sequenceInstance?.responseSubmissionSpecification]"/>
-        <g:render template="/assignment/sequence/phase_confrontation_2" model="[evaluationSpecificationInstance:sequenceInstance?.evaluationSpecification]"/>
+        <g:set var="phase2IsHidden" value="${!(sequenceInstance?.evaluationInteraction) || sequenceInstance.evaluationInteraction.disabled()}"/>
+        <g:render template="/assignment/sequence/phase_confrontation_2" model="[evaluationSpecificationInstance:sequenceInstance?.evaluationSpecification,
+                                                                                    hidden:phase2IsHidden]"/>
         <g:render template="/assignment/sequence/phase_results_display_3"/>
         <button type="submit"
                 class="btn btn-default">

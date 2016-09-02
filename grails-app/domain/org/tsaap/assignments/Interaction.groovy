@@ -10,6 +10,7 @@ class Interaction {
     String interactionType
     Integer rank
     String specification
+    Boolean enabled = true
 
     Date dateCreated
     Date lastUpdated
@@ -53,6 +54,14 @@ class Interaction {
      */
     boolean isEvaluation() {
         interactionType == InteractionType.Evaluation.name()
+    }
+
+    /**
+     * Indicate id interaction is disabled
+     * @return true if interaction is disabled
+     */
+    boolean disabled() {
+        !enabled
     }
 
 }

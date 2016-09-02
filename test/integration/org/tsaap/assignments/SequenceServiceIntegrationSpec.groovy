@@ -133,6 +133,7 @@ class SequenceServiceIntegrationSpec extends Specification {
         sequence.interactions.size() == 1
         sequence.interactions[0] == interaction
         interaction.id
+        interaction.enabled
     }
 
     void "test update statement and interactions of a sequence"() {

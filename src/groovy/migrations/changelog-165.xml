@@ -288,4 +288,16 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="9" author="fsil">
+        <comment>Add column enabled to interaction table</comment>
+        <addColumn tableName="interaction">
+            <column name="enabled" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <sql>
+            update interaction set enabled = true;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

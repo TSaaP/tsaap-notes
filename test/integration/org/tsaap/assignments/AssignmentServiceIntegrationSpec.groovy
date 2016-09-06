@@ -128,9 +128,9 @@ class AssignmentServiceIntegrationSpec extends Specification {
         Sequence.findById(sequence1.id) == null
         Sequence.findById(sequence2.id) == null
 
-        and: "the statements has not been deleted from the database"
-        Statement.findById(sequence1.statementId)
-        Statement.findById(sequence2.statementId)
+        and: "the statements has been deleted from the database"
+        Statement.findById(sequence1.statementId) == null
+        Statement.findById(sequence2.statementId) == null
 
     }
 
@@ -154,9 +154,9 @@ class AssignmentServiceIntegrationSpec extends Specification {
         Sequence.findById(sequence1.id) == null
         Sequence.findById(sequence2.id) == null
 
-        and: "the statements has not been deleted from the database"
-        Statement.findById(sequence1.statementId)
-        Statement.findById(sequence2.statementId)
+        and: "the statements has been deleted from the database"
+        Statement.findById(sequence1.statementId) == null
+        Statement.findById(sequence2.statementId) == null
 
         and: "the interactions have been deleted from the datable"
         Interaction.findById(bootstrapTestService.responseSubmissionInteraction.id) == null
@@ -182,6 +182,7 @@ class AssignmentServiceIntegrationSpec extends Specification {
         assignmentService.removeSequenceFromAssignment(sequence1, assignment, assignment.owner)
 
         then: "the assignment has only one sequence"
+        Sequence.findById(sequence1.id) == null
         assignment.sequences.size() == 1
 
         and: "the rank of the last sequence is always 2"
@@ -194,8 +195,8 @@ class AssignmentServiceIntegrationSpec extends Specification {
         Interaction.findById(bootstrapTestService.responseSubmissionInteraction.id) == null
         Interaction.findById(bootstrapTestService.evaluationInteraction.id) == null
 
-        and: "the statement has not been deleted from the database"
-        Statement.findById(sequence1.statementId)
+        and: "the statement been deleted from the database"
+        Statement.findById(statement1.id) == null
     }
 
     void "test remove sequence from an assignment"() {
@@ -217,8 +218,8 @@ class AssignmentServiceIntegrationSpec extends Specification {
         and: "the sequence is deleted from the database"
         !Sequence.findById(sequence.id)
 
-        and: "the statement has not been deleted from the database"
-        Statement.findById(sequence.statementId)
+        and: "the statement has  been deleted from the database"
+        Statement.findById(sequence.statementId) == null
     }
 
 

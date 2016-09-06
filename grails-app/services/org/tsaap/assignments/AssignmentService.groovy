@@ -1,7 +1,7 @@
 package org.tsaap.assignments
 
 import grails.transaction.Transactional
-import org.springframework.validation.FieldError
+import org.tsaap.attachement.Attachement
 import org.tsaap.contracts.Contract
 import org.tsaap.directory.User
 
@@ -37,10 +37,13 @@ class AssignmentService {
         Contract.requires(assignment.owner == user, USER__MUST__BE__ASSIGNMENT__OWNER)
         assignment.schedule?.delete(flush: flush)
         Interaction.executeUpdate("delete Interaction i where i.sequence in (from Sequence s where s.assignment = ?)",[assignment])
-        def query = Sequence.where {
-            assignment == assignment
-        }
-        query.deleteAll()
+        Attachement.executeUpdate("update Attachement attach set toDelete=true, statement=null where attach.statement in (select s.statement from Sequence s where s.assignment = ?)",[assignment])
+        Statement.executeUpdate("delete Statement st  where st in (select s.statement from Sequence s where s.assignment = ?)",[assignment])
+        //sequences are deleted by cascade
+//        def query = Sequence.where {
+//            assignment == assignment
+//        }
+//        query.deleteAll()
         assignment.delete(flush: flush)
     }
 
@@ -55,11 +58,19 @@ class AssignmentService {
     Assignment removeSequenceFromAssignment(Sequence sequence, Assignment assignment, User user) {
         Contract.requires(assignment.owner == user, USER__MUST__BE__ASSIGNMENT__OWNER)
         Contract.requires(assignment.sequences?.contains(sequence), SEQUENCE__DOESN__T__BELONG__TO__ASSIGNMENT)
+        Attachement attachement = Attachement.findByStatement(sequence.statement)
+        if (attachement) {
+            attachement.toDelete = true
+            attachement.statement = null
+            attachement.save()
+        }
         def query = Interaction.where {
             sequence == sequence
         }
         query.deleteAll()
-        sequence.delete()
+        sequence.statement.delete(flush: true)
+        // sequence is deleted by cascade
+        //sequence.delete()
         assignment.lastUpdated = new Date()
         assignment.save()
         assignment

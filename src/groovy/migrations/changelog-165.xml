@@ -300,4 +300,25 @@
         </sql>
     </changeSet>
 
+    <changeSet id="10" author="fsil">
+        <comment>delete statement on cascade when sequence is deleted</comment>
+        <dropForeignKeyConstraint baseTableName="sequence" constraintName="fk_sequence_statement"/>
+        <addForeignKeyConstraint baseTableName="sequence" baseColumnNames="statement_id"
+                                 constraintName="fk_sequence_statement"
+                                 referencedTableName="statement"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="11" author="fsil">
+        <comment>on cascade set null on attachment when a statement is deleted</comment>
+        <dropForeignKeyConstraint baseTableName="attachement" constraintName="fk_attachement_statement"/>
+        <addForeignKeyConstraint baseTableName="attachement" baseColumnNames="statement_id"
+                                 constraintName="fk_attachement_statement"
+                                 referencedTableName="statement"
+                                 referencedColumnNames="id"
+                                 onDelete="SET NULL"/>
+    </changeSet>
+
+
 </databaseChangeLog>

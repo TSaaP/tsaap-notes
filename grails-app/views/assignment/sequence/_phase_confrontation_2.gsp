@@ -13,9 +13,8 @@
         </div>
 
         <div id="schedulePhase2" class="hidden">
-            <g:render template="/assignment/sequence/phase_schedule" />
+            <g:render template="/assignment/sequence/phase_schedule" model="[scheduleInstance:sequenceInstance?.evaluationInteraction?.schedule]"/>
         </div>
     </div>
 
 </div>
-

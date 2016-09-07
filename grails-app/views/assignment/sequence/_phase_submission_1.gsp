@@ -57,64 +57,61 @@
         </div>
 
         <div id="schedulePhase1" class="hidden">
-            <g:render template="/assignment/sequence/phase_schedule" model="[scheduleInstance:sequenceInstance?.responseSubmissionInteraction?.schedule]"/>
+            <g:render template="/assignment/sequence/phase_schedule"
+                      model="[scheduleInstance: sequenceInstance?.responseSubmissionInteraction?.schedule]"/>
         </div>
     </div>
 </div>
 
 <r:script>
-    $(document).ready(function () {
+    manageChoices()
+    managePhase2Display();
+    manageScheduleDisplay();
 
-        manageChoices()
-        managePhase2Display();
-        manageScheduleDisplay();
+    function manageScheduleDisplay() {
+        var displaySchedule = $("input:checkbox[name='displaySchedule']");
+        displaySchedule.change(function () {
+            $('#schedulePhase1').toggleClass('hidden');
+            $('#schedulePhase2').toggleClass('hidden');
+            $('#schedulePhase3').toggleClass('hidden');
+        })
 
-        function manageScheduleDisplay() {
-            var displaySchedule = $("input:checkbox[name='displaySchedule']");
-            displaySchedule.change(function () {
-                $('#schedulePhase1').toggleClass('hidden');
-                $('#schedulePhase2').toggleClass('hidden');
-                $('#schedulePhase3').toggleClass('hidden');
-            })
+    }
 
-        }
+    function managePhase2Display() {
+        var chBoxStstudentsProvideExplanation = $("input:checkbox[name='studentsProvideExplanation']");
+        chBoxStstudentsProvideExplanation.change(function () {
+            $('#phase_2').toggleClass("hidden");
+            var chBoxStudentsProvideConfidenceDegree = $("input:checkbox[name='studentsProvideConfidenceDegree']");
+            if (chBoxStstudentsProvideExplanation.is(':checked')) {
+                chBoxStudentsProvideConfidenceDegree.prop('checked', true);
+                chBoxStudentsProvideConfidenceDegree.prop('disabled', true);
+            } else {
+                chBoxStudentsProvideConfidenceDegree.prop('disabled', false);
+            }
+        });
+    };
 
-        function managePhase2Display() {
-            var chBoxStstudentsProvideExplanation = $("input:checkbox[name='studentsProvideExplanation']");
-            chBoxStstudentsProvideExplanation.change(function () {
-                $('#phase_2').toggleClass("hidden");
-                var chBoxStudentsProvideConfidenceDegree = $("input:checkbox[name='studentsProvideConfidenceDegree']");
-                if (chBoxStstudentsProvideExplanation.is(':checked')) {
-                    chBoxStudentsProvideConfidenceDegree.prop('checked', true);
-                    chBoxStudentsProvideConfidenceDegree.prop('disabled', true);
-                } else {
-                    chBoxStudentsProvideConfidenceDegree.prop('disabled', false);
+    function manageChoices() {
+        $("#choiceInteractionType, #itemCount").change(function () {
+            var isMultiple = ($("#choiceInteractionType").val() == "MULTIPLE");
+            if (isMultiple) {
+                $('#multiple_choice').removeClass('hidden');
+                $('#exclusive_choice').addClass('hidden');
+                $("#multiple_choice").empty();
+                for (var i = 1; i <= $("#itemCount").val(); i++) {
+                    var chckBox = $('<label class="checkbox-inline" style="margin-right: 20px"> <input type="checkbox" name="expectedChoiceList" value="' + i + '"> ' + i + ' </label>');
+                    $("#multiple_choice").append(chckBox);
                 }
-            });
-        };
-
-        function manageChoices() {
-            $("#choiceInteractionType, #itemCount").change(function () {
-                var isMultiple = ($("#choiceInteractionType").val() == "MULTIPLE");
-                if (isMultiple) {
-                    $('#multiple_choice').removeClass('hidden');
-                    $('#exclusive_choice').addClass('hidden');
-                    $("#multiple_choice").empty();
-                    for (var i = 1; i <= $("#itemCount").val(); i++) {
-                        var chckBox = $('<label class="checkbox-inline" style="margin-right: 20px"> <input type="checkbox" name="expectedChoiceList" value="' + i + '"> ' + i + ' </label>');
-                        $("#multiple_choice").append(chckBox);
-                    }
-                } else {
-                    $('#exclusive_choice').removeClass('hidden');
-                    $('#multiple_choice').addClass('hidden');
-                    $('#exclusive_choice').empty();
-                    for (var j = 1; j <= $("#itemCount").val(); j++) {
-                        var radioBox = $('<label class="radio-inline" style="margin-right: 20px"> <input type="radio" name="exclusiveChoice" value="' + j + '"> ' + j + ' </label>');
-                        $("#exclusive_choice").append(radioBox);
-                    }
+            } else {
+                $('#exclusive_choice').removeClass('hidden');
+                $('#multiple_choice').addClass('hidden');
+                $('#exclusive_choice').empty();
+                for (var j = 1; j <= $("#itemCount").val(); j++) {
+                    var radioBox = $('<label class="radio-inline" style="margin-right: 20px"> <input type="radio" name="exclusiveChoice" value="' + j + '"> ' + j + ' </label>');
+                    $("#exclusive_choice").append(radioBox);
                 }
-            })
-        }
-
-    });
+            }
+        })
+    }
 </r:script>

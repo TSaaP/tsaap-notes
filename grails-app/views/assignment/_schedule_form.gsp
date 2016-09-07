@@ -28,27 +28,12 @@
 </div>
 
 <r:script>
-	$(function () {
-	    var defaultStartDate = null
-	    var defaultEndDate = null
-	    //var defaultStartDate = moment()
-	    //var defaultEndDate = moment(defaultStartDate).add(1,'days')
-	    var startDate = moment($('#startDate').val(),"${message(code:'date.startDate.format')}") ;
-	    if (startDate.isValid()) {
-	        defaultStartDate = startDate
-	    }
-	    var endDate = moment($('#endDate').val(),"${message(code:'date.endDate.format')}") ;
-	    if (endDate.isValid()) {
-	        defaultEndDate = endDate
-	    }
 		$('#datetimepicker1').datetimepicker({
             locale: "${RequestContextUtils.getLocale(request).language}",
-            defaultDate: defaultStartDate
+            defaultDate: getDateFromElement($('#startDate'),"${message(code:'date.startDate.format')}")
         });
         $('#datetimepicker2').datetimepicker({
             locale: "${RequestContextUtils.getLocale(request).language}",
-            defaultDate: defaultEndDate
+            defaultDate: getDateFromElement($('#endDate'),"${message(code:'date.endDate.format')}")
         });
-	});
 </r:script>
-

@@ -37,9 +37,9 @@
         <g:hiddenField name="assignment_instance_id" value="${assignmentInstance?.id}"/>
         <fieldset class="form">
             <g:render template="sequence/statement_form" bean="${statementInstance}" model="[assignmentInstance:assignmentInstance]"/>
-            <g:render template="sequence/phase_submission_1"/>
-            <g:render template="sequence/phase_confrontation_2" model="[hidden:true]"/>
-            <g:render template="sequence/phase_results_display_3"/>
+            <g:render template="sequence/phase_submission_1" model="[indexSchedule:1]"/>
+            <g:render template="sequence/phase_confrontation_2" model="[hidden:true,indexSchedule:2]"/>
+            <g:render template="sequence/phase_results_display_3" model="[indexSchedule:3]"/>
         </fieldset>
         <fieldset class="buttons">
             <g:actionSubmit class="btn btn-info" action="saveSequence"

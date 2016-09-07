@@ -5,8 +5,10 @@
             <g:message code="schedule.startdate.label" default="Start Date"/>
             <span class="required-indicator">*</span>
         </label>
-        <div class='input-group date' id='datetimepicker1'>
-            <input type='text' class="form-control" id="startDate" name="startDate" value="${scheduleInstance?.startDate?.format(message(code:'date.startDate.format'))}"/>
+
+        <div class='input-group date' id="startdatetimepicker${indexSchedule}">
+            <input type='text' class="form-control" id="startDate" name="startDate"
+                   value="${scheduleInstance?.startDate?.format(message(code: 'date.startDate.format'))}"/>
             <span class="input-group-addon">
                 <span class="glyphicon glyphicon-calendar"></span>
             </span>
@@ -19,8 +21,9 @@
             <span class="required-indicator">*</span>
         </label>
 
-        <div class='input-group date' id='datetimepicker2'>
-            <input type='text' class="form-control" id="endDate" name="endDate" value="${scheduleInstance?.endDate?.format(message(code:'date.endDate.format'))}"/>
+        <div class='input-group date' id="enddatetimepicker${indexSchedule}">
+            <input type='text' class="form-control" id="endDate" name="endDate"
+                   value="${scheduleInstance?.endDate?.format(message(code: 'date.endDate.format'))}"/>
             <span class="input-group-addon">
                 <span class="glyphicon glyphicon-calendar"></span>
             </span>
@@ -28,27 +31,12 @@
     </div>
 </div>
 <r:script>
-	$(function () {
-	    var defaultStartDate = null
-	    var defaultEndDate = null
-	    //var defaultStartDate = moment()
-	    //var defaultEndDate = moment(defaultStartDate).add(1,'days')
-	    var startDate = moment($('#startDate').val(),"${message(code:'date.startDate.format')}") ;
-	    if (startDate.isValid()) {
-	        defaultStartDate = startDate
-	    }
-	    var endDate = moment($('#endDate').val(),"${message(code:'date.endDate.format')}") ;
-	    if (endDate.isValid()) {
-	        defaultEndDate = endDate
-	    }
-		$('#datetimepicker1').datetimepicker({
+		$('#startdatetimepicker${indexSchedule}').datetimepicker({
             locale: "${RequestContextUtils.getLocale(request).language}",
-            defaultDate: defaultStartDate
+            defaultDate: getDateFromElement($('#startDate'),"${message(code: 'date.startDate.format')}")
         });
-        $('#datetimepicker2').datetimepicker({
+        $('#enddatetimepicker${indexSchedule}').datetimepicker({
             locale: "${RequestContextUtils.getLocale(request).language}",
-            defaultDate: defaultEndDate
+            defaultDate: getDateFromElement($('#endDate'),"${message(code: 'date.endDate.format')}")
         });
-	});
 </r:script>
-

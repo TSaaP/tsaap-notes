@@ -14,7 +14,6 @@
   -     You should have received a copy of the GNU Affero General Public License
   -     along with this program.  If not, see <http://www.gnu.org/licenses/>.
   --}%
-
 <%@ page import="org.tsaap.notes.FilterReservedValue" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -72,7 +71,6 @@
         </div><!--/.nav-collapse -->
     </div>
 </div>
-<r:layoutResources/>
 <footer class="container">
     <hr/>
     <p>&copy; Tsaap Development Group 2013 - Tsaap-Notes version <g:meta name="app.version"/> - <a
@@ -90,7 +88,7 @@
             </a>
         </sec:ifSwitched>
     </g:if>
-    <p></p>
 </footer>
+<r:layoutResources/>
 </body>
 </html>

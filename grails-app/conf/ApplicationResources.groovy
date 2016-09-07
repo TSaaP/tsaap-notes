@@ -21,6 +21,7 @@ modules = {
     }
 
     tsaap_ui {
+        dependsOn('application')
         dependsOn('jquery')
         resource url: 'js/moment.js'
         resource url: 'js/locale/fr.js'

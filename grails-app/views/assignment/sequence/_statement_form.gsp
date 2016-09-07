@@ -40,10 +40,3 @@
         <input type="checkbox" name="displaySchedule"> <g:message code="sequence.displaySchedules.label" default="Title"/>
     </label>
 </div>
-
-
-
-
-
-
-

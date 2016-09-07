@@ -7,6 +7,7 @@ import org.tsaap.directory.User
 
 class Interaction {
 
+    public static final String EMPTY_SPECIFICATION = "empty"
     String interactionType
     Integer rank
     String specification
@@ -33,11 +34,12 @@ class Interaction {
     }
 
     InteractionSpecification getInteractionSpecification() {
-        if (interactionType == InteractionType.ResponseSubmission.name()) {
+        if (isResponseSubmission()) {
             return new ResponseSubmissionSpecification(specification)
-        } else {
+        } else if (isEvaluation()) {
             return new EvaluationSpecification(specification)
         }
+        null
     }
 
     /**
@@ -57,6 +59,14 @@ class Interaction {
     }
 
     /**
+     * Indicate if the interaction is read
+     * @return true if the interaction is read
+     */
+    boolean isRead() {
+        interactionType == InteractionType.Read.name()
+    }
+
+    /**
      * Indicate id interaction is disabled
      * @return true if interaction is disabled
      */
@@ -67,18 +77,7 @@ class Interaction {
 }
 
 enum InteractionType {
-
-    ResponseSubmission("org.tsaap.interactions.ResponseSubmissionSpecification"),
-    Evaluation("org.tsaap.interactions.EvaluationSpecification")
-
-    private String specificationQualifiedType
-
-    String getSpecificationQualifiedType() {
-        specificationQualifiedType
-    }
-
-    InteractionType(String specificationQualifiedType) {
-        this.specificationQualifiedType = specificationQualifiedType
-    }
-
+    ResponseSubmission,
+    Evaluation,
+    Read
 }

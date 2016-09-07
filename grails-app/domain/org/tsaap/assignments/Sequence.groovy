@@ -19,15 +19,16 @@ class Sequence {
 
     }
 
-    static transients = ['interactions','content', 'title',
-                         'responseSubmissionSpecification','evaluationSpecification', 'responseSubmissionInteraction']
+    static transients = ['interactions', 'content', 'title',
+                         'responseSubmissionSpecification', 'evaluationSpecification', 'responseSubmissionInteraction',
+                         'evaluationInteraction', 'readInteraction']
 
     /**
      * Find all interactions
      * @return the interactions
      */
     List<Interaction> getInteractions() {
-        Interaction.findAllBySequence(this, [sort:'rank', order:'asc'])
+        Interaction.findAllBySequence(this, [sort: 'rank', order: 'asc'])
     }
 
     /**
@@ -37,7 +38,7 @@ class Sequence {
     Interaction getResponseSubmissionInteraction() {
         def result = null
         if (interactions?.size() > 0) {
-            for(int i =0; i < interactions.size();i++) {
+            for (int i = 0; i < interactions.size(); i++) {
                 if (interactions[i].isResponseSubmission()) {
                     result = interactions[i]
                     break
@@ -54,8 +55,25 @@ class Sequence {
     Interaction getEvaluationInteraction() {
         def result = null
         if (interactions?.size() > 0) {
-            for(int i =0; i < interactions.size();i++) {
+            for (int i = 0; i < interactions.size(); i++) {
                 if (interactions[i].isEvaluation()) {
+                    result = interactions[i]
+                    break
+                }
+            }
+        }
+        result
+    }
+
+    /**
+     * Get the read interaction
+     * @return the read interaction
+     */
+    Interaction getReadInteraction() {
+        def result = null
+        if (interactions?.size() > 0) {
+            for (int i = 0; i < interactions.size(); i++) {
+                if (interactions[i].isRead()) {
                     result = interactions[i]
                     break
                 }
@@ -71,7 +89,7 @@ class Sequence {
     ResponseSubmissionSpecification getResponseSubmissionSpecification() {
         def result = null
         if (interactions?.size() > 0) {
-            for(int i =0; i < interactions.size();i++) {
+            for (int i = 0; i < interactions.size(); i++) {
                 if (interactions[i].isResponseSubmission()) {
                     result = interactions[i].interactionSpecification
                     break
@@ -88,7 +106,7 @@ class Sequence {
     EvaluationSpecification getEvaluationSpecification() {
         def result = null
         if (interactions?.size() > 0) {
-            for(int i =0; i < interactions.size();i++) {
+            for (int i = 0; i < interactions.size(); i++) {
                 if (interactions[i].isEvaluation()) {
                     result = interactions[i].interactionSpecification
                     break

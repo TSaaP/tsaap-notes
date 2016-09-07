@@ -239,6 +239,8 @@ class SequenceController {
                     specification: evalSpec.jsonString)
             interactions.add(interaction2)
         }
+        def interaction3 = new Interaction(interactionType: InteractionType.Read.name(), rank: 3, specification: Interaction.EMPTY_SPECIFICATION)
+        interactions.add(interaction3)
         interactions
     }
 
@@ -269,6 +271,13 @@ class SequenceController {
                         specification: evaluationSpecification.jsonString)
                 interactions.add(interaction2)
         }
+
+        Interaction interaction3 = sequence.readInteraction
+        if (!interaction3) {
+            interaction3 = new Interaction(interactionType: InteractionType.Read.name(), rank: 3, specification: Interaction.EMPTY_SPECIFICATION)
+            interactions.add(interaction3)
+        }
+
         interactions
     }
 

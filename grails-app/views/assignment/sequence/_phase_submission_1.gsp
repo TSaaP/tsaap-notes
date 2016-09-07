@@ -1,4 +1,5 @@
-<%@ page import="org.tsaap.assignments.interactions.ResponseSubmissionSpecification; org.tsaap.assignments.interactions.ChoiceInteractionType" %>
+<%@ page import="org.tsaap.assignments.Schedule; org.tsaap.assignments.interactions.ResponseSubmissionSpecification; org.tsaap.assignments.interactions.ChoiceInteractionType" %>
+<g:set var="responseSubmissionSpecificationInstance" value="${sequenceInstance?.responseSubmissionSpecification}"/>
 <div class="panel panel-default">
     <div class="panel-heading"><g:message code="sequence.interaction.phase"/> 1</div>
 
@@ -55,6 +56,9 @@
             </label>
         </div>
 
+        <div id="schedulePhase1" class="hidden">
+            <g:render template="/assignment/sequence/phase_schedule" model="[scheduleInstance:sequenceInstance?.responseSubmissionInteraction?.schedule]"/>
+        </div>
     </div>
 </div>
 
@@ -63,9 +67,20 @@
 
         manageChoices()
         managePhase2Display();
+        manageScheduleDisplay();
+
+        function manageScheduleDisplay() {
+            var displaySchedule = $("input:checkbox[name='displaySchedule']");
+            displaySchedule.change(function () {
+                $('#schedulePhase1').toggleClass('hidden');
+                $('#schedulePhase2').toggleClass('hidden');
+                $('#schedulePhase3').toggleClass('hidden');
+            })
+
+        }
 
         function managePhase2Display() {
-            var chBoxStstudentsProvideExplanation = $("input:checkbox[name='studentsProvideExplanation']")
+            var chBoxStstudentsProvideExplanation = $("input:checkbox[name='studentsProvideExplanation']");
             chBoxStstudentsProvideExplanation.change(function () {
                 $('#phase_2').toggleClass("hidden");
                 var chBoxStudentsProvideConfidenceDegree = $("input:checkbox[name='studentsProvideConfidenceDegree']");

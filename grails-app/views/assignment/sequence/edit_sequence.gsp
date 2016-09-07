@@ -38,11 +38,9 @@
         <g:hiddenField name="sequence_instance_id" value="${sequenceInstance?.id}"/>
         <g:render template="/assignment/sequence/statement_form" bean="${statementInstance}"
                   model="[assignmentInstance: assignmentInstance]"/>
-        <g:render template="/assignment/sequence/phase_submission_1" model="[responseSubmissionSpecificationInstance:sequenceInstance?.responseSubmissionSpecification]"/>
-        <g:set var="phase2IsHidden" value="${!(sequenceInstance?.evaluationInteraction) || sequenceInstance.evaluationInteraction.disabled()}"/>
-        <g:render template="/assignment/sequence/phase_confrontation_2" model="[evaluationSpecificationInstance:sequenceInstance?.evaluationSpecification,
-                                                                                    hidden:phase2IsHidden]"/>
-        <g:render template="/assignment/sequence/phase_results_display_3"/>
+        <g:render template="/assignment/sequence/phase_submission_1" model="[sequenceInstance:sequenceInstance]"/>
+        <g:render template="/assignment/sequence/phase_confrontation_2" model="[sequenceInstance:sequenceInstance]"/>
+        <g:render template="/assignment/sequence/phase_results_display_3" model="[sequenceInstance:sequenceInstance]"/>
         <button type="submit"
                 class="btn btn-default">
             ${message(code: 'default.button.update.label', default: 'Update')}

@@ -1,5 +1,3 @@
-
-
 <div class="form-group fieldcontain ${hasErrors(bean: statementInstance, field: 'title', 'error')} ">
     <label for="title">
         <g:message code="sequence.statement.title.label" default="Title"/>
@@ -37,7 +35,11 @@
     </ckeditor:editor>
 </div>
 
-
+<div class="checkbox">
+    <label>
+        <input type="checkbox" name="displaySchedule"> <g:message code="sequence.displaySchedules.label" default="Title"/>
+    </label>
+</div>
 
 
 

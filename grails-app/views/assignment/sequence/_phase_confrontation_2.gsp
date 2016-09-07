@@ -1,3 +1,5 @@
+<g:set var="evaluationSpecificationInstance" value="${sequenceInstance?.evaluationSpecification}"/>
+<g:set var="hidden" value="${!(sequenceInstance?.evaluationInteraction) || sequenceInstance.evaluationInteraction.disabled()}"/>
 <div class="panel panel-default ${hidden ? 'hidden' : ''}" id="phase_2">
     <div class="panel-heading"><g:message code="sequence.interaction.phase"/> 2</div>
 
@@ -9,6 +11,11 @@
                 <g:message code="sequence.interaction.answers" />
             </label>
         </div>
+
+        <div id="schedulePhase2" class="hidden">
+            <g:render template="/assignment/sequence/phase_schedule" />
+        </div>
     </div>
+
 </div>
 

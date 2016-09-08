@@ -20,7 +20,9 @@ class SequenceService {
         sequence.owner = owner
         sequence.assignment = assignment
         sequence.statement = statement
-        sequence.save()
+        if (!sequence.hasErrors()) {
+            sequence.save()
+        }
         sequence
     }
 
@@ -35,7 +37,6 @@ class SequenceService {
         statement
     }
 
-
     /**
      * Add a sequence to an assignment
      * @param assignment the assignment to add the sequence
@@ -43,25 +44,15 @@ class SequenceService {
      * @param user the user adding the sequence
      * @return the sequence
      */
-    Sequence addSequenceToAssignment(Assignment assignment, User user, Statement statement, List<Interaction> interactions = null) {
+    Sequence addSequenceToAssignment(Assignment assignment, User user, Statement statement, List<Interaction> interactions = null, boolean phasesAreScheduled = false) {
         Contract.requires(assignment.owner == user, AssignmentService.USER__MUST__BE__ASSIGNMENT__OWNER)
         def rank = assignment.lastSequence ? assignment.lastSequence.rank + 1 : 1
-        Sequence sequence = new Sequence(rank: rank)
-        statement.save()
-        if (!statement.hasErrors()) {
-            saveSequence(sequence,user,assignment,statement)
-            interactions.each {
-                it.owner = user
-                it.sequence = sequence
-                it.save(failOnError: true)
-            }
-            assignment.lastUpdated = new Date()
-            assignment.save()
-        } else {
-            statement.errors.allErrors.each { FieldError error ->
-                sequence.errors.rejectValue(error.field, error.code)
-            }
-        }
+        Sequence sequence = new Sequence(rank: rank, phasesAreScheduled: phasesAreScheduled)
+        saveOrUpdateStatement(statement, sequence)
+        validateInteractions(interactions, user, sequence)
+        saveSequence(sequence, user, assignment, statement)
+        saveInteractions(interactions, sequence)
+        updateAssignmentLastUpdated(sequence, assignment)
         sequence
     }
 
@@ -74,22 +65,76 @@ class SequenceService {
     Sequence updateStatementAndInteractionsOfSequence(Sequence sequence, User user, List<Interaction> interactionsToAdd = null) {
         Statement statement = sequence.statement
         Contract.requires(statement.owner == user, AssignmentService.USER__MUST__BE__ASSIGNMENT__OWNER)
-        statement.save()
-        if (!statement.hasErrors()) {
-            interactionsToAdd.each {
-                it.owner = user
-                it.sequence = sequence
-                it.save(failOnError: true)
-            }
-            sequence.interactions.each { it.save(failOnError: true)}
-            Assignment assignment = sequence.assignment
+        saveOrUpdateStatement(statement, sequence)
+        validateInteractions(interactionsToAdd, user, sequence)
+        saveInteractions(interactionsToAdd, sequence)
+        updateInteractions(sequence)
+        updateAssignmentLastUpdated(sequence, sequence.assignment)
+        sequence
+    }
+
+    private void updateAssignmentLastUpdated(Sequence sequence, Assignment assignment) {
+        if (!sequence.hasErrors()) {
             assignment.lastUpdated = new Date()
             assignment.save()
-        } else {
-            statement.errors.allErrors.each { FieldError error ->
-                sequence.errors.rejectValue(error.field, error.code)
+        }
+    }
+
+    private void saveOrUpdateStatement(Statement statement, Sequence sequence) {
+        if (!sequence.hasErrors()) {
+            statement.save()
+            if (statement.hasErrors()) {
+                statement.errors.allErrors.each { FieldError error ->
+                    def code = error.code
+                    if (error.field.contains("content")) {
+                        code = "sequence.content.blank"
+                    } else if (error.field.contains("title")) {
+                        code = "sequence.title.blank"
+                    }
+                    sequence.errors.rejectValue(error.field, code)
+                }
             }
         }
-        sequence
+    }
+
+    private def updateInteractions(Sequence sequence) {
+        sequence.interactions.eachWithIndex { def interaction, int i ->
+            interaction.save(failOnError: true)
+            interaction.schedule.save()
+            processInteractionScheduleError(interaction,i,sequence)
+        }
+    }
+
+    private def validateInteractions(List<Interaction> interactions, User user, Sequence sequence) {
+        interactions.eachWithIndex { def interaction, int i ->
+            interaction.owner = user
+            interaction.sequence = sequence
+            interaction.schedule.interaction = interaction
+            interaction.schedule.validate()
+            processInteractionScheduleError(interaction, i, sequence)
+        }
+    }
+
+    private void processInteractionScheduleError(Interaction interaction, int i, Sequence sequence) {
+        if (interaction.schedule.hasErrors()) {
+            interaction.schedule.errors.allErrors.each { FieldError error ->
+                def code = error.code
+                if (error.code.contains("endDateBeforeStartDate")) {
+                    code = "sequence.endDatePhase${i + 1}.endDateBeforeStartDate"
+                } else if (error.code.contains("nullable")) {
+                    code = "sequence.startDatePhase${i + 1}.nullable"
+                }
+                sequence.errors.rejectValue("${error.field}Phase${i + 1}", code)
+            }
+        }
+    }
+
+    private def saveInteractions(List<Interaction> interactions, Sequence sequence) {
+        if (!sequence.hasErrors()) {
+            interactions.each { def interaction ->
+                interaction.save(failOnError: true)
+                interaction.schedule.save()
+            }
+        }
     }
 }

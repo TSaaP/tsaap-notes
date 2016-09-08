@@ -320,5 +320,23 @@
                                  onDelete="SET NULL"/>
     </changeSet>
 
+    <changeSet id="12" author="fsil">
+        <comment>Add phases_are_scheduled columm in table sequence</comment>
+        <addColumn tableName="sequence">
+            <column name="phases_are_scheduled" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <sql>
+            update sequence set phases_are_scheduled = true;
+        </sql>
+    </changeSet>
+
+    <changeSet id="13" author="fsil">
+        <comment>Add phases_are_scheduled columm in table sequence</comment>
+        <sql>
+            update sequence set phases_are_scheduled = false;
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>

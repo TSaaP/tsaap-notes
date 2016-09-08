@@ -115,7 +115,8 @@ class SequenceServiceIntegrationSpec extends Specification {
         Statement statement = bootstrapTestService.statement1
 
         and:"an interaction"
-        Interaction interaction = new Interaction(interactionType: InteractionType.Evaluation.name(),rank: 1, specification: "an evaluation spec")
+        Interaction interaction = new Interaction(interactionType: InteractionType.Evaluation.name(), rank: 1,
+                specification: "an evaluation spec", schedule: new Schedule(startDate: new Date()))
 
         when: "when adding a sequence with interaction"
         Sequence sequence = sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement, [interaction])
@@ -134,6 +135,7 @@ class SequenceServiceIntegrationSpec extends Specification {
         sequence.interactions[0] == interaction
         interaction.id
         interaction.enabled
+        interaction.schedule.id
     }
 
     void "test update statement and interactions of a sequence"() {
@@ -142,7 +144,8 @@ class SequenceServiceIntegrationSpec extends Specification {
         Statement statement = bootstrapTestService.statement1
 
         and:"an interaction"
-        Interaction interaction = new Interaction(interactionType: InteractionType.Evaluation.name(),rank: 1, specification: "an evaluation spec")
+        Interaction interaction = new Interaction(interactionType: InteractionType.Evaluation.name(),rank: 1,
+                specification: "an evaluation spec", schedule: new Schedule(startDate: new Date()))
 
         and: "a sequence added to the assignment with interaction"
         Sequence sequence = sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement, [interaction])
@@ -151,7 +154,7 @@ class SequenceServiceIntegrationSpec extends Specification {
         interaction.specification = "new spec"
         statement.title = "new title"
 
-        and: "update id triggered on the sequence"
+        and: "update is triggered on the sequence"
         sequenceService.updateStatementAndInteractionsOfSequence(sequence,assignment.owner)
 
         then: "the statement title of the sequence is modified"

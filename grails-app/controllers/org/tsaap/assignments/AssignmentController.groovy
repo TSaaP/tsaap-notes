@@ -33,7 +33,7 @@ class AssignmentController {
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def create() {
         Date now = new Date()
-        [assignmentInstance:new Assignment(), scheduleInstance: new Schedule(startDate: now, endDate: now+1)]
+        [assignmentInstance:new Assignment(), scheduleInstance: new Schedule(startDate: now)]
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])

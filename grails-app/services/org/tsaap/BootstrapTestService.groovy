@@ -21,6 +21,7 @@ import org.tsaap.assignments.Assignment
 import org.tsaap.assignments.AssignmentService
 import org.tsaap.assignments.Interaction
 import org.tsaap.assignments.InteractionType
+import org.tsaap.assignments.Schedule
 import org.tsaap.assignments.SequenceService
 import org.tsaap.assignments.Statement
 import org.tsaap.assignments.interactions.ChoiceInteractionType
@@ -145,7 +146,8 @@ class BootstrapTestService {
         EvaluationSpecification evalSpec = new EvaluationSpecification()
         evalSpec.responseToEvaluateCount = 3
         evaluationInteraction = new Interaction(rank: 2, specification: evalSpec.jsonString,
-                interactionType: InteractionType.Evaluation.name())
+                interactionType: InteractionType.Evaluation.name(),
+                schedule: new Schedule(startDate: new Date()))
     }
 
     private void initializeResponseSubmissionInteraction() {
@@ -156,7 +158,8 @@ class BootstrapTestService {
         respSpec.studentsProvideExplanation = true
         respSpec.studentsProvideConfidenceDegree = true
         responseSubmissionInteraction = new Interaction(rank: 1, specification: respSpec.jsonString,
-                interactionType: InteractionType.ResponseSubmission.name())
+                interactionType: InteractionType.ResponseSubmission.name(),
+                schedule: new Schedule(startDate: new Date()))
     }
 
 

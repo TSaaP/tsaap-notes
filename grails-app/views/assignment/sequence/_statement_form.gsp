@@ -9,7 +9,7 @@
 <div class="form-group">
     <label for="myFile"><g:message code="default.fileInput.label" default="Attachment"/></label>
     <div id="attachment">
-        <g:set var="attachment" value="${statementInstance.attachment}"/>
+        <g:set var="attachment" value="${statementInstance?.attachment}"/>
         <g:if test="${attachment != null}">
             <tsaap:viewAttachement width="650" height="380" attachement="${attachment}"/>
             <g:remoteLink controller="sequence" action="removeAttachement"
@@ -37,6 +37,6 @@
 
 <div class="checkbox">
     <label>
-        <input type="checkbox" name="displaySchedule"> <g:message code="sequence.displaySchedules.label" default="Title"/>
+        <input type="checkbox" name="displaySchedule" ${sequenceInstance?.phasesAreScheduled ? 'checked' : ''} value="true"> <g:message code="sequence.displaySchedules.label" default="Title"/>
     </label>
 </div>

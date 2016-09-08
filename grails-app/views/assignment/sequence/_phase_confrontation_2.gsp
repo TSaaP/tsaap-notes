@@ -13,7 +13,7 @@
         </div>
 
         <div id="schedulePhase2" class="hidden">
-            <g:render template="/assignment/sequence/phase_schedule" model="[scheduleInstance:sequenceInstance?.evaluationInteraction?.schedule]"/>
+            <g:render template="/assignment/sequence/phase_schedule_form" model="[scheduleInstance:sequenceInstance?.evaluationInteraction?.schedule, indexSchedule:2]"/>
         </div>
     </div>
 

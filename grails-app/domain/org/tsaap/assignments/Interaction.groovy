@@ -19,19 +19,15 @@ class Interaction {
     User owner
     Sequence sequence
 
+    static hasOne = [schedule:Schedule]
+
     static constraints = {
         interactionType inList: InteractionType.values()*.name()
+        schedule nullable: true
     }
 
-    static transients = ['schedule','interactionSpecification']
+    static transients = ['interactionSpecification']
 
-    /**
-     * Get the schedule
-     * @return the schedule
-     */
-    Schedule getSchedule() {
-        Schedule.findByInteraction(this)
-    }
 
     InteractionSpecification getInteractionSpecification() {
         if (isResponseSubmission()) {

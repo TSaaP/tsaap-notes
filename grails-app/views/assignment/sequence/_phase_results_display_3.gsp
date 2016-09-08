@@ -3,7 +3,7 @@
     <div class="panel-body">
         <g:message code="sequence.interaction.resultDisplay" />
         <div id="schedulePhase3" class="hidden">
-            <g:render template="/assignment/sequence/phase_schedule" model="[scheduleInstance:sequenceInstance?.readInteraction?.schedule]"/>
+            <g:render template="/assignment/sequence/phase_schedule_form" model="[scheduleInstance:sequenceInstance?.readInteraction?.schedule, indexSchedule:3]"/>
         </div>
     </div>
 

@@ -57,8 +57,8 @@
         </div>
 
         <div id="schedulePhase1" class="hidden">
-            <g:render template="/assignment/sequence/phase_schedule"
-                      model="[scheduleInstance: sequenceInstance?.responseSubmissionInteraction?.schedule]"/>
+            <g:render template="/assignment/sequence/phase_schedule_form"
+                      model="[scheduleInstance: sequenceInstance?.responseSubmissionInteraction?.schedule, indexSchedule: 1, defaultDate:defaultDate]"/>
         </div>
     </div>
 </div>
@@ -70,6 +70,11 @@
 
     function manageScheduleDisplay() {
         var displaySchedule = $("input:checkbox[name='displaySchedule']");
+        if (displaySchedule.is(':checked')) {
+            $('#schedulePhase1').removeClass('hidden');
+            $('#schedulePhase2').removeClass('hidden');
+            $('#schedulePhase3').removeClass('hidden');
+        }
         displaySchedule.change(function () {
             $('#schedulePhase1').toggleClass('hidden');
             $('#schedulePhase2').toggleClass('hidden');

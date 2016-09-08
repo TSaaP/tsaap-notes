@@ -36,14 +36,16 @@ class SequenceController {
         ResponseSubmissionSpecification subSpec = getResponseSubmissionSpecificationToSaveOrUpdate(params)
         EvaluationSpecification evalSpec = getEvaluationSpecificationToSave(subSpec, params)
 
-        List<Interaction> interactions = getInteractionsToSave(subSpec, evalSpec)
-
-        Sequence sequenceInstance = sequenceService.addSequenceToAssignment(assignmentInstance,owner, statementInstance,interactions)
+        List<Interaction> interactions = getInteractionsToSave(params, subSpec, evalSpec, assignmentInstance)
+        boolean phasesAreScheduled = params.displaySchedule as boolean
+        Sequence sequenceInstance = sequenceService.addSequenceToAssignment(assignmentInstance, owner,
+                statementInstance, interactions, phasesAreScheduled)
 
         if (sequenceInstance.hasErrors()) {
-            respond assignmentInstance, model:[statementInstance: statementInstance,
-                                               responseSubmissionSpecificationInstance:subSpec,
-                                               evaluationSpecificationInstance:evalSpec], view:'create_sequence'
+            respond assignmentInstance, model: [responseSubmissionSpecificationInstance: subSpec,
+                                                evaluationSpecificationInstance        : evalSpec,
+                                                sequenceInstance:sequenceInstance],
+                                        view: '/assignment/sequence/create_sequence'
             return
         }
 
@@ -51,7 +53,7 @@ class SequenceController {
 
         flash.message = message(code: 'sequence.updated.message',
                 args: [message(code: 'sequence.label', default: 'Question'), sequenceInstance.title.encodeAsRaw()])
-        redirect action: "show", controller: "assignment", params: [id:assignmentInstance.id]
+        redirect action: "show", controller: "assignment", params: [id: assignmentInstance.id]
 
     }
 
@@ -70,17 +72,18 @@ class SequenceController {
             return
         }
         User user = springSecurityService.currentUser
+        sequenceInstance.phasesAreScheduled = params.displaySchedule as boolean
         Statement statementInstance = getStatementInstanceToUpdate(sequenceInstance, params)
 
         ResponseSubmissionSpecification subSpec = getResponseSubmissionSpecificationToSaveOrUpdate(params, sequenceInstance)
         EvaluationSpecification evalSpec = getEvaluationSpecificationToUpdate(subSpec, params, sequenceInstance)
 
-        List<Interaction> interactions = getInteractionsToAddAtUpdate(subSpec, evalSpec,sequenceInstance)
+        List<Interaction> interactions = getInteractionsToAddAtUpdate(params, subSpec, evalSpec, sequenceInstance)
 
         sequenceService.updateStatementAndInteractionsOfSequence(sequenceInstance, user, interactions)
 
         if (sequenceInstance.hasErrors()) {
-            respond sequenceInstance, view:'edit_sequence'
+            respond sequenceInstance, view: '/assignment/sequence/edit_sequence'
             return
         }
 
@@ -89,10 +92,9 @@ class SequenceController {
         Assignment assignmentInstance = sequenceInstance.assignment
         flash.message = message(code: 'sequence.updated.message',
                 args: [message(code: 'sequence.label', default: 'Question'), sequenceInstance.title.encodeAsRaw()])
-        redirect action: "show", controller: "assignment", params: [id:assignmentInstance.id]
+        redirect action: "show", controller: "assignment", params: [id: assignmentInstance.id]
 
     }
-
 
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
@@ -104,7 +106,7 @@ class SequenceController {
         }
         def assignmentInstance = sequenceInstance.assignment
         def user = springSecurityService.currentUser
-        assignmentService.removeSequenceFromAssignment(sequenceInstance, assignmentInstance,user)
+        assignmentService.removeSequenceFromAssignment(sequenceInstance, assignmentInstance, user)
 
         flash.message = message(code: 'sequence.deleted.message',
                 args: [message(code: 'sequence.label', default: 'Question'), sequenceInstance.title.encodeAsRaw()])
@@ -124,7 +126,7 @@ class SequenceController {
         def sequenceInstanceList = assignmentInstance.sequences
         def indexInList = sequenceInstanceList.indexOf(sequenceInstance)
 
-        assignmentService.swapSequences(assignmentInstance, user,sequenceInstance,sequenceInstanceList[indexInList-1])
+        assignmentService.swapSequences(assignmentInstance, user, sequenceInstance, sequenceInstanceList[indexInList - 1])
 
         redirect assignmentInstance
 
@@ -142,7 +144,7 @@ class SequenceController {
         def sequenceInstanceList = assignmentInstance.sequences
         def indexInList = sequenceInstanceList.indexOf(sequenceInstance)
 
-        assignmentService.swapSequences(assignmentInstance, user,sequenceInstance,sequenceInstanceList[indexInList+1])
+        assignmentService.swapSequences(assignmentInstance, user, sequenceInstance, sequenceInstanceList[indexInList + 1])
         redirect assignmentInstance
     }
 
@@ -155,7 +157,7 @@ class SequenceController {
         }
         def attachment = statementInstance.attachment
         def user = springSecurityService.currentUser
-        if ( attachment && statementInstance.owner == user) {
+        if (attachment && statementInstance.owner == user) {
             attachementService.detachAttachement(attachment)
         }
 
@@ -210,10 +212,13 @@ class SequenceController {
         }
     }
 
-    private EvaluationSpecification getEvaluationSpecificationToSave(ResponseSubmissionSpecification subSpec, def params) {
+    private EvaluationSpecification getEvaluationSpecificationToSave(ResponseSubmissionSpecification subSpec,
+                                                                     def params) {
         EvaluationSpecification evalSpec = null
         if (subSpec.studentsProvideExplanation) {
             evalSpec = new EvaluationSpecification(responseToEvaluateCount: params.responseToEvaluateCount as Integer)
+        } else {
+            evalSpec = new EvaluationSpecification(responseToEvaluateCount: 1)
         }
         evalSpec
     }
@@ -224,36 +229,45 @@ class SequenceController {
             if (!evalSpec) {
                 evalSpec = new EvaluationSpecification()
             }
-            evalSpec.responseToEvaluateCount = params.responseToEvaluateCount as Integer
+            evalSpec.responseToEvaluateCount = params.responseToEvaluateCount as Integer ?: 1
         }
         evalSpec
     }
 
-    private List<Interaction> getInteractionsToSave(ResponseSubmissionSpecification subSpec, EvaluationSpecification evalSpec) {
+    private List<Interaction> getInteractionsToSave(
+            def params, ResponseSubmissionSpecification subSpec, EvaluationSpecification evalSpec, Assignment assignment) {
         List<Interaction> interactions
         def interaction1 = new Interaction(interactionType: InteractionType.ResponseSubmission.name(), rank: 1,
-                specification: subSpec.jsonString)
+                specification: subSpec.jsonString,
+                schedule: getNewSchedule(params, 1))
         interactions = [interaction1]
-        if (evalSpec) {
-            def interaction2 = new Interaction(interactionType: InteractionType.Evaluation.name(), rank: 2,
-                    specification: evalSpec.jsonString)
-            interactions.add(interaction2)
+        def interaction2 = new Interaction(interactionType: InteractionType.Evaluation.name(), rank: 2,
+                specification: evalSpec.jsonString, schedule: getNewSchedule(params, 2))
+        if (!subSpec.studentsProvideExplanation) {
+            interaction2.enabled = false
         }
-        def interaction3 = new Interaction(interactionType: InteractionType.Read.name(), rank: 3, specification: Interaction.EMPTY_SPECIFICATION)
+        interactions.add(interaction2)
+        def interaction3 = new Interaction(interactionType: InteractionType.Read.name(), rank: 3, specification: Interaction.EMPTY_SPECIFICATION,
+                schedule: getNewSchedule(params, 3))
         interactions.add(interaction3)
         interactions
     }
 
-    private List<Interaction> getInteractionsToAddAtUpdate(ResponseSubmissionSpecification responseSubmissionSpecification, EvaluationSpecification evaluationSpecification, Sequence sequence) {
+
+    private List<Interaction> getInteractionsToAddAtUpdate(
+            def params, ResponseSubmissionSpecification responseSubmissionSpecification, EvaluationSpecification evaluationSpecification, Sequence sequence) {
         List<Interaction> interactions = []
 
         Interaction interaction1 = sequence.responseSubmissionInteraction
         if (interaction1) {
             interaction1.specification = responseSubmissionSpecification.jsonString
             interaction1.enabled = true
+            interaction1.schedule.startDate = getStartDate(params, "startDate1")
+            interaction1.schedule.endDate = getEndDate(params, "endDate1")
         } else {
             interaction1 = new Interaction(interactionType: InteractionType.ResponseSubmission.name(), rank: 1,
-                    specification: responseSubmissionSpecification.jsonString)
+                    specification: responseSubmissionSpecification.jsonString,
+                    schedule: getNewSchedule(params, 1))
             interactions.add(interaction1)
         }
 
@@ -264,21 +278,49 @@ class SequenceController {
                 interaction2.enabled = false
             }
         } else if (interaction2) {
-                interaction2.specification = evaluationSpecification.jsonString
-                interaction2.enabled = true
+            interaction2.specification = evaluationSpecification.jsonString
+            interaction2.enabled = true
+            interaction2.schedule.startDate = getStartDate(params, "startDate2")
+            interaction2.schedule.endDate = getEndDate(params, "endDate2")
         } else {
-                interaction2 = new Interaction(interactionType: InteractionType.Evaluation.name(), rank: 2,
-                        specification: evaluationSpecification.jsonString)
-                interactions.add(interaction2)
+            interaction2 = new Interaction(interactionType: InteractionType.Evaluation.name(), rank: 2,
+                    specification: evaluationSpecification.jsonString,
+                    schedule: getNewSchedule(params, 2))
+            interactions.add(interaction2)
         }
 
         Interaction interaction3 = sequence.readInteraction
-        if (!interaction3) {
-            interaction3 = new Interaction(interactionType: InteractionType.Read.name(), rank: 3, specification: Interaction.EMPTY_SPECIFICATION)
+        if (interaction3) {
+            interaction3.schedule.startDate = getStartDate(params, "startDate3")
+            interaction3.schedule.endDate = getEndDate(params, "endDate3")
+        } else {
+            interaction3 = new Interaction(interactionType: InteractionType.Read.name(), rank: 3, specification: Interaction.EMPTY_SPECIFICATION,
+                    schedule: getNewSchedule(params, 3))
             interactions.add(interaction3)
         }
 
         interactions
+    }
+
+    private Schedule getNewSchedule(def params, int indexInteraction) {
+        Date startDate = getStartDate(params, "startDate${indexInteraction}")
+        Date endDate = getEndDate(params, "endDate${indexInteraction}")
+        def res = new Schedule(startDate: startDate, endDate: endDate)
+        res
+    }
+
+    private Date getStartDate(def params, String paramName) {
+        if (params.("$paramName")) {
+            return new Date().parse(message(code: 'date.startDate.format'), params.("$paramName"))
+        }
+        null
+    }
+
+    private Date getEndDate(def params, String paramName) {
+        if (params.("$paramName")) {
+            return new Date().parse(message(code: 'date.endDate.format'), params.("$paramName"))
+        }
+        null
     }
 
 }

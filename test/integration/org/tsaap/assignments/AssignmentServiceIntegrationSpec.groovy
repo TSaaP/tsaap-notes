@@ -67,7 +67,7 @@ class AssignmentServiceIntegrationSpec extends Specification {
         Schedule schedule = new Schedule(startDate: new Date())
 
         when: "saving the assignment"
-        Assignment savedAssignment = assignmentService.saveAssignment(assignment,schedule)
+        Assignment savedAssignment = assignmentService.saveAssignment(assignment, schedule)
         Schedule savedSchedule = savedAssignment.schedule
 
         then: "schedule and assignment are saved without errors"
@@ -80,7 +80,7 @@ class AssignmentServiceIntegrationSpec extends Specification {
 
     void "test delete assignment without schedule"() {
         given: "an assignment without schedule"
-        Assignment assignment = assignmentService.saveAssignment(new Assignment(title:"an assignment", owner:teacher))
+        Assignment assignment = assignmentService.saveAssignment(new Assignment(title: "an assignment", owner: teacher))
 
         when: "deleting assignment is not performed by the owner"
         assignmentService.deleteAssignment(assignment, anOtherUser)
@@ -103,14 +103,14 @@ class AssignmentServiceIntegrationSpec extends Specification {
         given: "an ssignment with schedule"
         Assignment assignment = new Assignment(title: "an assignment", owner: teacher)
         Schedule schedule = new Schedule(startDate: new Date())
-        assignmentService.saveAssignment(assignment,schedule)
+        assignmentService.saveAssignment(assignment, schedule)
 
         when: "deleting assignment is  performed by the owner"
         assignmentService.deleteAssignment(assignment, teacher)
 
         then: "the assignment and the schedule are deleted"
         Assignment.findById(assignment.id) == null
-        Schedule.findByAssignment(assignment) == null
+        Schedule.findById(schedule.id) == null
 
     }
 
@@ -144,7 +144,9 @@ class AssignmentServiceIntegrationSpec extends Specification {
         def interactions = [bootstrapTestService.responseSubmissionInteraction, bootstrapTestService.evaluationInteraction]
         Sequence sequence1 = sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement1, interactions)
         Sequence sequence2 = sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement2)
-
+        def schedule1 = bootstrapTestService.responseSubmissionInteraction.schedule
+        def schedule2 = bootstrapTestService.evaluationInteraction.schedule
+        schedule1 && schedule2
 
         when: "deleting assignment is  performed by the owner"
         assignmentService.deleteAssignment(assignment, teacher)
@@ -162,8 +164,18 @@ class AssignmentServiceIntegrationSpec extends Specification {
         Interaction.findById(bootstrapTestService.responseSubmissionInteraction.id) == null
         Interaction.findById(bootstrapTestService.evaluationInteraction.id) == null
 
-    }
+        when: "fetching schedule with new session"
+        def fetchSchedule1, fetchSchedule2
+        Schedule.withNewSession {
+            fetchSchedule1 = Schedule.findById(schedule1.id)
+            fetchSchedule2 = Schedule.findById(schedule2.id)
+        }
 
+        then: "the fetch schedules are null"
+        fetchSchedule2 == null
+        fetchSchedule1 == null
+
+    }
 
 
     void "test remove sequence from an assignment with interactions"() {

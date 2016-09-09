@@ -2,17 +2,16 @@ package org.tsaap.assignments
 
 import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
+import grails.transaction.Transactional
 import org.grails.plugins.sanitizer.MarkupSanitizerService
 import org.tsaap.attachement.AttachementService
-import grails.transaction.Transactional
+import org.tsaap.directory.User
 
 @Transactional(readOnly = true)
 class AssignmentController {
 
     SpringSecurityService springSecurityService
     AssignmentService assignmentService
-    SequenceService sequenceService
-    MarkupSanitizerService markupSanitizerService
     AttachementService attachementService
 
     static allowedMethods = [save: "POST", update: "PUT"]
@@ -22,7 +21,9 @@ class AssignmentController {
         params.max = Math.min(max ?: 10, 100)
         params.sort = params.sort ?: 'lastUpdated'
         params.order = params.order ?: 'desc'
-        respond Assignment.list(params), model:[assignmentInstanceCount: Schedule.count()]
+        User owner = springSecurityService.currentUser
+        respond assignmentService.findAllAssignmentsForOwner(owner, params),
+                model:[assignmentInstanceCount: assignmentService.countAllAssignmentsForOwner(owner)]
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])

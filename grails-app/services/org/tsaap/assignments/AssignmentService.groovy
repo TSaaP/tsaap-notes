@@ -9,6 +9,24 @@ import org.tsaap.directory.User
 class AssignmentService {
 
     /**
+     * Find all assignment owned by owner
+     * @param owner the owner
+     * @return the list of assignments
+     */
+    List<Assignment> findAllAssignmentsForOwner(User owner, def params) {
+        Assignment.findAllByOwner(owner,params)
+    }
+
+    /**
+     * Count assignments owned by owner
+     * @param owner the owner
+     * @return assignment count
+     */
+    Integer countAllAssignmentsForOwner(User owner) {
+        Assignment.countByOwner(owner)
+    }
+
+    /**
      * Save an assignment
      * @param assignment the assignment to save
      *

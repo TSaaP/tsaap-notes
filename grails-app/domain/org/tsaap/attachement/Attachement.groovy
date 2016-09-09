@@ -17,6 +17,7 @@
 
 package org.tsaap.attachement
 
+import org.tsaap.assignments.Statement
 import org.tsaap.notes.Context
 import org.tsaap.notes.Note
 
@@ -40,6 +41,7 @@ class Attachement {
     String typeMime
     Note note
     Context context
+    Statement statement
     Boolean toDelete = false
 
     static constraints = {
@@ -49,6 +51,7 @@ class Attachement {
         dimension nullable: true
         context nullable: true
         note nullable: true
+        statement nullable: true
     }
 
     static embedded = ['dimension']

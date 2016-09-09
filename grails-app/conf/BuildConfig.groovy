@@ -42,12 +42,10 @@ grails.project.dependency.resolution = {
         mavenLocal()
         mavenCentral()
         mavenRepo "http://repo.grails.org/grails/core"
+
         mavenRepo "https://jitpack.io"
-        // uncomment the below to enable remote dependency resolution
-        // from public Maven repositories
-        //mavenRepo "http://repository.codehaus.org"
-        //mavenRepo "http://download.java.net/maven/2/"
-        //mavenRepo "http://repository.jboss.com/maven2/"
+
+
     }
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
@@ -62,9 +60,9 @@ grails.project.dependency.resolution = {
         compile 'com.github.TSaaP:tsaap-lti:0.2'
 
         // Latest httpcore and httpmime for Coveralls plugin
-        build 'org.apache.httpcomponents:httpcore:4.3.2'
-        build 'org.apache.httpcomponents:httpclient:4.3.2'
-        build 'org.apache.httpcomponents:httpmime:4.3.3'
+        build 'org.apache.httpcomponents:httpcore:4.4.5'
+        build 'org.apache.httpcomponents:httpclient:4.5.2'
+        build 'org.apache.httpcomponents:httpmime:4.5.2'
     }
 
     plugins {

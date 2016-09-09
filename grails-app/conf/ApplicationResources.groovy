@@ -21,10 +21,13 @@ modules = {
     }
 
     tsaap_ui {
+        dependsOn('application')
         dependsOn('jquery')
+        resource url: 'js/moment.js'
+        resource url: 'js/locale/fr.js'
         resource url: 'js/bootstrap.min.js'
-        resource url: 'js/jquery.linkify.js'
         resource url: 'css/bootstrap.min.css'
+        resource url: 'js/bootstrap-datetimepicker.js'
     }
 
     tsaap_icons {

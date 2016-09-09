@@ -17,6 +17,16 @@
 
 package org.tsaap
 
+import org.tsaap.assignments.Assignment
+import org.tsaap.assignments.AssignmentService
+import org.tsaap.assignments.Interaction
+import org.tsaap.assignments.InteractionType
+import org.tsaap.assignments.Schedule
+import org.tsaap.assignments.SequenceService
+import org.tsaap.assignments.Statement
+import org.tsaap.assignments.interactions.ChoiceInteractionType
+import org.tsaap.assignments.interactions.EvaluationSpecification
+import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
 import org.tsaap.directory.SettingsService
 import org.tsaap.directory.User
 import org.tsaap.notes.Context
@@ -29,6 +39,8 @@ class BootstrapTestService {
     NoteService noteService
     ContextService contextService
     SettingsService settingsService
+    SequenceService sequenceService
+    AssignmentService assignmentService
 
     User learnerPaul
     User teacherJeanne
@@ -39,11 +51,24 @@ class BootstrapTestService {
     Context context1
     Context context2
 
+    Statement statement1
+    Statement statement2
+
+    Assignment assignment1
+    Assignment assignment2With2Sequences
+
+    Interaction responseSubmissionInteraction
+    Interaction evaluationInteraction
+
+
 
     def initializeTests() {
         initializeUsers()
         initializeNotes()
         initializeContexts()
+        initializeStatements()
+        initializeAssignments()
+        initializeInteractions()
     }
 
     def initializeUsers() {
@@ -90,4 +115,52 @@ class BootstrapTestService {
         }
 
     }
+
+
+    def initializeAssignments() {
+        if (!Assignment.findByTitle("Assignment 1")) {
+            assignment1 = assignmentService.saveAssignment(new Assignment(title: "Assignment 1", owner: teacherJeanne))
+        }
+        if (!Assignment.findByTitle("Assignment 2")) {
+            assignment2With2Sequences = assignmentService.saveAssignment(new Assignment(title: "Assignment 2", owner: teacherJeanne))
+            sequenceService.addSequenceToAssignment(assignment2With2Sequences, teacherJeanne, statement1)
+            sequenceService.addSequenceToAssignment(assignment2With2Sequences, teacherJeanne, statement2)
+        }
+    }
+
+    def initializeStatements() {
+        if (!Statement.findByTitle("Statement 1")) {
+            statement1 = sequenceService.saveStatement(new Statement(title: "Statement 1", content:"Content of statement 1"),teacherJeanne)
+        }
+        if (!Statement.findByTitle("Statement 2")) {
+            statement2 = sequenceService.saveStatement(new Statement(title: "Statement 2", content:"Content of statement 2"),teacherJeanne)
+        }
+    }
+
+    def initializeInteractions() {
+        initializeResponseSubmissionInteraction()
+        initialiseEvaluationInteraction()
+    }
+
+    private void initialiseEvaluationInteraction() {
+        EvaluationSpecification evalSpec = new EvaluationSpecification()
+        evalSpec.responseToEvaluateCount = 3
+        evaluationInteraction = new Interaction(rank: 2, specification: evalSpec.jsonString,
+                interactionType: InteractionType.Evaluation.name(),
+                schedule: new Schedule(startDate: new Date()))
+    }
+
+    private void initializeResponseSubmissionInteraction() {
+        ResponseSubmissionSpecification respSpec = new ResponseSubmissionSpecification()
+        respSpec.choiceInteractionType = ChoiceInteractionType.MULTIPLE.name()
+        respSpec.itemCount = 5
+        respSpec.expectedChoiceList = [2, 3, 5]
+        respSpec.studentsProvideExplanation = true
+        respSpec.studentsProvideConfidenceDegree = true
+        responseSubmissionInteraction = new Interaction(rank: 1, specification: respSpec.jsonString,
+                interactionType: InteractionType.ResponseSubmission.name(),
+                schedule: new Schedule(startDate: new Date()))
+    }
+
+
 }

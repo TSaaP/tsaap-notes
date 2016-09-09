@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright (C) 2013-2016 Université Toulouse 3 Paul Sabatier
+  ~
+  ~     This program is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU Affero General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     This program is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU Affero General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU Affero General Public License
+  ~     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="fsil">
+        <comment>Create assignment table</comment>
+        <createTable tableName="assignment">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_created" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="owner_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="assignment" indexName="idx_assignment_owner_id">
+            <column name="owner_id"></column>
+        </createIndex>
+        <addForeignKeyConstraint baseTableName="assignment" baseColumnNames="owner_id"
+                                 constraintName="fk_assignment_owner"
+                                 referencedTableName="user"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="2" author="fsil">
+        <comment>Create schedule table</comment>
+        <createTable tableName="schedule">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_created" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_manual" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="start_date" type="DATETIME">
+                <constraints nullable="true"/>
+            </column>
+            <column name="end_date" type="DATETIME">
+                <constraints nullable="true"/>
+            </column>
+            <column name="duration_in_minutes" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="is_started" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_ended" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="assignment_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+        <createIndex tableName="schedule" indexName="idx_schedule_assignment_id">
+            <column name="assignment_id"></column>
+        </createIndex>
+        <addForeignKeyConstraint baseTableName="schedule" baseColumnNames="assignment_id"
+                                 constraintName="fk_schedule_assignment"
+                                 referencedTableName="assignment"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="3" author="fsil">
+        <comment>Add last updated column in assignment table</comment>
+        <addColumn tableName="assignment">
+            <column name="last_updated" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="4" author="fsil">
+        <comment>Update last updated column on assignment table</comment>
+        <sql>
+            update assignment set last_updated = NOW();
+        </sql>
+    </changeSet>
+
+    <changeSet id="5" author="fsil">
+        <comment>Add global id to assignments</comment>
+        <addColumn tableName="assignment">
+            <column name="global_id" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <sql>
+            update assignment set global_id = UUID();
+        </sql>
+    </changeSet>
+
+    <changeSet id="6" author="fsil">
+        <comment>Add tables relatives to interactions</comment>
+
+
+        <createTable tableName="statement">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_created" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_updated" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="varchar(512)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="owner_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="statement" indexName="idx_statement_owner_id">
+            <column name="owner_id"/>
+        </createIndex>
+        <addForeignKeyConstraint baseTableName="statement" baseColumnNames="owner_id"
+                                 constraintName="fk_statement_owner"
+                                 referencedTableName="user"
+                                 referencedColumnNames="id"/>
+
+
+        <createTable tableName="sequence">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_created" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_updated" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rank" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="owner_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="assignment_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="statement_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="sequence" indexName="idx_sequence_owner_id">
+            <column name="owner_id"/>
+        </createIndex>
+        <addForeignKeyConstraint baseTableName="sequence" baseColumnNames="owner_id"
+                                 constraintName="fk_sequence_owner"
+                                 referencedTableName="user"
+                                 referencedColumnNames="id"/>
+        <createIndex tableName="sequence" indexName="idx_sequence_assignment_id">
+            <column name="assignment_id"/>
+        </createIndex>
+        <addForeignKeyConstraint baseTableName="sequence" baseColumnNames="assignment_id"
+                                 constraintName="fk_sequence_assignment"
+                                 referencedTableName="assignment"
+                                 referencedColumnNames="id"/>
+        <createIndex tableName="sequence" indexName="idx_sequence_statement_id">
+            <column name="statement_id"/>
+        </createIndex>
+        <addForeignKeyConstraint baseTableName="sequence" baseColumnNames="statement_id"
+                                 constraintName="fk_sequence_statement"
+                                 referencedTableName="statement"
+                                 referencedColumnNames="id"/>
+
+
+        <createTable tableName="interaction">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_created" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_updated" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rank" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="specification" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="owner_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sequence_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="interaction" indexName="idx_interaction_owner_id">
+            <column name="owner_id"></column>
+        </createIndex>
+        <createIndex tableName="interaction" indexName="idx_interaction_sequence_id">
+            <column name="sequence_id"></column>
+        </createIndex>
+        <addForeignKeyConstraint baseTableName="interaction" baseColumnNames="owner_id"
+                                 constraintName="fk_interaction_owner"
+                                 referencedTableName="user"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="interaction" baseColumnNames="sequence_id"
+                                 constraintName="fk_interaction_sequence"
+                                 referencedTableName="sequence"
+                                 referencedColumnNames="id"/>
+
+        <addColumn tableName="schedule">
+            <column name="interaction_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        <createIndex tableName="schedule" indexName="idx_schedule_interaction_id">
+            <column name="interaction_id"/>
+        </createIndex>
+        <addForeignKeyConstraint baseTableName="schedule" baseColumnNames="interaction_id"
+                                 constraintName="fk_schedule_interaction"
+                                 referencedTableName="interaction"
+                                 referencedColumnNames="id"/>
+
+    </changeSet>
+
+    <changeSet id="7" author="fsil">
+        <comment>Add column statement_id to attachment</comment>
+        <addColumn tableName="attachement">
+            <column name="statement_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        <createIndex tableName="attachement" indexName="idx_attachement_statement_id">
+            <column name="statement_id"/>
+        </createIndex>
+        <addForeignKeyConstraint baseTableName="attachement" baseColumnNames="statement_id"
+                                 constraintName="fk_attachement_statement"
+                                 referencedTableName="statement"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="8" author="fsil">
+        <comment>Add column interaction_type to interaction table</comment>
+        <addColumn tableName="interaction">
+            <column name="interaction_type" type="varchar(512)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="9" author="fsil">
+        <comment>Add column enabled to interaction table</comment>
+        <addColumn tableName="interaction">
+            <column name="enabled" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <sql>
+            update interaction set enabled = true;
+        </sql>
+    </changeSet>
+
+    <changeSet id="10" author="fsil">
+        <comment>delete statement on cascade when sequence is deleted</comment>
+        <dropForeignKeyConstraint baseTableName="sequence" constraintName="fk_sequence_statement"/>
+        <addForeignKeyConstraint baseTableName="sequence" baseColumnNames="statement_id"
+                                 constraintName="fk_sequence_statement"
+                                 referencedTableName="statement"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="11" author="fsil">
+        <comment>on cascade set null on attachment when a statement is deleted</comment>
+        <dropForeignKeyConstraint baseTableName="attachement" constraintName="fk_attachement_statement"/>
+        <addForeignKeyConstraint baseTableName="attachement" baseColumnNames="statement_id"
+                                 constraintName="fk_attachement_statement"
+                                 referencedTableName="statement"
+                                 referencedColumnNames="id"
+                                 onDelete="SET NULL"/>
+    </changeSet>
+
+    <changeSet id="12" author="fsil">
+        <comment>Add phases_are_scheduled columm in table sequence</comment>
+        <addColumn tableName="sequence">
+            <column name="phases_are_scheduled" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <sql>
+            update sequence set phases_are_scheduled = true;
+        </sql>
+    </changeSet>
+
+    <changeSet id="13" author="fsil">
+        <comment>Add phases_are_scheduled columm in table sequence</comment>
+        <sql>
+            update sequence set phases_are_scheduled = false;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

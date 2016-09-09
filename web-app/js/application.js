@@ -24,3 +24,17 @@ if (typeof jQuery !== 'undefined') {
         });
     })(jQuery);
 }
+
+/**
+ * Get a date from an element
+ * @param element teh element with val as date
+ * @param dateFormat the date format
+ * @returns a valid date or null
+ */
+function getDateFromElement(element, dateFormat) {
+    var resDate = moment(element.val(),dateFormat);
+    if (resDate.isValid()) {
+        return resDate;
+    }
+    return null;
+}

@@ -3,6 +3,7 @@ package org.tsaap.assignments
 import org.tsaap.BootstrapTestService
 import org.tsaap.assignments.interactions.ChoiceInteractionType
 import org.tsaap.assignments.interactions.EvaluationSpecification
+import org.tsaap.assignments.interactions.InteractionChoice
 import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
 import org.tsaap.directory.User
 import spock.lang.*
@@ -178,7 +179,8 @@ class SequenceServiceIntegrationSpec extends Specification {
         then:"the specification is OK"
         respSpec.choiceInteractionType == ChoiceInteractionType.MULTIPLE.name()
         respSpec.itemCount == 5
-        respSpec.expectedChoiceList == [2, 3, 5]
+        respSpec.expectedChoiceList.size() == 3
+        respSpec.totalScoreFromExpectedChoice == 100
         respSpec.studentsProvideExplanation
         respSpec.studentsProvideConfidenceDegree
 

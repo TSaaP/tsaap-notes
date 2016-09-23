@@ -26,6 +26,7 @@ import org.tsaap.assignments.SequenceService
 import org.tsaap.assignments.Statement
 import org.tsaap.assignments.interactions.ChoiceInteractionType
 import org.tsaap.assignments.interactions.EvaluationSpecification
+import org.tsaap.assignments.interactions.InteractionChoice
 import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
 import org.tsaap.directory.SettingsService
 import org.tsaap.directory.User
@@ -154,7 +155,9 @@ class BootstrapTestService {
         ResponseSubmissionSpecification respSpec = new ResponseSubmissionSpecification()
         respSpec.choiceInteractionType = ChoiceInteractionType.MULTIPLE.name()
         respSpec.itemCount = 5
-        respSpec.expectedChoiceList = [2, 3, 5]
+        respSpec.expectedChoiceList = [new InteractionChoice(2,100f/3f as Float),
+                                       new InteractionChoice(3,100f/3f as Float),
+                                       new InteractionChoice(5,100f/3f as Float)]
         respSpec.studentsProvideExplanation = true
         respSpec.studentsProvideConfidenceDegree = true
         responseSubmissionInteraction = new Interaction(rank: 1, specification: respSpec.jsonString,

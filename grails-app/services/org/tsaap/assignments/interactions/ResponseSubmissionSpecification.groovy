@@ -1,6 +1,7 @@
 package org.tsaap.assignments.interactions
 
 import grails.validation.Validateable
+import groovy.json.JsonOutput
 
 /**
  * A interaction specification for response submission
@@ -11,9 +12,6 @@ class ResponseSubmissionSpecification extends JsonInteractionSpecification {
     /**
      * Default constructor
      */
-
-    public static final String EXPECTED_CHOICE_LIST = "expectedChoiceList"
-
     ResponseSubmissionSpecification() {}
 
     /**
@@ -22,6 +20,7 @@ class ResponseSubmissionSpecification extends JsonInteractionSpecification {
      */
     ResponseSubmissionSpecification(String jsonString) {
         super(jsonString)
+        getExpectedChoiceListFromListOrMap()
     }
 
     /**
@@ -68,7 +67,7 @@ class ResponseSubmissionSpecification extends JsonInteractionSpecification {
      * Get the list of expected choices
      * @return
      */
-    List<Integer> getExpectedChoiceList() {
+    List<InteractionChoice> getExpectedChoiceList() {
         getSpecificationProperty(EXPECTED_CHOICE_LIST)
     }
 
@@ -93,7 +92,7 @@ class ResponseSubmissionSpecification extends JsonInteractionSpecification {
      * @param studentsProvideExplanation the boolean value
      */
     void setStudentsProvideExplanation(Boolean studentsProvideExplanation) {
-        setSpecificationProperty(STUDENTS_PROVIDE_EXPLANATION,studentsProvideExplanation)
+        setSpecificationProperty(STUDENTS_PROVIDE_EXPLANATION, studentsProvideExplanation)
     }
 
     /**
@@ -108,7 +107,7 @@ class ResponseSubmissionSpecification extends JsonInteractionSpecification {
      * Set the expected choice list
      * @param choiceList the choice list
      */
-    void setExpectedChoiceList(List<Integer> choiceList) {
+    void setExpectedChoiceList(List<InteractionChoice> choiceList) {
         setSpecificationProperty(EXPECTED_CHOICE_LIST, choiceList)
     }
 
@@ -120,6 +119,44 @@ class ResponseSubmissionSpecification extends JsonInteractionSpecification {
         choiceInteractionType == ChoiceInteractionType.MULTIPLE.name()
     }
 
+    /**
+     * Calculate the total score obtained when adding score from each expected choice. The total score is expected to be 100.
+     * @return the total score
+     */
+    Float getTotalScoreFromExpectedChoice() {
+        def totalScore = 0
+        expectedChoiceList.each { totalScore += it.score }
+        totalScore
+    }
+
+    @Override
+    String getJsonString() {
+        if (validateSpecification()) {
+            def map = specificationProperties
+            map.put(EXPECTED_CHOICE_LIST, getExpectedChoiceList().specificationProperties)
+            return JsonOutput.toJson(map)
+        }
+        null
+    }
+
+    /**
+     * Check if a choice with given index is in the expected choice list
+     * @param index
+     * @return
+     */
+    boolean expectedChoiceListContainsChoiceWithIndex(Integer index) {
+        def res = false
+        if (expectedChoiceList) {
+            for (int i = 0; i < expectedChoiceList.size(); i++) {
+               if (expectedChoiceList[i].index == index) {
+                   res = true
+                   break
+               }
+            }
+        }
+        res
+    }
+
     static constraints = {
         choiceInteractionType nullable: true, inList: ChoiceInteractionType.values()*.name()
         itemCount nullable: true, max: 10
@@ -128,15 +165,71 @@ class ResponseSubmissionSpecification extends JsonInteractionSpecification {
         expectedChoiceList nullable: false, minSize: 1
     }
 
+    private void getExpectedChoiceListFromListOrMap() {
+        expectedChoiceList = expectedChoiceList.collect {
+            if (it instanceof Map) {
+                new InteractionChoice(specificationProperties: it)
+            } else {
+                new InteractionChoice(it, ((it as Float) * 100 / (itemCount as Float)) as Float)
+            }
+        }
+    }
+
 
     private static final String CHOICE_INTERACTION_TYPE = "choiceInteractionType"
     private static final String ITEM_COUNT = "itemCount"
     private static final String STUDENTS_PROVIDE_EXPLANATION = "studentsProvideExplanation"
     private static final String STUDENTS_PROVIDE_CONFIDENCE_DEGREE = "studentsProvideConfidenceDegree"
+    public static final String EXPECTED_CHOICE_LIST = "expectedChoiceList"
 
 }
 
 enum ChoiceInteractionType {
     EXCLUSIVE,
     MULTIPLE
+}
+
+/**
+ * Class representing an interaction item
+ */
+@Validateable
+class InteractionChoice extends JsonInteractionSpecification {
+
+
+    private static final String INDEX = "index"
+    private static final String SCORE = "score"
+
+    InteractionChoice() {}
+
+    /**
+     * Create an interaction choice object
+     * @param index the index of the choice in the list of choice starting from 1
+     * @param score the asscociated to this choice (max = 100)
+     */
+    InteractionChoice(Integer index, Float score) {
+        this.index = index
+        this.score = score
+    }
+
+    Integer getIndex() {
+        return getSpecificationProperty(INDEX)
+    }
+
+    void setIndex(Integer index) {
+        setSpecificationProperty(INDEX, index)
+    }
+
+    Float getScore() {
+        return getSpecificationProperty(SCORE)
+    }
+
+    void setScore(Float score) {
+        setSpecificationProperty(SCORE, score)
+    }
+
+
+    static constraints = {
+        index nullable: false
+        score nullable: false, max: 100 as Float
+    }
 }

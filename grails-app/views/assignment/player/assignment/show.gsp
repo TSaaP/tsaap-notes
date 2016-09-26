@@ -47,8 +47,8 @@
     <ul class="list-group">
         <g:set var="userRole" value="${user == assignmentInstance.owner ? 'teacher' : 'learner'}"/>
         <g:each in="${assignmentInstance.sequences}" status="i" var="sequenceInstance">
-            <g:render template="/assignment/player/sequence/show" bean="${sequenceInstance}"
-                      model="[userRole: userRole]"/>
+            <g:render template="/assignment/player/sequence/show"
+                      model="[userRole: userRole, sequenceInstance: sequenceInstance]"/>
         </g:each>
     </ul>
 </div>

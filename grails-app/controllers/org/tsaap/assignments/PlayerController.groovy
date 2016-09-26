@@ -33,4 +33,14 @@ class PlayerController {
         render view: "/assignment/player/assignment/show", model: [assignmentInstance: assignmentInstance,
                                                                    user:springSecurityService.currentUser]
     }
+
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def startInteraction() {
+
+    }
+
+    def stopInteraction() {
+
+    }
+
 }

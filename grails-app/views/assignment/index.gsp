@@ -30,6 +30,7 @@
         <thead>
         <tr>
             <th><g:message code="assignment.label"/></th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -59,7 +60,7 @@
                 </td>
 
 
-                %{--<td><g:render template="assignment_actions" model="[assignmentInstance:assignmentInstance]"/></td>--}%
+                <td><g:link controller="player" action="show" id="${assignmentInstance.id}" title="${g.message(code: 'player.assignment.play')}"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></g:link></td>
 
             </tr>
         </g:each>

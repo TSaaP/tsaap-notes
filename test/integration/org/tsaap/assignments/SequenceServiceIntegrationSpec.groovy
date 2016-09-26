@@ -3,7 +3,6 @@ package org.tsaap.assignments
 import org.tsaap.BootstrapTestService
 import org.tsaap.assignments.interactions.ChoiceInteractionType
 import org.tsaap.assignments.interactions.EvaluationSpecification
-import org.tsaap.assignments.interactions.InteractionChoice
 import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
 import org.tsaap.directory.User
 import spock.lang.*

@@ -379,7 +379,8 @@
 
     <changeSet id="15" author="fsil">
         <comment>Add unique constraints on learner_assignment table</comment>
-        <addUniqueConstraint tableName="learner_assignment" columnNames="learner_id, assignment_id" constraintName="learner_assignment_unique"/>
+        <addUniqueConstraint tableName="learner_assignment" columnNames="learner_id, assignment_id"
+                             constraintName="learner_assignment_unique"/>
     </changeSet>
 
     <changeSet id="16" author="fsil">
@@ -395,7 +396,8 @@
         <createIndex tableName="sequence" indexName="idx_sequence_active_interaction_id">
             <column name="active_interaction_id"></column>
         </createIndex>
-        <addForeignKeyConstraint baseTableName="sequence" baseColumnNames="active_interaction_id" constraintName="fk_sequence_interaction"
+        <addForeignKeyConstraint baseTableName="sequence" baseColumnNames="active_interaction_id"
+                                 constraintName="fk_sequence_interaction"
                                  referencedTableName="interaction"
                                  referencedColumnNames="id"/>
         <addColumn tableName="interaction">
@@ -408,10 +410,19 @@
     <changeSet id="17" author="fsil">
         <comment>on cascade set null on sequence when an interaction is deleted</comment>
         <dropForeignKeyConstraint baseTableName="sequence" constraintName="fk_sequence_interaction"/>
-        <addForeignKeyConstraint baseTableName="sequence" baseColumnNames="active_interaction_id" constraintName="fk_sequence_interaction"
+        <addForeignKeyConstraint baseTableName="sequence" baseColumnNames="active_interaction_id"
+                                 constraintName="fk_sequence_interaction"
                                  referencedTableName="interaction"
                                  referencedColumnNames="id"
                                  onDelete="SET NULL"/>
+    </changeSet>
+
+    <changeSet id="18" author="fsil">
+        <comment>Update active interaction in sequences</comment>
+        <sql>
+            update sequence s, interaction i set active_interaction_id = i.id where i.sequence_id = s.id and
+            i.interaction_type ='ResponseSubmission';
+        </sql>
     </changeSet>
 
 </databaseChangeLog>

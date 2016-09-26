@@ -57,6 +57,7 @@ class BootstrapTestService {
 
     Assignment assignment1
     Assignment assignment2With2Sequences
+    Assignment assignment3WithInteractions
 
     Interaction responseSubmissionInteraction
     Interaction evaluationInteraction
@@ -68,8 +69,8 @@ class BootstrapTestService {
         initializeNotes()
         initializeContexts()
         initializeStatements()
-        initializeAssignments()
         initializeInteractions()
+        initializeAssignments()
     }
 
     def initializeUsers() {
@@ -126,6 +127,10 @@ class BootstrapTestService {
             assignment2With2Sequences = assignmentService.saveAssignment(new Assignment(title: "Assignment 2", owner: teacherJeanne))
             sequenceService.addSequenceToAssignment(assignment2With2Sequences, teacherJeanne, statement1)
             sequenceService.addSequenceToAssignment(assignment2With2Sequences, teacherJeanne, statement2)
+        }
+        if (!Assignment.findByTitle("Assignment 3")) {
+            assignment3WithInteractions = assignmentService.saveAssignment(new Assignment(title: "Assignment 3", owner: teacherJeanne))
+            sequenceService.addSequenceToAssignment(assignment3WithInteractions, teacherJeanne, statement1,[responseSubmissionInteraction,evaluationInteraction])
         }
     }
 

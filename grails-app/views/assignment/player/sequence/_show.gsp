@@ -1,4 +1,5 @@
 <li class="list-group-item">
-    <g:render template="/assignment/player/statement/${userRole}/${sequenceInstance.state}" bean="${sequenceInstance.statement}"/>
-    <g:render template="/assignment/player/${sequenceInstance.activeInteraction.interactionType}/${userRole}/${sequenceInstance.state}" bean="${sequenceInstance.activeInteraction}"/>
+    <g:render template="/assignment/player/statement/${userRole}/${sequenceInstance.state}" model="[statementInstance:sequenceInstance.statement]"/>
+    <g:set var="activeInteraction" value="${sequenceInstance.activeInteraction}"/>
+    <g:render template="/assignment/player/${activeInteraction.interactionType}/${userRole}/${activeInteraction.state}" model="[interactionInstance:activeInteraction]"/>
 </li>

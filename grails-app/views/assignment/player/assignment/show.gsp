@@ -44,16 +44,13 @@
             </small>
         </g:if>
     </h4>
-    <table class="table table-striped table-hover">
-        <tbody>
+    <ul class="list-group">
+        <g:set var="userRole" value="${user == assignmentInstance.owner ? 'teacher' : 'learner'}"/>
         <g:each in="${assignmentInstance.sequences}" status="i" var="sequenceInstance">
-            <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
-                <td><g:render template="/assignment/player/sequence/show" bean="${sequenceInstance}"/> </td>
-            </tr>
+            <g:render template="/assignment/player/sequence/show" bean="${sequenceInstance}"
+                      model="[userRole: userRole]"/>
         </g:each>
-        </tbody>
-    </table>
-
+    </ul>
 </div>
 </body>
 </html>

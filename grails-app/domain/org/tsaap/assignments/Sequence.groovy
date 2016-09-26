@@ -16,8 +16,12 @@ class Sequence {
     Statement statement
     Boolean phasesAreScheduled = false
 
-    static constraints = {
+    Interaction activeInteraction
+    String state = StateType.beforeStart.name()
 
+    static constraints = {
+        activeInteraction nullable: true
+        state inList: StateType.values()*.name()
     }
 
     static transients = ['interactions', 'content', 'title',
@@ -50,6 +54,15 @@ class Sequence {
             }
         }
         result
+    }
+
+    /**
+     * get the interaction of the given type
+     * @param interactionType the interaction type
+     * @return the interaction
+     */
+    Interaction getInteractionOfType(InteractionType interactionType) {
+        this."get${interactionType.name()}Interaction"()
     }
 
     /**
@@ -213,4 +226,10 @@ class Sequence {
     }
 
 
+}
+
+enum StateType {
+    beforeStart,
+    show,
+    afterStop
 }

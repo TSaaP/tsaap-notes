@@ -30,6 +30,7 @@ class PlayerController {
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def show(Assignment assignmentInstance) {
-        render view: "/assignment/player/assignment/show", model: [assignmentInstance: assignmentInstance]
+        render view: "/assignment/player/assignment/show", model: [assignmentInstance: assignmentInstance,
+                                                                   user:springSecurityService.currentUser]
     }
 }

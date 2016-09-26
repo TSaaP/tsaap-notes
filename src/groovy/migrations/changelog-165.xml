@@ -382,4 +382,36 @@
         <addUniqueConstraint tableName="learner_assignment" columnNames="learner_id, assignment_id" constraintName="learner_assignment_unique"/>
     </changeSet>
 
+    <changeSet id="16" author="fsil">
+        <comment>Add active interaction and state to sequence</comment>
+        <addColumn tableName="sequence">
+            <column name="active_interaction_id" type="BIGINT"></column>
+        </addColumn>
+        <addColumn tableName="sequence">
+            <column name="state" type="varchar(32)" defaultValue="beforeStart">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <createIndex tableName="sequence" indexName="idx_sequence_active_interaction_id">
+            <column name="active_interaction_id"></column>
+        </createIndex>
+        <addForeignKeyConstraint baseTableName="sequence" baseColumnNames="active_interaction_id" constraintName="fk_sequence_interaction"
+                                 referencedTableName="interaction"
+                                 referencedColumnNames="id"/>
+        <addColumn tableName="interaction">
+            <column name="state" type="varchar(32)" defaultValue="beforeStart">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="17" author="fsil">
+        <comment>on cascade set null on sequence when an interaction is deleted</comment>
+        <dropForeignKeyConstraint baseTableName="sequence" constraintName="fk_sequence_interaction"/>
+        <addForeignKeyConstraint baseTableName="sequence" baseColumnNames="active_interaction_id" constraintName="fk_sequence_interaction"
+                                 referencedTableName="interaction"
+                                 referencedColumnNames="id"
+                                 onDelete="SET NULL"/>
+    </changeSet>
+
 </databaseChangeLog>

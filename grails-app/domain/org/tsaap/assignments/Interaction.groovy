@@ -18,12 +18,14 @@ class Interaction {
 
     User owner
     Sequence sequence
+    String state = StateType.beforeStart.name()
 
     static hasOne = [schedule:Schedule]
 
     static constraints = {
         interactionType inList: InteractionType.values()*.name()
         schedule nullable: true
+        state inList: StateType.values()*.name()
     }
 
     static transients = ['interactionSpecification']

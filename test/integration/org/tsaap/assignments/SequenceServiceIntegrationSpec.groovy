@@ -189,7 +189,39 @@ class SequenceServiceIntegrationSpec extends Specification {
 
         then:"the specification is OK"
         evalSpec.responseToEvaluateCount == 3
+    }
+
+    void "test obtaining active interaction "() {
+        given: "an assignment with a sequence"
+        Assignment assignment = bootstrapTestService.assignment1
+        Statement statement = bootstrapTestService.statement1
+
+        and: "a sequence added to the assignment with interactions"
+        def interactions = [bootstrapTestService.responseSubmissionInteraction, bootstrapTestService.evaluationInteraction]
+        Sequence sequence = sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement, interactions)
+
+        when: "asking the active interaction"
+        def interaction = sequence.activeInteraction
+
+        then: "the first interaction is given"
+        interaction == bootstrapTestService.responseSubmissionInteraction
 
     }
 
+    void "test obtaining interactions of a given type"() {
+        given: "an assignment"
+        Assignment assignment = bootstrapTestService.assignment1
+        Statement statement = bootstrapTestService.statement1
+
+        and: "a sequence added to the assignment with interactions"
+        def interactions = [bootstrapTestService.responseSubmissionInteraction, bootstrapTestService.evaluationInteraction]
+        Sequence sequence = sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement, interactions)
+
+        when: "interaction of type response submission is asked"
+        def interaction = sequence.getInteractionOfType(InteractionType.ResponseSubmission)
+
+        then: "the interaction is found"
+        interaction == bootstrapTestService.responseSubmissionInteraction
+
+    }
 }

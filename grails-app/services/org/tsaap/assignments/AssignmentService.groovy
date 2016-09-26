@@ -1,6 +1,7 @@
 package org.tsaap.assignments
 
 import grails.transaction.Transactional
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 import org.tsaap.attachement.Attachement
 import org.tsaap.contracts.Contract
 import org.tsaap.directory.User
@@ -86,13 +87,50 @@ class AssignmentService {
         assignment
     }
 
-    private void setupAttachementToDeleteFlag(Sequence sequence) {
-        Attachement attachement = Attachement.findByStatement(sequence.statement)
-        if (attachement) {
-            attachement.toDelete = true
-            attachement.statement = null
-            attachement.save()
+    /**
+     * Find all assignments for learner
+     * @param user the learner
+     * @param params sort and order params
+     * @return the list of assignments the user is registered in
+     */
+    List<Assignment> findAllAssignmentsForLearner(User user, def params) {
+        Assignment.executeQuery("select la.assignment from LearnerAssignment as la where la.learner = ? order by la.assignment.lastUpdated desc",[user], params)
+    }
+
+    /**
+     * Count of assignments the user is registered in
+     * @param user the user
+     * @return the count of assignments the user is registered in
+     */
+    Long countAllAssignmentsForLearner(User user) {
+        LearnerAssignment.countByLearner(user)
+    }
+
+    /**
+     * Find assignment by global id
+     * @param globalId the global id
+     * @return the assignment if any
+     */
+    Assignment findAssignmentByGlobalId(String globalId) {
+        Assignment.findByGlobalId(globalId)
+    }
+
+    /**
+     * Register a user on an assignment
+     * @param user the user to register
+     * @param assignment the assignment
+     * @return the learner assignment object or null if the user is the owner of the assignment
+     */
+    LearnerAssignment registerUserOnAssignment(User user, Assignment assignment) {
+        LearnerAssignment learnerAssignment = null
+        if (assignment.owner != user) {
+            learnerAssignment = LearnerAssignment.findByLearnerAndAssignment(user, assignment)
+            if (learnerAssignment == null) {
+                learnerAssignment = new LearnerAssignment(learner: user, assignment: assignment)
+                learnerAssignment.save()
+            }
         }
+        learnerAssignment
     }
 
     /**
@@ -119,6 +157,15 @@ class AssignmentService {
 
     public static final String USER__MUST__BE__ASSIGNMENT__OWNER = "USER_MUST_BE_ASSIGNMENT_OWNER"
     public static final String SEQUENCE__DOESN__T__BELONG__TO__ASSIGNMENT = "SEQUENCE_DOESN_T_BELONG_TO_ASSIGNMENT"
+
+    private void setupAttachementToDeleteFlag(Sequence sequence) {
+        Attachement attachement = Attachement.findByStatement(sequence.statement)
+        if (attachement) {
+            attachement.toDelete = true
+            attachement.statement = null
+            attachement.save()
+        }
+    }
 
 
 }

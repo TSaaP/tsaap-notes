@@ -4,7 +4,7 @@
 <head>
     <meta name="layout" content="main">
     <r:require modules="tsaap_ui_notes,tsaap_icons"/>
-    <g:set var="entityName" value="${message(code: 'player.assignment.label', default: 'Assignment')}"/>
+    <g:set var="entityName" value="${message(code: 'player.assignment.label', default: 'Play Assignment')}"/>
     <title><g:message code="assignment.label" args="[entityName]"/></title>
 </head>
 
@@ -13,9 +13,9 @@
 <div id="show-assignment" class="container" role="main">
 
     <ol class="breadcrumb">
-        <li><g:link class="list" action="index"><g:message code="assignment.list.label"
+        <li><g:link class="list" action="index"><g:message code="player.assignment.list.label"
                                                            args="[entityName]"/></g:link></li>
-        <li class="active">${message(code: 'assignment.label')} "${assignmentInstance?.title}"</li>
+        <li class="active">${message(code: 'player.assignment.label')} "${assignmentInstance?.title}"</li>
     </ol>
 
     <g:if test="${flash.message}">
@@ -48,10 +48,7 @@
         <tbody>
         <g:each in="${assignmentInstance.sequences}" status="i" var="sequenceInstance">
             <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
-
-                <td> TODO </td>
-
-
+                <td><g:render template="/assignment/player/sequence/show" bean="${sequenceInstance}"/> </td>
             </tr>
         </g:each>
         </tbody>

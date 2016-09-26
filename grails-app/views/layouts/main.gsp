@@ -50,6 +50,7 @@
                 <li id="mainLinkContexts"><g:link controller="context"
                                                   params="[filter: FilterReservedValue.__MINE__.name()]">${message(code: "layout.main.scope")}</g:link></li>
                 <li id="mainLinkAssignments"><g:link controller="assignment">${message(code: "assignment.list.label")}</g:link></li>
+                <li id="mainLinkPlayer"><g:link controller="player">${message(code: "player.assignment.list.label")}</g:link></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <tsaap:ifLoggedIn>

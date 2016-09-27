@@ -3,12 +3,17 @@ package org.tsaap.assignments.interactions
 
 import org.tsaap.BootstrapTestService
 import org.tsaap.assignments.Assignment
+import org.tsaap.assignments.AssignmentService
+import org.tsaap.assignments.ChoiceInteractionResponse
 import org.tsaap.assignments.Interaction
 import org.tsaap.assignments.Sequence
 import org.tsaap.assignments.StateType
 import org.tsaap.contracts.ConditionViolationException
 import org.tsaap.directory.User
 import spock.lang.Specification
+
+import java.math.RoundingMode
+import java.text.DecimalFormat
 
 /**
  * See the API for {@link grails.test.mixin.services.ServiceUnitTestMixin} for usage instructions
@@ -17,6 +22,7 @@ class InteractionServiceIntegrationSpec extends Specification {
 
     BootstrapTestService bootstrapTestService
     InteractionService interactionService
+    AssignmentService assignmentService
 
     def setup() {
         bootstrapTestService.initializeTests()
@@ -94,5 +100,62 @@ class InteractionServiceIntegrationSpec extends Specification {
 
         then:"an expection is thrown"
         thrown(ConditionViolationException)
+    }
+
+    void "test save choice interaction response when the learner is not registered i the assignment"() {
+        given: "an assignment with sequence and interactions"
+        Assignment assignment = bootstrapTestService.assignment3WithInteractions
+
+        and:"the response submission interaction"
+        Interaction interaction = assignment.sequences[0].responseSubmissionInteraction
+
+        and: "a learner not registered in the assignment"
+        User paul = bootstrapTestService.learnerPaul
+
+        when:"creating the paul response"
+        ChoiceInteractionResponse resp = new ChoiceInteractionResponse(
+                interaction: interaction,
+                learner: paul,
+                choiceListSpecification: "[1,3]"
+        )
+
+        and: "saving the response"
+        interactionService.saveChoiceInteractionResponse(resp)
+
+        then: "an exception is thrown"
+        thrown(ConditionViolationException)
+    }
+
+
+    void "test save choice interaction response"() {
+
+        given: "an assignment with sequence and interactions"
+        Assignment assignment = bootstrapTestService.assignment3WithInteractions
+
+        and:"the response submission interaction"
+        Interaction interaction = assignment.sequences[0].responseSubmissionInteraction
+
+        and: "a learner registered in the assignment"
+        User paul = bootstrapTestService.learnerPaul
+        assignmentService.registerUserOnAssignment(paul, assignment)
+
+        when:"creating the paul response"
+        ChoiceInteractionResponse resp = new ChoiceInteractionResponse(
+                interaction: interaction,
+                learner: paul,
+                choiceListSpecification: "[1,3]"
+        )
+
+        and: "saving the response"
+        interactionService.saveChoiceInteractionResponse(resp)
+
+        then: "the response is saved with no errors"
+        resp.id
+        !resp.hasErrors()
+
+        and: "the score is updated"
+        DecimalFormat df = new DecimalFormat("#.##");
+        df.setRoundingMode(RoundingMode.HALF_UP);
+        df.format(resp.score) == df.format(100f/3f)
     }
 }

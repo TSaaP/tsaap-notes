@@ -1,6 +1,7 @@
 package org.tsaap.assignments.interactions
 
 import grails.transaction.Transactional
+import org.tsaap.assignments.ChoiceInteractionResponse
 import org.tsaap.assignments.Interaction
 import org.tsaap.assignments.Sequence
 import org.tsaap.assignments.StateType
@@ -15,6 +16,7 @@ class InteractionService {
      * @param interaction the interaction to start
      * @return the started interaction
      */
+
     Interaction startInteraction(Interaction interaction, User user) {
         Contract.requires(interaction.owner == user, ONLY_OWNER_CAN_START_INTERACTION)
         Sequence sequence = interaction.sequence
@@ -39,6 +41,19 @@ class InteractionService {
         interaction
     }
 
+    /**
+     * Save a choice interaction response
+     * @param response the response to save
+     * @return the saved response with the updated score
+     */
+    ChoiceInteractionResponse saveChoiceInteractionResponse(ChoiceInteractionResponse response) {
+        Contract.requires(response.learner.isRegisteredInAssignment(response.assignment()),
+                LEARNER_NOT_REGISTERED_IN_ASSIGNMENT)
+        response.updateScore()
+        response.save()
+        response
+    }
+
 
     private void updateActiveInteractionInSequence(Interaction interaction) {
         Sequence sequence = interaction.sequence
@@ -51,4 +66,5 @@ class InteractionService {
     private static final String ONLY_OWNER_CAN_START_INTERACTION = 'Only owner can start an interaction'
     private static final String ONLY_OWNER_CAN_STOP_INTERACTION = 'Only owner can stop an interaction'
     private static final String INTERACTION_IS_NOT_STARTED = 'The interaction is not started'
+    private static final String LEARNER_NOT_REGISTERED_IN_ASSIGNMENT = 'Learner is not registered in the relative assignment'
 }

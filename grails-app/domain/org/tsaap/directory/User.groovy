@@ -17,6 +17,9 @@
 
 package org.tsaap.directory
 
+import org.tsaap.assignments.Assignment
+import org.tsaap.assignments.LearnerAssignment
+
 class User {
 
     transient springSecurityService
@@ -91,6 +94,15 @@ class User {
         UserRole.get(this.id, RoleEnum.ADMIN_ROLE.id)
     }
 
+    /**
+     * Check if a user is registered in an assignment
+     * @param assignment the assignment
+     * @return true if the user is registered in the given assignment
+     */
+    boolean isRegisteredInAssignment(Assignment assignment) {
+        LearnerAssignment.findByLearnerAndAssignment(this,assignment)
+    }
+
     Set<Role> getAuthorities() {
         def res = UserRole.findAllByUser(this).collect { it.role } as Set
         res*.roleName
@@ -110,4 +122,7 @@ class User {
     protected void encodePassword() {
         password = springSecurityService.encodePassword(password)
     }
+
+
+
 }

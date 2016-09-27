@@ -425,4 +425,46 @@
         </sql>
     </changeSet>
 
+    <changeSet id="19" author="fsil">
+        <comment>Add choice_interaction_response table</comment>
+        <createTable tableName="choice_interaction_response">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_created" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_updated" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="learner_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="interaction_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="choice_list_specification" type="varchar(100)"/>
+            <column name="explanation" type="TEXT"/>
+            <column name="confidence_degree" type="INT"/>
+            <column name="score" type="FLOAT"/>
+        </createTable>
+        <createIndex tableName="choice_interaction_response" indexName="idx_choice_interaction_response_learner_id">
+            <column name="learner_id"/>
+        </createIndex>
+        <createIndex tableName="choice_interaction_response" indexName="idx_choice_interaction_response_interaction_id">
+            <column name="interaction_id"/>
+        </createIndex>
+        <addForeignKeyConstraint baseTableName="choice_interaction_response" baseColumnNames="learner_id"
+                                 constraintName="fk_choice_interaction_response_learner"
+                                 referencedTableName="user"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="choice_interaction_response" baseColumnNames="interaction_id"
+                                 constraintName="fk_choice_interaction_response_interaction"
+                                 referencedTableName="interaction"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
 </databaseChangeLog>

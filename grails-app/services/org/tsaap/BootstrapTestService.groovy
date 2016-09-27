@@ -54,6 +54,7 @@ class BootstrapTestService {
 
     Statement statement1
     Statement statement2
+    Statement statement3
 
     Assignment assignment1
     Assignment assignment2With2Sequences
@@ -130,7 +131,7 @@ class BootstrapTestService {
         }
         if (!Assignment.findByTitle("Assignment 3")) {
             assignment3WithInteractions = assignmentService.saveAssignment(new Assignment(title: "Assignment 3", owner: teacherJeanne))
-            sequenceService.addSequenceToAssignment(assignment3WithInteractions, teacherJeanne, statement1,[responseSubmissionInteraction,evaluationInteraction])
+            sequenceService.addSequenceToAssignment(assignment3WithInteractions, teacherJeanne, statement3,[responseSubmissionInteraction,evaluationInteraction])
         }
     }
 
@@ -140,6 +141,9 @@ class BootstrapTestService {
         }
         if (!Statement.findByTitle("Statement 2")) {
             statement2 = sequenceService.saveStatement(new Statement(title: "Statement 2", content:"Content of statement 2"),teacherJeanne)
+        }
+        if (!Statement.findByTitle("Statement 3")) {
+            statement3 = sequenceService.saveStatement(new Statement(title: "Statement 3", content:"Content of statement 3"),teacherJeanne)
         }
     }
 

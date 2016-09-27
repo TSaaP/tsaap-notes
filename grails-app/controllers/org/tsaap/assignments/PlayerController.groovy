@@ -2,12 +2,14 @@ package org.tsaap.assignments
 
 import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
+import org.tsaap.assignments.interactions.InteractionService
 import org.tsaap.directory.User
 
 class PlayerController {
 
     SpringSecurityService springSecurityService
     AssignmentService assignmentService
+    InteractionService interactionService
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def index(Integer max) {
@@ -35,12 +37,19 @@ class PlayerController {
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def startInteraction() {
-
+    def startInteraction(Interaction interactionInstance) {
+        interactionService.startInteraction(interactionInstance, springSecurityService.currentUser)
+        Assignment assignment = interactionInstance.sequence.assignment
+        render view: "/assignment/player/assignment/show", model: [assignmentInstance: assignment,
+                                                                   user:springSecurityService.currentUser]
     }
 
-    def stopInteraction() {
-
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def stopInteraction(Interaction interactionInstance) {
+        interactionService.stopInteraction(interactionInstance, springSecurityService.currentUser)
+        Assignment assignment = interactionInstance.sequence.assignment
+        render view: "/assignment/player/assignment/show", model: [assignmentInstance: assignment,
+                                                                   user:springSecurityService.currentUser]
     }
 
 }

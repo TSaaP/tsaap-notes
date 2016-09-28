@@ -44,6 +44,7 @@
             </small>
         </g:if>
     </h4>
+    <div class="well well-sm"><g:message code="player.assignment.registeredUserCount"/> <span id="registered_user_count">${assignmentInstance.registeredUserCount()}</span> <g:remoteLink controller="player" action="updateRegisteredUserCount" id="${assignmentInstance.id}" title="Refresh" update="registered_user_count"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></g:remoteLink></div>
     <ul class="list-group">
         <g:set var="userRole" value="${user == assignmentInstance.owner ? 'teacher' : 'learner'}"/>
         <g:each in="${assignmentInstance.sequences}" status="i" var="sequenceInstance">

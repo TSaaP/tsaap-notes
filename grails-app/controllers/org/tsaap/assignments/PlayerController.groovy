@@ -52,4 +52,9 @@ class PlayerController {
                                                                    user:springSecurityService.currentUser]
     }
 
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def updateRegisteredUserCount(Assignment assignmentInstance) {
+        render assignmentInstance.registeredUserCount()
+    }
+
 }

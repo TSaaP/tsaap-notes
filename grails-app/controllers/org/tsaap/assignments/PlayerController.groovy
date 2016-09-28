@@ -2,7 +2,10 @@ package org.tsaap.assignments
 
 import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
+import org.grails.plugins.sanitizer.MarkupSanitizerService
 import org.tsaap.assignments.interactions.InteractionService
+import org.tsaap.assignments.interactions.InteractionSpecification
+import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
 import org.tsaap.directory.User
 
 class PlayerController {
@@ -10,6 +13,7 @@ class PlayerController {
     SpringSecurityService springSecurityService
     AssignmentService assignmentService
     InteractionService interactionService
+    MarkupSanitizerService markupSanitizerService
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def index(Integer max) {
@@ -38,23 +42,79 @@ class PlayerController {
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def startInteraction(Interaction interactionInstance) {
-        interactionService.startInteraction(interactionInstance, springSecurityService.currentUser)
-        Assignment assignment = interactionInstance.sequence.assignment
-        render view: "/assignment/player/assignment/show", model: [assignmentInstance: assignment,
-                                                                   user:springSecurityService.currentUser]
+        User user = springSecurityService.currentUser
+        interactionService.startInteraction(interactionInstance, user)
+        Sequence sequenceInstance = interactionInstance.sequence
+        renderSequenceTemplate(user, sequenceInstance)
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def stopInteraction(Interaction interactionInstance) {
-        interactionService.stopInteraction(interactionInstance, springSecurityService.currentUser)
-        Assignment assignment = interactionInstance.sequence.assignment
-        render view: "/assignment/player/assignment/show", model: [assignmentInstance: assignment,
-                                                                   user:springSecurityService.currentUser]
+        User user = springSecurityService.currentUser
+        interactionService.stopInteraction(interactionInstance, user)
+        Sequence sequenceInstance = interactionInstance.sequence
+        renderSequenceTemplate(user, sequenceInstance)
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def updateRegisteredUserCount(Assignment assignmentInstance) {
         render assignmentInstance.registeredUserCount()
+    }
+
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def updateChoiceInteractionResponseCount(Interaction interactionInstance) {
+        render interactionInstance.choiceInteractionResponseCount()
+    }
+
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def updateSequenceDisplay(Sequence sequenceInstance) {
+        def user = springSecurityService.currentUser
+        renderSequenceTemplate(user,sequenceInstance)
+    }
+
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def updatePeerEvaluationCount(Interaction interactionInstance) {
+        render interactionInstance.peerEvaluationCount()
+    }
+
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def submitResponse(Interaction interactionInstance) {
+        ResponseSubmissionSpecification spec = interactionInstance.interactionSpecification
+        List choiceList = getChoiceListFromParams(spec, params)
+        def user = springSecurityService.currentUser
+        createAndSaveChoiceInteractionResponse(user, interactionInstance, choiceList, params)
+        Sequence sequenceInstance = interactionInstance.sequence
+        renderSequenceTemplate(user, sequenceInstance)
+    }
+
+    private void renderSequenceTemplate(user, Sequence sequenceInstance) {
+        def userRole = (user == sequenceInstance.assignment.owner ? 'teacher' : 'learner')
+        render template: "/assignment/player/sequence/show",
+                model: [userRole: userRole, sequenceInstance: sequenceInstance, user: user]
+    }
+
+    private ChoiceInteractionResponse createAndSaveChoiceInteractionResponse(user, Interaction interactionInstance, List<Integer> choiceList, params) {
+        ChoiceInteractionResponse response = new ChoiceInteractionResponse(
+                learner: user,
+                interaction: interactionInstance,
+                confidenceDegree: params.confidenceDegree as Integer
+        )
+        if (params.explanation) {
+            response.explanation = markupSanitizerService.sanitize(params.explanation)?.cleanString
+        }
+        response.updateChoiceListSpecification(choiceList)
+        interactionService.saveChoiceInteractionResponse(response)
+        response
+    }
+
+    private List getChoiceListFromParams(ResponseSubmissionSpecification spec, def params) {
+        List<Integer> choiceList
+        if (spec.isMultipleChoice()) {
+            choiceList = params.choiceList?.collect { it as Integer }
+        } else {
+            choiceList = [params.exclusiveChoice as Integer]
+        }
+        choiceList
     }
 
 }

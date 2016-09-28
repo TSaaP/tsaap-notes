@@ -72,3 +72,18 @@ class ChoiceInteractionResponse {
         interaction.sequence.assignment
     }
 }
+
+enum ConfidenceDegreeEnum {
+    NOT_CONFIDENT_AT_ALL,
+    NOT_REALLY_CONFIDENT,
+    CONFIDENT,
+    TOTALLY_CONFIDENT
+
+    String getName() {
+        name()
+    }
+
+    String getIntegerValue() {
+        ordinal()
+    }
+}

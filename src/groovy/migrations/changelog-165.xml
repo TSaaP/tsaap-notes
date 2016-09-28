@@ -467,4 +467,10 @@
                                  referencedColumnNames="id"/>
     </changeSet>
 
+    <changeSet id="20" author="fsil">
+        <comment>Add unique constraint on choice_interaction_response</comment>
+        <addUniqueConstraint tableName="choice_interaction_response" columnNames="learner_id, interaction_id"
+                             constraintName="learner_interaction_unique"/>
+    </changeSet>
+
 </databaseChangeLog>

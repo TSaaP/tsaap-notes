@@ -102,6 +102,34 @@ class InteractionServiceIntegrationSpec extends Specification {
         thrown(ConditionViolationException)
     }
 
+    void "test start and stop interaction with second interaction disabled"() {
+        given: "an assignment with one sequence and 2 interactions"
+        Assignment assignment = bootstrapTestService.assignment3WithInteractions
+        Sequence sequence = assignment.lastSequence
+        Interaction interaction = assignment.lastSequence.responseSubmissionInteraction
+
+        and:"the second interaction is disabled"
+        Interaction interaction2 = assignment.lastSequence.evaluationInteraction
+        interaction2.enabled = false
+        interaction.save()
+
+
+        expect: "the active interaction is the first one"
+        sequence.activeInteraction == interaction
+
+        when:"the interaction is started"
+        interactionService.startInteraction(interaction, interaction.owner)
+
+        and: "the interaction is stopped"
+        interactionService.stopInteraction(interaction, interaction.owner)
+
+        then: "the interaction is in consistent state"
+        interaction.state == StateType.afterStop.name()
+
+        and: "the current active interaction is null beacuase the second oneis disabled"
+        sequence.activeInteraction == null
+    }
+
     void "test save choice interaction response when the learner is not registered i the assignment"() {
         given: "an assignment with sequence and interactions"
         Assignment assignment = bootstrapTestService.assignment3WithInteractions
@@ -124,6 +152,9 @@ class InteractionServiceIntegrationSpec extends Specification {
 
         then: "an exception is thrown"
         thrown(ConditionViolationException)
+
+        and: "the interaction has no response for this learner"
+        !interaction.hasResponseForUser(paul)
     }
 
 
@@ -157,5 +188,8 @@ class InteractionServiceIntegrationSpec extends Specification {
         DecimalFormat df = new DecimalFormat("#.##");
         df.setRoundingMode(RoundingMode.HALF_UP);
         df.format(resp.score) == df.format(100f/3f)
+
+        and: "the interaction has response for this learner"
+        interaction.hasResponseForUser(paul)
     }
 }

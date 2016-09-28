@@ -72,6 +72,31 @@ class Interaction {
         !enabled
     }
 
+    /**
+     * Calculate the number of choice interaction responses for the current interaction
+     * @return the number of responses
+     */
+    Integer choiceInteractionResponseCount() {
+        ChoiceInteractionResponse.countByInteraction(this)
+    }
+
+    /**
+     * Calculate the number of peer evaluations for the current interaction
+     * @return the number of peer evaluations
+     */
+    Integer peerEvaluationCount() {
+        // TODO
+        0
+    }
+
+    /**
+     * Check if a user has already given a response for the current interaction
+     * @param user the user
+     * @return true if user has already given a response
+     */
+    boolean hasResponseForUser(User user) {
+        ChoiceInteractionResponse.countByInteractionAndLearner(this, user) > 0
+    }
 }
 
 enum InteractionType {

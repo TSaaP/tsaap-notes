@@ -58,7 +58,7 @@ class InteractionService {
     private void updateActiveInteractionInSequence(Interaction interaction) {
         Sequence sequence = interaction.sequence
         def rank = interaction.rank + 1
-        Interaction newActInter = Interaction.findBySequenceAndRank(sequence, rank)
+        Interaction newActInter = Interaction.findBySequenceAndRankAndEnabled(sequence, rank,true)
         sequence.activeInteraction = newActInter
         sequence.save()
     }

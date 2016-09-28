@@ -1,3 +1,4 @@
 <p>
-    <g:link class="btn-group btn-success" controller="player" action="stopInteraction" id="${interactionInstance.id}"><span class="glyphicon glyphicon-play"></span> ${message(code: "player.sequence.interaction.stop")} ${interactionInstance.rank}</g:link>
+<div class="well well-sm"><g:message code="player.sequence.interaction.peerEvaluationCount"/> <span id="peer_evaluation_count">${interactionInstance.peerEvaluationCount()}</span> <g:remoteLink controller="player" action="updatePeerEvaluationCount" id="${interactionInstance.id}" title="Refresh" update="peer_evaluation_count"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></g:remoteLink></div>
+<g:remoteLink class="btn-group btn-success" controller="player" action="stopInteraction" id="${interactionInstance.id}" update="sequence_${interactionInstance.sequenceId}"><span class="glyphicon glyphicon-play"></span> ${message(code: "player.sequence.interaction.stop")} ${interactionInstance.rank}</g:remoteLink>
 </p>

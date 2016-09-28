@@ -1,3 +1,3 @@
 <p>
-    <g:link class="btn-group btn-success" controller="player" action="startInteraction" id="${interactionInstance.id}"><span class="glyphicon glyphicon-play"></span> ${message(code: "player.sequence.interaction.start")} ${interactionInstance.rank}</g:link>
+    <g:remoteLink class="btn-group btn-success" controller="player" action="startInteraction" id="${interactionInstance.id}" update="sequence_${interactionInstance.sequenceId}"><span class="glyphicon glyphicon-play"></span> ${message(code: "player.sequence.interaction.start", args: [interactionInstance.rank])}</g:remoteLink>
 </p>

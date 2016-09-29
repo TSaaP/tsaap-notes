@@ -473,4 +473,11 @@
                              constraintName="learner_interaction_unique"/>
     </changeSet>
 
+    <changeSet id="21" author="fsil">
+        <comment>Add results column in interaction table</comment>
+        <addColumn tableName="interaction">
+            <column name="results" type="TEXT"></column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

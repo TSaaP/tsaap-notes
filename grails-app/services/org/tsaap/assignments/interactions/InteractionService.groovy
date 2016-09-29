@@ -36,6 +36,7 @@ class InteractionService {
         Contract.requires(interaction.owner == user,ONLY_OWNER_CAN_STOP_INTERACTION)
         Contract.requires(interaction.state == StateType.show.name(),INTERACTION_IS_NOT_STARTED)
         interaction.state = StateType.afterStop.name()
+        interaction.doAfterStop()
         interaction.save()
         updateActiveInteractionInSequence(interaction)
         interaction
@@ -47,6 +48,7 @@ class InteractionService {
      * @return the saved response with the updated score
      */
     ChoiceInteractionResponse saveChoiceInteractionResponse(ChoiceInteractionResponse response) {
+        Contract.requires(response.interaction.state == StateType.show.name(), INTERACTION_IS_NOT_STARTED)
         Contract.requires(response.learner.isRegisteredInAssignment(response.assignment()),
                 LEARNER_NOT_REGISTERED_IN_ASSIGNMENT)
         response.updateScore()

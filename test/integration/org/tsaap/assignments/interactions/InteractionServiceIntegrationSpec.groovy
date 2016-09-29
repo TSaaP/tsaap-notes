@@ -136,6 +136,7 @@ class InteractionServiceIntegrationSpec extends Specification {
 
         and:"the response submission interaction"
         Interaction interaction = assignment.sequences[0].responseSubmissionInteraction
+        interactionService.startInteraction(interaction, interaction.owner)
 
         and: "a learner not registered in the assignment"
         User paul = bootstrapTestService.learnerPaul
@@ -155,6 +156,13 @@ class InteractionServiceIntegrationSpec extends Specification {
 
         and: "the interaction has no response for this learner"
         !interaction.hasResponseForUser(paul)
+
+        when: "the interaction is stopped"
+        interactionService.stopInteraction(interaction, interaction.owner)
+
+        then: "the results are calculated and set"
+        interaction.results == null
+        interaction.resultsAsList() == []
     }
 
 
@@ -165,6 +173,7 @@ class InteractionServiceIntegrationSpec extends Specification {
 
         and:"the response submission interaction"
         Interaction interaction = assignment.sequences[0].responseSubmissionInteraction
+        interactionService.startInteraction(interaction, interaction.owner)
 
         and: "a learner registered in the assignment"
         User paul = bootstrapTestService.learnerPaul
@@ -185,11 +194,18 @@ class InteractionServiceIntegrationSpec extends Specification {
         !resp.hasErrors()
 
         and: "the score is updated"
-        DecimalFormat df = new DecimalFormat("#.##");
+        DecimalFormat df = new DecimalFormat("#.###");
         df.setRoundingMode(RoundingMode.HALF_UP);
         df.format(resp.score) == df.format(100f/3f)
 
         and: "the interaction has response for this learner"
         interaction.hasResponseForUser(paul)
+
+        when: "the interaction is stopped"
+        interactionService.stopInteraction(interaction, interaction.owner)
+
+        then: "the results are calculated and set"
+        interaction.results != null
+        interaction.resultsAsList() == [0,100,0,100,0,0]
     }
 }

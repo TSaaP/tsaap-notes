@@ -1,6 +1,9 @@
 package org.tsaap.assignments
 
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
 import org.tsaap.assignments.interactions.EvaluationSpecification
+import org.tsaap.assignments.interactions.InteractionResultListService
 import org.tsaap.assignments.interactions.InteractionSpecification
 import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
 import org.tsaap.directory.User
@@ -20,17 +23,45 @@ class Interaction {
     Sequence sequence
     String state = StateType.beforeStart.name()
 
+    String results
+
     static hasOne = [schedule:Schedule]
 
     static constraints = {
         interactionType inList: InteractionType.values()*.name()
         schedule nullable: true
         state inList: StateType.values()*.name()
+        results nullable: true
     }
 
-    static transients = ['interactionSpecification']
+    static transients = ['interactionSpecification','interactionResultListService']
+
+    /**
+     * Get the result matrix as a list of float
+     * @return the result matrix as a list of float
+     */
+    List<Float> resultsAsList() {
+        if (!results) {
+            return []
+        }
+        JsonSlurper jsonSlurper = new JsonSlurper()
+        jsonSlurper.parseText(results)
+    }
+
+    /**
+     * Process to perform after stop
+     */
+    void doAfterStop() {
+        if (isResponseSubmission()) {
+            updateResults()
+        }
+    }
 
 
+    /**
+     * Get the interaction specification object
+     * @return the interaction specification
+     */
     InteractionSpecification getInteractionSpecification() {
         if (isResponseSubmission()) {
             return new ResponseSubmissionSpecification(specification)
@@ -96,6 +127,16 @@ class Interaction {
      */
     boolean hasResponseForUser(User user) {
         ChoiceInteractionResponse.countByInteractionAndLearner(this, user) > 0
+    }
+
+    InteractionResultListService interactionResultListService
+
+    private void updateResults() {
+        def responses = ChoiceInteractionResponse.findAllByInteraction(this)
+        if (responses) {
+            def res = interactionResultListService.buildResultListForInteractionAndResponses(this, responses)
+            results = JsonOutput.toJson(res)
+        }
     }
 }
 

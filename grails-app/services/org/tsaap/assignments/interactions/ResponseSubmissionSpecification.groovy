@@ -157,6 +157,24 @@ class ResponseSubmissionSpecification extends JsonInteractionSpecification {
         res
     }
 
+    /**
+     * Return the choice with the given index in the expected choice
+     * @param index the index
+     * @return the interaction choice
+     */
+    InteractionChoice choiceWithIndexInExpectedChoiceList(Integer index) {
+        def res = null
+        if (expectedChoiceList) {
+            for (int i = 0; i < expectedChoiceList.size(); i++) {
+                if (expectedChoiceList[i].index == index) {
+                    res = expectedChoiceList[i]
+                    break
+                }
+            }
+        }
+        res
+    }
+
     static constraints = {
         choiceInteractionType nullable: true, inList: ChoiceInteractionType.values()*.name()
         itemCount nullable: true, max: 10

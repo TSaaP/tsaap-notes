@@ -113,6 +113,9 @@ class InteractionServiceIntegrationSpec extends Specification {
         interaction2.enabled = false
         interaction.save()
 
+        and:"the tird interaction is enabled"
+        Interaction interaction3 = assignment.lastSequence.readInteraction
+
 
         expect: "the active interaction is the first one"
         sequence.activeInteraction == interaction
@@ -126,8 +129,16 @@ class InteractionServiceIntegrationSpec extends Specification {
         then: "the interaction is in consistent state"
         interaction.state == StateType.afterStop.name()
 
-        and: "the current active interaction is null beacuase the second oneis disabled"
-        sequence.activeInteraction == null
+        and: "the current active interaction is the last enabled because the second one is disabled"
+        sequence.activeInteraction == interaction3
+
+        when: "start and stop last interaction"
+        interactionService.startInteraction(interaction3, interaction3.owner)
+        interactionService.stopInteraction(interaction3, interaction3.owner)
+
+        then: "the current active interaction stay the same"
+        sequence.activeInteraction == interaction3
+
     }
 
     void "test save choice interaction response when the learner is not registered i the assignment"() {

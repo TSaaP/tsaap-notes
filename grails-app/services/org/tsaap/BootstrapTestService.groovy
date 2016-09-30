@@ -62,6 +62,7 @@ class BootstrapTestService {
 
     Interaction responseSubmissionInteraction
     Interaction evaluationInteraction
+    Interaction readInteraction
 
 
 
@@ -131,7 +132,7 @@ class BootstrapTestService {
         }
         if (!Assignment.findByTitle("Assignment 3")) {
             assignment3WithInteractions = assignmentService.saveAssignment(new Assignment(title: "Assignment 3", owner: teacherJeanne))
-            sequenceService.addSequenceToAssignment(assignment3WithInteractions, teacherJeanne, statement3,[responseSubmissionInteraction,evaluationInteraction])
+            sequenceService.addSequenceToAssignment(assignment3WithInteractions, teacherJeanne, statement3,[responseSubmissionInteraction,evaluationInteraction, readInteraction])
         }
     }
 
@@ -150,6 +151,7 @@ class BootstrapTestService {
     def initializeInteractions() {
         initializeResponseSubmissionInteraction()
         initialiseEvaluationInteraction()
+        initializeReadInteraction()
     }
 
     private void initialiseEvaluationInteraction() {
@@ -171,6 +173,12 @@ class BootstrapTestService {
         respSpec.studentsProvideConfidenceDegree = true
         responseSubmissionInteraction = new Interaction(rank: 1, specification: respSpec.jsonString,
                 interactionType: InteractionType.ResponseSubmission.name(),
+                schedule: new Schedule(startDate: new Date()))
+    }
+
+    private void initializeReadInteraction() {
+        readInteraction = new Interaction(rank: 3, specification: Interaction.EMPTY_SPECIFICATION,
+                interactionType: InteractionType.Read.name(),
                 schedule: new Schedule(startDate: new Date()))
     }
 

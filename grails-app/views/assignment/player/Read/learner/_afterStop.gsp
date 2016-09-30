@@ -1,1 +1,1 @@
-<div class="alert alert-warning" role="alert"><g:message code="player.sequence.interaction.afterStop.message"/> </div>
+<g:render template="/assignment/player/Read/learner/show" model="[interactionInstance:interactionInstance]"/>

@@ -59,10 +59,14 @@ class InteractionService {
 
     private void updateActiveInteractionInSequence(Interaction interaction) {
         Sequence sequence = interaction.sequence
-        def rank = interaction.rank + 1
-        Interaction newActInter = Interaction.findBySequenceAndRankAndEnabled(sequence, rank,true)
-        sequence.activeInteraction = newActInter
-        sequence.save()
+        for (Integer rank in interaction.rank + 1 .. sequence.interactions.size()) {
+            Interaction newActInter = Interaction.findBySequenceAndRankAndEnabled(sequence, rank,true)
+            if (newActInter) {
+                sequence.activeInteraction = newActInter
+                sequence.save()
+                break
+            }
+        }
     }
 
     private static final String ONLY_OWNER_CAN_START_INTERACTION = 'Only owner can start an interaction'

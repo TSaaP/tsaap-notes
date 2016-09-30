@@ -129,6 +129,15 @@ class Interaction {
         ChoiceInteractionResponse.countByInteractionAndLearner(this, user) > 0
     }
 
+    /**
+     * Get the response for the given user
+     * @param user the user
+     * @return the response
+     */
+    ChoiceInteractionResponse responseForUser(User user) {
+        ChoiceInteractionResponse.findByInteractionAndLearner(this, user)
+    }
+
     InteractionResultListService interactionResultListService
 
     private void updateResults() {

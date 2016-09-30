@@ -83,8 +83,7 @@ class PlayerController {
         List choiceList = getChoiceListFromParams(spec, params)
         def user = springSecurityService.currentUser
         createAndSaveChoiceInteractionResponse(user, interactionInstance, choiceList, params)
-        Sequence sequenceInstance = interactionInstance.sequence
-        renderSequenceTemplate(user, sequenceInstance)
+        renderSequenceTemplate(user, interactionInstance.sequence)
     }
 
     private void renderSequenceTemplate(user, Sequence sequenceInstance) {
@@ -94,10 +93,12 @@ class PlayerController {
     }
 
     private ChoiceInteractionResponse createAndSaveChoiceInteractionResponse(user, Interaction interactionInstance, List<Integer> choiceList, params) {
+        Sequence sequence = interactionInstance.sequence
         ChoiceInteractionResponse response = new ChoiceInteractionResponse(
                 learner: user,
                 interaction: interactionInstance,
-                confidenceDegree: params.confidenceDegree as Integer
+                confidenceDegree: params.confidenceDegree as Integer,
+                attempt: sequence.activeInteraction.rank
         )
         if (params.explanation) {
             response.explanation = markupSanitizerService.sanitize(params.explanation)?.cleanString

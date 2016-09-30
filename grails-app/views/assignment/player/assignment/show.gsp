@@ -13,9 +13,17 @@
 <div id="show-assignment" class="container" role="main">
 
     <ol class="breadcrumb">
+        <sec:ifAnyGranted roles="${org.tsaap.directory.RoleEnum.STUDENT_ROLE.label}">
         <li><g:link class="list" action="index"><g:message code="player.assignment.list.label"
                                                            args="[entityName]"/></g:link></li>
-        <li class="active">${message(code: 'player.assignment.label')} "${assignmentInstance?.title}"</li>
+            <li class="active">${message(code: 'player.assignment.label')} "${assignmentInstance?.title}"</li>
+        </sec:ifAnyGranted>
+        <sec:ifAnyGranted roles="${org.tsaap.directory.RoleEnum.TEACHER_ROLE.label}">
+            <li><g:link class="list" action="index" controller="assignment"><g:message code="assignment.list.label"
+                                                               args="[entityName]"/></g:link></li>
+            <li class="active">${message(code: 'player.assignment.label')} "${assignmentInstance?.title}"</li>
+        </sec:ifAnyGranted>
+
     </ol>
 
     <g:if test="${flash.message}">

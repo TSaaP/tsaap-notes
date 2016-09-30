@@ -1,6 +1,6 @@
 <g:set var="sequence" value="${interactionInstance.sequence}"/>
 <g:set var="displayedResultInteraction" value="${sequence.responseSubmissionInteraction}"/>
-<g:set var="resultList" value="${displayedResultInteraction.resultsAsList()}"/>
+<g:set var="resultList" value="${displayedResultInteraction.resultsByAttempt()["1"]}"/>
 <g:set var="spec" value="${displayedResultInteraction.interactionSpecification}"/>
 <g:set var="userResponse" value="${displayedResultInteraction.responseForUser(user)}"/>
 <g:each var="i" in="${(1..spec.itemCount)}">

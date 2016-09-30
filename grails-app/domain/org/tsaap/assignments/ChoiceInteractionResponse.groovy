@@ -13,6 +13,7 @@ class ChoiceInteractionResponse {
 
     User learner
     Interaction interaction
+    Integer attempt = 1
 
     String choiceListSpecification
     String explanation

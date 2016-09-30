@@ -156,7 +156,8 @@ class InteractionServiceIntegrationSpec extends Specification {
         ChoiceInteractionResponse resp = new ChoiceInteractionResponse(
                 interaction: interaction,
                 learner: paul,
-                choiceListSpecification: "[1,3]"
+                choiceListSpecification: "[1,3]",
+                attempt: 1
         )
 
         and: "saving the response"
@@ -173,7 +174,7 @@ class InteractionServiceIntegrationSpec extends Specification {
 
         then: "the results are calculated and set"
         interaction.results == null
-        interaction.resultsAsList() == []
+        interaction.resultsByAttempt() == [:]
     }
 
 
@@ -194,7 +195,8 @@ class InteractionServiceIntegrationSpec extends Specification {
         ChoiceInteractionResponse resp = new ChoiceInteractionResponse(
                 interaction: interaction,
                 learner: paul,
-                choiceListSpecification: "[1,3]"
+                choiceListSpecification: "[1,3]",
+                attempt: 1
         )
 
         and: "saving the response"
@@ -217,6 +219,8 @@ class InteractionServiceIntegrationSpec extends Specification {
 
         then: "the results are calculated and set"
         interaction.results != null
-        interaction.resultsAsList() == [0,100,0,100,0,0]
+        println ">>>>>>>>> ${interaction.results}"
+        interaction.resultsByAttempt()["1"] == [0.000, 100.000, 0.000, 100.000, 0.000, 0.000]
+        interaction.resultsByAttempt() == ["1":[0.000, 100.000, 0.000, 100.000, 0.000, 0.000]]
     }
 }

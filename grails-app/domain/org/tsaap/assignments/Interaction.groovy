@@ -25,7 +25,7 @@ class Interaction {
 
     String results
 
-    static hasOne = [schedule:Schedule]
+    static hasOne = [schedule: Schedule]
 
     static constraints = {
         interactionType inList: InteractionType.values()*.name()
@@ -34,15 +34,15 @@ class Interaction {
         results nullable: true
     }
 
-    static transients = ['interactionSpecification','interactionResultListService']
+    static transients = ['interactionSpecification', 'interactionResultListService']
 
     /**
      * Get the result matrix as a list of float
-     * @return the result matrix as a list of float
+     * @return the result matrix as a list of float for each attempt
      */
-    List<Float> resultsAsList() {
+    Map<String, List<Float>> resultsByAttempt() {
         if (!results) {
-            return []
+            return [:]
         }
         JsonSlurper jsonSlurper = new JsonSlurper()
         jsonSlurper.parseText(results)
@@ -56,7 +56,6 @@ class Interaction {
             updateResults()
         }
     }
-
 
     /**
      * Get the interaction specification object
@@ -140,11 +139,12 @@ class Interaction {
 
     InteractionResultListService interactionResultListService
 
-    private void updateResults() {
-        def responses = ChoiceInteractionResponse.findAllByInteraction(this)
+    private void updateResults(Integer attempt = 1) {
+        def responses = ChoiceInteractionResponse.findAllByInteractionAndAttempt(this, attempt)
         if (responses) {
-            def res = interactionResultListService.buildResultListForInteractionAndResponses(this, responses)
-            results = JsonOutput.toJson(res)
+            def resList = interactionResultListService.buildResultListForInteractionAndResponses(this, responses)
+            def resMap = resultsByAttempt() + [(attempt.toString()): resList]
+            results = JsonOutput.toJson(resMap)
         }
     }
 }

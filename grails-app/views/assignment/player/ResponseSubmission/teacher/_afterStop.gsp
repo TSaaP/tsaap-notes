@@ -1,5 +1,5 @@
 <g:set var="spec" value="${interactionInstance.interactionSpecification}"/>
-<g:set var="resultList" value="${interactionInstance.resultsAsList()}"/>
+<g:set var="resultList" value="${interactionInstance.resultsByAttempt()["1"]}"/>
 <g:each var="i" in="${(1..spec.itemCount)}">
     <g:set var="choiceStatus" value="${spec.expectedChoiceListContainsChoiceWithIndex(i) ? 'success' : 'danger'}"/>
     <g:set var="percentResult" value="${resultList[i]}"/>

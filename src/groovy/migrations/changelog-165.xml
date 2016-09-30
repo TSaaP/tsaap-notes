@@ -480,4 +480,16 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="22" author="fsil">
+        <comment>Add column attempt to choice interaction response table</comment>
+        <addColumn tableName="choice_interaction_response">
+            <column name="attempt" type="INT" defaultValue="1">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <dropUniqueConstraint tableName="choice_interaction_response" constraintName="learner_interaction_unique"/>
+        <addUniqueConstraint tableName="choice_interaction_response" columnNames="learner_id, interaction_id, attempt"
+                             constraintName="learner_interaction_attempt_unique"/>
+    </changeSet>
+
 </databaseChangeLog>

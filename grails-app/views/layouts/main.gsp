@@ -45,12 +45,21 @@
             </button>
             <a class="navbar-brand" href="${grailsApplication.config.grails.serverURL}">TsaaP-Notes</a>
         </div>
+
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li id="mainLinkContexts"><g:link controller="context"
                                                   params="[filter: FilterReservedValue.__MINE__.name()]">${message(code: "layout.main.scope")}</g:link></li>
-                <li id="mainLinkAssignments"><g:link controller="assignment">${message(code: "assignment.list.label")}</g:link></li>
-                <li id="mainLinkPlayer"><g:link controller="player">${message(code: "player.assignment.list.label")}</g:link></li>
+                <sec:ifAnyGranted
+                        roles="${org.tsaap.directory.RoleEnum.ADMIN_ROLE.label},${org.tsaap.directory.RoleEnum.TEACHER_ROLE.label}">
+                    <li id="mainLinkAssignments"><g:link
+                            controller="assignment">${message(code: "assignment.list.label")}</g:link></li>
+                </sec:ifAnyGranted>
+                <sec:ifAnyGranted
+                        roles="${org.tsaap.directory.RoleEnum.ADMIN_ROLE.label},${org.tsaap.directory.RoleEnum.STUDENT_ROLE.label}">
+                    <li id="mainLinkPlayer"><g:link
+                            controller="player">${message(code: "player.assignment.list.label")}</g:link></li>
+                </sec:ifAnyGranted>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <tsaap:ifLoggedIn>
@@ -74,6 +83,7 @@
 </div>
 <footer class="container">
     <hr/>
+
     <p>&copy; Tsaap Development Group 2013 - Tsaap-Notes version <g:meta name="app.version"/> - <a
             href="${grailsApplication.config.grails.serverURL}/terms">Mentions</a></p>
     <g:if env="development">

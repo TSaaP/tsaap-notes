@@ -84,13 +84,13 @@ class BootstrapService {
         fsil = User.findByUsername("fsil")
         if (!fsil) {
             def user = new User(firstName: "Franck", lastName: "Sil", username: "fsil", password: "1234", email: 'fsil@fsil.com')
-            fsil = userAccountService.addUser(user, studentRole, true, 'fr')
+            fsil = userAccountService.addUser(user, teacherRole, true, 'fr')
 
         }
         mary = User.findByUsername("mary")
         if (!mary) {
             def user = new User(firstName: "Mary", lastName: "Sil", username: "mary", password: "1234", email: 'mary@mary.com')
-            mary = userAccountService.addUser(user, teacherRole, true, 'fr')
+            mary = userAccountService.addUser(user, studentRole, true, 'fr')
         }
         thom = User.findByUsername("thom")
         if (!thom) {

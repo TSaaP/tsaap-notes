@@ -492,4 +492,41 @@
                              constraintName="learner_interaction_attempt_unique"/>
     </changeSet>
 
+    <changeSet id="23" author="fsil">
+        <comment>Add peer grading table</comment>
+        <createTable tableName="peer_grading">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_created" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_updated" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="grade" type="FLOAT"/>
+            <column name="annotation" type="TEXT"/>
+            <column name="grader_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="response_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="peer_grading" indexName="idx_peer_grading_grader_id">
+            <column name="grader_id"/>
+        </createIndex>
+        <createIndex tableName="peer_grading" indexName="idx_peer_grading_grader_response_id">
+            <column name="response_id"/>
+        </createIndex>
+        <addForeignKeyConstraint baseTableName="peer_grading" baseColumnNames="grader_id" constraintName="fk_peer_grading_grader_id"
+                                 referencedTableName="user"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="peer_grading" baseColumnNames="response_id" constraintName="fk_peer_grading_response_id"
+                                 referencedTableName="choice_interaction_response"
+                                 referencedColumnNames="id"/>
+    </changeSet>
 </databaseChangeLog>

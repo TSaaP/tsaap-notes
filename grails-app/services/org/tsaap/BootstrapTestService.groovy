@@ -94,7 +94,7 @@ class BootstrapTestService {
         for (int i = 0; i < 10; i++) {
             User currentUser = User.findByUsername("learner_$i")
             if (!currentUser) {
-                currentUser = new User(firstName: "learner_$i", lastName: "learner_$i", username: "learner_$i", password: "learner_$i", email: "learner_$i@nomail.com").save()
+                currentUser = new User(firstName: "learner_$i", lastName: "learner_$i", username: "learner_$i", password: "learner_$i", email: "learner_$i@nomail.com").save(failOnError: true)
                 currentUser.settings = settingsService.initializeSettingsForUser(currentUser, 'en')
             }
             learners[i] = currentUser

@@ -39,6 +39,8 @@ class BootstrapService {
     User fsil
     User mary
     User thom
+    User john
+    User erik
     User admin
 
     Context science
@@ -96,6 +98,16 @@ class BootstrapService {
         if (!thom) {
             def user = new User(firstName: "Thom", lastName: "Thom", username: "thom", password: "1234", email: 'thom@thom.com')
             thom = userAccountService.addUser(user, studentRole, true, 'fr')
+        }
+        john = User.findByUsername("john")
+        if (!john) {
+            def user = new User(firstName: "John", lastName: "John", username: "john", password: "1234", email: 'john@john.com')
+            john = userAccountService.addUser(user, studentRole, true, 'fr')
+        }
+        erik = User.findByUsername("erik")
+        if (!erik) {
+            def user = new User(firstName: "Erik", lastName: "Erik", username: "erik", password: "1234", email: 'erik@erik.com')
+            erik = userAccountService.addUser(user, studentRole, true, 'fr')
         }
     }
 

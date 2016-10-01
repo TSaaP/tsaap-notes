@@ -2,6 +2,7 @@ package org.tsaap.assignments
 
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
+import org.tsaap.assignments.ia.ResponseRecommendationService
 import org.tsaap.assignments.interactions.EvaluationSpecification
 import org.tsaap.assignments.interactions.InteractionResultListService
 import org.tsaap.assignments.interactions.InteractionSpecification
@@ -24,6 +25,7 @@ class Interaction {
     String state = StateType.beforeStart.name()
 
     String results
+    String explanationRecommendationMapping
 
     static hasOne = [schedule: Schedule]
 
@@ -32,9 +34,10 @@ class Interaction {
         schedule nullable: true
         state inList: StateType.values()*.name()
         results nullable: true
+        explanationRecommendationMapping nullable: true
     }
 
-    static transients = ['interactionSpecification', 'interactionResultListService']
+    static transients = ['interactionSpecification', 'interactionResultListService', 'responseRecommendationService']
 
     /**
      * Get the result matrix as a list of float
@@ -54,6 +57,9 @@ class Interaction {
     void doAfterStop() {
         if (isResponseSubmission()) {
             updateResults()
+            if (interactionSpecification.studentsProvideExplanation) {
+                updateExplanationRecommendationMapping()
+            }
         }
     }
 
@@ -135,6 +141,43 @@ class Interaction {
      */
     ChoiceInteractionResponse responseForUser(User user) {
         ChoiceInteractionResponse.findByInteractionAndLearner(this, user)
+    }
+
+    /**
+     *
+     * @return the explanation recommendation map
+     */
+    Map<String, List<Long>> explanationRecommendationMap() {
+        if (!explanationRecommendationMapping) {
+            return [:]
+        }
+        JsonSlurper jsonSlurper = new JsonSlurper()
+        def res = jsonSlurper.parseText(explanationRecommendationMapping)
+        res
+    }
+
+    ResponseRecommendationService responseRecommendationService
+
+    /**
+     * Find all recommended responses for user
+     * @param user the user
+     * @return the response list
+     */
+    List<ChoiceInteractionResponse> findRecommendedResponsesForUser(User user) {
+        def responseInteraction = sequence.responseSubmissionInteraction
+        def userResponse = ChoiceInteractionResponse.findByInteractionAndLearnerAndAttempt(responseInteraction,user,1)
+        def res = responseInteraction.explanationRecommendationMap()[userResponse.id as String].collect {
+            ChoiceInteractionResponse.get(it)
+        }
+        res
+    }
+
+    private void updateExplanationRecommendationMapping(Integer attempt = 1) {
+        def responses = ChoiceInteractionResponse.findAllByInteractionAndAttempt(this, attempt)
+        if (responses) {
+            def mapping = responseRecommendationService.getRecommendedResponseIdByResponseId(responses)
+            explanationRecommendationMapping = JsonOutput.toJson(mapping)
+        }
     }
 
     InteractionResultListService interactionResultListService

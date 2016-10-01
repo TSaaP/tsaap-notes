@@ -84,7 +84,7 @@ enum ConfidenceDegreeEnum {
         name()
     }
 
-    String getIntegerValue() {
+    int getIntegerValue() {
         ordinal()
     }
 }

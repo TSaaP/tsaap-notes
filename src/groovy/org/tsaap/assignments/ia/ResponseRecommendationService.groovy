@@ -9,12 +9,11 @@ import org.tsaap.directory.User
 interface ResponseRecommendationService {
 
     /**
-     * Find recommanded responses for a given user
-     * @param user the user
-     * @param responses the list of all responses where to choose the recommended ones in
-     * @param max the max number of return responses
-     * @return the list of recommanded responses
+     * Build the explanation recommendation mapping
+     * @param responseList the responses containing explanations
+     * @param max the max number of recommended response for each response
+     * @return the mapping as a map
      */
-    List<ChoiceInteractionResponse> findRecommendedResponsesForUser(User user, ChoiceInteractionResponse userResponse, List<ChoiceInteractionResponse> responses, Integer max)
+    Map<String, List<Long>> getRecommendedResponseIdByResponseId(List<ChoiceInteractionResponse> responseList)
 
 }

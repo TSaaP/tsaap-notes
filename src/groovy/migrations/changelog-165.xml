@@ -529,4 +529,12 @@
                                  referencedTableName="choice_interaction_response"
                                  referencedColumnNames="id"/>
     </changeSet>
+
+    <changeSet id="24" author="fsil">
+        <comment>Add explanationRecommendationMapping column in interaction table</comment>
+        <addColumn tableName="interaction">
+            <column name="explanation_recommendation_mapping" type="TEXT"></column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

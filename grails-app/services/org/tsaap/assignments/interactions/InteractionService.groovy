@@ -3,6 +3,7 @@ package org.tsaap.assignments.interactions
 import grails.transaction.Transactional
 import org.tsaap.assignments.ChoiceInteractionResponse
 import org.tsaap.assignments.Interaction
+import org.tsaap.assignments.PeerGrading
 import org.tsaap.assignments.Sequence
 import org.tsaap.assignments.StateType
 import org.tsaap.contracts.Contract
@@ -54,6 +55,21 @@ class InteractionService {
         response
     }
 
+    /**
+     * find or create peer grading from user on response
+     * @param grader the grader
+     * @param response the response
+     * @return the peer grading object
+     */
+    PeerGrading peerGradingFromUserOnResponse(User grader, ChoiceInteractionResponse response, Float grade) {
+        Contract.requires(grader.isRegisteredInAssignment(response.assignment()),LEARNER_NOT_REGISTERED_IN_ASSIGNMENT)
+        PeerGrading peerGrading = PeerGrading.findByResponseAndGrader(response,grader)
+        if (!peerGrading) {
+            peerGrading = new PeerGrading(grader: grader, response: response, grade: grade)
+            peerGrading.save()
+        }
+        peerGrading
+    }
 
     private void updateActiveInteractionInSequence(Interaction interaction) {
         Sequence sequence = interaction.sequence

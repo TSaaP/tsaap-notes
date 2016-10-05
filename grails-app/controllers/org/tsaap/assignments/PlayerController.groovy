@@ -86,6 +86,14 @@ class PlayerController {
         renderSequenceTemplate(user, interactionInstance.sequence)
     }
 
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def createOrUpdatePeerGrading() {
+        User grader = User.get(params.grader_id as long)
+        ChoiceInteractionResponse response = ChoiceInteractionResponse.get(params.response_id as long)
+        Float grade = params.grade as Float
+        PeerGrading peerGrading = interactionService.peerGradingFromUserOnResponse(grader, response, grade)
+        render "${peerGrading.hasErrors() ? 'error' : 'success'}"
+    }
 
 
     private void renderSequenceTemplate(user, Sequence sequenceInstance) {

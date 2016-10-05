@@ -73,8 +73,8 @@ class PlayerController {
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def updatePeerEvaluationCount(Interaction interactionInstance) {
-        render interactionInstance.peerEvaluationCount()
+    def updateSecondAttemptCount(Interaction interactionInstance) {
+        render interactionInstance.choiceInteractionResponseCount(2)
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
@@ -85,6 +85,8 @@ class PlayerController {
         createAndSaveChoiceInteractionResponse(user, interactionInstance, choiceList, params)
         renderSequenceTemplate(user, interactionInstance.sequence)
     }
+
+
 
     private void renderSequenceTemplate(user, Sequence sequenceInstance) {
         def userRole = (user == sequenceInstance.assignment.owner ? 'teacher' : 'learner')

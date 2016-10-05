@@ -55,11 +55,18 @@ class Interaction {
      * Process to perform after stop
      */
     void doAfterStop() {
+        state = StateType.afterStop.name()
         if (isResponseSubmission()) {
             updateResults()
             if (interactionSpecification.studentsProvideExplanation) {
                 updateExplanationRecommendationMapping()
             }
+            save()
+        }
+        if (isEvaluation()) {
+            def respSubmInter = sequence.responseSubmissionInteraction
+            respSubmInter.updateResults(2)
+            respSubmInter.save()
         }
     }
 
@@ -112,18 +119,10 @@ class Interaction {
      * Calculate the number of choice interaction responses for the current interaction
      * @return the number of responses
      */
-    Integer choiceInteractionResponseCount() {
-        ChoiceInteractionResponse.countByInteraction(this)
+    Integer choiceInteractionResponseCount(int attempt = 1) {
+        ChoiceInteractionResponse.countByInteractionAndAttempt(this, attempt)
     }
 
-    /**
-     * Calculate the number of peer evaluations for the current interaction
-     * @return the number of peer evaluations
-     */
-    Integer peerEvaluationCount() {
-        // TODO
-        0
-    }
 
     /**
      * Check if a user has already given a response for the current interaction

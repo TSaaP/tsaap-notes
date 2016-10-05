@@ -207,9 +207,7 @@ class InteractionServiceIntegrationSpec extends Specification {
         !resp.hasErrors()
 
         and: "the score is updated"
-        DecimalFormat df = new DecimalFormat("#.###");
-        df.setRoundingMode(RoundingMode.HALF_UP);
-        df.format(resp.score) == df.format(100f/3f)
+        resp.score == 0f
 
         and: "the interaction has response for this learner"
         interaction.hasResponseForUser(paul)

@@ -34,10 +34,8 @@ class InteractionService {
      */
     Interaction stopInteraction(Interaction interaction, User user) {
         Contract.requires(interaction.owner == user,ONLY_OWNER_CAN_STOP_INTERACTION)
-        Contract.requires(interaction.state == StateType.show.name(),INTERACTION_CANNOT_RECEIVE_RESPONSE)
-        interaction.state = StateType.afterStop.name()
+        Contract.requires(interaction.state == StateType.show.name(),INTERACTION_IS_NOT_STARTED)
         interaction.doAfterStop()
-        interaction.save()
         updateActiveInteractionInSequence(interaction)
         interaction
     }
@@ -71,6 +69,7 @@ class InteractionService {
 
     private static final String ONLY_OWNER_CAN_START_INTERACTION = 'Only owner can start an interaction'
     private static final String ONLY_OWNER_CAN_STOP_INTERACTION = 'Only owner can stop an interaction'
+    private static final String INTERACTION_IS_NOT_STARTED = 'The interaction is not started'
     private static final String INTERACTION_CANNOT_RECEIVE_RESPONSE = 'The interaction cannot receive response'
     private static final String LEARNER_NOT_REGISTERED_IN_ASSIGNMENT = 'Learner is not registered in the relative assignment'
 }

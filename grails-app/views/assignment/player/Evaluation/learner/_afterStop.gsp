@@ -1,1 +1,1 @@
-<div class="alert alert-warning" role="alert"><g:message code="player.sequence.interaction.afterStop.message"/> </div>
+<div class="alert alert-warning" role="alert">${message(code:"player.sequence.interaction.afterStop.message", args: [interactionInstance.rank])} </div>

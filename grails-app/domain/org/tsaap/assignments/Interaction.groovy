@@ -130,8 +130,8 @@ class Interaction {
      * @param user the user
      * @return true if user has already given a response
      */
-    boolean hasResponseForUser(User user) {
-        ChoiceInteractionResponse.countByInteractionAndLearner(this, user) > 0
+    boolean hasResponseForUser(User user, int attempt = 1) {
+        ChoiceInteractionResponse.countByInteractionAndLearnerAndAttempt(this, user, attempt) > 0
     }
 
     /**
@@ -139,8 +139,8 @@ class Interaction {
      * @param user the user
      * @return the response
      */
-    ChoiceInteractionResponse responseForUser(User user) {
-        ChoiceInteractionResponse.findByInteractionAndLearner(this, user)
+    ChoiceInteractionResponse responseForUser(User user, int attempt = 1) {
+        ChoiceInteractionResponse.findByInteractionAndLearnerAndAttempt(this, user, attempt)
     }
 
     /**

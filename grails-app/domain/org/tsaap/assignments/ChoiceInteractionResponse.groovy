@@ -72,6 +72,22 @@ class ChoiceInteractionResponse {
     Assignment assignment() {
         interaction.sequence.assignment
     }
+
+    /**
+     * Check if first attempt is submitable
+     * @return true if first attempt is submitable
+     */
+    boolean firstAttemptIsSubmitable() {
+        interaction.state == StateType.show.name() && attempt == 1
+    }
+
+    /**
+     * Check if second attempt is submitable
+     * @return true if second attempt is submitable
+     */
+    boolean secondAttemptIsSubmitable() {
+        interaction.state == StateType.afterStop.name() && attempt == 2
+    }
 }
 
 enum ConfidenceDegreeEnum {

@@ -93,12 +93,11 @@ class PlayerController {
     }
 
     private ChoiceInteractionResponse createAndSaveChoiceInteractionResponse(user, Interaction interactionInstance, List<Integer> choiceList, params) {
-        Sequence sequence = interactionInstance.sequence
         ChoiceInteractionResponse response = new ChoiceInteractionResponse(
                 learner: user,
                 interaction: interactionInstance,
                 confidenceDegree: params.confidenceDegree as Integer,
-                attempt: sequence.activeInteraction.rank
+                attempt: params.attempt as int
         )
         if (params.explanation) {
             response.explanation = markupSanitizerService.sanitize(params.explanation)?.cleanString

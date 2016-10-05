@@ -34,7 +34,7 @@ class InteractionService {
      */
     Interaction stopInteraction(Interaction interaction, User user) {
         Contract.requires(interaction.owner == user,ONLY_OWNER_CAN_STOP_INTERACTION)
-        Contract.requires(interaction.state == StateType.show.name(),INTERACTION_IS_NOT_STARTED)
+        Contract.requires(interaction.state == StateType.show.name(),INTERACTION_CANNOT_RECEIVE_RESPONSE)
         interaction.state = StateType.afterStop.name()
         interaction.doAfterStop()
         interaction.save()
@@ -48,7 +48,7 @@ class InteractionService {
      * @return the saved response with the updated score
      */
     ChoiceInteractionResponse saveChoiceInteractionResponse(ChoiceInteractionResponse response) {
-        Contract.requires(response.interaction.state == StateType.show.name(), INTERACTION_IS_NOT_STARTED)
+        Contract.requires(response.firstAttemptIsSubmitable() || response.secondAttemptIsSubmitable(), INTERACTION_CANNOT_RECEIVE_RESPONSE)
         Contract.requires(response.learner.isRegisteredInAssignment(response.assignment()),
                 LEARNER_NOT_REGISTERED_IN_ASSIGNMENT)
         response.updateScore()
@@ -71,6 +71,6 @@ class InteractionService {
 
     private static final String ONLY_OWNER_CAN_START_INTERACTION = 'Only owner can start an interaction'
     private static final String ONLY_OWNER_CAN_STOP_INTERACTION = 'Only owner can stop an interaction'
-    private static final String INTERACTION_IS_NOT_STARTED = 'The interaction is not started'
+    private static final String INTERACTION_CANNOT_RECEIVE_RESPONSE = 'The interaction cannot receive response'
     private static final String LEARNER_NOT_REGISTERED_IN_ASSIGNMENT = 'Learner is not registered in the relative assignment'
 }

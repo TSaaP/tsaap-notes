@@ -55,13 +55,18 @@ class ChoiceInteractionResponse {
      */
     Float updateScore() {
         ResponseSubmissionSpecification spec = interaction.interactionSpecification
+        List<Integer> expectedChoices = spec.expectedChoiceList*.index
         Float res = 0
-        for(InteractionChoice choice in spec.expectedChoiceList) {
-            if (choiceList().contains(choice.index)) {
-                res += choice.score
+        for (int i = 1; i <= spec.itemCount ; i++) {
+            if (choiceList().contains(i) && expectedChoices.contains(i)) {
+                res += 100f/spec.itemCount
+            } else if (!choiceList().contains(i) && !expectedChoices.contains(i)) {
+                res += 100f/spec.itemCount
+            } else {
+                res -= 100f/spec.itemCount
             }
         }
-        score = res
+        score = (res < 0) ? 0 : res
         score
     }
 

@@ -42,6 +42,7 @@ class ChoiceInteractionResponseSpec extends Specification {
         given:"an interaction with its response submission spec"
         ResponseSubmissionSpecification responseSubmissionSpec = Mock() {
             getExpectedChoiceList() >> [new InteractionChoice(1,50), new InteractionChoice(3,50)]
+            getItemCount() >> 4
         }
         Interaction interaction = Mock() {
             getInteractionSpecification() >> responseSubmissionSpec
@@ -64,13 +65,14 @@ class ChoiceInteractionResponseSpec extends Specification {
         given:"an interaction with its response submission spec"
         ResponseSubmissionSpecification responseSubmissionSpec = Mock() {
             getExpectedChoiceList() >> [new InteractionChoice(1,50), new InteractionChoice(3,50)]
+            getItemCount() >> 4
         }
         Interaction interaction = Mock() {
             getInteractionSpecification() >> responseSubmissionSpec
         }
 
-        and: "a learner response with all good choices"
-        ChoiceInteractionResponse response = new ChoiceInteractionResponse(choiceListSpecification: "[2,3]",
+        and: "a learner response with partial good choices"
+        ChoiceInteractionResponse response = new ChoiceInteractionResponse(choiceListSpecification: "[3]",
                 interaction: interaction )
 
         when: "updating score"
@@ -86,6 +88,7 @@ class ChoiceInteractionResponseSpec extends Specification {
         given:"an interaction with its response submission spec"
         ResponseSubmissionSpecification responseSubmissionSpec = Mock() {
             getExpectedChoiceList() >> [new InteractionChoice(1,50), new InteractionChoice(3,50)]
+            getItemCount() >> 4
         }
         Interaction interaction = Mock() {
             getInteractionSpecification() >> responseSubmissionSpec
@@ -108,12 +111,13 @@ class ChoiceInteractionResponseSpec extends Specification {
         given:"an interaction with its response submission spec"
         ResponseSubmissionSpecification responseSubmissionSpec = Mock() {
             getExpectedChoiceList() >> [new InteractionChoice(1,50), new InteractionChoice(3,50)]
+            getItemCount() >> 4
         }
         Interaction interaction = Mock() {
             getInteractionSpecification() >> responseSubmissionSpec
         }
 
-        and: "a learner response with all good choices"
+        and: "a learner response with no choices"
         ChoiceInteractionResponse response = new ChoiceInteractionResponse(choiceListSpecification: null,
                 interaction: interaction )
 
@@ -122,6 +126,75 @@ class ChoiceInteractionResponseSpec extends Specification {
 
         then: "the obtained score is 100"
         response.score == 0
+
+    }
+
+    void "test update score with all answers"() {
+
+        given:"an interaction with its response submission spec"
+        ResponseSubmissionSpecification responseSubmissionSpec = Mock() {
+            getExpectedChoiceList() >> [new InteractionChoice(1,50), new InteractionChoice(3,50)]
+            getItemCount() >> 4
+        }
+        Interaction interaction = Mock() {
+            getInteractionSpecification() >> responseSubmissionSpec
+        }
+
+        and: "a learner response with all choices"
+        ChoiceInteractionResponse response = new ChoiceInteractionResponse(choiceListSpecification: "[1,2,3,4]",
+                interaction: interaction )
+
+        when: "updating score"
+        response.updateScore()
+
+        then: "the obtained score is 100"
+        response.score == 0
+
+    }
+
+    void "test update score with one good and one bad answers"() {
+
+        given:"an interaction with its response submission spec"
+        ResponseSubmissionSpecification responseSubmissionSpec = Mock() {
+            getExpectedChoiceList() >> [new InteractionChoice(1,50), new InteractionChoice(3,50)]
+            getItemCount() >> 4
+        }
+        Interaction interaction = Mock() {
+            getInteractionSpecification() >> responseSubmissionSpec
+        }
+
+        and: "a learner response with all choices"
+        ChoiceInteractionResponse response = new ChoiceInteractionResponse(choiceListSpecification: "[1,2]",
+                interaction: interaction )
+
+        when: "updating score"
+        response.updateScore()
+
+        then: "the obtained score is 100"
+        response.score == 0
+
+    }
+
+    void "test update score with two good and one bad answers"() {
+
+        given:"an interaction with its response submission spec"
+        ResponseSubmissionSpecification responseSubmissionSpec = Mock() {
+            getExpectedChoiceList() >> [new InteractionChoice(1,50), new InteractionChoice(3,50)]
+            getItemCount() >> 4
+        }
+        Interaction interaction = Mock() {
+            getInteractionSpecification() >> responseSubmissionSpec
+        }
+
+        and: "a learner response with all choices"
+        ChoiceInteractionResponse response = new ChoiceInteractionResponse(choiceListSpecification: "[1,2,3]",
+                interaction: interaction )
+
+        when: "updating score"
+        response.updateScore()
+
+        then: "the obtained score is 100"
+        response.score == 50
 
     }
 

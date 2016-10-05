@@ -537,4 +537,11 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="25" author="fsil">
+        <comment>Add mean_grade column in choice interaction response table</comment>
+        <addColumn tableName="choice_interaction_response">
+            <column name="mean_grade" type="FLOAT"></column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

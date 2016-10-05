@@ -5,6 +5,7 @@ import groovy.json.JsonSlurper
 import org.tsaap.assignments.ia.ResponseRecommendationService
 import org.tsaap.assignments.interactions.EvaluationSpecification
 import org.tsaap.assignments.interactions.InteractionResultListService
+import org.tsaap.assignments.interactions.InteractionService
 import org.tsaap.assignments.interactions.InteractionSpecification
 import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
 import org.tsaap.directory.User
@@ -37,7 +38,7 @@ class Interaction {
         explanationRecommendationMapping nullable: true
     }
 
-    static transients = ['interactionSpecification', 'interactionResultListService', 'responseRecommendationService']
+    static transients = ['interactionSpecification', 'interactionResultListService', 'responseRecommendationService','interactionService']
 
     /**
      * Get the result matrix as a list of float
@@ -50,6 +51,8 @@ class Interaction {
         JsonSlurper jsonSlurper = new JsonSlurper()
         jsonSlurper.parseText(results)
     }
+
+    InteractionService interactionService
 
     /**
      * Process to perform after stop
@@ -67,8 +70,20 @@ class Interaction {
             def respSubmInter = sequence.responseSubmissionInteraction
             respSubmInter.updateResults(2)
             respSubmInter.save()
+            respSubmInter.findAllEvaluatedResponses().each {
+                interactionService.updateMeanGradeOfResponse(it)
+            }
         }
     }
+
+    /**
+     * Find all evaluated responses for the current interaction
+     * @return the list of evaluated responses
+     */
+    List<ChoiceInteractionResponse> findAllEvaluatedResponses() {
+        ChoiceInteractionResponse.findAllByInteractionAndAttempt(this,1)
+    }
+
 
     /**
      * Get the interaction specification object

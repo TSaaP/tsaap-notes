@@ -71,6 +71,23 @@ class InteractionService {
         peerGrading
     }
 
+    /**
+     * Update the mean grade of a given response
+     * @param response the response
+     * @return the response with mean grade updated
+     */
+    ChoiceInteractionResponse updateMeanGradeOfResponse(ChoiceInteractionResponse response) {
+        def query = PeerGrading.where {
+            response == response
+        }.projections {
+            avg('grade')
+        }
+        def meanGrade = query.find() as Float
+        response.meanGrade = meanGrade
+        response.save()
+        response
+    }
+
     private void updateActiveInteractionInSequence(Interaction interaction) {
         Sequence sequence = interaction.sequence
         for (Integer rank in interaction.rank + 1 .. sequence.interactions.size()) {

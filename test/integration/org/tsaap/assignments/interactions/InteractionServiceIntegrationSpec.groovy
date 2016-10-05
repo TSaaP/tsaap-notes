@@ -5,6 +5,7 @@ import org.tsaap.BootstrapTestService
 import org.tsaap.assignments.Assignment
 import org.tsaap.assignments.AssignmentService
 import org.tsaap.assignments.ChoiceInteractionResponse
+import org.tsaap.assignments.ConfidenceDegreeEnum
 import org.tsaap.assignments.Interaction
 import org.tsaap.assignments.Sequence
 import org.tsaap.assignments.StateType
@@ -220,5 +221,56 @@ class InteractionServiceIntegrationSpec extends Specification {
         println ">>>>>>>>> ${interaction.results}"
         interaction.resultsByAttempt()["1"] == [0.000, 100.000, 0.000, 100.000, 0.000, 0.000]
         interaction.resultsByAttempt() == ["1":[0.000, 100.000, 0.000, 100.000, 0.000, 0.000]]
+    }
+
+    void "test update of mean grade of a response"() {
+        given: "an assignment with sequence and interactions"
+        Assignment assignment = bootstrapTestService.assignment3WithInteractions
+
+        and:"the response submission interaction"
+        Interaction interaction = assignment.sequences[0].responseSubmissionInteraction
+        interactionService.startInteraction(interaction, interaction.owner)
+
+        and: "learners registered in the assignment"
+        def learners = bootstrapTestService.learners
+        User thom = learners[0]
+        User mary = learners[1]
+        User john = learners[2]
+
+        for (int i = 0; i<4; i++) {
+            assignmentService.registerUserOnAssignment(learners[i], assignment)
+        }
+
+        and: "each one with an answer"
+        ChoiceInteractionResponse respThom = new ChoiceInteractionResponse(
+                interaction: interaction,
+                learner: thom,
+                choiceListSpecification: "[2,3,5]",
+                attempt: 1,
+                explanation: "Thom [2,3,5] score 100- not confident",
+                confidenceDegree: ConfidenceDegreeEnum.NOT_REALLY_CONFIDENT.integerValue
+        )
+        interactionService.saveChoiceInteractionResponse(respThom)
+
+        when: "peer grading coming from mary and john"
+        def pgMary = interactionService.peerGradingFromUserOnResponse(mary, respThom, 1)
+        def pgJohn = interactionService.peerGradingFromUserOnResponse(john, respThom, 5)
+
+        then: "peer grading objets are saved in a consistent way"
+        pgJohn.id
+        pgJohn.grade == 5f
+        pgJohn.response == respThom
+        pgMary.id
+
+        when:"update the mean grade"
+        def resp = interactionService.updateMeanGradeOfResponse(respThom)
+
+        then: "the returned response is respThom"
+        resp == respThom
+
+        and: "the mean grade is updated with the correct mean"
+        resp.meanGrade == 3f
+
+
     }
 }

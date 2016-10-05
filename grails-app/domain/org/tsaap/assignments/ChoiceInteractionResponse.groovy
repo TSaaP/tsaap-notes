@@ -20,12 +20,14 @@ class ChoiceInteractionResponse {
     Integer confidenceDegree
 
     Float score
+    Float meanGrade
 
     static constraints = {
         score nullable: true
         choiceListSpecification nullable: true
         explanation nullable: true
         confidenceDegree nullable: true
+        meanGrade nullable: true
     }
 
     /**

@@ -28,6 +28,9 @@ modules = {
         resource url: 'js/bootstrap.min.js'
         resource url: 'css/bootstrap.min.css'
         resource url: 'js/bootstrap-datetimepicker.js'
+        resource url:  'js/star-rating.min.js'
+        resource url: 'css/star-rating.min.css'
+        resource url: 'js/locales/fr.js'
     }
 
     tsaap_icons {

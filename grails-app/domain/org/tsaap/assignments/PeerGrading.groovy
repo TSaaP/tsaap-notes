@@ -19,3 +19,11 @@ class PeerGrading {
         grade nullable: true
     }
 }
+
+enum ScaleGrade {
+    NOT_RELEVANT_AT_ALL,
+    NOT_VERY_RELEVANT,
+    PARTIALLY_RELEVANT,
+    RELEVANT,
+    VERY_RELEVANT
+}

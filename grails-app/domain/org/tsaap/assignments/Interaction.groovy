@@ -52,6 +52,23 @@ class Interaction {
         jsonSlurper.parseText(results)
     }
 
+    /**
+     * Get the results for the last attempt
+     * @return the results
+     */
+    List<Float> resultsOfLastAttempt() {
+        def resultsByAttempt = resultsByAttempt()
+        List<Float> res
+        if (resultsByAttempt["2"]) {
+            res = resultsByAttempt["2"]
+        } else if (resultsByAttempt["1"]) {
+            res = resultsByAttempt["1"]
+        } else {
+            res = []
+        }
+        res
+    }
+
     InteractionService interactionService
 
     /**
@@ -155,6 +172,19 @@ class Interaction {
      */
     ChoiceInteractionResponse responseForUser(User user, int attempt = 1) {
         ChoiceInteractionResponse.findByInteractionAndLearnerAndAttempt(this, user, attempt)
+    }
+
+    /**
+     * Get the last response for the given user
+     * @param user the user
+     * @return the last response
+     */
+    ChoiceInteractionResponse lastAttemptResponseForUser(User user) {
+        def res  = ChoiceInteractionResponse.findByInteractionAndLearnerAndAttempt(this, user, 2)
+        if (!res) {
+            res = ChoiceInteractionResponse.findByInteractionAndLearnerAndAttempt(this, user, 1)
+        }
+        res
     }
 
     /**

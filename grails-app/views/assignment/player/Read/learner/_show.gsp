@@ -1,8 +1,8 @@
 <g:set var="sequence" value="${interactionInstance.sequence}"/>
 <g:set var="displayedResultInteraction" value="${sequence.responseSubmissionInteraction}"/>
-<g:set var="resultList" value="${displayedResultInteraction.resultsByAttempt()["1"]}"/>
+<g:set var="resultList" value="${displayedResultInteraction.resultsOfLastAttempt()}"/>
 <g:set var="spec" value="${displayedResultInteraction.interactionSpecification}"/>
-<g:set var="userResponse" value="${displayedResultInteraction.responseForUser(user)}"/>
+<g:set var="userResponse" value="${displayedResultInteraction.lastAttemptResponseForUser(user)}"/>
 <g:each var="i" in="${(1..spec.itemCount)}">
     <g:set var="choiceStatus" value="${spec.expectedChoiceListContainsChoiceWithIndex(i) ? 'success' : 'danger'}"/>
     <g:set var="percentResult" value="${resultList[i]}"/>
@@ -32,3 +32,5 @@
 </div>
 
 <div class="alert alert-info" role="alert">${message(code:"player.sequence.interaction.read.learner.show.score.message")} <g:formatNumber number="${userResponse.score}" type="number" maxFractionDigits="2"/></div>
+
+TODO : list of explanations

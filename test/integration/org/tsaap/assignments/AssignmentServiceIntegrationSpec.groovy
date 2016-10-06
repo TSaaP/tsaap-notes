@@ -255,4 +255,58 @@ class AssignmentServiceIntegrationSpec extends Specification {
         assignment.sequences[1] == sequence1
     }
 
+    void "test the no registration of a teacher on an assignment"() {
+        given: "an assignment"
+        Assignment assignment = bootstrapTestService.assignment1
+
+        expect:"registering the owner of the assignment return no registration"
+        assignmentService.registerUserOnAssignment(assignment.owner,assignment) == null
+
+    }
+
+    void "test the registration of a user"() {
+        given: "two assignments"
+        Assignment assignment1 = bootstrapTestService.assignment1
+        Assignment assignment2 = bootstrapTestService.assignment2With2Sequences
+
+        and: "learner "
+        User paul = bootstrapTestService.learnerPaul
+
+        when:"registering the learner on the assignments"
+        LearnerAssignment la1 = assignmentService.registerUserOnAssignment(paul,assignment1)
+        LearnerAssignment la2 = assignmentService.registerUserOnAssignment(paul,assignment2)
+
+        then: "the resulting learner assignments are OK"
+        la1.id  && la1.assignment == assignment1  && la1.learner == paul
+        la2.id  && la2.assignment == assignment2  && la2.learner == paul
+
+        when: "searching for learner assignments"
+        List<Assignment> assignmentList = assignmentService.findAllAssignmentsForLearner(paul, [offset:0, max:5])
+
+        then:"the list contains the two expected assignments"
+        assignmentList.size() == 2
+        assignmentService.countAllAssignmentsForLearner(paul) == 2 as Long
+        assignmentList.contains(assignment1)
+        assignmentList.contains(assignment2)
+
+    }
+
+    void "test two registration attempts gives only one registration"() {
+        given: "an assignment"
+        Assignment assignment = bootstrapTestService.assignment1
+
+        and: "learner "
+        User paul = bootstrapTestService.learnerPaul
+
+        when:"registering twice the learner on the assignment"
+        LearnerAssignment la1 = assignmentService.registerUserOnAssignment(paul,assignment)
+        LearnerAssignment la2 = assignmentService.registerUserOnAssignment(paul,assignment)
+
+        then: "only one registration is performed"
+        la1
+        la2 == la1
+        assignmentService.countAllAssignmentsForLearner(paul) == 1 as Long
+
+    }
+
 }

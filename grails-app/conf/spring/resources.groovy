@@ -16,6 +16,7 @@
  */
 
 import liquibase.integration.spring.SpringLiquibase
+import org.tsaap.assignments.ia.DefaultResponseRecommendationService
 import org.tsaap.attachement.AttachementDataStore
 import org.tsaap.questions.impl.gift.GiftQuestionService
 import org.tsaap.questions.impl.gift.utils.QuestionHelper
@@ -34,11 +35,16 @@ beans = {
         changeLog = "classpath:migrations/changelog-tsaap-notes-incremental.xml"
     }
 
-    // Configure la gestion du datastore
+    // Configuration of datastore
 
     dataStore(AttachementDataStore) { bean ->
         path = application.config.tsaap.datastore.path ?: null
         bean.initMethod = 'initFileDataStore'
+    }
+
+    // configuration of algorithm for peer learning
+    responseRecommendationService(DefaultResponseRecommendationService) { bean ->
+        //bean.scope = 'request'
     }
 }
 

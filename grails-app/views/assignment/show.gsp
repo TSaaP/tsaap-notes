@@ -49,9 +49,11 @@
                             date="${scheduleInstance?.endDate}"/>.</span>
 
                 </g:if>
+                <g:link controller="player" action="show" id="${assignmentInstance.id}" title="${g.message(code: 'player.assignment.play')}"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></g:link>
             </small>
-        </g:if>
+        </g:if><br/>
     </h4>
+    <p><span title="${g.message(code: 'player.assignment.registration.link.tooltip')}"><g:createLink controller="player" action="register" absolute="true" params="[globalId:assignmentInstance.globalId]"/></span></p>
     <table class="table table-striped table-hover">
         <tbody>
         <g:each in="${assignmentInstance.sequences}" status="i" var="sequenceInstance">

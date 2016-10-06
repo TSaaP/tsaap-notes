@@ -6,7 +6,7 @@ import spock.lang.Specification
 /**
  * Created by franck on 31/08/2016.
  */
-class JsonInteractionSpecificationTest extends Specification {
+class JsonInteractionSpecificationSpec extends Specification {
 
     void "test creation of a valid json interaction spec"() {
         given:"a json string"

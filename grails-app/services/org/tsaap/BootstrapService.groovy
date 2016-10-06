@@ -39,6 +39,8 @@ class BootstrapService {
     User fsil
     User mary
     User thom
+    User john
+    User erik
     User admin
 
     Context science
@@ -84,18 +86,28 @@ class BootstrapService {
         fsil = User.findByUsername("fsil")
         if (!fsil) {
             def user = new User(firstName: "Franck", lastName: "Sil", username: "fsil", password: "1234", email: 'fsil@fsil.com')
-            fsil = userAccountService.addUser(user, studentRole, true, 'fr')
+            fsil = userAccountService.addUser(user, teacherRole, true, 'fr')
 
         }
         mary = User.findByUsername("mary")
         if (!mary) {
             def user = new User(firstName: "Mary", lastName: "Sil", username: "mary", password: "1234", email: 'mary@mary.com')
-            mary = userAccountService.addUser(user, teacherRole, true, 'fr')
+            mary = userAccountService.addUser(user, studentRole, true, 'fr')
         }
         thom = User.findByUsername("thom")
         if (!thom) {
             def user = new User(firstName: "Thom", lastName: "Thom", username: "thom", password: "1234", email: 'thom@thom.com')
             thom = userAccountService.addUser(user, studentRole, true, 'fr')
+        }
+        john = User.findByUsername("john")
+        if (!john) {
+            def user = new User(firstName: "John", lastName: "John", username: "john", password: "1234", email: 'john@john.com')
+            john = userAccountService.addUser(user, studentRole, true, 'fr')
+        }
+        erik = User.findByUsername("erik")
+        if (!erik) {
+            def user = new User(firstName: "Erik", lastName: "Erik", username: "erik", password: "1234", email: 'erik@erik.com')
+            erik = userAccountService.addUser(user, studentRole, true, 'fr')
         }
     }
 

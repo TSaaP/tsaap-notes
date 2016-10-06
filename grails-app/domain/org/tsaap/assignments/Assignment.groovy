@@ -49,4 +49,12 @@ class Assignment {
     }
 
     static transients = ['schedule', 'sequences', 'lastSequence']
+
+    /**
+     * Count the number of registered users
+     * @return the count
+     */
+    Integer registeredUserCount() {
+        LearnerAssignment.countByAssignment(this)
+    }
 }

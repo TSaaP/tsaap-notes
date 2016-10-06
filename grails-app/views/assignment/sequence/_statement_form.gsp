@@ -26,7 +26,7 @@
 </div>
 
 <div class="form-group fieldcontain ${hasErrors(bean: statementInstance, field: 'content', 'error')} ">
-    <label for="title">
+    <label for="content">
         <g:message code="sequence.statement.content.label" default="Title"/>
         <span class="required-indicator">*</span>
     </label>

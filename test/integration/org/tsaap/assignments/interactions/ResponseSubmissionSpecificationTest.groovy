@@ -15,7 +15,7 @@ class ResponseSubmissionSpecificationTest extends Specification {
         spec.studentsProvideExplanation = true
         spec.choiceInteractionType = ChoiceInteractionType.EXCLUSIVE.name()
         spec.itemCount = 4
-        spec.expectedChoiceList = [1, 3]
+        spec.expectedChoiceList = [new InteractionChoice(1, 50), new InteractionChoice(3, 50)]
 
         when: "validating the spec"
         def isValid = spec.validateSpecification()
@@ -37,11 +37,16 @@ class ResponseSubmissionSpecificationTest extends Specification {
         map.studentsProvideExplanation == true
         map.choiceInteractionType == ChoiceInteractionType.EXCLUSIVE.name()
         map.itemCount == 4
-        map.expectedChoiceList == [1, 3]
+        map.expectedChoiceList.size() == 2
+        map.expectedChoiceList[0].index == 1
+        map.expectedChoiceList[0].score == 50.0
+        map.expectedChoiceList[1].index == 3
+        map.expectedChoiceList[1].score == 50.0
+
     }
 
     void "test json output for an invalid spec"() {
-        given: "a valid specification"
+        given: "a non valid specification"
         ResponseSubmissionSpecification spec = new ResponseSubmissionSpecification()
         spec.studentsProvideConfidenceDegree = null
         spec.studentsProvideExplanation = true
@@ -66,7 +71,8 @@ class ResponseSubmissionSpecificationTest extends Specification {
                     "choiceInteractionType":"MULTIPLE",
                     "itemCount":4,
                     "studentsProvideConfidenceDegree":true,
-                    "studentsProvideExplanation":false
+                    "studentsProvideExplanation":false,
+                    "expectedChoiceList":[{"index":1,"score":50},{"index":3,"score":50}]
                 }
         ''')
 
@@ -75,6 +81,16 @@ class ResponseSubmissionSpecificationTest extends Specification {
         spec.itemCount == 4
         spec.studentsProvideConfidenceDegree
         !spec.studentsProvideExplanation
+        spec.expectedChoiceList.size() == 2
+        spec.expectedChoiceList[0] instanceof InteractionChoice
+        spec.expectedChoiceList[0].index == 1
+        spec.expectedChoiceList[0].score == 50.0
+        spec.expectedChoiceList[1] instanceof InteractionChoice
+        spec.expectedChoiceList[1].index == 3
+        spec.expectedChoiceList[1].score == 50.0
+        spec.expectedChoiceListContainsChoiceWithIndex(1)
+        !spec.expectedChoiceListContainsChoiceWithIndex(2)
+        spec.expectedChoiceListContainsChoiceWithIndex(3)
 
     }
 

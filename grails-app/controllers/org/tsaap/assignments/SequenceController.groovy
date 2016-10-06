@@ -5,6 +5,7 @@ import grails.plugins.springsecurity.SpringSecurityService
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 import org.grails.plugins.sanitizer.MarkupSanitizerService
 import org.tsaap.assignments.interactions.EvaluationSpecification
+import org.tsaap.assignments.interactions.InteractionChoice
 import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
 import org.tsaap.attachement.AttachementService
 import org.tsaap.directory.User
@@ -191,9 +192,13 @@ class SequenceController {
         subSpec.choiceInteractionType = params.choiceInteractionType
         subSpec.itemCount = params.itemCount as Integer
         if (subSpec.isMultipleChoice()) {
-            subSpec.expectedChoiceList = params.expectedChoiceList?.collect { it as Integer }
+            def countExpectedChoice = params.expectedChoiceList?.size() as Float
+            subSpec.expectedChoiceList = params.expectedChoiceList?.collect {
+                new InteractionChoice(it as Integer,
+                    (100 / countExpectedChoice) as Float)
+            }
         } else {
-            subSpec.expectedChoiceList = [params.exclusiveChoice as Integer]
+            subSpec.expectedChoiceList = [new InteractionChoice(params.exclusiveChoice as Integer, 100f)]
         }
 
         subSpec.studentsProvideExplanation = params.studentsProvideExplanation as boolean

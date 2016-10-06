@@ -8,7 +8,7 @@ import groovy.json.JsonSlurper
  */
 class JsonInteractionSpecification implements InteractionSpecification {
 
-    private Map specificationProperties
+    protected Map specificationProperties
 
     /**
      * Default constructor

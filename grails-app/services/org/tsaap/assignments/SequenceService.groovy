@@ -75,6 +75,9 @@ class SequenceService {
 
     private void updateAssignmentLastUpdated(Sequence sequence, Assignment assignment) {
         if (!sequence.hasErrors()) {
+            if (sequence.interactions) {
+                sequence.activeInteraction = sequence.interactions[0]
+            }
             assignment.lastUpdated = new Date()
             assignment.save()
         }

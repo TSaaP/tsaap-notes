@@ -21,7 +21,7 @@
         <div class="checkbox text-center ${isMultipleChoice ? '' : 'hidden'}" id="multiple_choice">
             <g:each in="${1..itemCount}" var="checkBoxElet" status="i">
                 <g:set var="choiceIsExpected"
-                       value="${responseSubmissionSpecificationInstance?.expectedChoiceList?.contains(i + 1)}"/>
+                       value="${responseSubmissionSpecificationInstance?.expectedChoiceListContainsChoiceWithIndex(i + 1)}"/>
                 <label class="checkbox-inline" style="margin-right: 20px">
                     <input type="checkbox" name="expectedChoiceList"
                            value="${i + 1}" ${choiceIsExpected ? 'checked' : ''}> ${i + 1}
@@ -32,7 +32,7 @@
         <div class="radio text-center ${isMultipleChoice ? 'hidden' : ''}" id="exclusive_choice">
             <g:each in="${1..itemCount}" var="radioBoxElet" status="i">
                 <g:set var="choiceIsExpected"
-                       value="${responseSubmissionSpecificationInstance?.expectedChoiceList?.contains(i + 1)}"/>
+                       value="${responseSubmissionSpecificationInstance?.expectedChoiceListContainsChoiceWithIndex(i + 1)}"/>
                 <label class="radio-inline" style="margin-right: 20px">
                     <input type="radio" name="exclusiveChoice"
                            value="${i + 1}" ${choiceIsExpected ? 'checked' : ''}> ${i + 1}

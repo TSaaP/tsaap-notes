@@ -1,5 +1,6 @@
 package org.tsaap.assignments
 
+import org.hibernate.FetchMode
 import org.tsaap.assignments.interactions.EvaluationSpecification
 import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
 import org.tsaap.directory.User
@@ -16,8 +17,12 @@ class Sequence {
     Statement statement
     Boolean phasesAreScheduled = false
 
-    static constraints = {
+    Interaction activeInteraction
+    String state = StateType.beforeStart.name()
 
+    static constraints = {
+        activeInteraction nullable: true
+        state inList: StateType.values()*.name()
     }
 
     static transients = ['interactions', 'content', 'title',
@@ -50,6 +55,15 @@ class Sequence {
             }
         }
         result
+    }
+
+    /**
+     * get the interaction of the given type
+     * @param interactionType the interaction type
+     * @return the interaction
+     */
+    Interaction getInteractionOfType(InteractionType interactionType) {
+        this."get${interactionType.name()}Interaction"()
     }
 
     /**
@@ -202,6 +216,79 @@ class Sequence {
         statement?.content
     }
 
+    /**
+     * Find all recommended responses for user
+     * @param user the user
+     * @return the response list
+     */
+    List<ChoiceInteractionResponse> findRecommendedResponsesForUser(User user) {
+        def responseInteraction = responseSubmissionInteraction
+        def userResponse = ChoiceInteractionResponse.findByInteractionAndLearnerAndAttempt(responseInteraction,user,1)
+        def res = responseInteraction.explanationRecommendationMap()[userResponse.id as String].collect {
+            ChoiceInteractionResponse.get(it)
+        }
+        res
+    }
+
+    /**
+     * Find all good responses with explanations
+     * @return the good responses
+     */
+    List<ChoiceInteractionResponse> findAllGoodResponses() {
+        Interaction interaction = responseSubmissionInteraction
+        ChoiceInteractionResponse.findAllByInteractionAndAttemptAndScore(interaction, 1, 100f,
+                [sort: "meanGrade", order: "desc"])
+    }
+
+    /**
+     * Return all bad responses with explanations for the sequence
+     * Responses in returned structure can be accessed this way:
+     * map[score][answerGroup][index] where
+     * score is a Float eg: 100.0, 0.0, -50.0
+     * answerGroup is a String eg: "1", "1,3", ""
+     * index is an index on the response list for answerGroup eg: 0, 4
+     * @param sessionPhase
+     * @return
+     */
+    Map<Float, Map<String, List<ChoiceInteractionResponse>>> findAllBadResponses() {
+        def list
+        Map map = [:]
+        Interaction interaction = responseSubmissionInteraction
+        list = ChoiceInteractionResponse.withCriteria {
+            eq('interaction', interaction)
+            eq('attempt',1)
+            lt('score', 100.0f)
+            order('score', 'desc')
+            'learner' {
+                order('normalizedUsername', 'asc')
+            }
+            fetchMode('user', FetchMode.JOIN)
+        }
+        list.each {
+            def answers = it.choiceListSpecification
+            if (!map[it.score]) {
+                def answerMap = [:]
+                answerMap.put(answers, [it])
+                map[it.score] = answerMap
+            } else {
+                if (!map[it.score][answers]) {
+                    map[it.score][answers] = [it]
+                } else {
+                    map[it.score][answers].push(it)
+                }
+            }
+        }
+        map
+    }
+
+    /**
+     *
+     * @return true if the sequence has explanations
+     */
+    boolean hasExplanations() {
+        responseSubmissionSpecification?.studentsProvideExplanation
+    }
+
     private Date getDefaultStartDate() {
         def res
         if (assignment?.schedule?.startDate) {
@@ -213,4 +300,10 @@ class Sequence {
     }
 
 
+}
+
+enum StateType {
+    beforeStart,
+    show,
+    afterStop
 }

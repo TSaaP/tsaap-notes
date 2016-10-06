@@ -339,4 +339,209 @@
         </sql>
     </changeSet>
 
+    <changeSet id="14" author="fsil">
+        <comment>Add learner assignment table</comment>
+        <createTable tableName="learner_assignment">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_created" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_updated" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="learner_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="assignment_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="learner_assignment" indexName="idx_learner_assignment_learner_id">
+            <column name="learner_id"></column>
+        </createIndex>
+        <createIndex tableName="learner_assignment" indexName="idx_learner_assignment_assignment_id">
+            <column name="assignment_id"></column>
+        </createIndex>
+        <addForeignKeyConstraint baseTableName="learner_assignment" baseColumnNames="learner_id"
+                                 constraintName="fk_learner_assignment_learner"
+                                 referencedTableName="user"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="learner_assignment" baseColumnNames="assignment_id"
+                                 constraintName="fk_learner_assignment_assignment"
+                                 referencedTableName="assignment"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="15" author="fsil">
+        <comment>Add unique constraints on learner_assignment table</comment>
+        <addUniqueConstraint tableName="learner_assignment" columnNames="learner_id, assignment_id"
+                             constraintName="learner_assignment_unique"/>
+    </changeSet>
+
+    <changeSet id="16" author="fsil">
+        <comment>Add active interaction and state to sequence</comment>
+        <addColumn tableName="sequence">
+            <column name="active_interaction_id" type="BIGINT"></column>
+        </addColumn>
+        <addColumn tableName="sequence">
+            <column name="state" type="varchar(32)" defaultValue="beforeStart">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <createIndex tableName="sequence" indexName="idx_sequence_active_interaction_id">
+            <column name="active_interaction_id"></column>
+        </createIndex>
+        <addForeignKeyConstraint baseTableName="sequence" baseColumnNames="active_interaction_id"
+                                 constraintName="fk_sequence_interaction"
+                                 referencedTableName="interaction"
+                                 referencedColumnNames="id"/>
+        <addColumn tableName="interaction">
+            <column name="state" type="varchar(32)" defaultValue="beforeStart">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="17" author="fsil">
+        <comment>on cascade set null on sequence when an interaction is deleted</comment>
+        <dropForeignKeyConstraint baseTableName="sequence" constraintName="fk_sequence_interaction"/>
+        <addForeignKeyConstraint baseTableName="sequence" baseColumnNames="active_interaction_id"
+                                 constraintName="fk_sequence_interaction"
+                                 referencedTableName="interaction"
+                                 referencedColumnNames="id"
+                                 onDelete="SET NULL"/>
+    </changeSet>
+
+    <changeSet id="18" author="fsil">
+        <comment>Update active interaction in sequences</comment>
+        <sql>
+            update sequence s, interaction i set active_interaction_id = i.id where i.sequence_id = s.id and
+            i.interaction_type ='ResponseSubmission';
+        </sql>
+    </changeSet>
+
+    <changeSet id="19" author="fsil">
+        <comment>Add choice_interaction_response table</comment>
+        <createTable tableName="choice_interaction_response">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_created" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_updated" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="learner_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="interaction_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="choice_list_specification" type="varchar(100)"/>
+            <column name="explanation" type="TEXT"/>
+            <column name="confidence_degree" type="INT"/>
+            <column name="score" type="FLOAT"/>
+        </createTable>
+        <createIndex tableName="choice_interaction_response" indexName="idx_choice_interaction_response_learner_id">
+            <column name="learner_id"/>
+        </createIndex>
+        <createIndex tableName="choice_interaction_response" indexName="idx_choice_interaction_response_interaction_id">
+            <column name="interaction_id"/>
+        </createIndex>
+        <addForeignKeyConstraint baseTableName="choice_interaction_response" baseColumnNames="learner_id"
+                                 constraintName="fk_choice_interaction_response_learner"
+                                 referencedTableName="user"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="choice_interaction_response" baseColumnNames="interaction_id"
+                                 constraintName="fk_choice_interaction_response_interaction"
+                                 referencedTableName="interaction"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="20" author="fsil">
+        <comment>Add unique constraint on choice_interaction_response</comment>
+        <addUniqueConstraint tableName="choice_interaction_response" columnNames="learner_id, interaction_id"
+                             constraintName="learner_interaction_unique"/>
+    </changeSet>
+
+    <changeSet id="21" author="fsil">
+        <comment>Add results column in interaction table</comment>
+        <addColumn tableName="interaction">
+            <column name="results" type="TEXT"></column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="22" author="fsil">
+        <comment>Add column attempt to choice interaction response table</comment>
+        <addColumn tableName="choice_interaction_response">
+            <column name="attempt" type="INT" defaultValue="1">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <dropUniqueConstraint tableName="choice_interaction_response" constraintName="learner_interaction_unique"/>
+        <addUniqueConstraint tableName="choice_interaction_response" columnNames="learner_id, interaction_id, attempt"
+                             constraintName="learner_interaction_attempt_unique"/>
+    </changeSet>
+
+    <changeSet id="23" author="fsil">
+        <comment>Add peer grading table</comment>
+        <createTable tableName="peer_grading">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_created" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_updated" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="grade" type="FLOAT"/>
+            <column name="annotation" type="TEXT"/>
+            <column name="grader_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="response_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="peer_grading" indexName="idx_peer_grading_grader_id">
+            <column name="grader_id"/>
+        </createIndex>
+        <createIndex tableName="peer_grading" indexName="idx_peer_grading_grader_response_id">
+            <column name="response_id"/>
+        </createIndex>
+        <addForeignKeyConstraint baseTableName="peer_grading" baseColumnNames="grader_id" constraintName="fk_peer_grading_grader_id"
+                                 referencedTableName="user"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="peer_grading" baseColumnNames="response_id" constraintName="fk_peer_grading_response_id"
+                                 referencedTableName="choice_interaction_response"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="24" author="fsil">
+        <comment>Add explanationRecommendationMapping column in interaction table</comment>
+        <addColumn tableName="interaction">
+            <column name="explanation_recommendation_mapping" type="TEXT"></column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="25" author="fsil">
+        <comment>Add mean_grade column in choice interaction response table</comment>
+        <addColumn tableName="choice_interaction_response">
+            <column name="mean_grade" type="FLOAT"></column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

@@ -53,4 +53,7 @@ enum RoleEnum {
         Role.get(id)
     }
 
+    String getLabel() {
+        "ROLE_${name()}"
+    }
 }

@@ -26,6 +26,7 @@ import org.tsaap.assignments.SequenceService
 import org.tsaap.assignments.Statement
 import org.tsaap.assignments.interactions.ChoiceInteractionType
 import org.tsaap.assignments.interactions.EvaluationSpecification
+import org.tsaap.assignments.interactions.InteractionChoice
 import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
 import org.tsaap.directory.SettingsService
 import org.tsaap.directory.User
@@ -53,12 +54,15 @@ class BootstrapTestService {
 
     Statement statement1
     Statement statement2
+    Statement statement3
 
     Assignment assignment1
     Assignment assignment2With2Sequences
+    Assignment assignment3WithInteractions
 
     Interaction responseSubmissionInteraction
     Interaction evaluationInteraction
+    Interaction readInteraction
 
 
 
@@ -67,8 +71,8 @@ class BootstrapTestService {
         initializeNotes()
         initializeContexts()
         initializeStatements()
-        initializeAssignments()
         initializeInteractions()
+        initializeAssignments()
     }
 
     def initializeUsers() {
@@ -90,7 +94,7 @@ class BootstrapTestService {
         for (int i = 0; i < 10; i++) {
             User currentUser = User.findByUsername("learner_$i")
             if (!currentUser) {
-                currentUser = new User(firstName: "learner_$i", lastName: "learner_$i", username: "learner_$i", password: "learner_$i", email: "learner_$i@nomail.com").save()
+                currentUser = new User(firstName: "learner_$i", lastName: "learner_$i", username: "learner_$i", password: "learner_$i", email: "learner_$i@nomail.com").save(failOnError: true)
                 currentUser.settings = settingsService.initializeSettingsForUser(currentUser, 'en')
             }
             learners[i] = currentUser
@@ -126,6 +130,10 @@ class BootstrapTestService {
             sequenceService.addSequenceToAssignment(assignment2With2Sequences, teacherJeanne, statement1)
             sequenceService.addSequenceToAssignment(assignment2With2Sequences, teacherJeanne, statement2)
         }
+        if (!Assignment.findByTitle("Assignment 3")) {
+            assignment3WithInteractions = assignmentService.saveAssignment(new Assignment(title: "Assignment 3", owner: teacherJeanne))
+            sequenceService.addSequenceToAssignment(assignment3WithInteractions, teacherJeanne, statement3,[responseSubmissionInteraction,evaluationInteraction, readInteraction])
+        }
     }
 
     def initializeStatements() {
@@ -135,11 +143,15 @@ class BootstrapTestService {
         if (!Statement.findByTitle("Statement 2")) {
             statement2 = sequenceService.saveStatement(new Statement(title: "Statement 2", content:"Content of statement 2"),teacherJeanne)
         }
+        if (!Statement.findByTitle("Statement 3")) {
+            statement3 = sequenceService.saveStatement(new Statement(title: "Statement 3", content:"Content of statement 3"),teacherJeanne)
+        }
     }
 
     def initializeInteractions() {
         initializeResponseSubmissionInteraction()
         initialiseEvaluationInteraction()
+        initializeReadInteraction()
     }
 
     private void initialiseEvaluationInteraction() {
@@ -154,11 +166,19 @@ class BootstrapTestService {
         ResponseSubmissionSpecification respSpec = new ResponseSubmissionSpecification()
         respSpec.choiceInteractionType = ChoiceInteractionType.MULTIPLE.name()
         respSpec.itemCount = 5
-        respSpec.expectedChoiceList = [2, 3, 5]
+        respSpec.expectedChoiceList = [new InteractionChoice(2,100f/3f as Float),
+                                       new InteractionChoice(3,100f/3f as Float),
+                                       new InteractionChoice(5,100f/3f as Float)]
         respSpec.studentsProvideExplanation = true
         respSpec.studentsProvideConfidenceDegree = true
         responseSubmissionInteraction = new Interaction(rank: 1, specification: respSpec.jsonString,
                 interactionType: InteractionType.ResponseSubmission.name(),
+                schedule: new Schedule(startDate: new Date()))
+    }
+
+    private void initializeReadInteraction() {
+        readInteraction = new Interaction(rank: 3, specification: Interaction.EMPTY_SPECIFICATION,
+                interactionType: InteractionType.Read.name(),
                 schedule: new Schedule(startDate: new Date()))
     }
 

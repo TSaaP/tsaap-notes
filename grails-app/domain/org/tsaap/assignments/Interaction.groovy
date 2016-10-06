@@ -202,19 +202,7 @@ class Interaction {
 
     ResponseRecommendationService responseRecommendationService
 
-    /**
-     * Find all recommended responses for user
-     * @param user the user
-     * @return the response list
-     */
-    List<ChoiceInteractionResponse> findRecommendedResponsesForUser(User user) {
-        def responseInteraction = sequence.responseSubmissionInteraction
-        def userResponse = ChoiceInteractionResponse.findByInteractionAndLearnerAndAttempt(responseInteraction,user,1)
-        def res = responseInteraction.explanationRecommendationMap()[userResponse.id as String].collect {
-            ChoiceInteractionResponse.get(it)
-        }
-        res
-    }
+
 
     private void updateExplanationRecommendationMapping(Integer attempt = 1) {
         def responses = ChoiceInteractionResponse.findAllByInteractionAndAttempt(this, attempt)

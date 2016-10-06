@@ -1,6 +1,7 @@
 <%@ page import="org.springframework.web.servlet.support.RequestContextUtils" %>
-<g:set var="responseInteractionInstance" value="${interactionInstance.sequence.responseSubmissionInteraction}"/>
-<g:set var="responsesToGrade" value="${interactionInstance.findRecommendedResponsesForUser(user)}"/>
+<g:set var="sequence" value="${interactionInstance.sequence}"/>
+<g:set var="responseInteractionInstance" value="${sequence.responseSubmissionInteraction}"/>
+<g:set var="responsesToGrade" value="${sequence.findRecommendedResponsesForUser(user)}"/>
 <g:if test="${!responseInteractionInstance.hasResponseForUser(user, 2)}">
     <div class="alert alert-info">${message(code: 'player.sequence.interaction.evaluation.intro')}</div>
     <ul class="list-group">

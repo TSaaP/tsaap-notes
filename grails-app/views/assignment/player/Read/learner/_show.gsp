@@ -31,6 +31,10 @@
     </div>
 </div>
 
-<div class="alert alert-info" role="alert">${message(code:"player.sequence.interaction.read.learner.show.score.message")} <g:formatNumber number="${userResponse.score}" type="number" maxFractionDigits="2"/></div>
-
-TODO : list of explanations
+<div class="alert alert-info"
+     role="alert">${message(code: "player.sequence.interaction.read.learner.show.score.message")} <g:formatNumber
+        number="${userResponse.score}" type="number" maxFractionDigits="2"/></div>
+<g:if test="${sequence.hasExplanations()}">
+    <g:set var="responses" value="${sequence.findAllGoodResponses()}"/>
+    <g:render template="/assignment/player/ExplanationList" model="[responses: responses, sequence: sequence]"/>
+</g:if>

@@ -95,6 +95,14 @@ class ChoiceInteractionResponse {
     boolean secondAttemptIsSubmitable() {
         interaction.state == StateType.afterStop.name() && attempt == 2
     }
+
+    /**
+     * Get the number of assessers
+     * @return the number of assessers
+     */
+    int evaluationCount() {
+        PeerGrading.countByResponse(this)
+    }
 }
 
 enum ConfidenceDegreeEnum {

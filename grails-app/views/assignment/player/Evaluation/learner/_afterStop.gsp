@@ -1,1 +1,0 @@
-<div class="alert alert-warning" role="alert">${message(code:"player.sequence.interaction.afterStop.message", args: [interactionInstance.rank])} </div>

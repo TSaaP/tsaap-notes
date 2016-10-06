@@ -124,7 +124,7 @@ class DefaultResponseRecommendationServiceIntegrationSpec extends Specification 
 
         when:"asking for a recommendation in the evaluation interaction for a user"
         def evalInter = assignment.sequences[0].evaluationInteraction
-        def recommendations = evalInter.findRecommendedResponsesForUser(thom)
+        def recommendations = evalInter.sequence.findRecommendedResponsesForUser(thom)
 
         then: "the list of responses corresponding to the response user are found"
         recommendations[0] == respErik

@@ -99,7 +99,8 @@ class PlayerController {
     private void renderSequenceTemplate(user, Sequence sequenceInstance) {
         def userRole = (user == sequenceInstance.assignment.owner ? 'teacher' : 'learner')
         render template: "/assignment/player/sequence/show",
-                model: [userRole: userRole, sequenceInstance: sequenceInstance, user: user]
+                model: [userRole: userRole, sequenceInstance: sequenceInstance, user: user],
+                layout: "ajax"
     }
 
     private ChoiceInteractionResponse createAndSaveChoiceInteractionResponse(user, Interaction interactionInstance, List<Integer> choiceList, params) {

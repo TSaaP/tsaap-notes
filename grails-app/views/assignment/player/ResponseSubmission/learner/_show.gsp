@@ -1,4 +1,4 @@
-<g:if test="${interactionInstance.hasResponseForUser(user,attempt)}">
+<g:if test="${interactionInstance.hasResponseForUser(user, attempt)}">
     <div class="alert alert-warning"
          role="alert">${message(code: "player.sequence.interaction.afterResponseSubmission.message", args: [interactionInstance.sequence.activeInteraction.rank])} <g:remoteLink
             controller="player" action="updateSequenceDisplay" id="${interactionInstance.sequenceId}" title="Refresh"
@@ -20,7 +20,7 @@
                        value="${responseSubmissionSpecificationInstance?.expectedChoiceListContainsChoiceWithIndex(i + 1)}"/>
                 <label class="checkbox-inline" style="margin-right: 20px">
                     <input type="checkbox" name="choiceList"
-                           value="${i + 1}" ${firstAttemptResponse?.choiceList()?.contains(i+1) ? 'checked' : ''}> ${i + 1}
+                           value="${i + 1}" ${firstAttemptResponse?.choiceList()?.contains(i + 1) ? 'checked' : ''}> ${i + 1}
                 </label>
             </g:each>
         </div>
@@ -31,38 +31,41 @@
                        value="${responseSubmissionSpecificationInstance?.expectedChoiceListContainsChoiceWithIndex(i + 1)}"/>
                 <label class="radio-inline" style="margin-right: 20px">
                     <input type="radio" name="exclusiveChoice"
-                           value="${i + 1}" ${firstAttemptResponse?.choiceList()?.contains(i+1) ? 'checked' : ''}> ${i + 1}
+                           value="${i + 1}" ${firstAttemptResponse?.choiceList()?.contains(i + 1) ? 'checked' : ''}> ${i + 1}
                 </label>
             </g:each>
         </div>
 
-        <g:if test="${responseSubmissionSpecificationInstance.studentsProvideExplanation}">
-            <div class="form-group fieldcontain">
-                <label for="explanation_${interactionInstance.id}">
-                    <g:message code="player.sequence.interaction.explanation.label" default="Title"/>
-                </label>
-                <ckeditor:editor name="explanation" id="explanation_${interactionInstance.id}">
-                    ${firstAttemptResponse?.explanation}
-                </ckeditor:editor>
-            </div>
-        </g:if>
+        <g:if test="${attempt == 1}">
+            <g:if test="${responseSubmissionSpecificationInstance.studentsProvideExplanation}">
+                <div class="form-group fieldcontain">
+                    <label for="explanation_${interactionInstance.id}">
+                        <g:message code="player.sequence.interaction.explanation.label" default="Title"/>
+                    </label>
+                    <ckeditor:editor name="explanation" id="explanation_${interactionInstance.id}">
+                        ${firstAttemptResponse?.explanation}
+                    </ckeditor:editor>
+                </div>
+            </g:if>
 
-        <g:if test="${responseSubmissionSpecificationInstance.studentsProvideConfidenceDegree}">
-            <div class="form-group fieldcontain">
-                <label for="confidenceDegree_${interactionInstance.id}">
-                    <g:message code="player.sequence.interaction.confidenceDegree.label"/>
-                </label>
-                <g:select class="form-control" name="confidenceDegree" id="confidenceDegree_${interactionInstance.id}"
-                          from="${org.tsaap.assignments.ConfidenceDegreeEnum.values()}"
-                          optionKey="integerValue"
-                          optionValue="${{ message(code: 'player.sequence.interaction.confidenceDegree.' + it.name) }}"
-                        value="${firstAttemptResponse?.confidenceDegree}"
-                >
-                </g:select>
-            </div>
+            <g:if test="${responseSubmissionSpecificationInstance.studentsProvideConfidenceDegree}">
+                <div class="form-group fieldcontain">
+                    <label for="confidenceDegree_${interactionInstance.id}">
+                        <g:message code="player.sequence.interaction.confidenceDegree.label"/>
+                    </label>
+                    <g:select class="form-control" name="confidenceDegree"
+                              id="confidenceDegree_${interactionInstance.id}"
+                              from="${org.tsaap.assignments.ConfidenceDegreeEnum.values()}"
+                              optionKey="integerValue"
+                              optionValue="${{
+                                  message(code: 'player.sequence.interaction.confidenceDegree.' + it.name)
+                              }}"
+                              value="${firstAttemptResponse?.confidenceDegree}">
+                    </g:select>
+                </div>
+            </g:if>
         </g:if>
-
-        <g:if test="${responseSubmissionSpecificationInstance.studentsProvideExplanation}">
+        <g:if test="${attempt == 1 && responseSubmissionSpecificationInstance.studentsProvideExplanation}">
             <g:submitToRemote controller="player" action="submitResponse"
                               update="sequence_${interactionInstance.sequenceId}" class="btn btn-default"
                               value="${message(code: 'player.sequence.interaction.submitResponse')}"

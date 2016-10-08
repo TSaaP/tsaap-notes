@@ -1,13 +1,19 @@
 package org.tsaap.assignments
 
 import grails.transaction.Transactional
+import groovy.sql.Sql
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 import org.tsaap.attachement.Attachement
 import org.tsaap.contracts.Contract
 import org.tsaap.directory.User
+import org.tsaap.lti.LmsAssignmentHelper
+
+import javax.sql.DataSource
 
 @Transactional
 class AssignmentService {
+
+    DataSource dataSource
 
     /**
      * Find all assignment owned by owner
@@ -54,8 +60,11 @@ class AssignmentService {
      */
     def deleteAssignment(Assignment assignment, User user, boolean flush = true) {
         Contract.requires(assignment.owner == user, USER__MUST__BE__ASSIGNMENT__OWNER)
+        deleteLmsAssignment(assignment)
         assignment.schedule?.delete(flush: flush)
+        LearnerAssignment.executeUpdate("delete LearnerAssignment la where la.assignment = ?",[assignment])
         Schedule.executeUpdate("delete Schedule sch where sch.interaction in (from Interaction i where i.sequence in (from Sequence s where s.assignment = ?))",[assignment])
+        ChoiceInteractionResponse.executeUpdate("delete ChoiceInteractionResponse resp where resp.interaction in (from Interaction i where i.sequence in (from Sequence s where s.assignment = ?))",[assignment])
         Interaction.executeUpdate("delete Interaction i where i.sequence in (from Sequence s where s.assignment = ?)",[assignment])
         Attachement.executeUpdate("update Attachement attach set toDelete=true, statement=null where attach.statement in (select s.statement from Sequence s where s.assignment = ?)",[assignment])
         Statement.executeUpdate("delete Statement st  where st in (select s.statement from Sequence s where s.assignment = ?)",[assignment])
@@ -63,6 +72,12 @@ class AssignmentService {
         assignment.delete(flush: flush)
     }
 
+    private void deleteLmsAssignment(Assignment assignment) {
+        Sql sql = new Sql(dataSource)
+        LmsAssignmentHelper lmsAssignmentHelper = new LmsAssignmentHelper()
+        lmsAssignmentHelper.deleteLmsAssignment(sql, assignment.id)
+        sql.close()
+    }
 
     /**
      * Remove sequence from assignment

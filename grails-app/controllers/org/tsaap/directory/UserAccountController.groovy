@@ -147,7 +147,11 @@ class UserAccountController {
             sql = new Sql(dataSource)
             lmsUserHelper = new LmsUserHelper()
             lmsUserHelper.enableUser(sql, params.username)
-            redirect(controller: "questions", params: [contextId: params.contextId, contextName: params.contextName, displaysAll: params.displaysAll])
+            if (params.assignment_id) {
+                redirect(controller: "player", action: 'ltiLaunch', id: "${params.assignment_id}")
+            } else {
+                redirect(controller: "questions", params: [contextId: params.contextId, contextName: params.contextName, displaysAll: params.displaysAll])
+            }
         } else {
             throw new LtiUserException("error.lti.user.agreement")
         }

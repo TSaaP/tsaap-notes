@@ -41,6 +41,18 @@ class PlayerController {
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def ltiLaunch(Assignment assignmentInstance) {
+        User user = springSecurityService.currentUser
+        if (user.isLearner() && !user.isRegisteredInAssignment(assignmentInstance)) {
+            assignmentService.registerUserOnAssignment(user,assignmentInstance)
+        } else if (user.isTeacher() && user != assignmentInstance.owner) {
+            assignmentService.registerUserOnAssignment(user, assignmentInstance)
+        }
+        render view: "/assignment/player/assignment/show", model: [assignmentInstance: assignmentInstance,
+                                                                   user:user]
+    }
+
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def startInteraction(Interaction interactionInstance) {
         User user = springSecurityService.currentUser
         interactionService.startInteraction(interactionInstance, user)

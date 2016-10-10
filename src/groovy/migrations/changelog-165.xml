@@ -544,4 +544,36 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="26" author="fsil">
+        <createTable tableName="lms_assignment">
+            <column name="assignment_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="lti_course_id" type="varchar(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="lti_activity_id" type="varchar(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="lti_consumer_key" type="varchar(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="source" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="lms_assignment" baseColumnNames="assignment_id"
+                                 constraintName="lms_assignment_fk1" referencedTableName="assignment"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="lms_assignment" baseColumnNames="lti_course_id"
+                                 constraintName="lms_assignment_fk2" referencedTableName="lti_context"
+                                 referencedColumnNames="context_id"/>
+        <addForeignKeyConstraint baseTableName="lms_assignment" baseColumnNames="lti_activity_id"
+                                 constraintName="lms_assignment_fk3" referencedTableName="lti_context"
+                                 referencedColumnNames="lti_context_id"/>
+        <addForeignKeyConstraint baseTableName="lms_assignment" baseColumnNames="lti_consumer_key"
+                                 constraintName="lms_assignment_fk4" referencedTableName="lti_context"
+                                 referencedColumnNames="consumer_key"/>
+    </changeSet>
+
 </databaseChangeLog>

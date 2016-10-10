@@ -180,10 +180,8 @@ class LmsContextHelperIntegrationSpec extends Specification {
     def "test select lms context for a context"() {
 
         when: "I want to select a lms context for a given tsaap context id"
-        def req = null
         def res = null
         def userId = null
-        def contextId
         try {
             sql.withTransaction { ->
                 lmsUserHelper.insertLtiConsumerInDatabase(sql, 'key', 'Moodle', 'azer', 'LTI-1p0', 'Moodle-Tsaap', 'moodle-2015051100.06', '130.120.214.80', null, 0, 1, null, null)
@@ -207,10 +205,8 @@ class LmsContextHelperIntegrationSpec extends Specification {
     def "test delete lms context for a context"() {
 
         when: "I want to delete a lms context for a given tsaap context id"
-        def req = null
         def res = null
         def userId = null
-        def contextId
         try {
             sql.withTransaction { ->
                 lmsUserHelper.insertLtiConsumerInDatabase(sql, 'key', 'Moodle', 'azer', 'LTI-1p0', 'Moodle-Tsaap', 'moodle-2015051100.06', '130.120.214.80', null, 0, 1, null, null)
@@ -236,7 +232,6 @@ class LmsContextHelperIntegrationSpec extends Specification {
         when: "I want to get consumer key and lti course id for a given context id"
         def res = null
         def userId
-        def contextId
         try {
             sql.withTransaction { ->
                 lmsUserHelper.insertLtiConsumerInDatabase(sql, 'key', 'Moodle', 'azer', 'LTI-1p0', 'Moodle-Tsaap', 'moodle-2015051100.06', '130.120.214.80', null, 0, 1, null, null)

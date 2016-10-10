@@ -146,7 +146,7 @@ grails.plugins.springsecurity.authority.className = 'org.tsaap.directory.Role'
 
 // security config
 grails.plugins.springsecurity.password.algorithm = 'bcrypt'
-grails.plugins.springsecurity.successHandler.defaultTargetUrl = '/scope/index?filter=__FOLLOWED__'
+grails.plugins.springsecurity.successHandler.defaultTargetUrl = '/home/index'
 
 environments {
     development {

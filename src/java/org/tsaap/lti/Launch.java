@@ -40,6 +40,7 @@ import java.util.ArrayList;
 
 /**
  * Servlet dedicated to the activity launch through LTI protocol
+ *
  * @author DROL
  * @author FSIL
  */
@@ -49,12 +50,14 @@ public class Launch extends HttpServlet implements Callback {
     private Db db;
     private LmsUserService lmsUserService;
     private LmsContextService lmsContextService;
+    private LmsAssignmentService lmsAssignmentService;
     private static Logger logger = Logger.getLogger(Launch.class);
 
 
     /**
      * Process the http post request for launching the tool provider activity
-     * @param request the request
+     *
+     * @param request  the request
      * @param response the response
      * @throws ServletException
      * @throws IOException
@@ -69,6 +72,7 @@ public class Launch extends HttpServlet implements Callback {
 
     /**
      * Execute the launch of the tool provider activity
+     *
      * @param toolProvider the tool provider
      * @return true if the launch is OK
      */
@@ -83,50 +87,109 @@ public class Launch extends HttpServlet implements Callback {
             initializeUserSession(toolProvider);
             initialiseLmsUserService();
             LmsUser lmsUser = getLmsUser(sql, toolProvider);
-            initialiseLmsContextService();
-            LmsContext lmsContext = getLmsContext(sql, toolProvider, lmsUser);
-            updateServerUrl(toolProvider, lmsUser, lmsContext);
+            initialiseLmsAssignmentService();
+            LmsAssignment lmsAssignment = getLmsAssignment(sql, toolProvider, lmsUser);
+            if (lmsAssignment != null) {
+                if (lmsAssignment.getHasError()) {
+                    toolProvider.setReason(lmsAssignment.getErrorCause());
+                    return false;
+                }
+                updateServerUrl(toolProvider, lmsUser, lmsAssignment);
+            } else {
+                initialiseLmsContextService();
+                LmsContext lmsContext = getLmsContext(sql, toolProvider, lmsUser);
+                if (lmsContext == null) {
+                    toolProvider.setReason("Don't know what to launch.");
+                    return false;
+                }
+                updateServerUrl(toolProvider, lmsUser, lmsContext);
+            }
         } finally {
             closeConnection();
         }
         return true;
     }
 
+
+
+    private LmsAssignment getLmsAssignment(Sql sql, ToolProvider toolProvider, LmsUser lmsUser) {
+        LmsAssignment lmsAssignment = new LmsAssignment(toolProvider.getResourceLink().getLtiContextId(),
+                toolProvider.getResourceLink().getId(), toolProvider.getConsumer().getKey(),
+                toolProvider.getConsumer().getConsumerName(),toolProvider.getResourceLink().getTitle(),
+                lmsUser);
+        String assignmentParam = toolProvider.getRequest().getParameter("custom_assignment");
+        String globalId = toolProvider.getRequest().getParameter("custom_assignmentid");
+        if (assignmentParam == null && globalId == null) {
+            logger.error("Not a request for assignment");
+            return null;
+        }
+        if (globalId != null) {
+            lmsAssignment.setGlobalId(globalId);
+            Long assId = lmsAssignmentService.getLmsAssignmentHelper().selectAssignmentId(sql, globalId);
+            if (assId == null) {
+                String message = "Custom assignment id not valid with value: " + globalId ;
+                logger.error(message);
+                LmsAssignment lmsAssignmentWithError = lmsAssignmentService.updateLmsAssignmentWithError(message, lmsAssignment);
+                return lmsAssignmentWithError;
+            }
+            lmsAssignment.setAssignmentId(assId);
+            lmsAssignment.setGlobalId(globalId);
+        }
+        lmsAssignmentService.findOrCreateAssignment(sql, lmsAssignment);
+        return lmsAssignment;
+    }
+
     private LmsContext getLmsContext(Sql sql, ToolProvider toolProvider, LmsUser lmsUser) {
         LmsContext lmsContext = new LmsContext(toolProvider.getResourceLink().getLtiContextId(),
-                toolProvider.getResourceLink().getId(),toolProvider.getConsumer().getKey(),
-                toolProvider.getConsumer().getConsumerName(),toolProvider.getResourceLink().getTitle(),
-                lmsUser) ;
-        String customContextId = toolProvider.getRequest().getParameter("custom_contextid") ;
+                toolProvider.getResourceLink().getId(), toolProvider.getConsumer().getKey(),
+                toolProvider.getConsumer().getConsumerName(), toolProvider.getResourceLink().getTitle(),
+                lmsUser);
+        String contextParam = toolProvider.getRequest().getParameter("custom_context");
+        String customContextId = toolProvider.getRequest().getParameter("custom_contextid");
+        if (contextParam == null && customContextId == null) {
+            return null;
+        }
         if (customContextId != null) {
             try {
                 Long contextId = Long.valueOf(customContextId);
-                lmsContext.setContextId(contextId) ;
-            } catch(Exception e) {
-                logger.error("Custom context id not valid with value: "+customContextId) ;
-                logger.error(e.getMessage()) ;
+                lmsContext.setContextId(contextId);
+            } catch (Exception e) {
+                logger.error("Custom context id not valid with value: " + customContextId);
+                logger.error(e.getMessage());
             }
         }
-        lmsContextService.findOrCreateContext(sql, lmsContext) ;
+        lmsContextService.findOrCreateContext(sql, lmsContext);
         return lmsContext;
     }
 
     private LmsUser getLmsUser(Sql sql, ToolProvider toolProvider) {
-        LmsUser lmsUser = new LmsUser(toolProvider.getUser().getIdForDefaultScope(),toolProvider.getConsumer().getKey(),
+        LmsUser lmsUser = new LmsUser(toolProvider.getUser().getIdForDefaultScope(), toolProvider.getConsumer().getKey(),
                 toolProvider.getUser().getFirstname(), toolProvider.getUser().getLastname(),
-                toolProvider.getUser().getEmail(), toolProvider.getUser().isLearner()) ;
-        lmsUser =  lmsUserService.findOrCreateUser(sql, lmsUser);
+                toolProvider.getUser().getEmail(), toolProvider.getUser().isLearner());
+        lmsUser = lmsUserService.findOrCreateUser(sql, lmsUser);
         return lmsUser;
     }
 
     private void updateServerUrl(ToolProvider toolProvider, LmsUser lmsUser, LmsContext lmsContext) {
-        String serverUrlFromTP = toolProvider.getRequest().getRequestURL().toString() ;
-        String serverUrlRoot = serverUrlFromTP.substring(0, serverUrlFromTP.lastIndexOf("/")) ;
-        String result = "&contextName=" + lmsContext.getContextTitle() + "&contextId=" + lmsContext.getContextId() ;
+        String serverUrlFromTP = toolProvider.getRequest().getRequestURL().toString();
+        String serverUrlRoot = serverUrlFromTP.substring(0, serverUrlFromTP.lastIndexOf("/"));
+        String result = "&contextName=" + lmsContext.getContextTitle() + "&contextId=" + lmsContext.getContextId();
         if (lmsUser.isIsEnabled()) {
-            result = serverUrlRoot + "/questions/index?displaysAll=on" + result ;
+            result = serverUrlRoot + "/questions/index?displaysAll=on" + result;
         } else {
             result = serverUrlRoot + "/lti/terms?username=" + lmsUser.getUsername() + result;
+        }
+        toolProvider.setRedirectUrl(result);
+    }
+
+    private void updateServerUrl(ToolProvider toolProvider, LmsUser lmsUser, LmsAssignment lmsAssignment) {
+        String serverUrlFromTP = toolProvider.getRequest().getRequestURL().toString();
+        String serverUrlRoot = serverUrlFromTP.substring(0, serverUrlFromTP.lastIndexOf("/"));
+        String result;
+        if (lmsUser.isIsEnabled()) {
+            result = serverUrlRoot + "/player/ltiLaunch/" + lmsAssignment.getAssignmentId();
+        } else {
+            result = serverUrlRoot + "/lti/terms?username=" + lmsUser.getUsername() + "&assignment_id=" + lmsAssignment.getAssignmentId();
         }
         toolProvider.setRedirectUrl(result);
     }
@@ -192,8 +255,13 @@ public class Launch extends HttpServlet implements Callback {
         lmsContextService = new LmsContextService();
         LmsContextHelper lmsContextHelper = new LmsContextHelper();
         lmsContextService.setLmsContextHelper(lmsContextHelper);
-        LmsUserHelper lmsUserHelper = new LmsUserHelper();
-        lmsContextService.setLmsUserHelper(lmsUserHelper);
+        lmsContextService.setLmsUserHelper(lmsUserService.getLmsUserHelper());
+    }
+
+    private void initialiseLmsAssignmentService() {
+        lmsAssignmentService = new LmsAssignmentService();
+        lmsAssignmentService.setLmsAssignmentHelper(new LmsAssignmentHelper());
+        lmsAssignmentService.setLmsUserHelper(lmsUserService.getLmsUserHelper());
     }
 
     private void initializeUserSession(ToolProvider toolProvider) {

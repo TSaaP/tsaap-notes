@@ -8,7 +8,7 @@
     <g:set var="percentResult" value="${resultList[i]}"/>
     <div class="panel panel-${choiceStatus}">
         <div class="panel-heading">
-            <g:if test="${userResponse.choiceList().contains(i)}">
+            <g:if test="${userResponse?.choiceList()?.contains(i)}">
                 <g:set var="suffix" value="${spec.choiceWithIndexInExpectedChoiceList(i)?.score > 0 ? 'up' : 'down'}"/>
                 <span class="glyphicon glyphicon-thumbs-${suffix}"></span>
             </g:if>
@@ -46,7 +46,7 @@
 
 <div class="alert alert-info"
      role="alert">${message(code: "player.sequence.interaction.read.learner.show.score.message")} <g:formatNumber
-        number="${userResponse.score}" type="number" maxFractionDigits="2"/></div>
+        number="${userResponse?.score}" type="number" maxFractionDigits="2"/></div>
 <g:if test="${sequence.hasExplanations()}">
     <g:set var="responses" value="${sequence.findAllGoodResponses()}"/>
     <g:render template="/assignment/player/ExplanationList" model="[responses: responses, sequence: sequence]"/>

@@ -17,7 +17,7 @@ title: Tsaap-Notes documentation
 #email: your-email@domain.com
 description: > # this means to ignore newlines until "baseurl:"
   This site contains the documentation of the Tsaap-Notes platform.
-baseurl: "" # the subpath of your site, e.g. /blog
+baseurl: "/tsaap-notes" # the subpath of your site, e.g. /blog
 url: "http://tsaap.github.io/tsaap-notes" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: TsaapNotes
 github_username:  TSaaP

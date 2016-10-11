@@ -3,10 +3,15 @@
 <g:set var="responseInteractionInstance" value="${sequence.responseSubmissionInteraction}"/>
 <g:set var="responsesToGrade" value="${sequence.findRecommendedResponsesForUser(user)}"/>
 <g:if test="${!responseInteractionInstance.hasResponseForUser(user, 2)}">
+    <g:if test="${responsesToGrade}">
     <div class="alert alert-info">${message(code: 'player.sequence.interaction.evaluation.intro')}</div>
+    </g:if>
+    <g:else>
+        <div class="alert alert-info">${message(code: 'player.sequence.interaction.evaluation.intro.noresponsestograde')}</div>
+    </g:else>
     <ul class="list-group">
-        <g:each in="${(0..<interactionInstance.interactionSpecification.responseToEvaluateCount)}" var="i">
-            <g:set var="currentResponse" value="${responsesToGrade[i]}"/>
+            <g:each in="${responsesToGrade}" var="currentResponse" status="i">
+            <g:if test="${i < interactionInstance.interactionSpecification.responseToEvaluateCount}">
             <li class="list-group-item">
                 <p>
                     <strong>${message(code: 'player.sequence.interaction.choice.label')} ${currentResponse.choiceList()}</strong>
@@ -33,6 +38,7 @@
                 });
             });
             </r:script>
+            </g:if>
         </g:each>
     </ul>
 </g:if>

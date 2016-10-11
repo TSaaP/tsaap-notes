@@ -26,14 +26,14 @@ You have to specify, in your configuration, a custom parameter indicating that y
 
 The screenshot below shows the Moodle form whith the "custom parameters" field.
 
-![Moodle form]({{ site.url }}/assets/screenshotMoodle1.png)
+![Moodle form]({{ site.baseurl }}/assets/screenshotMoodle1.png)
 
 # 1.2 Linkink to an existing assignment
 
 In Tsaap-Notes, when an assignment is created, a unique global id is associated with the created assignment.
 The screenshot below shows an assignment In tsaap-notes with its associated global unique id.
  
-![Assignment and its id]({{ site.url }}/assets/AssignmentGlobalId.png) 
+![Assignment and its id]({{ site.baseurl }}/assets/AssignmentGlobalId.png) 
 
 In the case you want to link your moodle activity with an existing assignment, you have to provide Moodle with the global id.
 You have to specify, in your configuration, a custom parameter indicating the global id of the assignment:
@@ -42,4 +42,4 @@ You have to specify, in your configuration, a custom parameter indicating the gl
 
 The screenshot below shows the Moodle form whith the "custom parameters" field.
 
-![Moodle form]({{ site.url }}/assets/screenshotMoodle2.png)
+![Moodle form]({{ site.baseurl }}/assets/screenshotMoodle2.png)

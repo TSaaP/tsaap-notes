@@ -224,8 +224,13 @@ class Sequence {
     List<ChoiceInteractionResponse> findRecommendedResponsesForUser(User user) {
         def responseInteraction = responseSubmissionInteraction
         def userResponse = ChoiceInteractionResponse.findByInteractionAndLearnerAndAttempt(responseInteraction,user,1)
-        def res = responseInteraction.explanationRecommendationMap()[userResponse.id as String].collect {
-            ChoiceInteractionResponse.get(it)
+        def res
+        if (userResponse) {
+            res = responseInteraction.explanationRecommendationMap()[userResponse.id as String].collect {
+                ChoiceInteractionResponse.get(it)
+            }
+        } else {
+            res = []
         }
         res
     }

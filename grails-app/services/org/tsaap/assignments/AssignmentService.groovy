@@ -64,6 +64,7 @@ class AssignmentService {
         assignment.schedule?.delete(flush: flush)
         LearnerAssignment.executeUpdate("delete LearnerAssignment la where la.assignment = ?",[assignment])
         Schedule.executeUpdate("delete Schedule sch where sch.interaction in (from Interaction i where i.sequence in (from Sequence s where s.assignment = ?))",[assignment])
+        PeerGrading.executeUpdate("delete PeerGrading pg where pg.response in (from ChoiceInteractionResponse resp where resp.interaction in (from Interaction i where i.sequence in (from Sequence s where s.assignment = ?)))",[assignment])
         ChoiceInteractionResponse.executeUpdate("delete ChoiceInteractionResponse resp where resp.interaction in (from Interaction i where i.sequence in (from Sequence s where s.assignment = ?))",[assignment])
         Interaction.executeUpdate("delete Interaction i where i.sequence in (from Sequence s where s.assignment = ?)",[assignment])
         Attachement.executeUpdate("update Attachement attach set toDelete=true, statement=null where attach.statement in (select s.statement from Sequence s where s.assignment = ?)",[assignment])

@@ -12,7 +12,9 @@ class ResponseSubmissionSpecification extends JsonInteractionSpecification {
     /**
      * Default constructor
      */
-    ResponseSubmissionSpecification() {}
+    ResponseSubmissionSpecification() {
+        setExpectedChoiceList([new InteractionChoice(1, 100f)])
+    }
 
     /**
      * Construct a specification based on the json string description

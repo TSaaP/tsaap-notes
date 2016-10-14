@@ -7,6 +7,7 @@ import org.tsaap.assignments.AssignmentService
 import org.tsaap.assignments.ChoiceInteractionResponse
 import org.tsaap.assignments.ConfidenceDegreeEnum
 import org.tsaap.assignments.Interaction
+import org.tsaap.assignments.PeerGrading
 import org.tsaap.assignments.Sequence
 import org.tsaap.assignments.StateType
 import org.tsaap.contracts.ConditionViolationException
@@ -228,7 +229,8 @@ class InteractionServiceIntegrationSpec extends Specification {
         Assignment assignment = bootstrapTestService.assignment3WithInteractions
 
         and:"the response submission interaction"
-        Interaction interaction = assignment.sequences[0].responseSubmissionInteraction
+        Sequence sequence = assignment.sequences[0]
+        Interaction interaction = sequence.responseSubmissionInteraction
         interactionService.startInteraction(interaction, interaction.owner)
 
         and: "learners registered in the assignment"
@@ -271,6 +273,15 @@ class InteractionServiceIntegrationSpec extends Specification {
         and: "the mean grade is updated with the correct mean"
         resp.meanGrade == 3f
 
+        when: "deleting the assignment"
+        assignmentService.deleteAssignment(assignment,assignment.owner)
 
+        then: "all attached objects are deleted"
+        !PeerGrading.findById(pgJohn.id)
+        !PeerGrading.findById(pgMary.id)
+        !ChoiceInteractionResponse.findById(respThom.id)
+        !Interaction.findById(interaction.id)
+        !Sequence.findById(sequence.id)
+        !Assignment.findById(assignment.id)
     }
 }

@@ -1,5 +1,5 @@
 <%@ page import="org.tsaap.assignments.Schedule; org.tsaap.assignments.interactions.ResponseSubmissionSpecification; org.tsaap.assignments.interactions.ChoiceInteractionType" %>
-<g:set var="responseSubmissionSpecificationInstance" value="${sequenceInstance?.responseSubmissionSpecification}"/>
+<g:set var="responseSubmissionSpecificationInstance" value="${sequenceInstance?.responseSubmissionSpecification ?: new ResponseSubmissionSpecification()}"/>
 <div class="panel panel-default">
     <div class="panel-heading"><g:message code="sequence.interaction.phase"/> 1</div>
 
@@ -29,7 +29,7 @@
             </g:each>
         </div>
 
-        <div class="radio text-center ${isMultipleChoice ? 'hidden' : ''}" id="exclusive_choice">
+        <div class="radio text-center ${isMultipleChoice ? 'hidden' : ''}" id="exclusive_choice" title="${message(code:'sequence.interaction.expectedChoice.hasToBeSelected')}">
             <g:each in="${1..itemCount}" var="radioBoxElet" status="i">
                 <g:set var="choiceIsExpected"
                        value="${responseSubmissionSpecificationInstance?.expectedChoiceListContainsChoiceWithIndex(i + 1)}"/>
@@ -107,14 +107,20 @@
                 for (var i = 1; i <= $("#itemCount").val(); i++) {
                     var chckBox = $('<label class="checkbox-inline" style="margin-right: 20px"> <input type="checkbox" name="expectedChoiceList" value="' + i + '"> ' + i + ' </label>');
                     $("#multiple_choice").append(chckBox);
+                    if (i == 1) {
+                        chckBox.find('input').prop( "checked", true );
+                    }
                 }
             } else {
                 $('#exclusive_choice').removeClass('hidden');
                 $('#multiple_choice').addClass('hidden');
                 $('#exclusive_choice').empty();
                 for (var j = 1; j <= $("#itemCount").val(); j++) {
-                    var radioBox = $('<label class="radio-inline" style="margin-right: 20px"> <input type="radio" name="exclusiveChoice" value="' + j + '"> ' + j + ' </label>');
-                    $("#exclusive_choice").append(radioBox);
+                    var currentRadioBox = $('<label class="radio-inline" style="margin-right: 20px"> <input type="radio" name="exclusiveChoice" value="' + j + '"> ' + j + ' </label>');
+                    $("#exclusive_choice").append(currentRadioBox);
+                    if (j == 1) {
+                        currentRadioBox.find('input').prop( "checked", true );
+                    }
                 }
             }
         })

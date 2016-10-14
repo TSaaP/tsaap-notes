@@ -45,8 +45,8 @@ class SequenceController {
         if (sequenceInstance.hasErrors()) {
             respond assignmentInstance, model: [responseSubmissionSpecificationInstance: subSpec,
                                                 evaluationSpecificationInstance        : evalSpec,
-                                                sequenceInstance:sequenceInstance],
-                                        view: '/assignment/sequence/create_sequence'
+                                                sequenceInstance                       : sequenceInstance],
+                    view: '/assignment/sequence/create_sequence'
             return
         }
 
@@ -192,15 +192,20 @@ class SequenceController {
         subSpec.choiceInteractionType = params.choiceInteractionType
         subSpec.itemCount = params.itemCount as Integer
         if (subSpec.isMultipleChoice()) {
-            def countExpectedChoice = params.expectedChoiceList?.size() as Float
-            subSpec.expectedChoiceList = params.expectedChoiceList?.collect {
+            def expectedChoiceList = params.expectedChoiceList
+            def countExpectedChoice = expectedChoiceList?.size() as Float
+            subSpec.expectedChoiceList = expectedChoiceList.collect {
                 new InteractionChoice(it as Integer,
-                    (100 / countExpectedChoice) as Float)
+                        (100 / countExpectedChoice) as Float)
             }
         } else {
-            subSpec.expectedChoiceList = [new InteractionChoice(params.exclusiveChoice as Integer, 100f)]
+            def exclusiveChoice = params.exclusiveChoice as Integer
+            if (exclusiveChoice != null) {
+                subSpec.expectedChoiceList = [new InteractionChoice(exclusiveChoice, 100f)]
+            } else {
+                subSpec.expectedChoiceList = []
+            }
         }
-
         subSpec.studentsProvideExplanation = params.studentsProvideExplanation as boolean
         if (subSpec.studentsProvideExplanation) {
             subSpec.studentsProvideConfidenceDegree = true

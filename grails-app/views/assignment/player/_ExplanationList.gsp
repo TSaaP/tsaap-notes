@@ -77,7 +77,7 @@
                             <div class="panel panel-default">
                                 <div class="panel-heading" role="tab" id="headingOne">
                                     <h4 class="panel-title">
-                                        <g:set var="responsesChoice" value="${responses.size() > 0 ? responses.get(0).prettyAnswers() : null}"/>
+                                        <g:set var="responsesChoice" value="${responses.size() > 0 ? responses.get(0).choiceListSpecification : null}"/>
                                         <a role="button" data-toggle="collapse" data-parent="#accordion"
                                            href="#collapseOne${sequence.id}"
                                            aria-expanded="true" aria-controls="collapseOne${sequence.id}">

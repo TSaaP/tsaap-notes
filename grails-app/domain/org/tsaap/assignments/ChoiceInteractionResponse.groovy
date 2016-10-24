@@ -2,7 +2,6 @@ package org.tsaap.assignments
 
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
-import org.tsaap.assignments.interactions.InteractionChoice
 import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
 import org.tsaap.directory.User
 

@@ -135,7 +135,9 @@ class ResponseSubmissionSpecification extends JsonInteractionSpecification {
     String getJsonString() {
         if (validateSpecification()) {
             def map = specificationProperties
-            map.put(EXPECTED_CHOICE_LIST, getExpectedChoiceList().specificationProperties)
+            if (getExpectedChoiceList()) {
+                map.put(EXPECTED_CHOICE_LIST, getExpectedChoiceList().specificationProperties)
+            }
             return JsonOutput.toJson(map)
         }
         null
@@ -180,9 +182,23 @@ class ResponseSubmissionSpecification extends JsonInteractionSpecification {
     static constraints = {
         choiceInteractionType nullable: true, inList: ChoiceInteractionType.values()*.name()
         itemCount nullable: true, max: 10
-        studentsProvideExplanation nullable: false
+        studentsProvideExplanation validator: { val, obj ->
+            if (!val) {
+                return ['default.null.message']
+            }
+            if (!obj.choiceInteractionType && !val) {
+                return ['studentsMustGiveExplanation']
+            }
+
+        }
         studentsProvideConfidenceDegree nullable: false
-        expectedChoiceList nullable: false, minSize: 1
+        expectedChoiceList validator: { val, obj ->
+            if (obj.choiceInteractionType) {
+                if (val?.size() < 1) {
+                    return ['cannotBeEmpty']
+                }
+            }
+        }
     }
 
     private void getExpectedChoiceListFromListOrMap() {

@@ -8,7 +8,7 @@ import spock.lang.Specification
  */
 class ResponseSubmissionSpecificationTest extends Specification {
 
-    void "test validation and json output for a valid spec"() {
+    void "test validation and json output for a valid choice spec"() {
         given: "a valid specification"
         ResponseSubmissionSpecification spec = new ResponseSubmissionSpecification()
         spec.studentsProvideConfidenceDegree = true
@@ -45,13 +45,14 @@ class ResponseSubmissionSpecificationTest extends Specification {
 
     }
 
-    void "test json output for an invalid spec"() {
+    void "test json output for an invalid choice spec"() {
         given: "a non valid specification"
         ResponseSubmissionSpecification spec = new ResponseSubmissionSpecification()
-        spec.studentsProvideConfidenceDegree = null
-        spec.studentsProvideExplanation = true
-        spec.choiceInteractionType = ChoiceInteractionType.EXCLUSIVE.name()
-        spec.itemCount = 4
+        spec.studentsProvideConfidenceDegree = confidenceDegree
+        spec.studentsProvideExplanation = explanation
+        spec.choiceInteractionType = choiceInteractionType
+        spec.itemCount = itemCount
+        spec.expectedChoiceList = expectedChoiceList
 
         when: "getting the json output"
         String jsonStr = spec.jsonString
@@ -62,7 +63,50 @@ class ResponseSubmissionSpecificationTest extends Specification {
         and: "the spec has errors"
         spec.hasErrors()
         println ">>>>>> Errors: ${spec.errors.allErrors}"
+
+        where:
+        confidenceDegree | explanation | choiceInteractionType                  | itemCount | expectedChoiceList
+        null             | true        | ChoiceInteractionType.EXCLUSIVE.name() | 4         | [new InteractionChoice(1, 50), new InteractionChoice(3, 50)]
+        true             | null        | ChoiceInteractionType.EXCLUSIVE.name() | 4         | [new InteractionChoice(1, 50), new InteractionChoice(3, 50)]
+        true             | true        | ChoiceInteractionType.EXCLUSIVE.name() | 4         | null
+        true             | true        | ChoiceInteractionType.EXCLUSIVE.name() | 4         | []
+        true             | false       | null                                   | null      | null
+
     }
+
+    void "test validation and json output for a valid open spec"() {
+        given: "a valid specification"
+        ResponseSubmissionSpecification spec = new ResponseSubmissionSpecification()
+        spec.studentsProvideConfidenceDegree = true
+        spec.studentsProvideExplanation = true
+        spec.choiceInteractionType = null
+        spec.itemCount = null
+        spec.expectedChoiceList = null
+
+        when: "validating the spec"
+        def isValid = spec.validateSpecification()
+        if (spec.hasErrors()) {
+            println ">>>>>> Errors: ${spec.errors.allErrors}"
+        }
+
+        then: "the spec is valid"
+        isValid
+
+        when: "getting the json output and parsing the output"
+        String jsonStr = spec.jsonString
+        println ">>>>>> jsonStr: ${jsonStr}"
+        JsonSlurper jsonSlurper = new JsonSlurper()
+        def map = jsonSlurper.parseText(jsonStr)
+
+        then: "the resulting map contains all values of the spec"
+        map.studentsProvideConfidenceDegree == true
+        map.studentsProvideExplanation == true
+        map.choiceInteractionType == null
+        map.itemCount == null
+        map.expectedChoiceList == null
+
+    }
+
 
     void "test spec creation based on a valid json specification"() {
         given: "a specification build on a valid json specification"

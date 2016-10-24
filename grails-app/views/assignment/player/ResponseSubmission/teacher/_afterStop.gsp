@@ -3,7 +3,7 @@
 <g:set var="resultList2" value="${interactionInstance.resultsByAttempt()?.get("2")}"/>
 <g:each var="i" in="${(1..spec.itemCount)}">
     <g:set var="choiceStatus" value="${spec.expectedChoiceListContainsChoiceWithIndex(i) ? 'success' : 'danger'}"/>
-    <g:set var="percentResult" value="${resultList[i]}"/>
+    <g:set var="percentResult" value="${resultList?.get(i)}"/>
     <g:set var="percentResult2" value="${resultList2?.get(i)}"/>
     <div class="panel panel-${choiceStatus}">
         <div class="panel-heading">
@@ -30,7 +30,7 @@
         </div>
     </div>
 </g:each>
-<g:set var="percentResult" value="${resultList[0]}"/>
+<g:set var="percentResult" value="${resultList?.get(0)}"/>
 <g:set var="percentResult2" value="${resultList2?.get(0)}"/>
 <g:if test="${percentResult || percentResult2}">
 <div class="panel panel-warning">

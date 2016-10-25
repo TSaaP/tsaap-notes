@@ -3,30 +3,18 @@ package org.tsaap.assignments
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
-import org.tsaap.directory.User
 
-class ChoiceInteractionResponse {
 
-    Date dateCreated
-    Date lastUpdated
-
-    User learner
-    Interaction interaction
-    Integer attempt = 1
+class ChoiceInteractionResponse extends InteractionResponse {
 
     String choiceListSpecification
-    String explanation
-    Integer confidenceDegree
 
     Float score
-    Float meanGrade
+
 
     static constraints = {
         score nullable: true
         choiceListSpecification nullable: true
-        explanation nullable: true
-        confidenceDegree nullable: true
-        meanGrade nullable: true
     }
 
     /**
@@ -46,7 +34,9 @@ class ChoiceInteractionResponse {
      * @param choiceList the input choice list
      */
     void updateChoiceListSpecification(List<Integer> choiceList) {
-        choiceListSpecification = JsonOutput.toJson(choiceList)
+        if (choiceList != null) {
+            choiceListSpecification = JsonOutput.toJson(choiceList)
+        }
     }
 
 
@@ -71,50 +61,6 @@ class ChoiceInteractionResponse {
         score
     }
 
-    /**
-     * Get the assignment relative to this response
-     * @return the assignment
-     */
-    Assignment assignment() {
-        interaction.sequence.assignment
-    }
 
-    /**
-     * Check if first attempt is submitable
-     * @return true if first attempt is submitable
-     */
-    boolean firstAttemptIsSubmitable() {
-        interaction.state == StateType.show.name() && attempt == 1
-    }
-
-    /**
-     * Check if second attempt is submitable
-     * @return true if second attempt is submitable
-     */
-    boolean secondAttemptIsSubmitable() {
-        interaction.state == StateType.afterStop.name() && attempt == 2
-    }
-
-    /**
-     * Get the number of assessers
-     * @return the number of assessers
-     */
-    int evaluationCount() {
-        PeerGrading.countByResponse(this)
-    }
 }
 
-enum ConfidenceDegreeEnum {
-    NOT_CONFIDENT_AT_ALL,
-    NOT_REALLY_CONFIDENT,
-    CONFIDENT,
-    TOTALLY_CONFIDENT
-
-    String getName() {
-        name()
-    }
-
-    int getIntegerValue() {
-        ordinal()
-    }
-}

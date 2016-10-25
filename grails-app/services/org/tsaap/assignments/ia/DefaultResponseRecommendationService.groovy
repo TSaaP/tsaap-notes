@@ -2,8 +2,7 @@ package org.tsaap.assignments.ia
 
 import grails.transaction.Transactional
 import org.tsaap.assignments.ChoiceInteractionResponse
-import org.tsaap.contracts.Contract
-import org.tsaap.directory.User
+import org.tsaap.assignments.OpenInteractionResponse
 
 @Transactional
 class DefaultResponseRecommendationService implements ResponseRecommendationService {
@@ -51,7 +50,7 @@ class DefaultResponseRecommendationService implements ResponseRecommendationServ
         map1 + map2
     }
 
-    private Map<Long, List<Long>> responseValByResponseKey(
+    private Map<String, List<Long>> responseValByResponseKey(
             List<ChoiceInteractionResponse> responseKeyList,
             List<ChoiceInteractionResponse> mainResponseValueList,
             List<ChoiceInteractionResponse> secondaryResponseValueList,
@@ -59,7 +58,7 @@ class DefaultResponseRecommendationService implements ResponseRecommendationServ
         if (allResponseValueList.isEmpty()) {
             return [:]
         }
-        Map<Long, List<Long>> res = [:]
+        Map<String, List<Long>> res = [:]
         // first recommendation
         List<ChoiceInteractionResponse> currentResponseValueList = mainResponseValueList
         int indexValues = 0
@@ -78,7 +77,7 @@ class DefaultResponseRecommendationService implements ResponseRecommendationServ
     private void findAResponseValForEachResponseKey(List<ChoiceInteractionResponse> currentResponseValueList,
                                                     List<ChoiceInteractionResponse> allResponseValueList,
                                                     List<ChoiceInteractionResponse> responseKeyList,
-                                                    Map<Long, List<Long>> res,
+                                                    Map<String, List<Long>> res,
                                                     int indexValues) {
         if (!currentResponseValueList) {
             currentResponseValueList = allResponseValueList
@@ -95,5 +94,30 @@ class DefaultResponseRecommendationService implements ResponseRecommendationServ
             }
         }
     }
+
+    /**
+     * Build the explanation recommendation mapping
+     * @param responseList the responses containing explanations
+     * @return the mapping as a map
+     */
+    Map<String, List<Long>> getRecommendedResponseIdByResponseIdForOpenQuestion(List<OpenInteractionResponse> responseList) {
+        Map<String, List<Long>> res = [:]
+        int valuesCount = responseList.size()
+        int indexValues = 0
+        3.times { // 3 recommendations per response
+            responseList.each { OpenInteractionResponse keyResponse ->
+                OpenInteractionResponse valResponse = responseList.get(indexValues % valuesCount)
+                indexValues++
+                List<Long> recommendations = res.get(keyResponse.id as String)
+                if (recommendations == null) {
+                    res.put(keyResponse.id as String, [valResponse.id])
+                } else if (!recommendations.contains(valResponse.id)) {
+                    recommendations << valResponse.id
+                }
+            }
+        }
+        res
+    }
+
 }
 

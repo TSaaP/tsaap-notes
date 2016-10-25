@@ -233,6 +233,12 @@ class Interaction {
         if (responses) {
             def mapping = responseRecommendationService.getRecommendedResponseIdByResponseId(responses)
             explanationRecommendationMapping = JsonOutput.toJson(mapping)
+        } else {
+            responses = OpenInteractionResponse.findAllByInteractionAndAttempt(this, attempt)
+            if (responses) {
+                def mapping = responseRecommendationService.getRecommendedResponseIdByResponseIdForOpenQuestion(responses)
+                explanationRecommendationMapping = JsonOutput.toJson(mapping)
+            }
         }
     }
 

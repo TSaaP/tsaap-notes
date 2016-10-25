@@ -257,6 +257,7 @@ class InteractionServiceIntegrationSpec extends Specification {
         when: "peer grading coming from mary and john"
         def pgMary = interactionService.peerGradingFromUserOnResponse(mary, respThom, 1)
         def pgJohn = interactionService.peerGradingFromUserOnResponse(john, respThom, 5)
+        println ">>>>>>>> ${pgJohn.hasErrors()}"
 
         then: "peer grading objets are saved in a consistent way"
         pgJohn.id

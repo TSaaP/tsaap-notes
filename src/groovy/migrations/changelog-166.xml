@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright (C) 2013-2016 Université Toulouse 3 Paul Sabatier
+  ~
+  ~     This program is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU Affero General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     This program is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU Affero General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU Affero General Public License
+  ~     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+
+
+    <changeSet id="1" author="fsil">
+        <comment>Add open_interaction_response table</comment>
+        <createTable tableName="open_interaction_response">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_created" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_updated" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="learner_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="interaction_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="explanation" type="TEXT"/>
+            <column name="confidence_degree" type="INT"/>
+            <column name="attempt" type="INT" defaultValue="1">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mean_grade" type="FLOAT"/>
+        </createTable>
+        <createIndex tableName="open_interaction_response" indexName="idx_open_interaction_response_learner_id">
+            <column name="learner_id"/>
+        </createIndex>
+        <createIndex tableName="open_interaction_response" indexName="idx_open_interaction_response_interaction_id">
+            <column name="interaction_id"/>
+        </createIndex>
+        <addForeignKeyConstraint baseTableName="open_interaction_response" baseColumnNames="learner_id"
+                                 constraintName="fk_open_interaction_response_learner"
+                                 referencedTableName="user"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="open_interaction_response" baseColumnNames="interaction_id"
+                                 constraintName="fk_open_interaction_response_interaction"
+                                 referencedTableName="interaction"
+                                 referencedColumnNames="id"/>
+        <addUniqueConstraint tableName="open_interaction_response" columnNames="learner_id, interaction_id, attempt"
+                             constraintName="learner_open_interaction_attempt_unique"/>
+    </changeSet>
+
+
+
+
+    <changeSet id="2" author="fsil">
+        <comment>Alter peer grading table</comment>
+        <dropNotNullConstraint tableName="peer_grading" columnName="response_id" columnDataType="BIGINT"/>
+        <addColumn tableName="peer_grading">
+            <column name="open_response_id" type="BIGINT"/>
+        </addColumn>
+        <createIndex tableName="peer_grading" indexName="idx_peer_grading_open_response_id">
+            <column name="open_response_id"/>
+        </createIndex>
+        <addForeignKeyConstraint baseTableName="peer_grading" baseColumnNames="open_response_id"
+                                 constraintName="fk_peer_grading_open_response"
+                                 referencedTableName="open_interaction_response"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+
+</databaseChangeLog>

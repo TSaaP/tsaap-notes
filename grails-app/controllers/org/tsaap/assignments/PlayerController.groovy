@@ -73,8 +73,8 @@ class PlayerController {
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def updateChoiceInteractionResponseCount(Interaction interactionInstance) {
-        render interactionInstance.choiceInteractionResponseCount()
+    def updateInteractionResponseCount(Interaction interactionInstance) {
+        render interactionInstance.interactionResponseCount()
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
@@ -85,15 +85,19 @@ class PlayerController {
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def updateSecondAttemptCount(Interaction interactionInstance) {
-        render interactionInstance.choiceInteractionResponseCount(2)
+        render interactionInstance.interactionResponseCount(2)
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def submitResponse(Interaction interactionInstance) {
-        ResponseSubmissionSpecification spec = interactionInstance.interactionSpecification
-        List choiceList = getChoiceListFromParams(spec, params)
         def user = springSecurityService.currentUser
-        createAndSaveChoiceInteractionResponse(user, interactionInstance, choiceList, params)
+        ResponseSubmissionSpecification spec = interactionInstance.interactionSpecification
+        if (spec.hasChoices()) {
+            List choiceList = getChoiceListFromParams(spec, params)
+            createAndSaveChoiceInteractionResponse(user, interactionInstance, choiceList, params)
+        } else {
+            createAndSaveOpenInteractionResponse(user,interactionInstance,params)
+        }
         renderSequenceTemplate(user, interactionInstance.sequence)
     }
 
@@ -125,6 +129,20 @@ class PlayerController {
             response.explanation = markupSanitizerService.sanitize(params.explanation)?.cleanString
         }
         response.updateChoiceListSpecification(choiceList)
+        interactionService.saveInteractionResponse(response)
+        response
+    }
+
+    private OpenInteractionResponse createAndSaveOpenInteractionResponse(user, Interaction interactionInstance, params) {
+        OpenInteractionResponse response = new OpenInteractionResponse(
+                learner: user,
+                interaction: interactionInstance,
+                confidenceDegree: params.confidenceDegree as Integer,
+                attempt: params.attempt as int
+        )
+        if (params.explanation) {
+            response.explanation = markupSanitizerService.sanitize(params.explanation)?.cleanString
+        }
         interactionService.saveInteractionResponse(response)
         response
     }

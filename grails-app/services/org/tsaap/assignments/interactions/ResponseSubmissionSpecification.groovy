@@ -123,6 +123,14 @@ class ResponseSubmissionSpecification extends JsonInteractionSpecification {
     }
 
     /**
+     * Check if the specification has choices
+     * @return
+     */
+    Boolean hasChoices() {
+        choiceInteractionType
+    }
+
+    /**
      * Calculate the total score obtained when adding score from each expected choice. The total score is expected to be 100.
      * @return the total score
      */

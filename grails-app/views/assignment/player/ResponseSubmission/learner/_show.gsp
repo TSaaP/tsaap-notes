@@ -8,12 +8,13 @@
 <g:else>
     <g:set var="responseSubmissionSpecificationInstance" value="${interactionInstance.interactionSpecification}"/>
     <g:set var="itemCount" value="${responseSubmissionSpecificationInstance.itemCount}"/>
-    <g:set var="isMultipleChoice" value="${responseSubmissionSpecificationInstance?.isMultipleChoice() ?: false}"/>
+    <g:set var="isMultipleChoice" value="${responseSubmissionSpecificationInstance.isMultipleChoice() ?: false}"/>
+    <g:set var="hasChoices" value="${responseSubmissionSpecificationInstance.hasChoices()}"/>
     <g:set var="firstAttemptResponse" value="${interactionInstance.responseForUser(user)}"/>
     <g:form>
         <g:hiddenField name="id" value="${interactionInstance.id}"/>
         <g:hiddenField name="attempt" value="${attempt}"/>
-
+        <g:if test="${hasChoices}">
         <div class="checkbox ${isMultipleChoice ? '' : 'hidden'}" id="multiple_choice_${interactionInstance.id}">
             <g:each in="${1..itemCount}" var="checkBoxElet" status="i">
                 <g:set var="choiceIsExpected"
@@ -35,6 +36,7 @@
                 </label>
             </g:each>
         </div>
+        </g:if>
 
         <g:if test="${attempt == 1}">
             <g:if test="${responseSubmissionSpecificationInstance.studentsProvideExplanation}">

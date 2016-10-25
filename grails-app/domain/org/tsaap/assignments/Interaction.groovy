@@ -77,7 +77,9 @@ class Interaction {
     void doAfterStop() {
         state = StateType.afterStop.name()
         if (isResponseSubmission()) {
-            updateResults()
+            if (interactionSpecification.hasChoices()) {
+                updateResults()
+            }
             if (interactionSpecification.studentsProvideExplanation) {
                 updateExplanationRecommendationMapping()
             }
@@ -151,8 +153,12 @@ class Interaction {
      * Calculate the number of choice interaction responses for the current interaction
      * @return the number of responses
      */
-    Integer choiceInteractionResponseCount(int attempt = 1) {
-        ChoiceInteractionResponse.countByInteractionAndAttempt(this, attempt)
+    Integer interactionResponseCount(int attempt = 1) {
+        Integer res = ChoiceInteractionResponse.countByInteractionAndAttempt(this, attempt)
+        if (res == 0) {
+            res = OpenInteractionResponse.countByInteractionAndAttempt(this, attempt)
+        }
+        res
     }
 
 

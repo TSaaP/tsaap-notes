@@ -6,7 +6,7 @@
     <div class="panel-body">
         <div class="checkbox">
             <label>
-                <input type="checkbox" name="hasChoices" checked> <g:message code="sequence.interaction.studentsSelect"/>
+                <input type="checkbox" name="hasChoices" ${responseSubmissionSpecificationInstance.choiceInteractionType ? 'checked' : ''}> <g:message code="sequence.interaction.studentsSelect"/>
             <g:select name="choiceInteractionType" id="choiceInteractionType"
                       from="${ChoiceInteractionType.values()*.name()}"
                       value="${responseSubmissionSpecificationInstance?.choiceInteractionType}"/> <g:message
@@ -119,7 +119,8 @@
                 $("#itemCount").prop('disabled',false);
                 $("#itemCount").trigger("change");
             }
-        })
+        });
+        chkBoxHasChoices.trigger("change");
     }
 
     function manageChoices() {

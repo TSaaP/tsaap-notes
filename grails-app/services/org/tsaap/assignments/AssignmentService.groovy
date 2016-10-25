@@ -94,6 +94,10 @@ class AssignmentService {
         Contract.requires(assignment.sequences?.contains(sequence), SEQUENCE__DOESN__T__BELONG__TO__ASSIGNMENT)
         setupAttachementToDeleteFlag(sequence)
         Schedule.executeUpdate("delete Schedule sch where sch.interaction in (from Interaction i where i.sequence = ?)",[sequence])
+        PeerGrading.executeUpdate("delete PeerGrading pg where pg.response in (from ChoiceInteractionResponse resp where resp.interaction in (from Interaction i where i.sequence = ?))",[sequence])
+        PeerGrading.executeUpdate("delete PeerGrading pg where pg.openResponse in (from OpenInteractionResponse resp where resp.interaction in (from Interaction i where i.sequence = ?))",[sequence])
+        ChoiceInteractionResponse.executeUpdate("delete ChoiceInteractionResponse resp where resp.interaction in (from Interaction i where i.sequence  = ?)",[sequence])
+        OpenInteractionResponse.executeUpdate("delete OpenInteractionResponse resp where resp.interaction in (from Interaction i where i.sequence = ?)",[sequence])
         def query = Interaction.where {
             sequence == sequence
         }

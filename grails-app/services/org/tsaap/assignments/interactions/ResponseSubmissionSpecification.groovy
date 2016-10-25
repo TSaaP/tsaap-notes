@@ -13,6 +13,7 @@ class ResponseSubmissionSpecification extends JsonInteractionSpecification {
      * Default constructor
      */
     ResponseSubmissionSpecification() {
+        setChoiceInteractionType(ChoiceInteractionType.EXCLUSIVE.name())
         setExpectedChoiceList([new InteractionChoice(1, 100f)])
     }
 
@@ -182,17 +183,14 @@ class ResponseSubmissionSpecification extends JsonInteractionSpecification {
     static constraints = {
         choiceInteractionType nullable: true, inList: ChoiceInteractionType.values()*.name()
         itemCount nullable: true, max: 10
-        studentsProvideExplanation validator: { val, obj ->
-            if (!val) {
-                return ['default.null.message']
-            }
+        studentsProvideExplanation nullable: false, validator: { val, obj ->
             if (!obj.choiceInteractionType && !val) {
                 return ['studentsMustGiveExplanation']
             }
 
         }
         studentsProvideConfidenceDegree nullable: false
-        expectedChoiceList validator: { val, obj ->
+        expectedChoiceList nullable: true, validator: { val, obj ->
             if (obj.choiceInteractionType) {
                 if (val?.size() < 1) {
                     return ['cannotBeEmpty']

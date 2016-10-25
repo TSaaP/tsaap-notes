@@ -189,24 +189,32 @@ class SequenceController {
 
     private ResponseSubmissionSpecification getResponseSubmissionSpecificationToSaveOrUpdate(GrailsParameterMap params, Sequence sequence = null) {
         ResponseSubmissionSpecification subSpec = sequence?.responseSubmissionSpecification ?: new ResponseSubmissionSpecification()
-        subSpec.choiceInteractionType = params.choiceInteractionType
-        subSpec.itemCount = params.itemCount as Integer
-        if (subSpec.isMultipleChoice()) {
-            def expectedChoiceList = params.expectedChoiceList
-            def countExpectedChoice = expectedChoiceList?.size() as Float
-            subSpec.expectedChoiceList = expectedChoiceList.collect {
-                new InteractionChoice(it as Integer,
-                        (100 / countExpectedChoice) as Float)
-            }
-        } else {
-            def exclusiveChoice = params.exclusiveChoice as Integer
-            if (exclusiveChoice != null) {
-                subSpec.expectedChoiceList = [new InteractionChoice(exclusiveChoice, 100f)]
+        boolean hasChoices = params.hasChoices as boolean
+        if (hasChoices) {
+            subSpec.choiceInteractionType = params.choiceInteractionType
+            subSpec.itemCount = params.itemCount as Integer
+            if (subSpec.isMultipleChoice()) {
+                def expectedChoiceList = params.expectedChoiceList
+                def countExpectedChoice = expectedChoiceList?.size() as Float
+                subSpec.expectedChoiceList = expectedChoiceList.collect {
+                    new InteractionChoice(it as Integer,
+                            (100 / countExpectedChoice) as Float)
+                }
             } else {
-                subSpec.expectedChoiceList = []
+                def exclusiveChoice = params.exclusiveChoice as Integer
+                if (exclusiveChoice != null) {
+                    subSpec.expectedChoiceList = [new InteractionChoice(exclusiveChoice, 100f)]
+                } else {
+                    subSpec.expectedChoiceList = []
+                }
             }
+            subSpec.studentsProvideExplanation = params.studentsProvideExplanation as boolean
+        } else {
+            subSpec.studentsProvideExplanation = true
+            subSpec.expectedChoiceList = null
+            subSpec.itemCount = null
+            subSpec.choiceInteractionType = null
         }
-        subSpec.studentsProvideExplanation = params.studentsProvideExplanation as boolean
         if (subSpec.studentsProvideExplanation) {
             subSpec.studentsProvideConfidenceDegree = true
         } else {

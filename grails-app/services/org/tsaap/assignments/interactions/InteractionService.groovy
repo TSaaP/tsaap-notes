@@ -3,6 +3,8 @@ package org.tsaap.assignments.interactions
 import grails.transaction.Transactional
 import org.tsaap.assignments.ChoiceInteractionResponse
 import org.tsaap.assignments.Interaction
+import org.tsaap.assignments.InteractionResponse
+import org.tsaap.assignments.OpenInteractionResponse
 import org.tsaap.assignments.PeerGrading
 import org.tsaap.assignments.Sequence
 import org.tsaap.assignments.StateType
@@ -42,15 +44,17 @@ class InteractionService {
     }
 
     /**
-     * Save a choice interaction response
+     * Save an interaction response
      * @param response the response to save
      * @return the saved response with the updated score
      */
-    ChoiceInteractionResponse saveChoiceInteractionResponse(ChoiceInteractionResponse response) {
+    InteractionResponse saveInteractionResponse(InteractionResponse response) {
         Contract.requires(response.firstAttemptIsSubmitable() || response.secondAttemptIsSubmitable(), INTERACTION_CANNOT_RECEIVE_RESPONSE)
         Contract.requires(response.learner.isRegisteredInAssignment(response.assignment()),
                 LEARNER_NOT_REGISTERED_IN_ASSIGNMENT)
-        response.updateScore()
+        if (response instanceof ChoiceInteractionResponse) {
+            response.updateScore()
+        }
         response.save()
         response
     }
@@ -61,9 +65,29 @@ class InteractionService {
      * @param response the response
      * @return the peer grading object
      */
-    PeerGrading peerGradingFromUserOnResponse(User grader, ChoiceInteractionResponse response, Float grade) {
+    PeerGrading peerGradingFromUserOnResponse(User grader, InteractionResponse response, Float grade) {
         Contract.requires(grader.isRegisteredInAssignment(response.assignment()),LEARNER_NOT_REGISTERED_IN_ASSIGNMENT)
-        PeerGrading peerGrading = PeerGrading.findByResponseAndGrader(response,grader)
+        PeerGrading peerGrading = null
+        if (response instanceof ChoiceInteractionResponse) {
+            peerGrading = findOrCreatePeerGradingOnChoiceResponse(response, grader, grade)
+        }
+        if (response instanceof OpenInteractionResponse) {
+            peerGrading = findOrCreatePeerGradingOnOpenResponse(response, grader, grade)
+        }
+        peerGrading
+    }
+
+    private PeerGrading findOrCreatePeerGradingOnOpenResponse(OpenInteractionResponse response, User grader, float grade) {
+        PeerGrading peerGrading = PeerGrading.findByOpenResponseAndGrader(response, grader)
+        if (!peerGrading) {
+            peerGrading = new PeerGrading(grader: grader, openResponse: response, grade: grade)
+            peerGrading.save()
+        }
+        peerGrading
+    }
+
+    private PeerGrading findOrCreatePeerGradingOnChoiceResponse(ChoiceInteractionResponse response, User grader, float grade) {
+        PeerGrading peerGrading = PeerGrading.findByResponseAndGrader(response, grader)
         if (!peerGrading) {
             peerGrading = new PeerGrading(grader: grader, response: response, grade: grade)
             peerGrading.save()
@@ -76,9 +100,14 @@ class InteractionService {
      * @param response the response
      * @return the response with mean grade updated
      */
-    ChoiceInteractionResponse updateMeanGradeOfResponse(ChoiceInteractionResponse response) {
+    InteractionResponse updateMeanGradeOfResponse(InteractionResponse response) {
         def query = PeerGrading.where {
-            response == response
+            if (response instanceof ChoiceInteractionResponse) {
+                response == response
+            }
+            if (response instanceof OpenInteractionResponse) {
+                openResponse == response
+            }
         }.projections {
             avg('grade')
         }

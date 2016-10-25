@@ -162,6 +162,24 @@ class Interaction {
      * @return true if user has already given a response
      */
     boolean hasResponseForUser(User user, int attempt = 1) {
+        hasChoiceResponseForUser(user, attempt) || hasOpenResponseForUser(user, attempt)
+    }
+
+    /**
+     * Check if a user has already given an open response for the current interaction
+     * @param user the user
+     * @return true if user has already given an open response
+     */
+    public boolean hasOpenResponseForUser(User user, int attempt = 1) {
+        OpenInteractionResponse.countByInteractionAndLearnerAndAttempt(this, user, attempt) > 0
+    }
+
+    /**
+     * Check if a user has already given a choice response for the current interaction
+     * @param user the user
+     * @return true if user has already given a choice response
+     */
+    public boolean hasChoiceResponseForUser(User user, int attempt = 1) {
         ChoiceInteractionResponse.countByInteractionAndLearnerAndAttempt(this, user, attempt) > 0
     }
 

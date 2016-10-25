@@ -7,15 +7,13 @@ import org.tsaap.assignments.AssignmentService
 import org.tsaap.assignments.ChoiceInteractionResponse
 import org.tsaap.assignments.ConfidenceDegreeEnum
 import org.tsaap.assignments.Interaction
+import org.tsaap.assignments.OpenInteractionResponse
 import org.tsaap.assignments.PeerGrading
 import org.tsaap.assignments.Sequence
 import org.tsaap.assignments.StateType
 import org.tsaap.contracts.ConditionViolationException
 import org.tsaap.directory.User
 import spock.lang.Specification
-
-import java.math.RoundingMode
-import java.text.DecimalFormat
 
 /**
  * See the API for {@link grails.test.mixin.services.ServiceUnitTestMixin} for usage instructions
@@ -163,7 +161,7 @@ class InteractionServiceIntegrationSpec extends Specification {
         )
 
         and: "saving the response"
-        interactionService.saveChoiceInteractionResponse(resp)
+        interactionService.saveInteractionResponse(resp)
 
         then: "an exception is thrown"
         thrown(ConditionViolationException)
@@ -202,7 +200,7 @@ class InteractionServiceIntegrationSpec extends Specification {
         )
 
         and: "saving the response"
-        interactionService.saveChoiceInteractionResponse(resp)
+        interactionService.saveInteractionResponse(resp)
 
         then: "the response is saved with no errors"
         resp.id
@@ -252,7 +250,7 @@ class InteractionServiceIntegrationSpec extends Specification {
                 explanation: "Thom [2,3,5] score 100- not confident",
                 confidenceDegree: ConfidenceDegreeEnum.NOT_REALLY_CONFIDENT.integerValue
         )
-        interactionService.saveChoiceInteractionResponse(respThom)
+        interactionService.saveInteractionResponse(respThom)
 
         when: "peer grading coming from mary and john"
         def pgMary = interactionService.peerGradingFromUserOnResponse(mary, respThom, 1)
@@ -285,4 +283,141 @@ class InteractionServiceIntegrationSpec extends Specification {
         !Sequence.findById(sequence.id)
         !Assignment.findById(assignment.id)
     }
+
+    void "test save open interaction response when the learner is not registered i the assignment"() {
+        given: "an assignment with sequence and interactions"
+        Assignment assignment = bootstrapTestService.assignment3WithInteractions
+
+        and:"the response submission interaction"
+        Interaction interaction = assignment.sequences[0].responseSubmissionInteraction
+        interactionService.startInteraction(interaction, interaction.owner)
+
+        and: "a learner not registered in the assignment"
+        User paul = bootstrapTestService.learnerPaul
+
+        when:"creating the paul response"
+        OpenInteractionResponse resp = new OpenInteractionResponse(
+                interaction: interaction,
+                learner: paul,
+                attempt: 1
+        )
+
+        and: "saving the response"
+        interactionService.saveInteractionResponse(resp)
+
+        then: "an exception is thrown"
+        thrown(ConditionViolationException)
+
+        and: "the interaction has no response for this learner"
+        !interaction.hasResponseForUser(paul)
+
+        when: "the interaction is stopped"
+        interactionService.stopInteraction(interaction, interaction.owner)
+
+        then: "the results are calculated and set"
+        interaction.results == null
+        interaction.resultsByAttempt() == [:]
+    }
+
+
+    void "test save open interaction response"() {
+
+        given: "an assignment with sequence and interactions"
+        Assignment assignment = bootstrapTestService.assignment3WithInteractions
+
+        and:"the response submission interaction"
+        Interaction interaction = assignment.sequences[0].responseSubmissionInteraction
+        interactionService.startInteraction(interaction, interaction.owner)
+
+        and: "a learner registered in the assignment"
+        User paul = bootstrapTestService.learnerPaul
+        assignmentService.registerUserOnAssignment(paul, assignment)
+
+        when:"creating the paul response"
+        OpenInteractionResponse resp = new OpenInteractionResponse(
+                interaction: interaction,
+                learner: paul,
+                explanation: "an explanation",
+                attempt: 1
+        )
+
+        and: "saving the response"
+        interactionService.saveInteractionResponse(resp)
+
+        then: "the response is saved with no errors"
+        resp.id
+        !resp.hasErrors()
+
+        and: "the interaction has response for this learner"
+        interaction.hasResponseForUser(paul)
+
+        when: "the interaction is stopped"
+        interactionService.stopInteraction(interaction, interaction.owner)
+
+        then: "the results are not calculated and set"
+        interaction.results == null
+        println ">>>>>>>>> ${interaction.results}"
+    }
+
+    void "test update of mean grade of an open response"() {
+        given: "an assignment with sequence and interactions"
+        Assignment assignment = bootstrapTestService.assignment3WithInteractions
+
+        and:"the response submission interaction"
+        Sequence sequence = assignment.sequences[0]
+        Interaction interaction = sequence.responseSubmissionInteraction
+        interactionService.startInteraction(interaction, interaction.owner)
+
+        and: "learners registered in the assignment"
+        def learners = bootstrapTestService.learners
+        User thom = learners[0]
+        User mary = learners[1]
+        User john = learners[2]
+
+        for (int i = 0; i<4; i++) {
+            assignmentService.registerUserOnAssignment(learners[i], assignment)
+        }
+
+        and: "each one with an answer"
+        OpenInteractionResponse respThom = new OpenInteractionResponse(
+                interaction: interaction,
+                learner: thom,
+                attempt: 1,
+                explanation: "Thom explanation not confident",
+                confidenceDegree: ConfidenceDegreeEnum.NOT_REALLY_CONFIDENT.integerValue
+        )
+        interactionService.saveInteractionResponse(respThom)
+
+        when: "peer grading coming from mary and john"
+        def pgMary = interactionService.peerGradingFromUserOnResponse(mary, respThom, 1)
+        def pgJohn = interactionService.peerGradingFromUserOnResponse(john, respThom, 5)
+        println ">>>>>>>> ${pgJohn.hasErrors()}"
+
+        then: "peer grading objets are saved in a consistent way"
+        pgJohn.id
+        pgJohn.grade == 5f
+        pgJohn.openResponse == respThom
+        pgMary.id
+
+        when:"update the mean grade"
+        def resp = interactionService.updateMeanGradeOfResponse(respThom)
+
+        then: "the returned response is respThom"
+        resp == respThom
+
+        and: "the mean grade is updated with the correct mean"
+        resp.meanGrade == 3f
+
+        when: "deleting the assignment"
+        assignmentService.deleteAssignment(assignment,assignment.owner)
+
+        then: "all attached objects are deleted"
+        !PeerGrading.findById(pgJohn.id)
+        !PeerGrading.findById(pgMary.id)
+        !OpenInteractionResponse.findById(respThom.id)
+        !Interaction.findById(interaction.id)
+        !Sequence.findById(sequence.id)
+        !Assignment.findById(assignment.id)
+    }
+
 }

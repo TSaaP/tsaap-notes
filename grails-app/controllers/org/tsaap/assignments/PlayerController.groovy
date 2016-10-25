@@ -4,7 +4,6 @@ import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
 import org.grails.plugins.sanitizer.MarkupSanitizerService
 import org.tsaap.assignments.interactions.InteractionService
-import org.tsaap.assignments.interactions.InteractionSpecification
 import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
 import org.tsaap.directory.User
 
@@ -126,7 +125,7 @@ class PlayerController {
             response.explanation = markupSanitizerService.sanitize(params.explanation)?.cleanString
         }
         response.updateChoiceListSpecification(choiceList)
-        interactionService.saveChoiceInteractionResponse(response)
+        interactionService.saveInteractionResponse(response)
         response
     }
 

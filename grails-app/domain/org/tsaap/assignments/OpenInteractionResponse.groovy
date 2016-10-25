@@ -4,7 +4,7 @@ package org.tsaap.assignments
 /**
  * Class reprensenting an OpenInteractionResponse
  */
-class OpenInteractionResponse {
+class OpenInteractionResponse extends InteractionResponse {
 
     /**
      * Get the number of assessers

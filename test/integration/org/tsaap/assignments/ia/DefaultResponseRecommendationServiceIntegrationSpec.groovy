@@ -3,12 +3,8 @@ package org.tsaap.assignments.ia
 import org.tsaap.BootstrapTestService
 import org.tsaap.assignments.*
 import org.tsaap.assignments.interactions.InteractionService
-import org.tsaap.contracts.ConditionViolationException
 import org.tsaap.directory.User
 import spock.lang.Specification
-
-import java.math.RoundingMode
-import java.text.DecimalFormat
 
 /**
  * See the API for {@link grails.test.mixin.services.ServiceUnitTestMixin} for usage instructions
@@ -55,7 +51,7 @@ class DefaultResponseRecommendationServiceIntegrationSpec extends Specification 
                 explanation: "Thom [2,3,5] score 100- not confident",
                 confidenceDegree: ConfidenceDegreeEnum.NOT_REALLY_CONFIDENT.integerValue
         )
-        interactionService.saveChoiceInteractionResponse(respThom)
+        interactionService.saveInteractionResponse(respThom)
         ChoiceInteractionResponse respMary = new ChoiceInteractionResponse(
                 interaction: interaction,
                 learner: mary   ,
@@ -64,7 +60,7 @@ class DefaultResponseRecommendationServiceIntegrationSpec extends Specification 
                 explanation: "Mary [1,4] score 0- very confident",
                 confidenceDegree: ConfidenceDegreeEnum.TOTALLY_CONFIDENT.integerValue
         )
-        interactionService.saveChoiceInteractionResponse(respMary)
+        interactionService.saveInteractionResponse(respMary)
         ChoiceInteractionResponse respJohn = new ChoiceInteractionResponse(
                 interaction: interaction,
                 learner: john   ,
@@ -73,7 +69,7 @@ class DefaultResponseRecommendationServiceIntegrationSpec extends Specification 
                 explanation: "John [2,3,5] score 100- very confident",
                 confidenceDegree: ConfidenceDegreeEnum.TOTALLY_CONFIDENT.integerValue
         )
-        interactionService.saveChoiceInteractionResponse(respJohn)
+        interactionService.saveInteractionResponse(respJohn)
         ChoiceInteractionResponse respErik = new ChoiceInteractionResponse(
                 interaction: interaction,
                 learner: erik   ,
@@ -82,7 +78,7 @@ class DefaultResponseRecommendationServiceIntegrationSpec extends Specification 
                 explanation: "Erik [1,4] score 0- not really confident",
                 confidenceDegree: ConfidenceDegreeEnum.NOT_REALLY_CONFIDENT.integerValue
         )
-        interactionService.saveChoiceInteractionResponse(respErik)
+        interactionService.saveInteractionResponse(respErik)
 
         expect: "score of learners is consistent"
         respThom.score == 100f

@@ -104,9 +104,12 @@ class DefaultResponseRecommendationService implements ResponseRecommendationServ
         Map<String, List<Long>> res = [:]
         int valuesCount = responseList.size()
         int indexValues = 0
+        def responseValList = new ArrayList<OpenInteractionResponse>()
+        responseValList.addAll(responseList)
         3.times { // 3 recommendations per response
+            Collections.shuffle(responseValList)
             responseList.each { OpenInteractionResponse keyResponse ->
-                OpenInteractionResponse valResponse = responseList.get(indexValues % valuesCount)
+                OpenInteractionResponse valResponse = responseValList.get(indexValues % valuesCount)
                 indexValues++
                 List<Long> recommendations = res.get(keyResponse.id as String)
                 if (recommendations == null) {

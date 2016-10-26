@@ -128,4 +128,102 @@ class DefaultResponseRecommendationServiceIntegrationSpec extends Specification 
         recommendations[2] == respMary
 
     }
+
+    void "test  response recommendation mapping on open question"() {
+
+        given: "an assignment with sequence and interactions"
+        Assignment assignment = bootstrapTestService.assignment3WithInteractions
+
+        and:"the response submission interaction"
+        Interaction interaction = assignment.sequences[0].responseSubmissionInteraction
+        interactionService.startInteraction(interaction, interaction.owner)
+
+        and: "learners registered in the assignment"
+        def learners = bootstrapTestService.learners
+        User thom = learners[0]
+        User mary = learners[1]
+        User john = learners[2]
+        User erik = learners[3]
+
+        for (int i = 0; i<4; i++) {
+            assignmentService.registerUserOnAssignment(learners[i], assignment)
+        }
+
+        and: "each one with an answer"
+        OpenInteractionResponse respThom = new OpenInteractionResponse(
+                interaction: interaction,
+                learner: thom,
+                attempt: 1,
+                explanation: "Thom explanation- not confident",
+                confidenceDegree: ConfidenceDegreeEnum.NOT_REALLY_CONFIDENT.integerValue
+        )
+        interactionService.saveInteractionResponse(respThom)
+        OpenInteractionResponse respMary = new OpenInteractionResponse(
+                interaction: interaction,
+                learner: mary   ,
+                attempt: 1,
+                explanation: "Mary explanation very confident",
+                confidenceDegree: ConfidenceDegreeEnum.TOTALLY_CONFIDENT.integerValue
+        )
+        interactionService.saveInteractionResponse(respMary)
+        OpenInteractionResponse respJohn = new OpenInteractionResponse(
+                interaction: interaction,
+                learner: john   ,
+                attempt: 1,
+                explanation: "John explanation very confident",
+                confidenceDegree: ConfidenceDegreeEnum.TOTALLY_CONFIDENT.integerValue
+        )
+        interactionService.saveInteractionResponse(respJohn)
+        OpenInteractionResponse respErik = new OpenInteractionResponse(
+                interaction: interaction,
+                learner: erik   ,
+                attempt: 1,
+                explanation: "Erik explanation not really confident",
+                confidenceDegree: ConfidenceDegreeEnum.NOT_REALLY_CONFIDENT.integerValue
+        )
+        interactionService.saveInteractionResponse(respErik)
+
+
+        when: "building the explanation recommendation mapping with "
+        def mapping = responseRecommendationService.getRecommendedResponseIdByResponseIdForOpenQuestion(OpenInteractionResponse.findAllByInteraction(interaction))
+
+        then:"the algorithm provides a one to one recommendation as expected"
+        println ">>>>>>>>>>>>> $mapping"
+        mapping[respThom.id as String].size() > 1
+        mapping[respErik.id as String].size() > 1
+        mapping[respJohn.id as String].size() > 1
+        mapping[respMary.id as String].size() > 1
+//        mapping[respThom.id as String][0] == respErik.id
+//        mapping[respErik.id as String][0] == respThom.id
+//        mapping[respMary.id as String][0] == respJohn.id
+//        mapping[respJohn.id as String][0] == respMary.id
+//        mapping[respThom.id as String][1] == respJohn.id
+//        mapping[respMary.id as String][1] == respErik.id
+//        mapping[respJohn.id as String][1] == respThom.id
+//        mapping[respErik.id as String][1] == respMary.id
+//        mapping[respThom.id as String][2] == respMary.id
+//        mapping[respMary.id as String][2] == respThom.id
+//        mapping[respJohn.id as String][2] == respErik.id
+//        mapping[respErik.id as String][2] == respJohn.id
+
+        when: "stopping the response interaction"
+        interactionService.stopInteraction(interaction,interaction.owner)
+
+        then:"esplanation mapping is saved"
+        interaction.explanationRecommendationMapping
+
+        and: "the corresponding map is buildable"
+        interaction.explanationRecommendationMap()
+
+
+        when:"asking for a recommendation in the evaluation interaction for a user"
+        def evalInter = assignment.sequences[0].evaluationInteraction
+        def recommendations = evalInter.sequence.findRecommendedResponsesForUser(thom)
+
+        then: "the list of responses corresponding to the response user are found"
+        recommendations[0] == respErik
+        recommendations[1] == respJohn
+        recommendations[2] == respMary
+
+    }
 }

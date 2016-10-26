@@ -103,8 +103,16 @@ class PlayerController {
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def createOrUpdatePeerGrading() {
+        def params = params
         User grader = User.get(params.grader_id as long)
-        ChoiceInteractionResponse response = ChoiceInteractionResponse.get(params.response_id as long)
+        InteractionResponse response
+        boolean responseIsChoiceResponse =  Boolean.getBoolean(params.responseIsChoiceResponse)
+        if (responseIsChoiceResponse) {
+            response = ChoiceInteractionResponse.get(params.response_id as long)
+        } else {
+            response = OpenInteractionResponse.get(params.response_id as long)
+        }
+
         Float grade = params.grade as Float
         PeerGrading peerGrading = interactionService.peerGradingFromUserOnResponse(grader, response, grade)
         render "${peerGrading.hasErrors() ? 'error' : 'success'}"

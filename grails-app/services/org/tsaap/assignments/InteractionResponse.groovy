@@ -56,6 +56,12 @@ abstract class InteractionResponse {
     int evaluationCount() {
         PeerGrading.countByResponse(this)
     }
+
+    /**
+     * Check if the response is a choice response
+     * @return true if the response is a choice response false otherwise
+     */
+    abstract boolean isChoiceResponse();
 }
 
 enum ConfidenceDegreeEnum {

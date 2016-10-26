@@ -52,7 +52,7 @@ class InteractionService {
         Contract.requires(response.firstAttemptIsSubmitable() || response.secondAttemptIsSubmitable(), INTERACTION_CANNOT_RECEIVE_RESPONSE)
         Contract.requires(response.learner.isRegisteredInAssignment(response.assignment()),
                 LEARNER_NOT_REGISTERED_IN_ASSIGNMENT)
-        if (response instanceof ChoiceInteractionResponse) {
+        if (response.isChoiceResponse()) {
             response.updateScore()
         }
         response.save()
@@ -66,12 +66,11 @@ class InteractionService {
      * @return the peer grading object
      */
     PeerGrading peerGradingFromUserOnResponse(User grader, InteractionResponse response, Float grade) {
-        Contract.requires(grader.isRegisteredInAssignment(response.assignment()),LEARNER_NOT_REGISTERED_IN_ASSIGNMENT)
-        PeerGrading peerGrading = null
-        if (response instanceof ChoiceInteractionResponse) {
+        Contract.requires(grader.isRegisteredInAssignment(response.assignment()),"$LEARNER_NOT_REGISTERED_IN_ASSIGNMENT : ${grader.id} - ${response.assignment().id}")
+        PeerGrading peerGrading
+        if (response.isChoiceResponse()) {
             peerGrading = findOrCreatePeerGradingOnChoiceResponse(response, grader, grade)
-        }
-        if (response instanceof OpenInteractionResponse) {
+        } else {
             peerGrading = findOrCreatePeerGradingOnOpenResponse(response, grader, grade)
         }
         peerGrading
@@ -102,10 +101,9 @@ class InteractionService {
      */
     InteractionResponse updateMeanGradeOfResponse(InteractionResponse response) {
         def query = PeerGrading.where {
-            if (response instanceof ChoiceInteractionResponse) {
+            if (response.isChoiceResponse()) {
                 response == response
-            }
-            if (response instanceof OpenInteractionResponse) {
+            } else {
                 openResponse == response
             }
         }.projections {

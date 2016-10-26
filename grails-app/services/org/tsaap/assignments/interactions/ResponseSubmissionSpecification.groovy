@@ -126,7 +126,7 @@ class ResponseSubmissionSpecification extends JsonInteractionSpecification {
      * Check if the specification has choices
      * @return
      */
-    Boolean hasChoices() {
+    boolean hasChoices() {
         choiceInteractionType
     }
 

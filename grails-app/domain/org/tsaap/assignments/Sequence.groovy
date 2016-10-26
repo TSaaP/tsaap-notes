@@ -221,13 +221,24 @@ class Sequence {
      * @param user the user
      * @return the response list
      */
-    List<ChoiceInteractionResponse> findRecommendedResponsesForUser(User user) {
+    List<InteractionResponse> findRecommendedResponsesForUser(User user) {
         def responseInteraction = responseSubmissionInteraction
-        def userResponse = ChoiceInteractionResponse.findByInteractionAndLearnerAndAttempt(responseInteraction,user,1)
+        InteractionResponse userResponse
+        if (responseSubmissionInteraction.interactionSpecification.hasChoices()) {
+            userResponse = ChoiceInteractionResponse.findByInteractionAndLearnerAndAttempt(responseInteraction, user, 1)
+        } else {
+            userResponse = OpenInteractionResponse.findByInteractionAndLearnerAndAttempt(responseInteraction, user, 1)
+        }
         def res
         if (userResponse) {
-            res = responseInteraction.explanationRecommendationMap()[userResponse.id as String].collect {
-                ChoiceInteractionResponse.get(it)
+            if (userResponse.isChoiceResponse()) {
+                res = responseInteraction.explanationRecommendationMap()[userResponse.id as String].collect {
+                    ChoiceInteractionResponse.get(it)
+                }
+            } else {
+                res = responseInteraction.explanationRecommendationMap()[userResponse.id as String].collect {
+                    OpenInteractionResponse.get(it)
+                }
             }
         } else {
             res = []
@@ -261,7 +272,7 @@ class Sequence {
         Interaction interaction = responseSubmissionInteraction
         list = ChoiceInteractionResponse.withCriteria {
             eq('interaction', interaction)
-            eq('attempt',1)
+            eq('attempt', 1)
             lt('score', 100.0f)
             order('score', 'desc')
             'learner' {

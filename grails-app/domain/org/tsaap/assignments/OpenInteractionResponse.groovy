@@ -13,4 +13,12 @@ class OpenInteractionResponse extends InteractionResponse {
     int evaluationCount() {
         PeerGrading.countByOpenResponse(this)
     }
+
+    /**
+     * Indicate if the response is a choice response
+     * @return false
+     */
+    boolean isChoiceResponse() {
+        false
+    }
 }

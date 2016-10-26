@@ -61,6 +61,13 @@ class ChoiceInteractionResponse extends InteractionResponse {
         score
     }
 
+    /**
+     * Indicate if the response is a choice response
+     * @return true
+     */
+    boolean isChoiceResponse() {
+        true
+    }
 
 }
 

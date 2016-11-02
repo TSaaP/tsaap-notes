@@ -89,6 +89,11 @@ class PlayerController {
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def updateEvaluationCount(Interaction interactionInstance) {
+        render interactionInstance.evaluationCount()
+    }
+
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def submitResponse(Interaction interactionInstance) {
         def user = springSecurityService.currentUser
         ResponseSubmissionSpecification spec = interactionInstance.interactionSpecification
@@ -117,6 +122,8 @@ class PlayerController {
         PeerGrading peerGrading = interactionService.peerGradingFromUserOnResponse(grader, response, grade)
         render "${peerGrading.hasErrors() ? 'error' : 'success'}"
     }
+
+
 
 
     private void renderSequenceTemplate(user, Sequence sequenceInstance) {

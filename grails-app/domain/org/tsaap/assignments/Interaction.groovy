@@ -161,6 +161,21 @@ class Interaction {
         res
     }
 
+    /**
+     * Count the number of evaluations
+     * @return the count
+     */
+    Integer evaluationCount() {
+        def count = PeerGrading.executeQuery(
+                '''
+                select count(distinct pg.grader) from PeerGrading pg
+                where pg.openResponse in (from OpenInteractionResponse resp where resp.interaction = ?)
+                ''',
+                [this])
+        count[0]
+    }
+
+
 
     /**
      * Check if a user has already given a response for the current interaction
@@ -252,6 +267,8 @@ class Interaction {
             results = JsonOutput.toJson(resMap)
         }
     }
+
+
 }
 
 enum InteractionType {

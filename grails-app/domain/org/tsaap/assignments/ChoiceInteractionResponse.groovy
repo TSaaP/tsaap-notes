@@ -3,6 +3,7 @@ package org.tsaap.assignments
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
+import org.tsaap.directory.User
 
 
 class ChoiceInteractionResponse extends InteractionResponse {
@@ -65,9 +66,20 @@ class ChoiceInteractionResponse extends InteractionResponse {
      * Indicate if the response is a choice response
      * @return true
      */
+    @Override
     boolean isChoiceResponse() {
         true
     }
 
+    /**
+     * Get the grade from the given user for this response
+     * @param user the grader
+     * @return the grade if any
+     */
+    @Override
+    Float getGradeFromUser(User user) {
+        PeerGrading pg = PeerGrading.findByResponseAndGrader(this,user)
+        pg?.grade
+    }
 }
 

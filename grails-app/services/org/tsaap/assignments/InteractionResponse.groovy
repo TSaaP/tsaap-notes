@@ -62,6 +62,13 @@ abstract class InteractionResponse {
      * @return true if the response is a choice response false otherwise
      */
     abstract boolean isChoiceResponse();
+
+    /**
+     * Get the grade from the given user for this response
+     * @param user the grader
+     * @return the grade if any
+     */
+    abstract getGradeFromUser(User user);
 }
 
 enum ConfidenceDegreeEnum {

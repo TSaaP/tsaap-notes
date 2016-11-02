@@ -80,8 +80,10 @@ class InteractionService {
         PeerGrading peerGrading = PeerGrading.findByOpenResponseAndGrader(response, grader)
         if (!peerGrading) {
             peerGrading = new PeerGrading(grader: grader, openResponse: response, grade: grade)
-            peerGrading.save()
+        } else {
+            peerGrading.grade = grade
         }
+        peerGrading.save()
         peerGrading
     }
 
@@ -89,8 +91,10 @@ class InteractionService {
         PeerGrading peerGrading = PeerGrading.findByResponseAndGrader(response, grader)
         if (!peerGrading) {
             peerGrading = new PeerGrading(grader: grader, response: response, grade: grade)
-            peerGrading.save()
+        } else {
+            peerGrading.grade = grade
         }
+        peerGrading.save()
         peerGrading
     }
 

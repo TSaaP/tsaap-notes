@@ -11,22 +11,10 @@ class PeerGrading {
     String annotation
 
     User grader
-    ChoiceInteractionResponse response
-    OpenInteractionResponse openResponse
-
+    InteractionResponse response
 
     static constraints = {
         annotation nullable: true
         grade nullable: true
-        response nullable: true, validator: { val, obj ->
-            if (obj.openResponse == null && val == null) {
-                return ['responseCannotBeNull']
-            }
-        }
-        openResponse nullable: true, validator: {val, obj ->
-            if (obj.response == null && val == null) {
-                return ['responseCannotBeNull']
-            }
-        }
     }
 }

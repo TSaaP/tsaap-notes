@@ -1,7 +1,7 @@
 package org.tsaap.assignments.interactions
 
-import org.tsaap.assignments.ChoiceInteractionResponse
 import org.tsaap.assignments.Interaction
+import org.tsaap.assignments.InteractionResponse
 import spock.lang.Specification
 
 /**
@@ -22,17 +22,17 @@ class InteractionResultListServiceSpec extends Specification {
         }
 
         and: "learner responses "
-        ChoiceInteractionResponse response1 = new ChoiceInteractionResponse(choiceListSpecification: null,
+        InteractionResponse response1 = new InteractionResponse(choiceListSpecification: null,
                 interaction: interaction )
-        ChoiceInteractionResponse response2 = new ChoiceInteractionResponse(choiceListSpecification: "[1,2]",
+        InteractionResponse response2 = new InteractionResponse(choiceListSpecification: "[1,2]",
                 interaction: interaction )
-        ChoiceInteractionResponse response3 = new ChoiceInteractionResponse(choiceListSpecification: "[1]",
+        InteractionResponse response3 = new InteractionResponse(choiceListSpecification: "[1]",
                 interaction: interaction )
-        ChoiceInteractionResponse response4 = new ChoiceInteractionResponse(choiceListSpecification: "[1,2]",
+        InteractionResponse response4 = new InteractionResponse(choiceListSpecification: "[1,2]",
                 interaction: interaction )
-        ChoiceInteractionResponse response5 = new ChoiceInteractionResponse(choiceListSpecification: "[2,3]",
+        InteractionResponse response5 = new InteractionResponse(choiceListSpecification: "[2,3]",
                 interaction: interaction )
-        ChoiceInteractionResponse response6 = new ChoiceInteractionResponse(choiceListSpecification: "[3]",
+        InteractionResponse response6 = new InteractionResponse(choiceListSpecification: "[3]",
                 interaction: interaction )
         def responses = [response1,response2,response3,response4,response5,response6]
 

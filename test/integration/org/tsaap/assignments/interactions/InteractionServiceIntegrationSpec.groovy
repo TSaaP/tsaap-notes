@@ -1,16 +1,7 @@
 package org.tsaap.assignments.interactions
 
-
 import org.tsaap.BootstrapTestService
-import org.tsaap.assignments.Assignment
-import org.tsaap.assignments.AssignmentService
-import org.tsaap.assignments.ChoiceInteractionResponse
-import org.tsaap.assignments.ConfidenceDegreeEnum
-import org.tsaap.assignments.Interaction
-import org.tsaap.assignments.OpenInteractionResponse
-import org.tsaap.assignments.PeerGrading
-import org.tsaap.assignments.Sequence
-import org.tsaap.assignments.StateType
+import org.tsaap.assignments.*
 import org.tsaap.contracts.ConditionViolationException
 import org.tsaap.directory.User
 import spock.lang.Specification
@@ -153,7 +144,7 @@ class InteractionServiceIntegrationSpec extends Specification {
         User paul = bootstrapTestService.learnerPaul
 
         when:"creating the paul response"
-        ChoiceInteractionResponse resp = new ChoiceInteractionResponse(
+        InteractionResponse resp = new InteractionResponse(
                 interaction: interaction,
                 learner: paul,
                 choiceListSpecification: "[1,3]",
@@ -192,7 +183,7 @@ class InteractionServiceIntegrationSpec extends Specification {
         assignmentService.registerUserOnAssignment(paul, assignment)
 
         when:"creating the paul response"
-        ChoiceInteractionResponse resp = new ChoiceInteractionResponse(
+        InteractionResponse resp = new InteractionResponse(
                 interaction: interaction,
                 learner: paul,
                 choiceListSpecification: "[1,3]",
@@ -242,7 +233,7 @@ class InteractionServiceIntegrationSpec extends Specification {
         }
 
         and: "each one with an answer"
-        ChoiceInteractionResponse respThom = new ChoiceInteractionResponse(
+        InteractionResponse respThom = new InteractionResponse(
                 interaction: interaction,
                 learner: thom,
                 choiceListSpecification: "[2,3,5]",
@@ -278,7 +269,7 @@ class InteractionServiceIntegrationSpec extends Specification {
         then: "all attached objects are deleted"
         !PeerGrading.findById(pgJohn.id)
         !PeerGrading.findById(pgMary.id)
-        !ChoiceInteractionResponse.findById(respThom.id)
+        !InteractionResponse.findById(respThom.id)
         !Interaction.findById(interaction.id)
         !Sequence.findById(sequence.id)
         !Assignment.findById(assignment.id)
@@ -296,7 +287,7 @@ class InteractionServiceIntegrationSpec extends Specification {
         User paul = bootstrapTestService.learnerPaul
 
         when:"creating the paul response"
-        OpenInteractionResponse resp = new OpenInteractionResponse(
+        InteractionResponse resp = new InteractionResponse(
                 interaction: interaction,
                 learner: paul,
                 attempt: 1
@@ -323,7 +314,7 @@ class InteractionServiceIntegrationSpec extends Specification {
     void "test save open interaction response"() {
 
         given: "an assignment with sequence and interactions"
-        Assignment assignment = bootstrapTestService.assignment3WithInteractions
+        Assignment assignment = bootstrapTestService.assignment4WithOpenInteractions
 
         and:"the response submission interaction"
         Interaction interaction = assignment.sequences[0].responseSubmissionInteraction
@@ -334,7 +325,7 @@ class InteractionServiceIntegrationSpec extends Specification {
         assignmentService.registerUserOnAssignment(paul, assignment)
 
         when:"creating the paul response"
-        OpenInteractionResponse resp = new OpenInteractionResponse(
+        InteractionResponse resp = new InteractionResponse(
                 interaction: interaction,
                 learner: paul,
                 explanation: "an explanation",
@@ -379,7 +370,7 @@ class InteractionServiceIntegrationSpec extends Specification {
         }
 
         and: "each one with an answer"
-        OpenInteractionResponse respThom = new OpenInteractionResponse(
+        InteractionResponse respThom = new InteractionResponse(
                 interaction: interaction,
                 learner: thom,
                 attempt: 1,
@@ -396,7 +387,7 @@ class InteractionServiceIntegrationSpec extends Specification {
         then: "peer grading objets are saved in a consistent way"
         pgJohn.id
         pgJohn.grade == 5f
-        pgJohn.openResponse == respThom
+        pgJohn.response == respThom
         pgMary.id
 
         when:"update the mean grade"
@@ -414,7 +405,7 @@ class InteractionServiceIntegrationSpec extends Specification {
         then: "all attached objects are deleted"
         !PeerGrading.findById(pgJohn.id)
         !PeerGrading.findById(pgMary.id)
-        !OpenInteractionResponse.findById(respThom.id)
+        !InteractionResponse.findById(respThom.id)
         !Interaction.findById(interaction.id)
         !Sequence.findById(sequence.id)
         !Assignment.findById(assignment.id)

@@ -1,8 +1,8 @@
 <g:set var="sequence" value="${interactionInstance.sequence}"/>
 <g:set var="displayedResultInteraction" value="${sequence.responseSubmissionInteraction}"/>
-<g:if test="${displayedResultInteraction.interactionSpecification.hasChoices()}">
+<g:set var="spec" value="${displayedResultInteraction.interactionSpecification}"/>
+<g:if test="${spec.hasChoices()}">
     <g:set var="resultList" value="${displayedResultInteraction.resultsOfLastAttempt()}"/>
-    <g:set var="spec" value="${displayedResultInteraction.interactionSpecification}"/>
     <g:set var="userResponse" value="${displayedResultInteraction.lastAttemptResponseForUser(user)}"/>
     <g:each var="i" in="${(1..spec.itemCount)}">
         <g:set var="choiceStatus" value="${spec.expectedChoiceListContainsChoiceWithIndex(i) ? 'success' : 'danger'}"/>
@@ -51,7 +51,7 @@
 
 
 <g:if test="${sequence.hasExplanations()}">
-    <g:if test="${sequence.responseSubmissionSpecification.hasChoices()}">
+    <g:if test="${spec.hasChoices()}">
     <g:set var="responses" value="${sequence.findAllGoodResponses()}"/>
     </g:if>
     <g:else>

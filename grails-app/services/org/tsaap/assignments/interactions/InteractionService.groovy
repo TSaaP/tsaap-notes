@@ -1,13 +1,7 @@
 package org.tsaap.assignments.interactions
 
 import grails.transaction.Transactional
-import org.tsaap.assignments.ChoiceInteractionResponse
-import org.tsaap.assignments.Interaction
-import org.tsaap.assignments.InteractionResponse
-import org.tsaap.assignments.OpenInteractionResponse
-import org.tsaap.assignments.PeerGrading
-import org.tsaap.assignments.Sequence
-import org.tsaap.assignments.StateType
+import org.tsaap.assignments.*
 import org.tsaap.contracts.Contract
 import org.tsaap.directory.User
 
@@ -36,8 +30,8 @@ class InteractionService {
      * @return the stopped interaction
      */
     Interaction stopInteraction(Interaction interaction, User user) {
-        Contract.requires(interaction.owner == user,ONLY_OWNER_CAN_STOP_INTERACTION)
-        Contract.requires(interaction.state == StateType.show.name(),INTERACTION_IS_NOT_STARTED)
+        Contract.requires(interaction.owner == user, ONLY_OWNER_CAN_STOP_INTERACTION)
+        Contract.requires(interaction.state == StateType.show.name(), INTERACTION_IS_NOT_STARTED)
         interaction.doAfterStop()
         updateActiveInteractionInSequence(interaction)
         interaction
@@ -66,28 +60,7 @@ class InteractionService {
      * @return the peer grading object
      */
     PeerGrading peerGradingFromUserOnResponse(User grader, InteractionResponse response, Float grade) {
-        Contract.requires(grader.isRegisteredInAssignment(response.assignment()),"$LEARNER_NOT_REGISTERED_IN_ASSIGNMENT : ${grader.id} - ${response.assignment().id}")
-        PeerGrading peerGrading
-        if (response.isChoiceResponse()) {
-            peerGrading = findOrCreatePeerGradingOnChoiceResponse(response, grader, grade)
-        } else {
-            peerGrading = findOrCreatePeerGradingOnOpenResponse(response, grader, grade)
-        }
-        peerGrading
-    }
-
-    private PeerGrading findOrCreatePeerGradingOnOpenResponse(OpenInteractionResponse response, User grader, float grade) {
-        PeerGrading peerGrading = PeerGrading.findByOpenResponseAndGrader(response, grader)
-        if (!peerGrading) {
-            peerGrading = new PeerGrading(grader: grader, openResponse: response, grade: grade)
-        } else {
-            peerGrading.grade = grade
-        }
-        peerGrading.save()
-        peerGrading
-    }
-
-    private PeerGrading findOrCreatePeerGradingOnChoiceResponse(ChoiceInteractionResponse response, User grader, float grade) {
+        Contract.requires(grader.isRegisteredInAssignment(response.assignment()), "$LEARNER_NOT_REGISTERED_IN_ASSIGNMENT : ${grader.id} - ${response.assignment().id}")
         PeerGrading peerGrading = PeerGrading.findByResponseAndGrader(response, grader)
         if (!peerGrading) {
             peerGrading = new PeerGrading(grader: grader, response: response, grade: grade)
@@ -105,11 +78,7 @@ class InteractionService {
      */
     InteractionResponse updateMeanGradeOfResponse(InteractionResponse response) {
         def query = PeerGrading.where {
-            if (response.isChoiceResponse()) {
-                response == response
-            } else {
-                openResponse == response
-            }
+            response == response
         }.projections {
             avg('grade')
         }
@@ -121,8 +90,8 @@ class InteractionService {
 
     private void updateActiveInteractionInSequence(Interaction interaction) {
         Sequence sequence = interaction.sequence
-        for (Integer rank in interaction.rank + 1 .. sequence.interactions.size()) {
-            Interaction newActInter = Interaction.findBySequenceAndRankAndEnabled(sequence, rank,true)
+        for (Integer rank in interaction.rank + 1..sequence.interactions.size()) {
+            Interaction newActInter = Interaction.findBySequenceAndRankAndEnabled(sequence, rank, true)
             if (newActInter) {
                 sequence.activeInteraction = newActInter
                 sequence.save()
@@ -135,5 +104,6 @@ class InteractionService {
     private static final String ONLY_OWNER_CAN_STOP_INTERACTION = 'Only owner can stop an interaction'
     private static final String INTERACTION_IS_NOT_STARTED = 'The interaction is not started'
     private static final String INTERACTION_CANNOT_RECEIVE_RESPONSE = 'The interaction cannot receive response'
-    private static final String LEARNER_NOT_REGISTERED_IN_ASSIGNMENT = 'Learner is not registered in the relative assignment'
+    private static
+    final String LEARNER_NOT_REGISTERED_IN_ASSIGNMENT = 'Learner is not registered in the relative assignment'
 }

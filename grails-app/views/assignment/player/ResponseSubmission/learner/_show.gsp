@@ -15,27 +15,27 @@
         <g:hiddenField name="id" value="${interactionInstance.id}"/>
         <g:hiddenField name="attempt" value="${attempt}"/>
         <g:if test="${hasChoices}">
-        <div class="checkbox ${isMultipleChoice ? '' : 'hidden'}" id="multiple_choice_${interactionInstance.id}">
-            <g:each in="${1..itemCount}" var="checkBoxElet" status="i">
-                <g:set var="choiceIsExpected"
-                       value="${responseSubmissionSpecificationInstance?.expectedChoiceListContainsChoiceWithIndex(i + 1)}"/>
-                <label class="checkbox-inline" style="margin-right: 20px">
-                    <input type="checkbox" name="choiceList"
-                           value="${i + 1}" ${firstAttemptResponse?.choiceList()?.contains(i + 1) ? 'checked' : ''}> ${i + 1}
-                </label>
-            </g:each>
-        </div>
+            <div class="checkbox ${isMultipleChoice ? '' : 'hidden'}" id="multiple_choice_${interactionInstance.id}">
+                <g:each in="${1..itemCount}" var="checkBoxElet" status="i">
+                    <g:set var="choiceIsExpected"
+                           value="${responseSubmissionSpecificationInstance?.expectedChoiceListContainsChoiceWithIndex(i + 1)}"/>
+                    <label class="checkbox-inline" style="margin-right: 20px">
+                        <input type="checkbox" name="choiceList"
+                               value="${i + 1}" ${firstAttemptResponse?.choiceList()?.contains(i + 1) ? 'checked' : ''}> ${i + 1}
+                    </label>
+                </g:each>
+            </div>
 
-        <div class="radio ${isMultipleChoice ? 'hidden' : ''}" id="exclusive_choice_${interactionInstance.id}">
-            <g:each in="${1..itemCount}" var="radioBoxElet" status="i">
-                <g:set var="choiceIsExpected"
-                       value="${responseSubmissionSpecificationInstance?.expectedChoiceListContainsChoiceWithIndex(i + 1)}"/>
-                <label class="radio-inline" style="margin-right: 20px">
-                    <input type="radio" name="exclusiveChoice"
-                           value="${i + 1}" ${firstAttemptResponse?.choiceList()?.contains(i + 1) ? 'checked' : ''}> ${i + 1}
-                </label>
-            </g:each>
-        </div>
+            <div class="radio ${isMultipleChoice ? 'hidden' : ''}" id="exclusive_choice_${interactionInstance.id}">
+                <g:each in="${1..itemCount}" var="radioBoxElet" status="i">
+                    <g:set var="choiceIsExpected"
+                           value="${responseSubmissionSpecificationInstance?.expectedChoiceListContainsChoiceWithIndex(i + 1)}"/>
+                    <label class="radio-inline" style="margin-right: 20px">
+                        <input type="radio" name="exclusiveChoice"
+                               value="${i + 1}" ${firstAttemptResponse?.choiceList()?.contains(i + 1) ? 'checked' : ''}> ${i + 1}
+                    </label>
+                </g:each>
+            </div>
         </g:if>
 
         <g:if test="${attempt == 1}">

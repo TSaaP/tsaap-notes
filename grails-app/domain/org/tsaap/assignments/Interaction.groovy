@@ -90,13 +90,9 @@ class Interaction {
             if (respSubmInter.interactionSpecification.hasChoices()) {
                 respSubmInter.updateResults(2)
                 respSubmInter.save()
-                respSubmInter.findAllEvaluatedResponses().each {
-                    interactionService.updateMeanGradeOfResponse(it)
-                }
-            } else {
-                respSubmInter.findAllEvaluatedOpenResponses().each {
-                    interactionService.updateMeanGradeOfResponse(it)
-                }
+            }
+            respSubmInter.findAllEvaluatedResponses().each {
+                interactionService.updateMeanGradeOfResponse(it)
             }
         }
     }
@@ -105,17 +101,10 @@ class Interaction {
      * Find all evaluated responses for the current interaction
      * @return the list of evaluated responses
      */
-    List<ChoiceInteractionResponse> findAllEvaluatedResponses() {
-        ChoiceInteractionResponse.findAllByInteractionAndAttempt(this, 1)
+    List<InteractionResponse> findAllEvaluatedResponses() {
+        InteractionResponse.findAllByInteractionAndAttempt(this, 1)
     }
 
-    /**
-     * Find all evaluated responses for the current interaction
-     * @return the list of evaluated responses
-     */
-    List<OpenInteractionResponse> findAllEvaluatedOpenResponses() {
-        OpenInteractionResponse.findAllByInteraction(this,)
-    }
 
     /**
      * Get the interaction specification object
@@ -167,10 +156,7 @@ class Interaction {
      * @return the number of responses
      */
     Integer interactionResponseCount(int attempt = 1) {
-        Integer res = ChoiceInteractionResponse.countByInteractionAndAttempt(this, attempt)
-        if (res == 0) {
-            res = OpenInteractionResponse.countByInteractionAndAttempt(this, attempt)
-        }
+        Integer res = InteractionResponse.countByInteractionAndAttempt(this, attempt)
         res
     }
 
@@ -182,7 +168,7 @@ class Interaction {
         def count = PeerGrading.executeQuery(
                 '''
                 select count(distinct pg.grader) from PeerGrading pg
-                where pg.openResponse in (from OpenInteractionResponse resp where resp.interaction = ?)
+                where pg.response in (from InteractionResponse resp where resp.interaction = ?)
                 ''',
                 [this])
         count[0]
@@ -194,34 +180,17 @@ class Interaction {
      * @return true if user has already given a response
      */
     boolean hasResponseForUser(User user, int attempt = 1) {
-        hasChoiceResponseForUser(user, attempt) || hasOpenResponseForUser(user, attempt)
+        InteractionResponse.countByInteractionAndLearnerAndAttempt(this, user, attempt) > 0
     }
 
-    /**
-     * Check if a user has already given an open response for the current interaction
-     * @param user the user
-     * @return true if user has already given an open response
-     */
-    public boolean hasOpenResponseForUser(User user, int attempt = 1) {
-        OpenInteractionResponse.countByInteractionAndLearnerAndAttempt(this, user, attempt) > 0
-    }
-
-    /**
-     * Check if a user has already given a choice response for the current interaction
-     * @param user the user
-     * @return true if user has already given a choice response
-     */
-    public boolean hasChoiceResponseForUser(User user, int attempt = 1) {
-        ChoiceInteractionResponse.countByInteractionAndLearnerAndAttempt(this, user, attempt) > 0
-    }
 
     /**
      * Get the response for the given user
      * @param user the user
      * @return the response
      */
-    ChoiceInteractionResponse responseForUser(User user, int attempt = 1) {
-        ChoiceInteractionResponse.findByInteractionAndLearnerAndAttempt(this, user, attempt)
+    InteractionResponse responseForUser(User user, int attempt = 1) {
+        InteractionResponse.findByInteractionAndLearnerAndAttempt(this, user, attempt)
     }
 
     /**
@@ -229,10 +198,10 @@ class Interaction {
      * @param user the user
      * @return the last response
      */
-    ChoiceInteractionResponse lastAttemptResponseForUser(User user) {
-        def res = ChoiceInteractionResponse.findByInteractionAndLearnerAndAttempt(this, user, 2)
+    InteractionResponse lastAttemptResponseForUser(User user) {
+        def res = InteractionResponse.findByInteractionAndLearnerAndAttempt(this, user, 2)
         if (!res) {
-            res = ChoiceInteractionResponse.findByInteractionAndLearnerAndAttempt(this, user, 1)
+            res = InteractionResponse.findByInteractionAndLearnerAndAttempt(this, user, 1)
         }
         res
     }
@@ -254,23 +223,22 @@ class Interaction {
 
 
     private void updateExplanationRecommendationMapping(Integer attempt = 1) {
-        def responses = ChoiceInteractionResponse.findAllByInteractionAndAttempt(this, attempt)
+        def responses = InteractionResponse.findAllByInteractionAndAttempt(this, attempt)
         if (responses) {
-            def mapping = responseRecommendationService.getRecommendedResponseIdByResponseId(responses)
-            explanationRecommendationMapping = JsonOutput.toJson(mapping)
-        } else {
-            responses = OpenInteractionResponse.findAllByInteractionAndAttempt(this, attempt)
-            if (responses) {
-                def mapping = responseRecommendationService.getRecommendedResponseIdByResponseIdForOpenQuestion(responses)
-                explanationRecommendationMapping = JsonOutput.toJson(mapping)
+            def mapping
+            if (interactionSpecification.hasChoices()) {
+                mapping = responseRecommendationService.getRecommendedResponseIdByResponseId(responses)
+            } else {
+                mapping = responseRecommendationService.getRecommendedResponseIdByResponseIdForOpenQuestion(responses)
             }
+            explanationRecommendationMapping = JsonOutput.toJson(mapping)
         }
     }
 
     InteractionResultListService interactionResultListService
 
     private void updateResults(Integer attempt = 1) {
-        def responses = ChoiceInteractionResponse.findAllByInteractionAndAttempt(this, attempt)
+        def responses = InteractionResponse.findAllByInteractionAndAttempt(this, attempt)
         if (responses) {
             def resList = interactionResultListService.buildResultListForInteractionAndResponses(this, responses)
             def resMap = resultsByAttempt() + [(attempt.toString()): resList]

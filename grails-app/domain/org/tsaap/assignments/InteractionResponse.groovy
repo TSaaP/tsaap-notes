@@ -6,7 +6,19 @@ import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
 import org.tsaap.directory.User
 
 
-class ChoiceInteractionResponse extends InteractionResponse {
+class InteractionResponse {
+
+    Date dateCreated
+    Date lastUpdated
+
+    User learner
+    Interaction interaction
+    Integer attempt = 1
+
+    String explanation
+    Integer confidenceDegree
+
+    Float meanGrade
 
     String choiceListSpecification
 
@@ -14,8 +26,35 @@ class ChoiceInteractionResponse extends InteractionResponse {
 
 
     static constraints = {
+        confidenceDegree nullable: true
+        meanGrade nullable: true
+        explanation nullable: true
         score nullable: true
         choiceListSpecification nullable: true
+    }
+
+    /**
+     * Get the assignment relative to this response
+     * @return the assignment
+     */
+    Assignment assignment() {
+        interaction.sequence.assignment
+    }
+
+    /**
+     * Check if first attempt is submitable
+     * @return true if first attempt is submitable
+     */
+    boolean firstAttemptIsSubmitable() {
+        interaction.state == StateType.show.name() && attempt == 1
+    }
+
+    /**
+     * Check if second attempt is submitable
+     * @return true if second attempt is submitable
+     */
+    boolean secondAttemptIsSubmitable() {
+        interaction.state == StateType.afterStop.name() && attempt == 2
     }
 
     /**
@@ -66,9 +105,8 @@ class ChoiceInteractionResponse extends InteractionResponse {
      * Indicate if the response is a choice response
      * @return true
      */
-    @Override
     boolean isChoiceResponse() {
-        true
+        interaction.interactionSpecification.hasChoices()
     }
 
     /**
@@ -76,10 +114,36 @@ class ChoiceInteractionResponse extends InteractionResponse {
      * @param user the grader
      * @return the grade if any
      */
-    @Override
     Float getGradeFromUser(User user) {
         PeerGrading pg = PeerGrading.findByResponseAndGrader(this,user)
         pg?.grade
+    }
+
+    /**
+     * Count the number of evaluations for the current response
+     * @return
+     */
+    Integer evaluationCount() {
+        PeerGrading.countByResponse(this)
+    }
+
+    static mapping = {
+        table name: "choice_interaction_response"
+    }
+}
+
+enum ConfidenceDegreeEnum {
+    NOT_CONFIDENT_AT_ALL,
+    NOT_REALLY_CONFIDENT,
+    CONFIDENT,
+    TOTALLY_CONFIDENT
+
+    String getName() {
+        name()
+    }
+
+    int getIntegerValue() {
+        ordinal()
     }
 }
 

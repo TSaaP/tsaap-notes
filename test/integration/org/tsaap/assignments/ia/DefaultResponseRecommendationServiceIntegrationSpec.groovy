@@ -43,7 +43,7 @@ class DefaultResponseRecommendationServiceIntegrationSpec extends Specification 
         }
 
         and: "each one with an answer"
-        ChoiceInteractionResponse respThom = new ChoiceInteractionResponse(
+        InteractionResponse respThom = new InteractionResponse(
                 interaction: interaction,
                 learner: thom,
                 choiceListSpecification: "[2,3,5]",
@@ -52,7 +52,7 @@ class DefaultResponseRecommendationServiceIntegrationSpec extends Specification 
                 confidenceDegree: ConfidenceDegreeEnum.NOT_REALLY_CONFIDENT.integerValue
         )
         interactionService.saveInteractionResponse(respThom)
-        ChoiceInteractionResponse respMary = new ChoiceInteractionResponse(
+        InteractionResponse respMary = new InteractionResponse(
                 interaction: interaction,
                 learner: mary   ,
                 choiceListSpecification: "[1,4]",
@@ -61,7 +61,7 @@ class DefaultResponseRecommendationServiceIntegrationSpec extends Specification 
                 confidenceDegree: ConfidenceDegreeEnum.TOTALLY_CONFIDENT.integerValue
         )
         interactionService.saveInteractionResponse(respMary)
-        ChoiceInteractionResponse respJohn = new ChoiceInteractionResponse(
+        InteractionResponse respJohn = new InteractionResponse(
                 interaction: interaction,
                 learner: john   ,
                 choiceListSpecification: "[2,3,5]",
@@ -70,7 +70,7 @@ class DefaultResponseRecommendationServiceIntegrationSpec extends Specification 
                 confidenceDegree: ConfidenceDegreeEnum.TOTALLY_CONFIDENT.integerValue
         )
         interactionService.saveInteractionResponse(respJohn)
-        ChoiceInteractionResponse respErik = new ChoiceInteractionResponse(
+        InteractionResponse respErik = new InteractionResponse(
                 interaction: interaction,
                 learner: erik   ,
                 choiceListSpecification: "[1,4]",
@@ -91,7 +91,7 @@ class DefaultResponseRecommendationServiceIntegrationSpec extends Specification 
         println "> Erik 0 - ${respErik.id}"
 
         when: "building the explanation recommendation mapping with "
-        def mapping = responseRecommendationService.getRecommendedResponseIdByResponseId(ChoiceInteractionResponse.findAllByInteraction(interaction))
+        def mapping = responseRecommendationService.getRecommendedResponseIdByResponseId(InteractionResponse.findAllByInteraction(interaction))
 
         then:"the algorithm provides a one to one recommendation as expected"
         println ">>>>>>>>>>>>> $mapping"
@@ -150,7 +150,7 @@ class DefaultResponseRecommendationServiceIntegrationSpec extends Specification 
         }
 
         and: "each one with an answer"
-        OpenInteractionResponse respThom = new OpenInteractionResponse(
+        InteractionResponse respThom = new InteractionResponse(
                 interaction: interaction,
                 learner: thom,
                 attempt: 1,
@@ -158,7 +158,7 @@ class DefaultResponseRecommendationServiceIntegrationSpec extends Specification 
                 confidenceDegree: ConfidenceDegreeEnum.NOT_REALLY_CONFIDENT.integerValue
         )
         interactionService.saveInteractionResponse(respThom)
-        OpenInteractionResponse respMary = new OpenInteractionResponse(
+        InteractionResponse respMary = new InteractionResponse(
                 interaction: interaction,
                 learner: mary   ,
                 attempt: 1,
@@ -166,7 +166,7 @@ class DefaultResponseRecommendationServiceIntegrationSpec extends Specification 
                 confidenceDegree: ConfidenceDegreeEnum.TOTALLY_CONFIDENT.integerValue
         )
         interactionService.saveInteractionResponse(respMary)
-        OpenInteractionResponse respJohn = new OpenInteractionResponse(
+        InteractionResponse respJohn = new InteractionResponse(
                 interaction: interaction,
                 learner: john   ,
                 attempt: 1,
@@ -174,7 +174,7 @@ class DefaultResponseRecommendationServiceIntegrationSpec extends Specification 
                 confidenceDegree: ConfidenceDegreeEnum.TOTALLY_CONFIDENT.integerValue
         )
         interactionService.saveInteractionResponse(respJohn)
-        OpenInteractionResponse respErik = new OpenInteractionResponse(
+        InteractionResponse respErik = new InteractionResponse(
                 interaction: interaction,
                 learner: erik   ,
                 attempt: 1,
@@ -187,7 +187,7 @@ class DefaultResponseRecommendationServiceIntegrationSpec extends Specification 
         !interaction.interactionSpecification.hasChoices()
 
         when: "building the explanation recommendation mapping with "
-        def mapping = responseRecommendationService.getRecommendedResponseIdByResponseIdForOpenQuestion(OpenInteractionResponse.findAllByInteraction(interaction))
+        def mapping = responseRecommendationService.getRecommendedResponseIdByResponseIdForOpenQuestion(InteractionResponse.findAllByInteraction(interaction))
 
         then:"the algorithm provides a one to one recommendation as expected"
         println ">>>>>>>>>>>>> $mapping"

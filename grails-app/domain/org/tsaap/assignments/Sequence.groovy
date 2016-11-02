@@ -223,22 +223,11 @@ class Sequence {
      */
     List<InteractionResponse> findRecommendedResponsesForUser(User user) {
         def responseInteraction = responseSubmissionInteraction
-        InteractionResponse userResponse
-        if (responseSubmissionInteraction.interactionSpecification.hasChoices()) {
-            userResponse = ChoiceInteractionResponse.findByInteractionAndLearnerAndAttempt(responseInteraction, user, 1)
-        } else {
-            userResponse = OpenInteractionResponse.findByInteractionAndLearnerAndAttempt(responseInteraction, user, 1)
-        }
+        InteractionResponse userResponse = InteractionResponse.findByInteractionAndLearnerAndAttempt(responseInteraction, user, 1)
         def res
         if (userResponse) {
-            if (userResponse.isChoiceResponse()) {
-                res = responseInteraction.explanationRecommendationMap()[userResponse.id as String].collect {
-                    ChoiceInteractionResponse.get(it)
-                }
-            } else {
-                res = responseInteraction.explanationRecommendationMap()[userResponse.id as String].collect {
-                    OpenInteractionResponse.get(it)
-                }
+            res = responseInteraction.explanationRecommendationMap()[userResponse.id as String].collect {
+                InteractionResponse.get(it)
             }
         } else {
             res = []
@@ -250,9 +239,9 @@ class Sequence {
      * Find all good responses with explanations
      * @return the good responses
      */
-    List<ChoiceInteractionResponse> findAllGoodResponses() {
+    List<InteractionResponse> findAllGoodResponses() {
         Interaction interaction = responseSubmissionInteraction
-        ChoiceInteractionResponse.findAllByInteractionAndAttemptAndScore(interaction, 1, 100f,
+        InteractionResponse.findAllByInteractionAndAttemptAndScore(interaction, 1, 100f,
                 [sort: "meanGrade", order: "desc"])
     }
 
@@ -260,9 +249,9 @@ class Sequence {
      * Find all open responses with explanations
      * @return the open responses
      */
-    List<OpenInteractionResponse> findAllOpenResponses() {
+    List<InteractionResponse> findAllOpenResponses() {
         Interaction interaction = responseSubmissionInteraction
-        def res = OpenInteractionResponse.findAllByInteraction(interaction,
+        def res = InteractionResponse.findAllByInteraction(interaction,
                 [sort: "meanGrade", order: "desc"])
         res
     }
@@ -277,11 +266,11 @@ class Sequence {
      * @param sessionPhase
      * @return
      */
-    Map<Float, Map<String, List<ChoiceInteractionResponse>>> findAllBadResponses() {
+    Map<Float, Map<String, List<InteractionResponse>>> findAllBadResponses() {
         def list
         Map map = [:]
         Interaction interaction = responseSubmissionInteraction
-        list = ChoiceInteractionResponse.withCriteria {
+        list = InteractionResponse.withCriteria {
             eq('interaction', interaction)
             eq('attempt', 1)
             lt('score', 100.0f)

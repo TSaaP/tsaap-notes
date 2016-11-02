@@ -97,12 +97,20 @@ class PlayerController {
     def submitResponse(Interaction interactionInstance) {
         def user = springSecurityService.currentUser
         ResponseSubmissionSpecification spec = interactionInstance.interactionSpecification
+        InteractionResponse response = new InteractionResponse(
+                learner: user,
+                interaction: interactionInstance,
+                confidenceDegree: params.confidenceDegree as Integer,
+                attempt: params.attempt as int
+        )
+        if (params.explanation) {
+            response.explanation = markupSanitizerService.sanitize(params.explanation)?.cleanString
+        }
         if (spec.hasChoices()) {
             List choiceList = getChoiceListFromParams(spec, params)
-            createAndSaveChoiceInteractionResponse(user, interactionInstance, choiceList, params)
-        } else {
-            createAndSaveOpenInteractionResponse(user,interactionInstance,params)
+            response.updateChoiceListSpecification(choiceList)
         }
+        interactionService.saveInteractionResponse(response)
         renderSequenceTemplate(user, interactionInstance.sequence)
     }
 
@@ -110,21 +118,11 @@ class PlayerController {
     def createOrUpdatePeerGrading() {
         def params = params
         User grader = User.get(params.grader_id as long)
-        InteractionResponse response
-        boolean responseIsChoiceResponse =  Boolean.valueOf(params.responseIsChoiceResponse)
-        if (responseIsChoiceResponse) {
-            response = ChoiceInteractionResponse.get(params.response_id as long)
-        } else {
-            response = OpenInteractionResponse.get(params.response_id as long)
-        }
-
+        InteractionResponse response = InteractionResponse.get(params.response_id as long)
         Float grade = params.grade as Float
         PeerGrading peerGrading = interactionService.peerGradingFromUserOnResponse(grader, response, grade)
         render "${peerGrading.hasErrors() ? 'error' : 'success'}"
     }
-
-
-
 
     private void renderSequenceTemplate(user, Sequence sequenceInstance) {
         def userRole = (user == sequenceInstance.assignment.owner ? 'teacher' : 'learner')
@@ -133,34 +131,6 @@ class PlayerController {
                 layout: "ajax"
     }
 
-    private ChoiceInteractionResponse createAndSaveChoiceInteractionResponse(user, Interaction interactionInstance, List<Integer> choiceList, params) {
-        ChoiceInteractionResponse response = new ChoiceInteractionResponse(
-                learner: user,
-                interaction: interactionInstance,
-                confidenceDegree: params.confidenceDegree as Integer,
-                attempt: params.attempt as int
-        )
-        if (params.explanation) {
-            response.explanation = markupSanitizerService.sanitize(params.explanation)?.cleanString
-        }
-        response.updateChoiceListSpecification(choiceList)
-        interactionService.saveInteractionResponse(response)
-        response
-    }
-
-    private OpenInteractionResponse createAndSaveOpenInteractionResponse(user, Interaction interactionInstance, params) {
-        OpenInteractionResponse response = new OpenInteractionResponse(
-                learner: user,
-                interaction: interactionInstance,
-                confidenceDegree: params.confidenceDegree as Integer,
-                attempt: params.attempt as int
-        )
-        if (params.explanation) {
-            response.explanation = markupSanitizerService.sanitize(params.explanation)?.cleanString
-        }
-        interactionService.saveInteractionResponse(response)
-        response
-    }
 
     private List getChoiceListFromParams(ResponseSubmissionSpecification spec, def params) {
         List<Integer> choiceList

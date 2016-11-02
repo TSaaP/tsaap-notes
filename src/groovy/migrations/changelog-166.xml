@@ -89,5 +89,11 @@
                                  referencedColumnNames="id"/>
     </changeSet>
 
+    <changeSet id="3" author="fsil">
+        <dropForeignKeyConstraint baseTableName="peer_grading" constraintName="fk_peer_grading_open_response"/>
+        <dropColumn tableName="peer_grading" columnName="open_response_id" />
+        <dropTable tableName="open_interaction_response" cascadeConstraints="true"/>
+
+    </changeSet>
 
 </databaseChangeLog>

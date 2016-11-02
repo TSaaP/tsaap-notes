@@ -8,13 +8,13 @@ import spock.lang.Specification
 /**
  * See the API for {@link grails.test.mixin.domain.DomainClassUnitTestMixin} for usage instructions
  */
-@TestFor(ChoiceInteractionResponse)
-class ChoiceInteractionResponseSpec extends Specification {
+@TestFor(InteractionResponse)
+class InteractionResponseSpec extends Specification {
 
     void "test getting choic list from choice list specification"() {
 
         given:"a choice interaction response with a choice list specification in json"
-        ChoiceInteractionResponse response = new ChoiceInteractionResponse(choiceListSpecification: "[1,3]")
+        InteractionResponse response = new InteractionResponse(choiceListSpecification: "[1,3]")
 
         when: "getting the choice list object"
         def choiceList = response.choiceList()
@@ -27,7 +27,7 @@ class ChoiceInteractionResponseSpec extends Specification {
     void "test update choice list specification"() {
 
         given:"a choice interaction response with a choice list specification in json"
-        ChoiceInteractionResponse response = new ChoiceInteractionResponse(choiceListSpecification: "[1,3]")
+        InteractionResponse response = new InteractionResponse(choiceListSpecification: "[1,3]")
 
         when: "updating the choice list"
         response.updateChoiceListSpecification([2,4])
@@ -49,7 +49,7 @@ class ChoiceInteractionResponseSpec extends Specification {
         }
 
         and: "a learner response with all good choices"
-        ChoiceInteractionResponse response = new ChoiceInteractionResponse(choiceListSpecification: "[1,3]",
+        InteractionResponse response = new InteractionResponse(choiceListSpecification: "[1,3]",
                 interaction: interaction )
 
         when: "updating score"
@@ -72,7 +72,7 @@ class ChoiceInteractionResponseSpec extends Specification {
         }
 
         and: "a learner response with partial good choices"
-        ChoiceInteractionResponse response = new ChoiceInteractionResponse(choiceListSpecification: "[3]",
+        InteractionResponse response = new InteractionResponse(choiceListSpecification: "[3]",
                 interaction: interaction )
 
         when: "updating score"
@@ -95,7 +95,7 @@ class ChoiceInteractionResponseSpec extends Specification {
         }
 
         and: "a learner response with all good choices"
-        ChoiceInteractionResponse response = new ChoiceInteractionResponse(choiceListSpecification: "[4]",
+        InteractionResponse response = new InteractionResponse(choiceListSpecification: "[4]",
                 interaction: interaction )
 
         when: "updating score"
@@ -118,7 +118,7 @@ class ChoiceInteractionResponseSpec extends Specification {
         }
 
         and: "a learner response with no choices"
-        ChoiceInteractionResponse response = new ChoiceInteractionResponse(choiceListSpecification: null,
+        InteractionResponse response = new InteractionResponse(choiceListSpecification: null,
                 interaction: interaction )
 
         when: "updating score"
@@ -141,7 +141,7 @@ class ChoiceInteractionResponseSpec extends Specification {
         }
 
         and: "a learner response with all choices"
-        ChoiceInteractionResponse response = new ChoiceInteractionResponse(choiceListSpecification: "[1,2,3,4]",
+        InteractionResponse response = new InteractionResponse(choiceListSpecification: "[1,2,3,4]",
                 interaction: interaction )
 
         when: "updating score"
@@ -164,7 +164,7 @@ class ChoiceInteractionResponseSpec extends Specification {
         }
 
         and: "a learner response with all choices"
-        ChoiceInteractionResponse response = new ChoiceInteractionResponse(choiceListSpecification: "[1,2]",
+        InteractionResponse response = new InteractionResponse(choiceListSpecification: "[1,2]",
                 interaction: interaction )
 
         when: "updating score"
@@ -187,7 +187,7 @@ class ChoiceInteractionResponseSpec extends Specification {
         }
 
         and: "a learner response with all choices"
-        ChoiceInteractionResponse response = new ChoiceInteractionResponse(choiceListSpecification: "[1,2,3]",
+        InteractionResponse response = new InteractionResponse(choiceListSpecification: "[1,2,3]",
                 interaction: interaction )
 
         when: "updating score"

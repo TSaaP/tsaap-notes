@@ -51,6 +51,11 @@
 
 
 <g:if test="${sequence.hasExplanations()}">
+    <g:if test="${sequence.responseSubmissionSpecification.hasChoices()}">
     <g:set var="responses" value="${sequence.findAllGoodResponses()}"/>
+    </g:if>
+    <g:else>
+        <g:set var="responses" value="${sequence.findAllOpenResponses()}"/>
+    </g:else>
     <g:render template="/assignment/player/ExplanationList" model="[responses: responses, sequence: sequence]"/>
 </g:if>

@@ -38,7 +38,7 @@ class Interaction {
         explanationRecommendationMapping nullable: true
     }
 
-    static transients = ['interactionSpecification', 'interactionResultListService', 'responseRecommendationService','interactionService']
+    static transients = ['interactionSpecification', 'interactionResultListService', 'responseRecommendationService', 'interactionService']
 
     /**
      * Get the result matrix as a list of float
@@ -87,10 +87,16 @@ class Interaction {
         }
         if (isEvaluation()) {
             def respSubmInter = sequence.responseSubmissionInteraction
-            respSubmInter.updateResults(2)
-            respSubmInter.save()
-            respSubmInter.findAllEvaluatedResponses().each {
-                interactionService.updateMeanGradeOfResponse(it)
+            if (respSubmInter.interactionSpecification.hasChoices()) {
+                respSubmInter.updateResults(2)
+                respSubmInter.save()
+                respSubmInter.findAllEvaluatedResponses().each {
+                    interactionService.updateMeanGradeOfResponse(it)
+                }
+            } else {
+                respSubmInter.findAllEvaluatedOpenResponses().each {
+                    interactionService.updateMeanGradeOfResponse(it)
+                }
             }
         }
     }
@@ -100,9 +106,16 @@ class Interaction {
      * @return the list of evaluated responses
      */
     List<ChoiceInteractionResponse> findAllEvaluatedResponses() {
-        ChoiceInteractionResponse.findAllByInteractionAndAttempt(this,1)
+        ChoiceInteractionResponse.findAllByInteractionAndAttempt(this, 1)
     }
 
+    /**
+     * Find all evaluated responses for the current interaction
+     * @return the list of evaluated responses
+     */
+    List<OpenInteractionResponse> findAllEvaluatedOpenResponses() {
+        OpenInteractionResponse.findAllByInteraction(this,)
+    }
 
     /**
      * Get the interaction specification object
@@ -175,8 +188,6 @@ class Interaction {
         count[0]
     }
 
-
-
     /**
      * Check if a user has already given a response for the current interaction
      * @param user the user
@@ -219,7 +230,7 @@ class Interaction {
      * @return the last response
      */
     ChoiceInteractionResponse lastAttemptResponseForUser(User user) {
-        def res  = ChoiceInteractionResponse.findByInteractionAndLearnerAndAttempt(this, user, 2)
+        def res = ChoiceInteractionResponse.findByInteractionAndLearnerAndAttempt(this, user, 2)
         if (!res) {
             res = ChoiceInteractionResponse.findByInteractionAndLearnerAndAttempt(this, user, 1)
         }
@@ -240,7 +251,6 @@ class Interaction {
     }
 
     ResponseRecommendationService responseRecommendationService
-
 
 
     private void updateExplanationRecommendationMapping(Integer attempt = 1) {

@@ -257,6 +257,17 @@ class Sequence {
     }
 
     /**
+     * Find all open responses with explanations
+     * @return the open responses
+     */
+    List<OpenInteractionResponse> findAllOpenResponses() {
+        Interaction interaction = responseSubmissionInteraction
+        def res = OpenInteractionResponse.findAllByInteraction(interaction,
+                [sort: "meanGrade", order: "desc"])
+        res
+    }
+
+    /**
      * Return all bad responses with explanations for the sequence
      * Responses in returned structure can be accessed this way:
      * map[score][answerGroup][index] where

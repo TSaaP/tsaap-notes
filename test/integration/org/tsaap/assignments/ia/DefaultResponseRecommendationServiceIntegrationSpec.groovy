@@ -3,12 +3,8 @@ package org.tsaap.assignments.ia
 import org.tsaap.BootstrapTestService
 import org.tsaap.assignments.*
 import org.tsaap.assignments.interactions.InteractionService
-import org.tsaap.contracts.ConditionViolationException
 import org.tsaap.directory.User
 import spock.lang.Specification
-
-import java.math.RoundingMode
-import java.text.DecimalFormat
 
 /**
  * See the API for {@link grails.test.mixin.services.ServiceUnitTestMixin} for usage instructions
@@ -47,7 +43,7 @@ class DefaultResponseRecommendationServiceIntegrationSpec extends Specification 
         }
 
         and: "each one with an answer"
-        ChoiceInteractionResponse respThom = new ChoiceInteractionResponse(
+        InteractionResponse respThom = new InteractionResponse(
                 interaction: interaction,
                 learner: thom,
                 choiceListSpecification: "[2,3,5]",
@@ -55,8 +51,8 @@ class DefaultResponseRecommendationServiceIntegrationSpec extends Specification 
                 explanation: "Thom [2,3,5] score 100- not confident",
                 confidenceDegree: ConfidenceDegreeEnum.NOT_REALLY_CONFIDENT.integerValue
         )
-        interactionService.saveChoiceInteractionResponse(respThom)
-        ChoiceInteractionResponse respMary = new ChoiceInteractionResponse(
+        interactionService.saveInteractionResponse(respThom)
+        InteractionResponse respMary = new InteractionResponse(
                 interaction: interaction,
                 learner: mary   ,
                 choiceListSpecification: "[1,4]",
@@ -64,8 +60,8 @@ class DefaultResponseRecommendationServiceIntegrationSpec extends Specification 
                 explanation: "Mary [1,4] score 0- very confident",
                 confidenceDegree: ConfidenceDegreeEnum.TOTALLY_CONFIDENT.integerValue
         )
-        interactionService.saveChoiceInteractionResponse(respMary)
-        ChoiceInteractionResponse respJohn = new ChoiceInteractionResponse(
+        interactionService.saveInteractionResponse(respMary)
+        InteractionResponse respJohn = new InteractionResponse(
                 interaction: interaction,
                 learner: john   ,
                 choiceListSpecification: "[2,3,5]",
@@ -73,8 +69,8 @@ class DefaultResponseRecommendationServiceIntegrationSpec extends Specification 
                 explanation: "John [2,3,5] score 100- very confident",
                 confidenceDegree: ConfidenceDegreeEnum.TOTALLY_CONFIDENT.integerValue
         )
-        interactionService.saveChoiceInteractionResponse(respJohn)
-        ChoiceInteractionResponse respErik = new ChoiceInteractionResponse(
+        interactionService.saveInteractionResponse(respJohn)
+        InteractionResponse respErik = new InteractionResponse(
                 interaction: interaction,
                 learner: erik   ,
                 choiceListSpecification: "[1,4]",
@@ -82,7 +78,7 @@ class DefaultResponseRecommendationServiceIntegrationSpec extends Specification 
                 explanation: "Erik [1,4] score 0- not really confident",
                 confidenceDegree: ConfidenceDegreeEnum.NOT_REALLY_CONFIDENT.integerValue
         )
-        interactionService.saveChoiceInteractionResponse(respErik)
+        interactionService.saveInteractionResponse(respErik)
 
         expect: "score of learners is consistent"
         respThom.score == 100f
@@ -95,7 +91,7 @@ class DefaultResponseRecommendationServiceIntegrationSpec extends Specification 
         println "> Erik 0 - ${respErik.id}"
 
         when: "building the explanation recommendation mapping with "
-        def mapping = responseRecommendationService.getRecommendedResponseIdByResponseId(ChoiceInteractionResponse.findAllByInteraction(interaction))
+        def mapping = responseRecommendationService.getRecommendedResponseIdByResponseId(InteractionResponse.findAllByInteraction(interaction))
 
         then:"the algorithm provides a one to one recommendation as expected"
         println ">>>>>>>>>>>>> $mapping"
@@ -130,6 +126,93 @@ class DefaultResponseRecommendationServiceIntegrationSpec extends Specification 
         recommendations[0] == respErik
         recommendations[1] == respJohn
         recommendations[2] == respMary
+
+    }
+
+    void "test  response recommendation mapping on open question"() {
+
+        given: "an assignment with sequence and interactions"
+        Assignment assignment = bootstrapTestService.assignment4WithOpenInteractions
+
+        and:"the response submission interaction"
+        Interaction interaction = assignment.sequences[0].responseSubmissionInteraction
+        interactionService.startInteraction(interaction, interaction.owner)
+
+        and: "learners registered in the assignment"
+        def learners = bootstrapTestService.learners
+        User thom = learners[0]
+        User mary = learners[1]
+        User john = learners[2]
+        User erik = learners[3]
+
+        for (int i = 0; i<4; i++) {
+            assignmentService.registerUserOnAssignment(learners[i], assignment)
+        }
+
+        and: "each one with an answer"
+        InteractionResponse respThom = new InteractionResponse(
+                interaction: interaction,
+                learner: thom,
+                attempt: 1,
+                explanation: "Thom explanation- not confident",
+                confidenceDegree: ConfidenceDegreeEnum.NOT_REALLY_CONFIDENT.integerValue
+        )
+        interactionService.saveInteractionResponse(respThom)
+        InteractionResponse respMary = new InteractionResponse(
+                interaction: interaction,
+                learner: mary   ,
+                attempt: 1,
+                explanation: "Mary explanation very confident",
+                confidenceDegree: ConfidenceDegreeEnum.TOTALLY_CONFIDENT.integerValue
+        )
+        interactionService.saveInteractionResponse(respMary)
+        InteractionResponse respJohn = new InteractionResponse(
+                interaction: interaction,
+                learner: john   ,
+                attempt: 1,
+                explanation: "John explanation very confident",
+                confidenceDegree: ConfidenceDegreeEnum.TOTALLY_CONFIDENT.integerValue
+        )
+        interactionService.saveInteractionResponse(respJohn)
+        InteractionResponse respErik = new InteractionResponse(
+                interaction: interaction,
+                learner: erik   ,
+                attempt: 1,
+                explanation: "Erik explanation not really confident",
+                confidenceDegree: ConfidenceDegreeEnum.NOT_REALLY_CONFIDENT.integerValue
+        )
+        interactionService.saveInteractionResponse(respErik)
+
+        expect:"the responseSubmission provides no choices"
+        !interaction.interactionSpecification.hasChoices()
+
+        when: "building the explanation recommendation mapping with "
+        def mapping = responseRecommendationService.getRecommendedResponseIdByResponseIdForOpenQuestion(InteractionResponse.findAllByInteraction(interaction))
+
+        then:"the algorithm provides a one to one recommendation as expected"
+        println ">>>>>>>>>>>>> $mapping"
+        mapping[respThom.id as String].size() >= 1
+        mapping[respErik.id as String].size() >= 1
+        mapping[respJohn.id as String].size() >= 1
+        mapping[respMary.id as String].size() >= 1
+
+        when: "stopping the response interaction"
+        interactionService.stopInteraction(interaction,interaction.owner)
+
+        then:"esplanation mapping is saved"
+        interaction.explanationRecommendationMapping
+
+        and: "the corresponding map is buildable"
+        interaction.explanationRecommendationMap()
+
+
+        when:"asking for a recommendation in the evaluation interaction for a user"
+        def evalInter = assignment.sequences[0].evaluationInteraction
+        def recommendations = evalInter.sequence.findRecommendedResponsesForUser(thom)
+
+        then: "the list of responses corresponding to the response user are found"
+        println ">>>>>>>>>>>>> $recommendations of user thom ${thom.id} with response ${respThom.id}"
+        recommendations[0]
 
     }
 }

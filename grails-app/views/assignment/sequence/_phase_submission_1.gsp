@@ -6,7 +6,7 @@
     <div class="panel-body">
         <div class="checkbox">
             <label>
-                <input type="checkbox" checked disabled> <g:message code="sequence.interaction.studentsSelect"/>
+                <input type="checkbox" name="hasChoices" ${responseSubmissionSpecificationInstance.choiceInteractionType ? 'checked' : ''}> <g:message code="sequence.interaction.studentsSelect"/>
             <g:select name="choiceInteractionType" id="choiceInteractionType"
                       from="${ChoiceInteractionType.values()*.name()}"
                       value="${responseSubmissionSpecificationInstance?.choiceInteractionType}"/> <g:message
@@ -67,6 +67,7 @@
     manageChoices()
     managePhase2Display();
     manageScheduleDisplay();
+    manageHasChoices();
 
     function manageScheduleDisplay() {
         var displaySchedule = $("input:checkbox[name='displaySchedule']");
@@ -86,16 +87,41 @@
     function managePhase2Display() {
         var chBoxStstudentsProvideExplanation = $("input:checkbox[name='studentsProvideExplanation']");
         chBoxStstudentsProvideExplanation.change(function () {
-            $('#phase_2').toggleClass("hidden");
             var chBoxStudentsProvideConfidenceDegree = $("input:checkbox[name='studentsProvideConfidenceDegree']");
             if (chBoxStstudentsProvideExplanation.is(':checked')) {
+                $('#phase_2').removeClass("hidden");
                 chBoxStudentsProvideConfidenceDegree.prop('checked', true);
                 chBoxStudentsProvideConfidenceDegree.prop('disabled', true);
             } else {
+                $('#phase_2').addClass("hidden");
                 chBoxStudentsProvideConfidenceDegree.prop('disabled', false);
             }
         });
     };
+
+    function manageHasChoices() {
+        var chkBoxHasChoices = $("input:checkbox[name='hasChoices']");
+        chkBoxHasChoices.change(function() {
+            var hasChoices = chkBoxHasChoices.is(':checked');
+            var chBoxStstudentsProvideExplanation = $("input:checkbox[name='studentsProvideExplanation']");
+            var selectMultipleVsExclusive = $("#choiceInteractionType");
+            if (!hasChoices) {
+                chBoxStstudentsProvideExplanation.prop('checked', true);
+                chBoxStstudentsProvideExplanation.trigger("change");
+                chBoxStstudentsProvideExplanation.prop('disabled', true);
+                selectMultipleVsExclusive.prop('disabled', true);
+                $('#exclusive_choice').addClass('hidden');
+                $('#multiple_choice').addClass('hidden');
+                $("#itemCount").prop('disabled',true);
+            } else {
+                chBoxStstudentsProvideExplanation.prop('disabled', false);
+                selectMultipleVsExclusive.prop('disabled', false);
+                $("#itemCount").prop('disabled',false);
+                $("#itemCount").trigger("change");
+            }
+        });
+        chkBoxHasChoices.trigger("change");
+    }
 
     function manageChoices() {
         $("#choiceInteractionType, #itemCount").change(function () {

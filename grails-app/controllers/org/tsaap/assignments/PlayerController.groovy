@@ -4,7 +4,6 @@ import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
 import org.grails.plugins.sanitizer.MarkupSanitizerService
 import org.tsaap.assignments.interactions.InteractionService
-import org.tsaap.assignments.interactions.InteractionSpecification
 import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
 import org.tsaap.directory.User
 
@@ -74,8 +73,8 @@ class PlayerController {
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def updateChoiceInteractionResponseCount(Interaction interactionInstance) {
-        render interactionInstance.choiceInteractionResponseCount()
+    def updateInteractionResponseCount(Interaction interactionInstance) {
+        render interactionInstance.interactionResponseCount()
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
@@ -86,37 +85,19 @@ class PlayerController {
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def updateSecondAttemptCount(Interaction interactionInstance) {
-        render interactionInstance.choiceInteractionResponseCount(2)
+        render interactionInstance.interactionResponseCount(2)
+    }
+
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def updateEvaluationCount(Interaction interactionInstance) {
+        render interactionInstance.evaluationCount()
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def submitResponse(Interaction interactionInstance) {
-        ResponseSubmissionSpecification spec = interactionInstance.interactionSpecification
-        List choiceList = getChoiceListFromParams(spec, params)
         def user = springSecurityService.currentUser
-        createAndSaveChoiceInteractionResponse(user, interactionInstance, choiceList, params)
-        renderSequenceTemplate(user, interactionInstance.sequence)
-    }
-
-    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def createOrUpdatePeerGrading() {
-        User grader = User.get(params.grader_id as long)
-        ChoiceInteractionResponse response = ChoiceInteractionResponse.get(params.response_id as long)
-        Float grade = params.grade as Float
-        PeerGrading peerGrading = interactionService.peerGradingFromUserOnResponse(grader, response, grade)
-        render "${peerGrading.hasErrors() ? 'error' : 'success'}"
-    }
-
-
-    private void renderSequenceTemplate(user, Sequence sequenceInstance) {
-        def userRole = (user == sequenceInstance.assignment.owner ? 'teacher' : 'learner')
-        render template: "/assignment/player/sequence/show",
-                model: [userRole: userRole, sequenceInstance: sequenceInstance, user: user],
-                layout: "ajax"
-    }
-
-    private ChoiceInteractionResponse createAndSaveChoiceInteractionResponse(user, Interaction interactionInstance, List<Integer> choiceList, params) {
-        ChoiceInteractionResponse response = new ChoiceInteractionResponse(
+        ResponseSubmissionSpecification spec = interactionInstance.interactionSpecification
+        InteractionResponse response = new InteractionResponse(
                 learner: user,
                 interaction: interactionInstance,
                 confidenceDegree: params.confidenceDegree as Integer,
@@ -125,10 +106,31 @@ class PlayerController {
         if (params.explanation) {
             response.explanation = markupSanitizerService.sanitize(params.explanation)?.cleanString
         }
-        response.updateChoiceListSpecification(choiceList)
-        interactionService.saveChoiceInteractionResponse(response)
-        response
+        if (spec.hasChoices()) {
+            List choiceList = getChoiceListFromParams(spec, params)
+            response.updateChoiceListSpecification(choiceList)
+        }
+        interactionService.saveInteractionResponse(response)
+        renderSequenceTemplate(user, interactionInstance.sequence)
     }
+
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def createOrUpdatePeerGrading() {
+        def params = params
+        User grader = User.get(params.grader_id as long)
+        InteractionResponse response = InteractionResponse.get(params.response_id as long)
+        Float grade = params.grade as Float
+        PeerGrading peerGrading = interactionService.peerGradingFromUserOnResponse(grader, response, grade)
+        render "${peerGrading.hasErrors() ? 'error' : 'success'}"
+    }
+
+    private void renderSequenceTemplate(user, Sequence sequenceInstance) {
+        def userRole = (user == sequenceInstance.assignment.owner ? 'teacher' : 'learner')
+        render template: "/assignment/player/sequence/show",
+                model: [userRole: userRole, sequenceInstance: sequenceInstance, user: user],
+                layout: "ajax"
+    }
+
 
     private List getChoiceListFromParams(ResponseSubmissionSpecification spec, def params) {
         List<Integer> choiceList

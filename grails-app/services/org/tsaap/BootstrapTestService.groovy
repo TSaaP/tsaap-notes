@@ -55,14 +55,19 @@ class BootstrapTestService {
     Statement statement1
     Statement statement2
     Statement statement3
+    Statement statement4
 
     Assignment assignment1
     Assignment assignment2With2Sequences
     Assignment assignment3WithInteractions
+    Assignment assignment4WithOpenInteractions
 
     Interaction responseSubmissionInteraction
+    Interaction responseSubmissionOpenInteraction
     Interaction evaluationInteraction
+    Interaction evaluationOpenInteraction
     Interaction readInteraction
+    Interaction readOpenInteraction
 
 
 
@@ -134,6 +139,10 @@ class BootstrapTestService {
             assignment3WithInteractions = assignmentService.saveAssignment(new Assignment(title: "Assignment 3", owner: teacherJeanne))
             sequenceService.addSequenceToAssignment(assignment3WithInteractions, teacherJeanne, statement3,[responseSubmissionInteraction,evaluationInteraction, readInteraction])
         }
+        if (!Assignment.findByTitle("Assignment 4")) {
+            assignment4WithOpenInteractions = assignmentService.saveAssignment(new Assignment(title: "Assignment 4", owner: teacherJeanne))
+            sequenceService.addSequenceToAssignment(assignment4WithOpenInteractions, teacherJeanne, statement4,[responseSubmissionOpenInteraction,evaluationOpenInteraction, readOpenInteraction])
+        }
     }
 
     def initializeStatements() {
@@ -146,18 +155,32 @@ class BootstrapTestService {
         if (!Statement.findByTitle("Statement 3")) {
             statement3 = sequenceService.saveStatement(new Statement(title: "Statement 3", content:"Content of statement 3"),teacherJeanne)
         }
+        if (!Statement.findByTitle("Statement 4")) {
+            statement4 = sequenceService.saveStatement(new Statement(title: "Statement 4", content:"Content of statement 4"),teacherJeanne)
+        }
     }
 
     def initializeInteractions() {
         initializeResponseSubmissionInteraction()
+        initializeResponseSubmissionOpenInteraction()
         initialiseEvaluationInteraction()
         initializeReadInteraction()
+        initialiseEvaluationOpenInteraction()
+        initializeReadOpenInteraction()
     }
 
     private void initialiseEvaluationInteraction() {
         EvaluationSpecification evalSpec = new EvaluationSpecification()
         evalSpec.responseToEvaluateCount = 3
         evaluationInteraction = new Interaction(rank: 2, specification: evalSpec.jsonString,
+                interactionType: InteractionType.Evaluation.name(),
+                schedule: new Schedule(startDate: new Date()))
+    }
+
+    private void initialiseEvaluationOpenInteraction() {
+        EvaluationSpecification evalSpec = new EvaluationSpecification()
+        evalSpec.responseToEvaluateCount = 3
+        evaluationOpenInteraction = new Interaction(rank: 2, specification: evalSpec.jsonString,
                 interactionType: InteractionType.Evaluation.name(),
                 schedule: new Schedule(startDate: new Date()))
     }
@@ -176,8 +199,24 @@ class BootstrapTestService {
                 schedule: new Schedule(startDate: new Date()))
     }
 
+    private void initializeResponseSubmissionOpenInteraction() {
+        ResponseSubmissionSpecification respSpec = new ResponseSubmissionSpecification()
+        respSpec.studentsProvideExplanation = true
+        respSpec.studentsProvideConfidenceDegree = true
+        respSpec.expectedChoiceList = null
+        respSpec.choiceInteractionType = null
+        responseSubmissionOpenInteraction = new Interaction(rank: 1, specification: respSpec.jsonString,
+                interactionType: InteractionType.ResponseSubmission.name(),
+                schedule: new Schedule(startDate: new Date()))
+    }
+
     private void initializeReadInteraction() {
         readInteraction = new Interaction(rank: 3, specification: Interaction.EMPTY_SPECIFICATION,
+                interactionType: InteractionType.Read.name(),
+                schedule: new Schedule(startDate: new Date()))
+    }
+    private void initializeReadOpenInteraction() {
+        readOpenInteraction = new Interaction(rank: 3, specification: Interaction.EMPTY_SPECIFICATION,
                 interactionType: InteractionType.Read.name(),
                 schedule: new Schedule(startDate: new Date()))
     }

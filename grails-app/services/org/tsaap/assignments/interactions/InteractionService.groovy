@@ -1,11 +1,7 @@
 package org.tsaap.assignments.interactions
 
 import grails.transaction.Transactional
-import org.tsaap.assignments.ChoiceInteractionResponse
-import org.tsaap.assignments.Interaction
-import org.tsaap.assignments.PeerGrading
-import org.tsaap.assignments.Sequence
-import org.tsaap.assignments.StateType
+import org.tsaap.assignments.*
 import org.tsaap.contracts.Contract
 import org.tsaap.directory.User
 
@@ -34,23 +30,25 @@ class InteractionService {
      * @return the stopped interaction
      */
     Interaction stopInteraction(Interaction interaction, User user) {
-        Contract.requires(interaction.owner == user,ONLY_OWNER_CAN_STOP_INTERACTION)
-        Contract.requires(interaction.state == StateType.show.name(),INTERACTION_IS_NOT_STARTED)
+        Contract.requires(interaction.owner == user, ONLY_OWNER_CAN_STOP_INTERACTION)
+        Contract.requires(interaction.state == StateType.show.name(), INTERACTION_IS_NOT_STARTED)
         interaction.doAfterStop()
         updateActiveInteractionInSequence(interaction)
         interaction
     }
 
     /**
-     * Save a choice interaction response
+     * Save an interaction response
      * @param response the response to save
      * @return the saved response with the updated score
      */
-    ChoiceInteractionResponse saveChoiceInteractionResponse(ChoiceInteractionResponse response) {
+    InteractionResponse saveInteractionResponse(InteractionResponse response) {
         Contract.requires(response.firstAttemptIsSubmitable() || response.secondAttemptIsSubmitable(), INTERACTION_CANNOT_RECEIVE_RESPONSE)
         Contract.requires(response.learner.isRegisteredInAssignment(response.assignment()),
                 LEARNER_NOT_REGISTERED_IN_ASSIGNMENT)
-        response.updateScore()
+        if (response.isChoiceResponse()) {
+            response.updateScore()
+        }
         response.save()
         response
     }
@@ -61,13 +59,15 @@ class InteractionService {
      * @param response the response
      * @return the peer grading object
      */
-    PeerGrading peerGradingFromUserOnResponse(User grader, ChoiceInteractionResponse response, Float grade) {
-        Contract.requires(grader.isRegisteredInAssignment(response.assignment()),LEARNER_NOT_REGISTERED_IN_ASSIGNMENT)
-        PeerGrading peerGrading = PeerGrading.findByResponseAndGrader(response,grader)
+    PeerGrading peerGradingFromUserOnResponse(User grader, InteractionResponse response, Float grade) {
+        Contract.requires(grader.isRegisteredInAssignment(response.assignment()), "$LEARNER_NOT_REGISTERED_IN_ASSIGNMENT : ${grader.id} - ${response.assignment().id}")
+        PeerGrading peerGrading = PeerGrading.findByResponseAndGrader(response, grader)
         if (!peerGrading) {
             peerGrading = new PeerGrading(grader: grader, response: response, grade: grade)
-            peerGrading.save()
+        } else {
+            peerGrading.grade = grade
         }
+        peerGrading.save()
         peerGrading
     }
 
@@ -76,7 +76,7 @@ class InteractionService {
      * @param response the response
      * @return the response with mean grade updated
      */
-    ChoiceInteractionResponse updateMeanGradeOfResponse(ChoiceInteractionResponse response) {
+    InteractionResponse updateMeanGradeOfResponse(InteractionResponse response) {
         def query = PeerGrading.where {
             response == response
         }.projections {
@@ -90,8 +90,8 @@ class InteractionService {
 
     private void updateActiveInteractionInSequence(Interaction interaction) {
         Sequence sequence = interaction.sequence
-        for (Integer rank in interaction.rank + 1 .. sequence.interactions.size()) {
-            Interaction newActInter = Interaction.findBySequenceAndRankAndEnabled(sequence, rank,true)
+        for (Integer rank in interaction.rank + 1..sequence.interactions.size()) {
+            Interaction newActInter = Interaction.findBySequenceAndRankAndEnabled(sequence, rank, true)
             if (newActInter) {
                 sequence.activeInteraction = newActInter
                 sequence.save()
@@ -104,5 +104,6 @@ class InteractionService {
     private static final String ONLY_OWNER_CAN_STOP_INTERACTION = 'Only owner can stop an interaction'
     private static final String INTERACTION_IS_NOT_STARTED = 'The interaction is not started'
     private static final String INTERACTION_CANNOT_RECEIVE_RESPONSE = 'The interaction cannot receive response'
-    private static final String LEARNER_NOT_REGISTERED_IN_ASSIGNMENT = 'Learner is not registered in the relative assignment'
+    private static
+    final String LEARNER_NOT_REGISTERED_IN_ASSIGNMENT = 'Learner is not registered in the relative assignment'
 }

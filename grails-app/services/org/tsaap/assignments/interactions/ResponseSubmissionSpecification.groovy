@@ -13,6 +13,7 @@ class ResponseSubmissionSpecification extends JsonInteractionSpecification {
      * Default constructor
      */
     ResponseSubmissionSpecification() {
+        setChoiceInteractionType(ChoiceInteractionType.EXCLUSIVE.name())
         setExpectedChoiceList([new InteractionChoice(1, 100f)])
     }
 
@@ -122,6 +123,14 @@ class ResponseSubmissionSpecification extends JsonInteractionSpecification {
     }
 
     /**
+     * Check if the specification has choices
+     * @return
+     */
+    boolean hasChoices() {
+        choiceInteractionType
+    }
+
+    /**
      * Calculate the total score obtained when adding score from each expected choice. The total score is expected to be 100.
      * @return the total score
      */
@@ -135,7 +144,9 @@ class ResponseSubmissionSpecification extends JsonInteractionSpecification {
     String getJsonString() {
         if (validateSpecification()) {
             def map = specificationProperties
-            map.put(EXPECTED_CHOICE_LIST, getExpectedChoiceList().specificationProperties)
+            if (getExpectedChoiceList()) {
+                map.put(EXPECTED_CHOICE_LIST, getExpectedChoiceList().specificationProperties)
+            }
             return JsonOutput.toJson(map)
         }
         null
@@ -180,9 +191,20 @@ class ResponseSubmissionSpecification extends JsonInteractionSpecification {
     static constraints = {
         choiceInteractionType nullable: true, inList: ChoiceInteractionType.values()*.name()
         itemCount nullable: true, max: 10
-        studentsProvideExplanation nullable: false
+        studentsProvideExplanation nullable: false, validator: { val, obj ->
+            if (!obj.choiceInteractionType && !val) {
+                return ['studentsMustGiveExplanation']
+            }
+
+        }
         studentsProvideConfidenceDegree nullable: false
-        expectedChoiceList nullable: false, minSize: 1
+        expectedChoiceList nullable: true, validator: { val, obj ->
+            if (obj.choiceInteractionType) {
+                if (val?.size() < 1) {
+                    return ['cannotBeEmpty']
+                }
+            }
+        }
     }
 
     private void getExpectedChoiceListFromListOrMap() {

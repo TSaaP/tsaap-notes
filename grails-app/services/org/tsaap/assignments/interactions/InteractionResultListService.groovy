@@ -17,7 +17,7 @@
 
 package org.tsaap.assignments.interactions
 
-import org.tsaap.assignments.ChoiceInteractionResponse
+import org.tsaap.assignments.InteractionResponse
 import org.tsaap.assignments.Interaction
 import org.tsaap.contracts.Contract
 
@@ -30,7 +30,7 @@ class InteractionResultListService {
      * Construct the result matrix of an interaction
      * @return the result matrix
      */
-    List<Float> buildResultListForInteractionAndResponses(Interaction interaction, List<ChoiceInteractionResponse> responses) {
+    List<Float> buildResultListForInteractionAndResponses(Interaction interaction, List<InteractionResponse> responses) {
         Contract.requires(interaction.isResponseSubmission(), INTERACTION_IS_NOT_RESPONSE_SUBMISSION)
         def matrix = []
         ResponseSubmissionSpecification spec = interaction.interactionSpecification
@@ -40,7 +40,7 @@ class InteractionResultListService {
         }
         def responseCount = responses.size()
         if (responseCount > 0) {
-            for (ChoiceInteractionResponse response : responses) {
+            for (InteractionResponse response : responses) {
                 def currentChoices = response.choiceList()
                 if (!currentChoices) { // no response count stored in matrix[0]
                     matrix[0] += 1

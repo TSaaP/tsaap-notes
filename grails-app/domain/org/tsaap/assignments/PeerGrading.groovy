@@ -11,8 +11,7 @@ class PeerGrading {
     String annotation
 
     User grader
-    ChoiceInteractionResponse response
-
+    InteractionResponse response
 
     static constraints = {
         annotation nullable: true

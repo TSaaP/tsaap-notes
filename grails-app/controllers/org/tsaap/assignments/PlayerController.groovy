@@ -111,7 +111,7 @@ class PlayerController {
         def params = params
         User grader = User.get(params.grader_id as long)
         InteractionResponse response
-        boolean responseIsChoiceResponse =  Boolean.getBoolean(params.responseIsChoiceResponse)
+        boolean responseIsChoiceResponse =  Boolean.valueOf(params.responseIsChoiceResponse)
         if (responseIsChoiceResponse) {
             response = ChoiceInteractionResponse.get(params.response_id as long)
         } else {

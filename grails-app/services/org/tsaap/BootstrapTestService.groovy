@@ -179,7 +179,7 @@ class BootstrapTestService {
 
     private void initialiseEvaluationOpenInteraction() {
         EvaluationSpecification evalSpec = new EvaluationSpecification()
-        evalSpec.responseToEvaluateCount = 3
+        evalSpec.responseToEvaluateCount = 2
         evaluationOpenInteraction = new Interaction(rank: 2, specification: evalSpec.jsonString,
                 interactionType: InteractionType.Evaluation.name(),
                 schedule: new Schedule(startDate: new Date()))

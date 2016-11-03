@@ -229,7 +229,8 @@ class Interaction {
             if (interactionSpecification.hasChoices()) {
                 mapping = responseRecommendationService.getRecommendedResponseIdByResponseId(responses)
             } else {
-                mapping = responseRecommendationService.getRecommendedResponseIdByResponseIdForOpenQuestion(responses)
+                int recommendationCount = sequence.evaluationSpecification.responseToEvaluateCount
+                mapping = responseRecommendationService.getRecommendedResponseIdByResponseIdForOpenQuestion(responses,recommendationCount)
             }
             explanationRecommendationMapping = JsonOutput.toJson(mapping)
         }

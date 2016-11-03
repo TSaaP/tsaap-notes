@@ -2,6 +2,7 @@ package org.tsaap.assignments.ia
 
 import org.tsaap.BootstrapTestService
 import org.tsaap.assignments.*
+import org.tsaap.assignments.interactions.EvaluationSpecification
 import org.tsaap.assignments.interactions.InteractionService
 import org.tsaap.directory.User
 import spock.lang.Specification
@@ -138,6 +139,9 @@ class DefaultResponseRecommendationServiceIntegrationSpec extends Specification 
         Interaction interaction = assignment.sequences[0].responseSubmissionInteraction
         interactionService.startInteraction(interaction, interaction.owner)
 
+        and:"the evaluation interaction spec"
+        EvaluationSpecification evaluationSpecification = assignment.sequences[0].evaluationSpecification
+
         and: "learners registered in the assignment"
         def learners = bootstrapTestService.learners
         User thom = learners[0]
@@ -186,20 +190,33 @@ class DefaultResponseRecommendationServiceIntegrationSpec extends Specification 
         expect:"the responseSubmission provides no choices"
         !interaction.interactionSpecification.hasChoices()
 
-        when: "building the explanation recommendation mapping with "
-        def mapping = responseRecommendationService.getRecommendedResponseIdByResponseIdForOpenQuestion(InteractionResponse.findAllByInteraction(interaction))
+        when: "building the explanation recommendation mapping with default value for recommendations number"
+        def mapping = responseRecommendationService.getRecommendedResponseIdByResponseIdForOpenQuestion(
+                InteractionResponse.findAllByInteraction(interaction))
 
         then:"the algorithm provides a one to one recommendation as expected"
-        println ">>>>>>>>>>>>> $mapping"
-        mapping[respThom.id as String].size() >= 1
-        mapping[respErik.id as String].size() >= 1
-        mapping[respJohn.id as String].size() >= 1
-        mapping[respMary.id as String].size() >= 1
+        println ">>>>>>>>>>>>> open response mapping $mapping "
+        mapping[respThom.id as String].size() == 3
+        mapping[respErik.id as String].size() == 3
+        mapping[respJohn.id as String].size() == 3
+        mapping[respMary.id as String].size() == 3
+
+        when: "building the explanation recommendation mapping with recommendation number set from evaluationSpecification "
+        mapping = responseRecommendationService.getRecommendedResponseIdByResponseIdForOpenQuestion(
+                InteractionResponse.findAllByInteraction(interaction),
+                evaluationSpecification.responseToEvaluateCount)
+
+        then:"the algorithm provides a one to one recommendation as expected"
+        println ">>>>>>>>>>>>> open response mapping $mapping "
+        mapping[respThom.id as String].size() == evaluationSpecification.responseToEvaluateCount
+        mapping[respErik.id as String].size() == evaluationSpecification.responseToEvaluateCount
+        mapping[respJohn.id as String].size() == evaluationSpecification.responseToEvaluateCount
+        mapping[respMary.id as String].size() == evaluationSpecification.responseToEvaluateCount
 
         when: "stopping the response interaction"
         interactionService.stopInteraction(interaction,interaction.owner)
 
-        then:"esplanation mapping is saved"
+        then:"explanation mapping is saved"
         interaction.explanationRecommendationMapping
 
         and: "the corresponding map is buildable"

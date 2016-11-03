@@ -21,6 +21,6 @@ interface ResponseRecommendationService {
      * @param max the max number of recommended response for each response
      * @return the mapping as a map
      */
-    Map<String, List<Long>> getRecommendedResponseIdByResponseIdForOpenQuestion(List<InteractionResponse> responseList)
+    Map<String, List<Long>> getRecommendedResponseIdByResponseIdForOpenQuestion(List<InteractionResponse> responseList, int max)
 
 }

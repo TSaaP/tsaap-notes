@@ -2,11 +2,13 @@ package org.tsaap.assignments.ia
 
 import grails.transaction.Transactional
 import org.tsaap.assignments.InteractionResponse
+import org.tsaap.contracts.Contract
 
 @Transactional
 class DefaultResponseRecommendationService implements ResponseRecommendationService {
 
     private static final int MIN_SIZE_OF_EXPLANATION_TO_BE_EVALUATED = 10
+    private static final String RECOMMENDATION_COUNT_INVALID = "recommendation count not between 1 and 3: "
 
     /**
      * Build the explanation recommendation mapping
@@ -97,26 +99,25 @@ class DefaultResponseRecommendationService implements ResponseRecommendationServ
     /**
      * Build the explanation recommendation mapping
      * @param responseList the responses containing explanations
+     * @param recommendationCount the number of recommended responses to associate to one given response
      * @return the mapping as a map
      */
-    Map<String, List<Long>> getRecommendedResponseIdByResponseIdForOpenQuestion(List<InteractionResponse> responseList) {
+    Map<String, List<Long>> getRecommendedResponseIdByResponseIdForOpenQuestion(List<InteractionResponse> responseList, int recommendationCount = 3) {
+        Contract.requires(recommendationCount > 0 && recommendationCount < 4, RECOMMENDATION_COUNT_INVALID + recommendationCount)
         Map<String, List<Long>> res = [:]
         int valuesCount = responseList.size()
         int indexValues = 0
-        def responseValList = new ArrayList<InteractionResponse>()
-        responseValList.addAll(responseList)
-        3.times { // 3 recommendations per response
-            Collections.shuffle(responseValList)
-            responseList.each { InteractionResponse keyResponse ->
-                InteractionResponse valResponse = responseValList.get(indexValues % valuesCount)
+        def responseKeyList = new ArrayList<InteractionResponse>()
+        responseKeyList.addAll(responseList)
+        Collections.shuffle(responseKeyList)
+        // apply round robin algorithm
+        responseKeyList.each { InteractionResponse keyResponse ->
+            List<Long> explIdList = []
+            for (int i = 0; i < recommendationCount; i++) {
+                explIdList << responseList.get(indexValues % valuesCount).id
                 indexValues++
-                List<Long> recommendations = res.get(keyResponse.id as String)
-                if (recommendations == null) {
-                    res.put(keyResponse.id as String, [valResponse.id])
-                } else if (!recommendations.contains(valResponse.id)) {
-                    recommendations << valResponse.id
-                }
             }
+            res.put(keyResponse.id as String, explIdList)
         }
         res
     }

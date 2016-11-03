@@ -117,7 +117,9 @@
                 chBoxStstudentsProvideExplanation.prop('disabled', false);
                 selectMultipleVsExclusive.prop('disabled', false);
                 $("#itemCount").prop('disabled',false);
-                $("#itemCount").trigger("change");
+                if ($('#multiple_choice').hasClass('hidden') && $('#exclusive_choice').hasClass('hidden')) {
+                    $("#itemCount").trigger("change");
+                }
             }
         });
         chkBoxHasChoices.trigger("change");

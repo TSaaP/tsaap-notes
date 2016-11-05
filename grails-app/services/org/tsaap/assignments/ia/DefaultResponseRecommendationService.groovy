@@ -105,16 +105,17 @@ class DefaultResponseRecommendationService implements ResponseRecommendationServ
     Map<String, List<Long>> getRecommendedResponseIdByResponseIdForOpenQuestion(List<InteractionResponse> responseList, int recommendationCount = 3) {
         Contract.requires(recommendationCount > 0 && recommendationCount < 4, RECOMMENDATION_COUNT_INVALID + recommendationCount)
         Map<String, List<Long>> res = [:]
-        int valuesCount = responseList.size()
-        int indexValues = 0
         def responseKeyList = new ArrayList<InteractionResponse>()
         responseKeyList.addAll(responseList)
         Collections.shuffle(responseKeyList)
+        def responseValueList = responseList.findAll { it.explanation?.length() > MIN_SIZE_OF_EXPLANATION_TO_BE_EVALUATED }
+        int valuesCount = responseValueList.size()
         // apply round robin algorithm
+        int indexValues = 0
         responseKeyList.each { InteractionResponse keyResponse ->
             List<Long> explIdList = []
             for (int i = 0; i < recommendationCount; i++) {
-                explIdList << responseList.get(indexValues % valuesCount).id
+                explIdList << responseValueList.get(indexValues % valuesCount).id
                 indexValues++
             }
             res.put(keyResponse.id as String, explIdList)

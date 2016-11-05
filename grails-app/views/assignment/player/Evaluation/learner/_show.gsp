@@ -46,7 +46,6 @@
     </ul>
 </g:if>
 <g:if test="${responseInteractionSpec.hasChoices()}">
-    <div class="alert alert-info">${message(code: 'player.sequence.interaction.evaluation.newattempt')}</div>
     <g:render template="/assignment/player/ResponseSubmission/learner/show"
               model="[user: user, interactionInstance: responseInteractionInstance, attempt: 2]"/>
 </g:if><g:else>

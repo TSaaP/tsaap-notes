@@ -15,6 +15,9 @@
         <g:hiddenField name="id" value="${interactionInstance.id}"/>
         <g:hiddenField name="attempt" value="${attempt}"/>
         <g:if test="${hasChoices}">
+            <g:if test="${attempt == 2}">
+            <div class="alert alert-info">${message(code: 'player.sequence.interaction.evaluation.newattempt')}</div>
+            </g:if>
             <div class="checkbox ${isMultipleChoice ? '' : 'hidden'}" id="multiple_choice_${interactionInstance.id}">
                 <g:each in="${1..itemCount}" var="checkBoxElet" status="i">
                     <g:set var="choiceIsExpected"

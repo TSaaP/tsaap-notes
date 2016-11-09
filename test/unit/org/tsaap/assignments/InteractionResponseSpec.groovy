@@ -1,6 +1,7 @@
 package org.tsaap.assignments
 
 import grails.test.mixin.TestFor
+import org.tsaap.assignments.interactions.ChoiceInteractionType
 import org.tsaap.assignments.interactions.InteractionChoice
 import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
 import spock.lang.Specification
@@ -43,6 +44,7 @@ class InteractionResponseSpec extends Specification {
         ResponseSubmissionSpecification responseSubmissionSpec = Mock() {
             getExpectedChoiceList() >> [new InteractionChoice(1,50), new InteractionChoice(3,50)]
             getItemCount() >> 4
+            getChoiceInteractionType() >> ChoiceInteractionType.MULTIPLE.name()
         }
         Interaction interaction = Mock() {
             getInteractionSpecification() >> responseSubmissionSpec
@@ -66,6 +68,7 @@ class InteractionResponseSpec extends Specification {
         ResponseSubmissionSpecification responseSubmissionSpec = Mock() {
             getExpectedChoiceList() >> [new InteractionChoice(1,50), new InteractionChoice(3,50)]
             getItemCount() >> 4
+            getChoiceInteractionType() >> ChoiceInteractionType.MULTIPLE.name()
         }
         Interaction interaction = Mock() {
             getInteractionSpecification() >> responseSubmissionSpec
@@ -78,7 +81,7 @@ class InteractionResponseSpec extends Specification {
         when: "updating score"
         response.updateScore()
 
-        then: "the obtained score is 100"
+        then: "the obtained score is 50"
         response.score == 50
 
     }
@@ -89,6 +92,7 @@ class InteractionResponseSpec extends Specification {
         ResponseSubmissionSpecification responseSubmissionSpec = Mock() {
             getExpectedChoiceList() >> [new InteractionChoice(1,50), new InteractionChoice(3,50)]
             getItemCount() >> 4
+            getChoiceInteractionType() >> ChoiceInteractionType.MULTIPLE.name()
         }
         Interaction interaction = Mock() {
             getInteractionSpecification() >> responseSubmissionSpec
@@ -101,7 +105,7 @@ class InteractionResponseSpec extends Specification {
         when: "updating score"
         response.updateScore()
 
-        then: "the obtained score is 100"
+        then: "the obtained score is 0"
         response.score == 0
 
     }
@@ -112,6 +116,7 @@ class InteractionResponseSpec extends Specification {
         ResponseSubmissionSpecification responseSubmissionSpec = Mock() {
             getExpectedChoiceList() >> [new InteractionChoice(1,50), new InteractionChoice(3,50)]
             getItemCount() >> 4
+            getChoiceInteractionType() >> ChoiceInteractionType.MULTIPLE.name()
         }
         Interaction interaction = Mock() {
             getInteractionSpecification() >> responseSubmissionSpec
@@ -124,7 +129,7 @@ class InteractionResponseSpec extends Specification {
         when: "updating score"
         response.updateScore()
 
-        then: "the obtained score is 100"
+        then: "the obtained score is 0"
         response.score == 0
 
     }
@@ -135,6 +140,7 @@ class InteractionResponseSpec extends Specification {
         ResponseSubmissionSpecification responseSubmissionSpec = Mock() {
             getExpectedChoiceList() >> [new InteractionChoice(1,50), new InteractionChoice(3,50)]
             getItemCount() >> 4
+            getChoiceInteractionType() >> ChoiceInteractionType.MULTIPLE.name()
         }
         Interaction interaction = Mock() {
             getInteractionSpecification() >> responseSubmissionSpec
@@ -147,7 +153,7 @@ class InteractionResponseSpec extends Specification {
         when: "updating score"
         response.updateScore()
 
-        then: "the obtained score is 100"
+        then: "the obtained score is 0"
         response.score == 0
 
     }
@@ -158,6 +164,7 @@ class InteractionResponseSpec extends Specification {
         ResponseSubmissionSpecification responseSubmissionSpec = Mock() {
             getExpectedChoiceList() >> [new InteractionChoice(1,50), new InteractionChoice(3,50)]
             getItemCount() >> 4
+            getChoiceInteractionType() >> ChoiceInteractionType.MULTIPLE.name()
         }
         Interaction interaction = Mock() {
             getInteractionSpecification() >> responseSubmissionSpec
@@ -170,7 +177,7 @@ class InteractionResponseSpec extends Specification {
         when: "updating score"
         response.updateScore()
 
-        then: "the obtained score is 100"
+        then: "the obtained score is 0"
         response.score == 0
 
     }
@@ -181,6 +188,7 @@ class InteractionResponseSpec extends Specification {
         ResponseSubmissionSpecification responseSubmissionSpec = Mock() {
             getExpectedChoiceList() >> [new InteractionChoice(1,50), new InteractionChoice(3,50)]
             getItemCount() >> 4
+            getChoiceInteractionType() >> ChoiceInteractionType.MULTIPLE.name()
         }
         Interaction interaction = Mock() {
             getInteractionSpecification() >> responseSubmissionSpec
@@ -193,9 +201,53 @@ class InteractionResponseSpec extends Specification {
         when: "updating score"
         response.updateScore()
 
-        then: "the obtained score is 100"
+        then: "the obtained score is 50"
         response.score == 50
 
+    }
+
+    void "test update score with 5 items and one excusive choice as good response"() {
+        given:"an interaction with its response submission spec"
+        ResponseSubmissionSpecification responseSubmissionSpec = Mock() {
+            getExpectedChoiceList() >> [new InteractionChoice(3,100)]
+            getItemCount() >> 5
+            getChoiceInteractionType() >> ChoiceInteractionType.EXCLUSIVE.name()
+        }
+        Interaction interaction = Mock() {
+            getInteractionSpecification() >> responseSubmissionSpec
+        }
+
+        and: "a learner response with choice 4"
+        InteractionResponse response = new InteractionResponse(choiceListSpecification: "[5]",
+                interaction: interaction )
+
+        when: "updating score"
+        response.updateScore()
+
+        then: "the obtained score is 0"
+        response.score == 0
+    }
+
+    void "test update score with 5 items and one multiple choice as good response"() {
+        given:"an interaction with its response submission spec"
+        ResponseSubmissionSpecification responseSubmissionSpec = Mock() {
+            getExpectedChoiceList() >> [new InteractionChoice(3,100)]
+            getItemCount() >> 5
+            getChoiceInteractionType() >> ChoiceInteractionType.MULTIPLE.name()
+        }
+        Interaction interaction = Mock() {
+            getInteractionSpecification() >> responseSubmissionSpec
+        }
+
+        and: "a learner response with choice 4"
+        InteractionResponse response = new InteractionResponse(choiceListSpecification: "[5]",
+                interaction: interaction )
+
+        when: "updating score"
+        response.updateScore()
+
+        then: "the obtained score is 0"
+        response.score == 100f/5
     }
 
 }

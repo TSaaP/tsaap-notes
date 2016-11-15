@@ -132,12 +132,20 @@ class PlayerController {
     }
 
 
-    private List getChoiceListFromParams(ResponseSubmissionSpecification spec, def params) {
-        List<Integer> choiceList
+    protected List<Integer> getChoiceListFromParams(ResponseSubmissionSpecification spec, def params) {
+        List<Integer> choiceList = []
         if (spec.isMultipleChoice()) {
-            choiceList = params.choiceList?.collect { it as Integer }
+            params.choiceList?.each {
+                if (it && it != "null") {
+                    choiceList << (it as Integer)
+                }
+            }
         } else {
-            choiceList = [params.exclusiveChoice as Integer]
+            if (params.exclusiveChoice && params.exclusiveChoice != "null") {
+                choiceList = [params.exclusiveChoice as Integer]
+            } else {
+                choiceList = []
+            }
         }
         choiceList
     }

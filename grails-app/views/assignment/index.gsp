@@ -24,7 +24,7 @@
     </div>
 
     <g:if test="${flash.message}">
-        <div class="alert alert-info" role="status">${flash.message}</div>
+        <div class="alert alert-info" role="status">${raw(flash.message)}</div>
     </g:if>
     <table class="table table-striped table-hover">
         <thead>

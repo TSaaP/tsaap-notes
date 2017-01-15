@@ -21,7 +21,7 @@
     <g:if test="${flash.message}">
         <div class="alert alert-info" role="status">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-            ${flash.message}
+            ${raw(flash.message)}
         </div>
     </g:if>
     <g:set var="scheduleInstance" value="${assignmentInstance.schedule}"/>

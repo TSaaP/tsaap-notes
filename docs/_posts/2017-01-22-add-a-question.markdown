@@ -2,6 +2,7 @@
 layout: post
 title:  "How to add a new question?"
 date:   2017-01-22 14:39:45 +0200
+author: Jean-François Parmentier
 categories: assignment question
 ---
 

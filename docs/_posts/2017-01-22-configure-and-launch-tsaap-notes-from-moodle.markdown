@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "How to configure and launch Tsaap-Notes as an external tool from Moodle?"
-date:   2016-10-10 16:43:45 +0200
+date:   2017-01-22 14:43:45 +0200
 categories: lti Moodle
 ---
 

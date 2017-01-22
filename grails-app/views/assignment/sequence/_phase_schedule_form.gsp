@@ -31,11 +31,13 @@
 </div>
 <r:script>
 		$('#startdatetimepicker${indexSchedule}').datetimepicker({
-            locale: "${RequestContextUtils.getLocale(request).language}",
+            //locale: "${RequestContextUtils.getLocale(request).language}",
+            locale: "fr", // dirty work around
             defaultDate: getDateFromElement($("#startDate${indexSchedule}"),"${message(code: 'date.startDate.format')}")
         });
         $('#enddatetimepicker${indexSchedule}').datetimepicker({
-            locale: "${RequestContextUtils.getLocale(request).language}",
+            //locale: "${RequestContextUtils.getLocale(request).language}",
+            locale: "fr", // dirty work around
             defaultDate: getDateFromElement($('#endDate${indexSchedule}'),"${message(code: 'date.endDate.format')}")
         });
 </r:script>

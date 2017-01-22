@@ -28,12 +28,14 @@
 </div>
 
 <r:script>
-		$('#datetimepicker1').datetimepicker({
-            locale: "${RequestContextUtils.getLocale(request).language}",
+       $('#datetimepicker1').datetimepicker({
+            //locale: "${RequestContextUtils.getLocale(request).language}",
+            locale: "fr", // dirty work around: force fr locale
             defaultDate: getDateFromElement($('#startDate'),"${message(code:'date.startDate.format')}")
         });
         $('#datetimepicker2').datetimepicker({
-            locale: "${RequestContextUtils.getLocale(request).language}",
+            //locale: "${RequestContextUtils.getLocale(request).language}",
+            locale: "fr", // dirty work around: force fr locale
             defaultDate: getDateFromElement($('#endDate'),"${message(code:'date.endDate.format')}")
         });
 </r:script>

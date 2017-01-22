@@ -49,6 +49,8 @@
                        target="_blank">${message(code: "layout.home.github")}</a></li>
                 <li><a href="https://github.com/TSaaP/tsaap-notes/issues?state=open"
                        target="_blank">${message(code: "layout.home.bug")}</a></li>
+                <li><a href="http://tsaap.github.io/tsaap-notes/"
+                       target="_blank">${message(code: "layout.home.documentation")}</a></li>
                 <li><a href="mailto:franck.silvestre@irit.fr">Contact</a></li>
                 %{--<li class="dropdown">--}%
                 %{--<a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b--}%
@@ -70,8 +72,16 @@
                                 action="auth">${message(code: "layout.home.signIn")} &raquo;</g:link></li>
                 </tsaap:ifNotLoggedIn>
                 <tsaap:ifLoggedIn>
-                    <li><g:link controller="context"
-                                params="[filter: '__FOLLOWED__']">${message(code: "layout.home.welcome")} @<sec:username/> !</g:link></li>
+                    <sec:ifAnyGranted
+                            roles="${org.tsaap.directory.RoleEnum.ADMIN_ROLE.label},${org.tsaap.directory.RoleEnum.TEACHER_ROLE.label}">
+                        <li id="mainLinkAssignments"><g:link
+                                controller="assignment">${message(code: "layout.home.welcome")} @<sec:username/> !</g:link></li>
+                    </sec:ifAnyGranted>
+                    <sec:ifAnyGranted
+                            roles="${org.tsaap.directory.RoleEnum.ADMIN_ROLE.label},${org.tsaap.directory.RoleEnum.STUDENT_ROLE.label}">
+                        <li id="mainLinkPlayer"><g:link
+                                controller="player">${message(code: "layout.home.welcome")} @<sec:username/> !</g:link></li>
+                    </sec:ifAnyGranted>
                 </tsaap:ifLoggedIn>
             </ul>
         </div>

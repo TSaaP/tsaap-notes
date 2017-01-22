@@ -60,6 +60,8 @@
                     <li id="mainLinkPlayer"><g:link
                             controller="player">${message(code: "player.assignment.list.label")}</g:link></li>
                 </sec:ifAnyGranted>
+                <li><a href="http://tsaap.github.io/tsaap-notes/"
+                       target="_blank">${message(code: "layout.home.documentation")}</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <tsaap:ifLoggedIn>

@@ -47,6 +47,8 @@
                        target="_blank">${message(code: "layout.home.github")}</a></li>
                 <li><a href="https://github.com/TSaaP/tsaap-notes/issues?state=open"
                        target="_blank">${message(code: "layout.home.bug")}</a></li>
+                <li><a href="http://tsaap.github.io/tsaap-notes/"
+                       target="_blank">${message(code: "layout.home.documentation")}</a></li>
                 <li><a href="mailto:franck.silvestre@irit.fr">Contact</a></li>
             </ul>
 

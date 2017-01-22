@@ -29,8 +29,9 @@
     <div class="btn-toolbar" role="toolbar">
         <div class="btn-group btn-group-sm" role="group">
             <g:link role="button" class="btn btn-default" action="addSequence" controller="assignment"
-                    resource="${assignmentInstance}"><g:message
+                    resource="${assignmentInstance}"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> <g:message
                     code="assignment.action.addSequence.label" default="Edit"/></g:link>
+            <g:link role="button" class="btn btn-default" controller="player" action="show" id="${assignmentInstance.id}" title="${g.message(code: 'player.assignment.play')}"><span class="glyphicon glyphicon-play" aria-hidden="true"></span> ${g.message(code: 'player.assignment.play')}</g:link>
             <g:render template="assignment_actions" model="[assignmentInstance: assignmentInstance]"/>
         </div>
     </div>
@@ -49,9 +50,9 @@
                             date="${scheduleInstance?.endDate}"/>.</span>
 
                 </g:if>
-                <g:link controller="player" action="show" id="${assignmentInstance.id}" title="${g.message(code: 'player.assignment.play')}"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></g:link>
             </small>
-        </g:if><br/>
+        </g:if>
+        <br/>
     </h4>
     <p><span title="${g.message(code: 'player.assignment.registration.link.tooltip')}"><g:createLink controller="player" action="register" absolute="true" params="[globalId:assignmentInstance.globalId]"/></span></p>
     <table class="table table-striped table-hover">

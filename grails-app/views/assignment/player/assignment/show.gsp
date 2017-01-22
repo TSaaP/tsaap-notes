@@ -14,13 +14,13 @@
 
     <ol class="breadcrumb">
         <sec:ifAnyGranted roles="${org.tsaap.directory.RoleEnum.STUDENT_ROLE.label}">
-        <li><g:link class="list" action="index"><g:message code="player.assignment.list.label"
-                                                           args="[entityName]"/></g:link></li>
+            <li><g:link class="list" action="index"><g:message code="player.assignment.list.label"
+                                                               args="[entityName]"/></g:link></li>
             <li class="active">${message(code: 'player.assignment.label')} "${assignmentInstance?.title}"</li>
         </sec:ifAnyGranted>
         <sec:ifAnyGranted roles="${org.tsaap.directory.RoleEnum.TEACHER_ROLE.label}">
             <li><g:link class="list" action="index" controller="assignment"><g:message code="assignment.list.label"
-                                                               args="[entityName]"/></g:link></li>
+                                                                                       args="[entityName]"/></g:link></li>
             <li class="active">${message(code: 'player.assignment.label')} "${assignmentInstance?.title}"</li>
         </sec:ifAnyGranted>
 
@@ -34,6 +34,16 @@
     </g:if>
     <g:set var="scheduleInstance" value="${assignmentInstance.schedule}"/>
 
+    <sec:ifAnyGranted roles="${org.tsaap.directory.RoleEnum.TEACHER_ROLE.label}">
+        <div class="btn-toolbar" role="toolbar">
+            <div class="btn-group btn-group-sm" role="group">
+                <g:link role="button" class="btn btn-default" action="show" controller="assignment"
+                        resource="${assignmentInstance}"><span class="glyphicon glyphicon-pencil"
+                                                               aria-hidden="true"></span> <g:message
+                        code="assignment.action.show.label" default="Edit"/></g:link>
+            </div>
+        </div>
+    </sec:ifAnyGranted>
 
     <h4>${assignmentInstance.title}
         <g:if test="${scheduleInstance?.startDate}">
@@ -52,16 +62,23 @@
             </small>
         </g:if>
     </h4>
-    <div class="well well-sm"><g:message code="player.assignment.registeredUserCount"/> <span id="registered_user_count">${assignmentInstance.registeredUserCount()}</span> <g:remoteLink controller="player" action="updateRegisteredUserCount" id="${assignmentInstance.id}" title="Refresh" update="registered_user_count"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></g:remoteLink>
+
+    <div class="well well-sm"><g:message code="player.assignment.registeredUserCount"/> <span
+            id="registered_user_count">${assignmentInstance.registeredUserCount()}</span> <g:remoteLink
+            controller="player" action="updateRegisteredUserCount" id="${assignmentInstance.id}" title="Refresh"
+            update="registered_user_count"><span class="glyphicon glyphicon-refresh"
+                                                 aria-hidden="true"></span></g:remoteLink>
         <br/>
-        <small><span title="${g.message(code: 'player.assignment.registration.link.tooltip')}"><g:createLink controller="player" action="register" absolute="true" params="[globalId:assignmentInstance.globalId]"/></span></small>
+        <small><span title="${g.message(code: 'player.assignment.registration.link.tooltip')}"><g:createLink
+                controller="player" action="register" absolute="true"
+                params="[globalId: assignmentInstance.globalId]"/></span></small>
     </div>
     <ul class="list-group">
         <g:set var="userRole" value="${user == assignmentInstance.owner ? 'teacher' : 'learner'}"/>
         <g:each in="${assignmentInstance.sequences}" status="i" var="sequenceInstance">
             <li class="list-group-item" id="sequence_${sequenceInstance.id}">
-            <g:render template="/assignment/player/sequence/show"
-                      model="[userRole: userRole, sequenceInstance: sequenceInstance, user:user]"/>
+                <g:render template="/assignment/player/sequence/show"
+                          model="[userRole: userRole, sequenceInstance: sequenceInstance, user: user]"/>
             </li>
         </g:each>
     </ul>

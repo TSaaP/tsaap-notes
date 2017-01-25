@@ -49,7 +49,7 @@ class LmsUserService {
     }
 
     private void updateUsernamePasswordAndIsEnabled(Sql sql, LmsUser lmsUser) {
-        def usernameAndPassword = lmsUserHelper.selectUsernameAndPassword(sql, lmsUser.ltiUserId)
+        def usernameAndPassword = lmsUserHelper.selectUsernameAndPassword(sql, lmsUser.ltiConsumerKey, lmsUser.ltiUserId)
         lmsUser.username = usernameAndPassword.username
         lmsUser.password = usernameAndPassword.password
         lmsUser.isEnabled = lmsUserHelper.selectUserIsEnable(sql, lmsUser.username)

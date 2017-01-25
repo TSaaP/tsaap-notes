@@ -99,7 +99,7 @@ class LmsUserServiceSpec extends Specification {
 
         then: "The user is log with his account"
         1 * lmsUserHelper.findUserIdForLtiUserId(sql, '10','key') >> 88
-        1 * lmsUserHelper.selectUsernameAndPassword(sql, '10') >> [username: "jdoe", password: "pass"]
+        1 * lmsUserHelper.selectUsernameAndPassword(sql, 'key','10') >> [username: "jdoe", password: "pass"]
         1 * lmsUserHelper.selectUserIsEnable(sql, "jdoe") >> true
         1 * springSecurityService.reauthenticate("jdoe", "pass")
         res.username == 'jdoe'

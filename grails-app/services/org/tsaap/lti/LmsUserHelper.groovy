@@ -103,8 +103,8 @@ class LmsUserHelper {
      * @param ltiUserId LMS user id
      * @return res a map containing tsaap username and password for the LMS user
      */
-    def selectUsernameAndPassword(Sql sql, String ltiUserId) {
-        def req = sql.firstRow("SELECT username,password FROM user,lms_user WHERE tsaap_user_id = id AND lti_user_id = $ltiUserId")
+    def selectUsernameAndPassword(Sql sql, String consumerKey, String ltiUserId) {
+        def req = sql.firstRow("SELECT username,password FROM user,lms_user WHERE tsaap_user_id = id AND lti_user_id = $ltiUserId AND lti_consumer_key = $consumerKey")
         def res = [username: req.username, password: req.password]
         res
     }

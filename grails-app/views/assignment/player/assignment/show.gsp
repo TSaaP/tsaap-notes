@@ -35,6 +35,7 @@
     <g:set var="scheduleInstance" value="${assignmentInstance.schedule}"/>
 
     <sec:ifAnyGranted roles="${org.tsaap.directory.RoleEnum.TEACHER_ROLE.label}">
+        <g:if test="${assignmentInstance.owner.username == sec.username().toString()}">
         <div class="btn-toolbar" role="toolbar">
             <div class="btn-group btn-group-sm" role="group">
                 <g:link role="button" class="btn btn-default" action="show" controller="assignment"
@@ -43,6 +44,7 @@
                         code="assignment.action.show.label" default="Edit"/></g:link>
             </div>
         </div>
+        </g:if>
     </sec:ifAnyGranted>
 
     <h4>${assignmentInstance.title}

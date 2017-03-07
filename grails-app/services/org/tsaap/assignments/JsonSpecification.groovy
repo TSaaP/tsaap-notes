@@ -1,9 +1,9 @@
-package org.tsaap.assignments.interactions
+package org.tsaap.assignments
 
 /**
  * Contract for interaction specification
  */
-interface InteractionSpecification {
+interface JsonSpecification {
 
     /**
      * Get specification

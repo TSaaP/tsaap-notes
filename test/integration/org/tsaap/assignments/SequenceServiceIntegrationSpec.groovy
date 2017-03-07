@@ -4,6 +4,7 @@ import org.tsaap.BootstrapTestService
 import org.tsaap.assignments.interactions.ChoiceInteractionType
 import org.tsaap.assignments.interactions.EvaluationSpecification
 import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
+import org.tsaap.assignments.statement.ChoiceSpecification
 import org.tsaap.directory.User
 import spock.lang.*
 
@@ -22,7 +23,7 @@ class SequenceServiceIntegrationSpec extends Specification {
 
     void "test save valid statement"() {
         given:"a valid statement and a user"
-        Statement statement = new Statement(title: "a title", content: "a content")
+        Statement statement = new Statement(title: "a title", content: "a content", questionType: QuestionType.OpenEnded)
         User owner = bootstrapTestService.teacherJeanne
 
         when: "saving the statement"
@@ -34,7 +35,6 @@ class SequenceServiceIntegrationSpec extends Specification {
         statement.owner == bootstrapTestService.teacherJeanne
         statement.lastUpdated
         statement.dateCreated
-
     }
 
     void "test save valid sequence"() {
@@ -94,7 +94,8 @@ class SequenceServiceIntegrationSpec extends Specification {
         sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement)
 
         and: "an invalid statement"
-        Statement statement2 =new Statement(title: null, content: "a content", owner: null)
+        Statement statement2 =
+            new Statement(title: null, content: "a content", owner: null, questionType: QuestionType.OpenEnded)
 
         when: "adding a sequence with the invalid statement"
         Sequence sequence = sequenceService.addSequenceToAssignment(assignment,assignment.owner,statement2)
@@ -109,85 +110,40 @@ class SequenceServiceIntegrationSpec extends Specification {
 
     }
 
-    void "test add a valid sequence with interactions to an assignment"() {
+    void "test update statement of a sequence"() {
         given: "an assignment and a statement"
         Assignment assignment = bootstrapTestService.assignment1
         Statement statement = bootstrapTestService.statement1
-
-        and:"an interaction"
-        Interaction interaction = new Interaction(interactionType: InteractionType.Evaluation.name(), rank: 1,
-                specification: "an evaluation spec", schedule: new Schedule(startDate: new Date()))
-
-        when: "when adding a sequence with interaction"
-        Sequence sequence = sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement, [interaction])
-
-        then: "the sequence has no errors"
-        !sequence.hasErrors()
-
-        and: "the assignment has one sequence"
-        assignment.sequences.size() == 1
-
-        and: "the rank of the last sequence is 1"
-        assignment.lastSequence.rank == 1
-
-        and: "the sequence has 1 interaction"
-        sequence.interactions.size() == 1
-        sequence.interactions[0] == interaction
-        interaction.id
-        interaction.enabled
-        interaction.schedule.id
-    }
-
-    void "test update statement and interactions of a sequence"() {
-        given: "an assignment and a statement"
-        Assignment assignment = bootstrapTestService.assignment1
-        Statement statement = bootstrapTestService.statement1
-
-        and:"an interaction"
-        Interaction interaction = new Interaction(interactionType: InteractionType.Evaluation.name(),rank: 1,
-                specification: "an evaluation spec", schedule: new Schedule(startDate: new Date()))
 
         and: "a sequence added to the assignment with interaction"
-        Sequence sequence = sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement, [interaction])
+        Sequence sequence = sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement)
 
-        when: "statement and interaction is modified"
-        interaction.specification = "new spec"
+        when: "statement is modified"
         statement.title = "new title"
 
         and: "update is triggered on the sequence"
-        sequenceService.updateStatementAndInteractionsOfSequence(sequence,assignment.owner)
+        sequenceService.updateStatementAndInteractionsOfSequence(sequence, assignment.owner)
 
         then: "the statement title of the sequence is modified"
         Statement.findById(sequence.statementId).title == "new title"
-        Interaction.findById(sequence.interactions[0].id).specification == "new spec"
-
     }
 
-    void "test obtaining interaction specifications"() {
+    void "test obtaining statement specification"() {
         given: "an assignment with a sequence"
         Assignment assignment = bootstrapTestService.assignment1
-        Statement statement = bootstrapTestService.statement1
+        Statement statement = bootstrapTestService.statement5
 
         and: "a sequence added to the assignment with interactions"
-        def interactions = [bootstrapTestService.responseSubmissionInteraction, bootstrapTestService.evaluationInteraction]
-        Sequence sequence = sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement, interactions)
+        Sequence sequence = sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement)
 
-        when:"getting the response submission spec from the sequence"
-        ResponseSubmissionSpecification respSpec = sequence.responseSubmissionSpecification
-
-        then:"the specification is OK"
-        respSpec.choiceInteractionType == ChoiceInteractionType.MULTIPLE.name()
-        respSpec.itemCount == 5
-        respSpec.expectedChoiceList.size() == 3
-        respSpec.totalScoreFromExpectedChoice == 100
-        respSpec.studentsProvideExplanation
-        respSpec.studentsProvideConfidenceDegree
-
-        when:"getting the evaluation spec from the sequence"
-        EvaluationSpecification evalSpec = sequence.evaluationSpecification
+        when:"getting the choiceSpecification spec from the statement"
+        ChoiceSpecification choiceSpecification = sequence.statement.choiceSpecificationObject
 
         then:"the specification is OK"
-        evalSpec.responseToEvaluateCount == 3
+        choiceSpecification.choiceInteractionType == ChoiceInteractionType.MULTIPLE.name()
+        choiceSpecification.itemCount == 5
+        choiceSpecification.expectedChoiceList.size() == 3
+        choiceSpecification.totalScoreFromExpectedChoice == 100
     }
 
     void "test obtaining active interaction "() {
@@ -197,29 +153,13 @@ class SequenceServiceIntegrationSpec extends Specification {
 
         and: "a sequence added to the assignment with interactions"
         def interactions = [bootstrapTestService.responseSubmissionInteraction, bootstrapTestService.evaluationInteraction]
-        Sequence sequence = sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement, interactions)
+        Sequence sequence = sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement)
+        sequenceService.updateStatementAndInteractionsOfSequence(sequence, assignment.owner, interactions)
 
         when: "asking the active interaction"
         def interaction = sequence.activeInteraction
 
         then: "the first interaction is given"
-        interaction == bootstrapTestService.responseSubmissionInteraction
-
-    }
-
-    void "test obtaining interactions of a given type"() {
-        given: "an assignment"
-        Assignment assignment = bootstrapTestService.assignment1
-        Statement statement = bootstrapTestService.statement1
-
-        and: "a sequence added to the assignment with interactions"
-        def interactions = [bootstrapTestService.responseSubmissionInteraction, bootstrapTestService.evaluationInteraction]
-        Sequence sequence = sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement, interactions)
-
-        when: "interaction of type response submission is asked"
-        def interaction = sequence.getInteractionOfType(InteractionType.ResponseSubmission)
-
-        then: "the interaction is found"
         interaction == bootstrapTestService.responseSubmissionInteraction
 
     }

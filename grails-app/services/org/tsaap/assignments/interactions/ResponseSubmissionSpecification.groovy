@@ -2,12 +2,13 @@ package org.tsaap.assignments.interactions
 
 import grails.validation.Validateable
 import groovy.json.JsonOutput
+import org.tsaap.assignments.JsonDefaultSpecification
 
 /**
  * A interaction specification for response submission
  */
 @Validateable
-class ResponseSubmissionSpecification extends JsonInteractionSpecification {
+class ResponseSubmissionSpecification extends JsonDefaultSpecification {
 
     /**
      * Default constructor
@@ -235,7 +236,7 @@ enum ChoiceInteractionType {
  * Class representing an interaction item
  */
 @Validateable
-class InteractionChoice extends JsonInteractionSpecification {
+class InteractionChoice extends JsonDefaultSpecification {
 
 
     private static final String INDEX = "index"

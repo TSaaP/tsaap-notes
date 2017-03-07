@@ -6,7 +6,6 @@ import org.tsaap.assignments.ia.ResponseRecommendationService
 import org.tsaap.assignments.interactions.EvaluationSpecification
 import org.tsaap.assignments.interactions.InteractionResultListService
 import org.tsaap.assignments.interactions.InteractionService
-import org.tsaap.assignments.interactions.InteractionSpecification
 import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
 import org.tsaap.directory.User
 
@@ -110,7 +109,7 @@ class Interaction {
      * Get the interaction specification object
      * @return the interaction specification
      */
-    InteractionSpecification getInteractionSpecification() {
+    JsonSpecification getInteractionSpecification() {
         if (isResponseSubmission()) {
             return new ResponseSubmissionSpecification(specification)
         } else if (isEvaluation()) {

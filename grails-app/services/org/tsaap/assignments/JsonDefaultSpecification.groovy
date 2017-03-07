@@ -1,19 +1,20 @@
-package org.tsaap.assignments.interactions
+package org.tsaap.assignments
 
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
+import org.tsaap.assignments.JsonSpecification
 
 /**
  * Abstract class for Json based specification
  */
-class JsonInteractionSpecification implements InteractionSpecification {
+class JsonDefaultSpecification implements JsonSpecification {
 
     protected Map specificationProperties
 
     /**
      * Default constructor
      */
-    JsonInteractionSpecification() {
+    JsonDefaultSpecification() {
         specificationProperties = new HashMap<String,Object>()
     }
 
@@ -21,7 +22,7 @@ class JsonInteractionSpecification implements InteractionSpecification {
      * Construct a specification based on the json string description
      * @param jsonString the specification as json string
      */
-    JsonInteractionSpecification(String jsonString) {
+    JsonDefaultSpecification(String jsonString) {
         JsonSlurper jsonSlurper = new JsonSlurper()
         specificationProperties = jsonSlurper.parseText(jsonString)
     }

@@ -59,12 +59,10 @@
         <tbody>
         <g:each in="${assignmentInstance.sequences}" status="i" var="sequenceInstance">
             <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
-
                 <td><g:link action="editSequence" controller="sequence"
                             id="${sequenceInstance.id}">${fieldValue(bean: sequenceInstance, field: "title")}</g:link></td>
 
                 <td><g:render template="sequence/sequence_actions" model="[sequenceInstance:sequenceInstance]"/></td>
-
             </tr>
         </g:each>
         </tbody>

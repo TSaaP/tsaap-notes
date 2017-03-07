@@ -61,22 +61,6 @@ class AssignmentServiceIntegrationSpec extends Specification {
         savedAssignment.id == null
     }
 
-    void "test save assignment with schedule"() {
-        given: "an assignment and  a schedule"
-        Assignment assignment = new Assignment(title: "an assignment", owner: teacher)
-        Schedule schedule = new Schedule(startDate: new Date())
-
-        when: "saving the assignment"
-        Assignment savedAssignment = assignmentService.saveAssignment(assignment, schedule)
-        Schedule savedSchedule = savedAssignment.schedule
-
-        then: "schedule and assignment are saved without errors"
-        !savedAssignment.hasErrors()
-        savedAssignment.id
-        !savedSchedule.hasErrors()
-        savedSchedule.id
-
-    }
 
     void "test delete assignment without schedule"() {
         given: "an assignment without schedule"
@@ -99,20 +83,6 @@ class AssignmentServiceIntegrationSpec extends Specification {
         Assignment.findById(assignment.id) == null
     }
 
-    void "test delete assignment with schedule"() {
-        given: "an ssignment with schedule"
-        Assignment assignment = new Assignment(title: "an assignment", owner: teacher)
-        Schedule schedule = new Schedule(startDate: new Date())
-        assignmentService.saveAssignment(assignment, schedule)
-
-        when: "deleting assignment is  performed by the owner"
-        assignmentService.deleteAssignment(assignment, teacher)
-
-        then: "the assignment and the schedule are deleted"
-        Assignment.findById(assignment.id) == null
-        Schedule.findById(schedule.id) == null
-
-    }
 
     void "test delete assignment with sequences"() {
         given: "an ssignment with sequences"
@@ -251,6 +221,7 @@ class AssignmentServiceIntegrationSpec extends Specification {
         sequence2.rank == rank1
 
         and: "order are swapped"
+        List<Sequence> listSequence = assignment.sequences
         assignment.sequences[0] == sequence2
         assignment.sequences[1] == sequence1
     }

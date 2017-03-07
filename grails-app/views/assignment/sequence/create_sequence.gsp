@@ -13,15 +13,25 @@
 <div id="edit-sequence" class="container" role="main">
 
     <ol class="breadcrumb">
-        <li><g:link class="list" action="index" controller="assignment"><g:message code="assignment.list.label"
-                                                           args="[entityName]"/></g:link></li>
-        <li><g:link class="list" action="show" controller="assignment"
-                    id="${assignmentInstance.id}">${message(code: "assignment.label")} ${assignmentInstance?.title}</g:link></li>
-        <li class="active">${message(code: "sequence.creation.label")}</li>
+        <li>
+            <g:link class="list" action="index" controller="assignment">
+                <g:message code="assignment.list.label" args="[entityName]"/>
+            </g:link>
+        </li>
+        <li>
+            <g:link class="list" action="show" controller="assignment" id="${assignmentInstance.id}">
+                ${message(code: "assignment.label")} ${assignmentInstance?.title}
+            </g:link>
+        </li>
+        <li class="active">
+            ${message(code: "sequence.creation.label")}
+        </li>
     </ol>
     <g:set var="statementInstance" value="${sequenceInstance?.statement}"/>
     <g:if test="${flash.message}">
-        <div class="message" role="status">${flash.message}</div>
+        <div class="message" role="status">
+          ${flash.message}
+        </div>
     </g:if>
     <g:hasErrors bean="${sequenceInstance}">
         <div class="alert alert-danger">
@@ -38,9 +48,7 @@
         <fieldset class="form">
             <g:render template="/assignment/sequence/statement_form" bean="${statementInstance}" model="[assignmentInstance:assignmentInstance]"/>
             <g:set var="defaultDate" value="${assignmentInstance?.schedule?.startDate ?: new Date()}"/>
-            <g:render template="/assignment/sequence/phase_submission_1" model="[defaultDate:defaultDate]"/>
-            <g:render template="/assignment/sequence/phase_confrontation_2" model="[hidden:true, defaultDate:defaultDate+1]"/>
-            <g:render template="/assignment/sequence/phase_results_display_3" model="[defaultDate: defaultDate+2]"/>
+            <g:render template="/assignment/sequence/statement_question_type_form" model="[defaultDate:defaultDate]"/>
         </fieldset>
         <fieldset class="buttons">
             <g:actionSubmit class="btn btn-info" action="saveSequence"

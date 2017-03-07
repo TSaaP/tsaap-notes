@@ -1,12 +1,13 @@
 package org.tsaap.assignments.interactions
 
 import grails.validation.Validateable
+import org.tsaap.assignments.JsonDefaultSpecification
 
 /**
  * Specification of an evaluation interaction.
  */
 @Validateable
-class EvaluationSpecification extends JsonInteractionSpecification {
+class EvaluationSpecification extends JsonDefaultSpecification {
 
     /**
      * Default constructor

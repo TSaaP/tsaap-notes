@@ -21,6 +21,7 @@ import org.tsaap.assignments.Assignment
 import org.tsaap.assignments.AssignmentService
 import org.tsaap.assignments.Interaction
 import org.tsaap.assignments.InteractionType
+import org.tsaap.assignments.QuestionType
 import org.tsaap.assignments.Schedule
 import org.tsaap.assignments.SequenceService
 import org.tsaap.assignments.Statement
@@ -28,6 +29,8 @@ import org.tsaap.assignments.interactions.ChoiceInteractionType
 import org.tsaap.assignments.interactions.EvaluationSpecification
 import org.tsaap.assignments.interactions.InteractionChoice
 import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
+import org.tsaap.assignments.statement.ChoiceItemSpecification
+import org.tsaap.assignments.statement.ChoiceSpecification
 import org.tsaap.directory.SettingsService
 import org.tsaap.directory.User
 import org.tsaap.notes.Context
@@ -56,6 +59,8 @@ class BootstrapTestService {
     Statement statement2
     Statement statement3
     Statement statement4
+    Statement statement5
+
 
     Assignment assignment1
     Assignment assignment2With2Sequences
@@ -147,16 +152,30 @@ class BootstrapTestService {
 
     def initializeStatements() {
         if (!Statement.findByTitle("Statement 1")) {
-            statement1 = sequenceService.saveStatement(new Statement(title: "Statement 1", content:"Content of statement 1"),teacherJeanne)
+            statement1 = sequenceService.saveStatement(new Statement(title: "Statement 1", content:"Content of statement 1", questionType: QuestionType.OpenEnded),teacherJeanne)
         }
         if (!Statement.findByTitle("Statement 2")) {
-            statement2 = sequenceService.saveStatement(new Statement(title: "Statement 2", content:"Content of statement 2"),teacherJeanne)
+            statement2 = sequenceService.saveStatement(new Statement(title: "Statement 2", content:"Content of statement 2", questionType: QuestionType.OpenEnded),teacherJeanne)
         }
         if (!Statement.findByTitle("Statement 3")) {
-            statement3 = sequenceService.saveStatement(new Statement(title: "Statement 3", content:"Content of statement 3"),teacherJeanne)
+            statement3 = sequenceService.saveStatement(new Statement(title: "Statement 3", content:"Content of statement 3", questionType: QuestionType.OpenEnded),teacherJeanne)
         }
         if (!Statement.findByTitle("Statement 4")) {
-            statement4 = sequenceService.saveStatement(new Statement(title: "Statement 4", content:"Content of statement 4"),teacherJeanne)
+            statement4 = sequenceService.saveStatement(new Statement(title: "Statement 4", content:"Content of statement 4", questionType: QuestionType.OpenEnded),teacherJeanne)
+        }
+        if (!Statement.findByTitle("Statement 5")) {
+            ChoiceSpecification choiceSpecification = new ChoiceSpecification()
+            choiceSpecification.choiceInteractionType = 'MULTIPLE'
+            choiceSpecification.itemCount = 5
+            choiceSpecification.expectedChoiceList = [
+                new ChoiceItemSpecification(2, 100f/3f as Float),
+                new ChoiceItemSpecification(3, 100f/3f as Float),
+                new ChoiceItemSpecification(5, 100f/3f as Float)
+            ]
+            statement5 = sequenceService.saveStatement(new Statement(
+                title: "Statement 5", content:"Content of statement 5",
+                questionType: QuestionType.MultipleChoice,
+                choiceSpecification:choiceSpecification.jsonString),teacherJeanne)
         }
     }
 

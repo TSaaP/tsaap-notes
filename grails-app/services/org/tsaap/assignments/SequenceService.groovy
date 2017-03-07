@@ -48,11 +48,13 @@ class SequenceService {
         Contract.requires(assignment.owner == user, AssignmentService.USER__MUST__BE__ASSIGNMENT__OWNER)
         def rank = assignment.lastSequence ? assignment.lastSequence.rank + 1 : 1
         Sequence sequence = new Sequence(rank: rank, phasesAreScheduled: phasesAreScheduled)
+
         saveOrUpdateStatement(statement, sequence)
         validateInteractions(interactions, user, sequence)
         saveSequence(sequence, user, assignment, statement)
         saveInteractions(interactions, sequence)
         updateAssignmentLastUpdated(sequence, assignment)
+
         sequence
     }
 
@@ -114,7 +116,7 @@ class SequenceService {
             interaction.sequence = sequence
             interaction.schedule.interaction = interaction
             interaction.schedule.validate()
-            processInteractionScheduleError(interaction, i, sequence)
+           // processInteractionScheduleError(interaction, i, sequence)
         }
     }
 
@@ -136,7 +138,7 @@ class SequenceService {
         if (!sequence.hasErrors()) {
             interactions.each { def interaction ->
                 interaction.save(failOnError: true)
-                interaction.schedule.save()
+                // interaction.schedule.save()
             }
         }
     }

@@ -4,9 +4,11 @@ import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 import org.grails.plugins.sanitizer.MarkupSanitizerService
+import org.tsaap.assignments.interactions.ChoiceInteractionType
 import org.tsaap.assignments.interactions.EvaluationSpecification
-import org.tsaap.assignments.interactions.InteractionChoice
 import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
+import org.tsaap.assignments.statement.ChoiceSpecification
+import org.tsaap.assignments.statement.ChoiceItemSpecification
 import org.tsaap.attachement.AttachementService
 import org.tsaap.directory.User
 import grails.transaction.Transactional
@@ -33,19 +35,10 @@ class SequenceController {
         }
         User owner = springSecurityService.currentUser
         Statement statementInstance = getStatementInstanceToSave(owner, params)
-
-        ResponseSubmissionSpecification subSpec = getResponseSubmissionSpecificationToSaveOrUpdate(params)
-        EvaluationSpecification evalSpec = getEvaluationSpecificationToSave(subSpec, params)
-
-        List<Interaction> interactions = getInteractionsToSave(params, subSpec, evalSpec, assignmentInstance)
-        boolean phasesAreScheduled = params.displaySchedule as boolean
-        Sequence sequenceInstance = sequenceService.addSequenceToAssignment(assignmentInstance, owner,
-                statementInstance, interactions, phasesAreScheduled)
+        Sequence sequenceInstance = sequenceService.addSequenceToAssignment(assignmentInstance, owner, statementInstance)
 
         if (sequenceInstance.hasErrors()) {
-            respond assignmentInstance, model: [responseSubmissionSpecificationInstance: subSpec,
-                                                evaluationSpecificationInstance        : evalSpec,
-                                                sequenceInstance                       : sequenceInstance],
+            respond assignmentInstance, model: [sequenceInstance: sequenceInstance],
                     view: '/assignment/sequence/create_sequence'
             return
         }
@@ -55,7 +48,6 @@ class SequenceController {
         flash.message = message(code: 'sequence.updated.message',
                 args: [message(code: 'sequence.label', default: 'Question'), sequenceInstance.title.encodeAsRaw()])
         redirect action: "show", controller: "assignment", params: [id: assignmentInstance.id]
-
     }
 
 
@@ -73,15 +65,7 @@ class SequenceController {
             return
         }
         User user = springSecurityService.currentUser
-        sequenceInstance.phasesAreScheduled = params.displaySchedule as boolean
         Statement statementInstance = getStatementInstanceToUpdate(sequenceInstance, params)
-
-        ResponseSubmissionSpecification subSpec = getResponseSubmissionSpecificationToSaveOrUpdate(params, sequenceInstance)
-        EvaluationSpecification evalSpec = getEvaluationSpecificationToUpdate(subSpec, params, sequenceInstance)
-
-        List<Interaction> interactions = getInteractionsToAddAtUpdate(params, subSpec, evalSpec, sequenceInstance)
-
-        sequenceService.updateStatementAndInteractionsOfSequence(sequenceInstance, user, interactions)
 
         if (sequenceInstance.hasErrors()) {
             respond sequenceInstance, view: '/assignment/sequence/edit_sequence'
@@ -176,6 +160,9 @@ class SequenceController {
         Statement statementInstance = sequenceInstance.statement
         statementInstance.title = params.title
         statementInstance.content = markupSanitizerService.sanitize(params.content)?.cleanString
+        statementInstance.questionType = getQuestionType(params)
+        statementInstance.choiceSpecification = getChoiceSpecification(params, sequenceInstance)?.jsonString
+
         statementInstance
     }
 
@@ -183,44 +170,63 @@ class SequenceController {
         Statement statementInstance = new Statement(title: params.title)
         statementInstance.content = markupSanitizerService.sanitize(params.content)?.cleanString
         statementInstance.owner = owner
+        statementInstance.questionType = getQuestionType(params)
+        statementInstance.choiceSpecification = getChoiceSpecification(params)?.jsonString
+
         statementInstance
     }
 
+    private QuestionType getQuestionType(def params)  {
+      boolean hasChoices = params.hasChoices.toBoolean()
+      QuestionType questionType
+
+      if (hasChoices) {
+        if (params.choiceInteractionType == ChoiceInteractionType.MULTIPLE.name()) {
+          questionType = QuestionType.MultipleChoice
+        } else {
+          questionType = QuestionType.ExclusiveChoice
+        }
+      } else {
+        questionType = QuestionType.OpenEnded
+      }
+
+      questionType
+    }
+
+    private ChoiceSpecification getChoiceSpecification(def params, Sequence sequence = null) {
+      ChoiceSpecification choiceSpecification =  sequence?.statement?.choiceSpecificationObject ?: new ChoiceSpecification()
+      boolean hasChoices = params.hasChoices.toBoolean()
+
+      if (hasChoices) {
+        choiceSpecification.choiceInteractionType = params.choiceInteractionType
+        choiceSpecification.itemCount = params.itemCount as Integer
+
+        if (params.choiceInteractionType == ChoiceInteractionType.MULTIPLE.name()) {
+          def expectedChoiceList = params.expectedChoiceList
+          def countExpectedChoice = expectedChoiceList?.size() as Float
+          choiceSpecification.expectedChoiceList = expectedChoiceList.collect {
+            new ChoiceItemSpecification(it as Integer,
+                (100 / countExpectedChoice) as Float)
+          }
+        } else {
+          def exclusiveChoice = params.exclusiveChoice as Integer
+
+          if (exclusiveChoice != null) {
+            choiceSpecification.expectedChoiceList = [new ChoiceItemSpecification(exclusiveChoice, 100f)]
+          } else {
+            choiceSpecification.expectedChoiceList = []
+          }
+        }
+      } else {
+          choiceSpecification = null
+      }
+
+      choiceSpecification
+    }
 
     private ResponseSubmissionSpecification getResponseSubmissionSpecificationToSaveOrUpdate(GrailsParameterMap params, Sequence sequence = null) {
-        ResponseSubmissionSpecification subSpec = sequence?.responseSubmissionSpecification ?: new ResponseSubmissionSpecification()
-        boolean hasChoices = params.hasChoices as boolean
-        if (hasChoices) {
-            subSpec.choiceInteractionType = params.choiceInteractionType
-            subSpec.itemCount = params.itemCount as Integer
-            if (subSpec.isMultipleChoice()) {
-                def expectedChoiceList = params.expectedChoiceList
-                def countExpectedChoice = expectedChoiceList?.size() as Float
-                subSpec.expectedChoiceList = expectedChoiceList.collect {
-                    new InteractionChoice(it as Integer,
-                            (100 / countExpectedChoice) as Float)
-                }
-            } else {
-                def exclusiveChoice = params.exclusiveChoice as Integer
-                if (exclusiveChoice != null) {
-                    subSpec.expectedChoiceList = [new InteractionChoice(exclusiveChoice, 100f)]
-                } else {
-                    subSpec.expectedChoiceList = []
-                }
-            }
-            subSpec.studentsProvideExplanation = params.studentsProvideExplanation as boolean
-        } else {
-            subSpec.studentsProvideExplanation = true
-            subSpec.expectedChoiceList = null
-            subSpec.itemCount = null
-            subSpec.choiceInteractionType = null
-        }
-        if (subSpec.studentsProvideExplanation) {
-            subSpec.studentsProvideConfidenceDegree = true
-        } else {
-            subSpec.studentsProvideConfidenceDegree = params.studentsProvideConfidenceDegree as boolean
-        }
-        subSpec
+      ResponseSubmissionSpecification subSpec = sequence?.responseSubmissionSpecification ?: new ResponseSubmissionSpecification()
+      subSpec
     }
 
     private void attachFileIfAny(Statement statementInstance, def request) {
@@ -233,11 +239,7 @@ class SequenceController {
     private EvaluationSpecification getEvaluationSpecificationToSave(ResponseSubmissionSpecification subSpec,
                                                                      def params) {
         EvaluationSpecification evalSpec = null
-        if (subSpec.studentsProvideExplanation) {
-            evalSpec = new EvaluationSpecification(responseToEvaluateCount: params.responseToEvaluateCount as Integer)
-        } else {
-            evalSpec = new EvaluationSpecification(responseToEvaluateCount: 1)
-        }
+        evalSpec = new EvaluationSpecification()
         evalSpec
     }
 

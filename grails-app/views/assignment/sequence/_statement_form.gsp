@@ -34,9 +34,3 @@
         ${statementInstance?.content}
     </ckeditor:editor>
 </div>
-
-<div class="checkbox">
-    <label>
-        <input type="checkbox" name="displaySchedule" ${sequenceInstance?.phasesAreScheduled ? 'checked' : ''} value="true"> <g:message code="sequence.displaySchedules.label" default="Title"/>
-    </label>
-</div>

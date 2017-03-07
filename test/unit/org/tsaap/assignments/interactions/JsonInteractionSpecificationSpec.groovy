@@ -1,6 +1,7 @@
 package org.tsaap.assignments.interactions
 
 import groovy.json.JsonException
+import org.tsaap.assignments.JsonDefaultSpecification
 import spock.lang.Specification
 
 /**
@@ -13,7 +14,7 @@ class JsonInteractionSpecificationSpec extends Specification {
         String jsonStr = '{"title": "a title", "list": [1,2,3]}'
 
         when: "creating a json interaction spec"
-        JsonInteractionSpecification jsonInteractionSpecification = new JsonInteractionSpecification(jsonStr)
+        JsonDefaultSpecification jsonInteractionSpecification = new JsonDefaultSpecification(jsonStr)
 
         then: "properties are set correctly"
         jsonInteractionSpecification.getSpecificationProperty("title") == "a title"
@@ -25,7 +26,7 @@ class JsonInteractionSpecificationSpec extends Specification {
         String str = "no valid json"
 
         when: "creating a json interaction spec"
-        JsonInteractionSpecification jsonInteractionSpecification = new JsonInteractionSpecification(str)
+        JsonDefaultSpecification jsonInteractionSpecification = new JsonDefaultSpecification(str)
 
         then: "an exception is thrown"
         JsonException e = thrown()
@@ -37,7 +38,7 @@ class JsonInteractionSpecificationSpec extends Specification {
 
     void "test creation based on properties set"() {
         given: "a specifiction"
-        JsonInteractionSpecification jsonInteractionSpecification = new JsonInteractionSpecification()
+        JsonDefaultSpecification jsonInteractionSpecification = new JsonDefaultSpecification()
 
         when: "setting some properties"
         jsonInteractionSpecification.setSpecificationProperty("title", "a title")

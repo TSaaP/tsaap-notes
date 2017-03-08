@@ -21,7 +21,8 @@ class Statement {
         content blank: false
         questionType nullable: false
         choiceSpecification nullable: true, validator: { val, obj ->
-            if (obj.questionType != QuestionType.OpenEnded && !val) return ['choiceSpecificationMustBeSet']
+            if ((obj.questionType == QuestionType.MultipleChoice || obj.questionType == QuestionType.ExclusiveChoice)
+                    && !val) return ['choiceSpecificationMustBeSet']
         }
     }
 

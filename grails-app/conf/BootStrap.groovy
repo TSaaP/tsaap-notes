@@ -18,6 +18,7 @@
 import grails.util.Environment
 import grails.util.Holders
 import groovy.sql.Sql
+import migration.DataMigrationService
 import org.tsaap.BootstrapService
 import org.tsaap.lti.Config
 
@@ -26,8 +27,10 @@ import java.util.logging.Level
 class BootStrap {
 
     BootstrapService bootstrapService
+    DataMigrationService dataMigrationService
 
     def init = { servletContext ->
+        dataMigrationService.migrateStatement()
         bootstrapService.initializeReferenceData()
         Environment.executeForCurrentEnvironment {
             development {

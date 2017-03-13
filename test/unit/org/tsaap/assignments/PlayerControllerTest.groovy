@@ -15,13 +15,13 @@ class PlayerControllerTest extends Specification {
         given: "params containing several integer as string"
         def params = [choiceList:["1", "2"]]
 
-        and: "specification of interaction"
-        def spec = Mock(ResponseSubmissionSpecification) {
+        and: "specification of statement"
+        def statement = Mock(Statement) {
             isMultipleChoice() >> true
         }
 
         when: "extracting choice list from params"
-        def choices = playerController.getChoiceListFromParams(spec,params)
+        def choices = playerController.getChoiceListFromParams(statement, params)
 
         then: "choices is a list of integers "
         choices == [1,2]
@@ -32,30 +32,29 @@ class PlayerControllerTest extends Specification {
         given: "params containing several integer as string"
         def params = [choiceList:["1", "null"]]
 
-        and: "specification of interaction"
-        def spec = Mock(ResponseSubmissionSpecification) {
+        and: "specification of statement"
+        def statement = Mock(Statement) {
             isMultipleChoice() >> true
         }
-
         when: "extracting choice list from params"
-        def choices = playerController.getChoiceListFromParams(spec,params)
+        def choices = playerController.getChoiceListFromParams(statement, params)
 
         then: "choices is a list of integer "
         choices == [1]
     }
 
-    def "GetChoiceListFromParams multiple choice  case with two null values"() {
+    def "GetChoiceListFromParams multiple choice case with two null values"() {
 
         given: "params containing several integer as string"
         def params = [choiceList:["null", "null"]]
 
-        and: "specification of interaction"
-        def spec = Mock(ResponseSubmissionSpecification) {
+        and: "specification of statement"
+        def statement = Mock(Statement) {
             isMultipleChoice() >> true
         }
 
         when: "extracting choice list from params"
-        def choices = playerController.getChoiceListFromParams(spec,params)
+        def choices = playerController.getChoiceListFromParams(statement, params)
 
         then: "choices is an empty list  "
         choices == []
@@ -66,13 +65,13 @@ class PlayerControllerTest extends Specification {
         given: "params containing several integer as string"
         def params = [choiceList:[null]]
 
-        and: "specification of interaction"
-        def spec = Mock(ResponseSubmissionSpecification) {
+        and: "specification of statement"
+        def statement = Mock(Statement) {
             isMultipleChoice() >> true
         }
 
         when: "extracting choice list from params"
-        def choices = playerController.getChoiceListFromParams(spec,params)
+        def choices = playerController.getChoiceListFromParams(statement, params)
 
         then: "choices is an empty list  "
         choices == []
@@ -83,13 +82,13 @@ class PlayerControllerTest extends Specification {
         given: "params containing several integer as string"
         def params = [exclusiveChoice:"null"]
 
-        and: "specification of interaction"
-        def spec = Mock(ResponseSubmissionSpecification) {
-            isMultipleChoice() >> false
+        and: "specification of statement"
+        def statement = Mock(Statement) {
+            isMultipleChoice() >> true
         }
 
         when: "extracting choice list from params"
-        def choices = playerController.getChoiceListFromParams(spec,params)
+        def choices = playerController.getChoiceListFromParams(statement, params)
 
         then: "choices is an empty list  "
         choices == []
@@ -100,13 +99,13 @@ class PlayerControllerTest extends Specification {
         given: "params containing several integer as string"
         def params = [exclusiveChoice:null]
 
-        and: "specification of interaction"
-        def spec = Mock(ResponseSubmissionSpecification) {
-            isMultipleChoice() >> false
+        and: "specification of statement"
+        def statement = Mock(Statement) {
+            isMultipleChoice() >> true
         }
 
         when: "extracting choice list from params"
-        def choices = playerController.getChoiceListFromParams(spec,params)
+        def choices = playerController.getChoiceListFromParams(statement, params)
 
         then: "choices is an empty list  "
         choices == []
@@ -117,13 +116,13 @@ class PlayerControllerTest extends Specification {
         given: "params containing several integer as string"
         def params = [exclusiveChoice:"2"]
 
-        and: "specification of interaction"
-        def spec = Mock(ResponseSubmissionSpecification) {
+        and: "specification of statement"
+        def statement = Mock(Statement) {
             isMultipleChoice() >> false
         }
 
         when: "extracting choice list from params"
-        def choices = playerController.getChoiceListFromParams(spec,params)
+        def choices = playerController.getChoiceListFromParams(statement, params)
 
         then: "choices is ok  "
         choices == [2]

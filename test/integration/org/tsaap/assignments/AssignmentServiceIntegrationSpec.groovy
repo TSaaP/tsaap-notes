@@ -85,7 +85,7 @@ class AssignmentServiceIntegrationSpec extends Specification {
 
 
     void "test delete assignment with sequences"() {
-        given: "an ssignment with sequences"
+        given: "an assignment with sequences"
         Assignment assignment = bootstrapTestService.assignment2With2Sequences
         def sequence1 = assignment.sequences[0]
         def sequence2 = assignment.sequences[1]

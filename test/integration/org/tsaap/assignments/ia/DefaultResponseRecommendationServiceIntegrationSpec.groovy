@@ -188,7 +188,7 @@ class DefaultResponseRecommendationServiceIntegrationSpec extends Specification 
         interactionService.saveInteractionResponse(respErik)
 
         expect:"the responseSubmission provides no choices"
-        !interaction.interactionSpecification.hasChoices()
+        !interaction.sequence.statement.hasChoices()
 
         when: "building the explanation recommendation mapping with default value for recommendations number"
         def mapping = responseRecommendationService.getRecommendedResponseIdByResponseIdForOpenQuestion(

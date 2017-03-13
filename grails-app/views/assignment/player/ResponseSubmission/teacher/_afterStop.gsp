@@ -1,9 +1,9 @@
-<g:set var="spec" value="${interactionInstance.interactionSpecification}"/>
-<g:if test="${spec.hasChoices()}">
+<g:set var="choiceSpecification" value="${interactionInstance.sequence.statement.getChoiceSpecificationObject()}"/>
+<g:if test="${interactionInstance.sequence.statement.hasChoices()}">
     <g:set var="resultList" value="${interactionInstance.resultsByAttempt()["1"]}"/>
     <g:set var="resultList2" value="${interactionInstance.resultsByAttempt()?.get("2")}"/>
-    <g:each var="i" in="${(1..spec.itemCount)}">
-        <g:set var="choiceStatus" value="${spec.expectedChoiceListContainsChoiceWithIndex(i) ? 'success' : 'danger'}"/>
+    <g:each var="i" in="${(1..choiceSpecification.itemCount)}">
+        <g:set var="choiceStatus" value="${choiceSpecification.expectedChoiceListContainsChoiceWithIndex(i) ? 'success' : 'danger'}"/>
         <g:set var="percentResult" value="${resultList?.get(i)}"/>
         <g:set var="percentResult2" value="${resultList2?.get(i)}"/>
         <div class="panel panel-${choiceStatus}">

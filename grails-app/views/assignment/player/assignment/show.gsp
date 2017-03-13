@@ -1,6 +1,6 @@
 <%@ page import="org.tsaap.assignments.Schedule" %>
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/html">
 <head>
     <meta name="layout" content="main">
     <r:require modules="tsaap_ui_notes,tsaap_icons"/>
@@ -85,5 +85,33 @@
         </g:each>
     </ul>
 </div>
+<script lang="text/javascript">
+    $('input[name=studentsProvideExplanation]').on('change', function () {
+        var currentInput = $('#' + this.id);
+        var sequenceId = this.id.split("_")[1];
+        var studentsProvideConfidenceDegree =  $('#' + 'studentsProvideConfidenceDegree_' + sequenceId);
+        var phaseConfrontationPanel =  $('#' + 'phaseConfrontation_' + sequenceId);
+        if (currentInput.is(':checked')) {
+            this.value = true;
+            studentsProvideConfidenceDegree.prop('value', true);
+            studentsProvideConfidenceDegree.prop( 'checked', true );
+            studentsProvideConfidenceDegree.prop( 'disabled', true );
+            phaseConfrontationPanel.css( 'display', 'block' );
+        } else {
+            this.value = false;
+            studentsProvideConfidenceDegree.prop('value', false);
+            studentsProvideConfidenceDegree.prop( 'checked', false );
+            studentsProvideConfidenceDegree.prop( 'disabled', false );
+            phaseConfrontationPanel.css( 'display', 'none' );
+        }
+    });
+
+    $('input[name=studentsProvideConfidenceDegree]').on('change', function () {
+        this.value = this.checked;
+    });
+    function remoteLinkSuccess (id) {
+        $('#' + 'interactionSpec_' + id).css('display', 'none')
+    }
+</script>
 </body>
 </html>

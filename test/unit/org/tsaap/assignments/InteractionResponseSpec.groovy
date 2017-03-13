@@ -1,9 +1,9 @@
 package org.tsaap.assignments
 
 import grails.test.mixin.TestFor
-import org.tsaap.assignments.interactions.ChoiceInteractionType
-import org.tsaap.assignments.interactions.InteractionChoice
-import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
+import org.tsaap.assignments.statement.ChoiceInteractionType
+import org.tsaap.assignments.statement.ChoiceItemSpecification
+import org.tsaap.assignments.statement.ChoiceSpecification
 import spock.lang.Specification
 
 /**
@@ -12,7 +12,7 @@ import spock.lang.Specification
 @TestFor(InteractionResponse)
 class InteractionResponseSpec extends Specification {
 
-    void "test getting choic list from choice list specification"() {
+    void "test getting choice list from choice list specification"() {
 
         given:"a choice interaction response with a choice list specification in json"
         InteractionResponse response = new InteractionResponse(choiceListSpecification: "[1,3]")
@@ -41,13 +41,19 @@ class InteractionResponseSpec extends Specification {
     void "test update score with all good answers"() {
 
         given:"an interaction with its response submission spec"
-        ResponseSubmissionSpecification responseSubmissionSpec = Mock() {
-            getExpectedChoiceList() >> [new InteractionChoice(1,50), new InteractionChoice(3,50)]
+        ChoiceSpecification choiceSpecification = Mock(ChoiceSpecification) {
+            getExpectedChoiceList() >> [new ChoiceItemSpecification(1, 50), new ChoiceItemSpecification(3, 50)]
             getItemCount() >> 4
             getChoiceInteractionType() >> ChoiceInteractionType.MULTIPLE.name()
         }
-        Interaction interaction = Mock() {
-            getInteractionSpecification() >> responseSubmissionSpec
+        Statement statement = Mock(Statement) {
+            getChoiceSpecificationObject() >> choiceSpecification
+        }
+        Sequence sequence = Mock(Sequence) {
+           getStatement() >> statement
+        }
+        Interaction interaction = Mock(Interaction) {
+            getSequence() >> sequence
         }
 
         and: "a learner response with all good choices"
@@ -65,13 +71,20 @@ class InteractionResponseSpec extends Specification {
     void "test update score with partial good answers"() {
 
         given:"an interaction with its response submission spec"
-        ResponseSubmissionSpecification responseSubmissionSpec = Mock() {
-            getExpectedChoiceList() >> [new InteractionChoice(1,50), new InteractionChoice(3,50)]
+        ChoiceSpecification choiceSpecification = Mock(ChoiceSpecification) {
+            getExpectedChoiceList() >> [new ChoiceItemSpecification(1,50), new ChoiceItemSpecification(3,50)]
             getItemCount() >> 4
             getChoiceInteractionType() >> ChoiceInteractionType.MULTIPLE.name()
         }
-        Interaction interaction = Mock() {
-            getInteractionSpecification() >> responseSubmissionSpec
+        Statement statement = Mock(Statement) {
+            getChoiceSpecificationObject() >> choiceSpecification
+        }
+
+        Sequence sequence = Mock(Sequence) {
+            getStatement() >> statement
+        }
+        Interaction interaction = Mock(Interaction) {
+            getSequence() >> sequence
         }
 
         and: "a learner response with partial good choices"
@@ -89,13 +102,20 @@ class InteractionResponseSpec extends Specification {
     void "test update score with no good answers"() {
 
         given:"an interaction with its response submission spec"
-        ResponseSubmissionSpecification responseSubmissionSpec = Mock() {
-            getExpectedChoiceList() >> [new InteractionChoice(1,50), new InteractionChoice(3,50)]
+        ChoiceSpecification choiceSpecification = Mock(ChoiceSpecification) {
+            getExpectedChoiceList() >> [new ChoiceItemSpecification(1,50), new ChoiceItemSpecification(3,50)]
             getItemCount() >> 4
             getChoiceInteractionType() >> ChoiceInteractionType.MULTIPLE.name()
         }
-        Interaction interaction = Mock() {
-            getInteractionSpecification() >> responseSubmissionSpec
+
+        Statement statement = Mock(Statement) {
+            getChoiceSpecificationObject() >> choiceSpecification
+        }
+        Sequence sequence = Mock(Sequence) {
+            getStatement() >> statement
+        }
+        Interaction interaction = Mock(Interaction) {
+            getSequence() >> sequence
         }
 
         and: "a learner response with all good choices"
@@ -113,13 +133,20 @@ class InteractionResponseSpec extends Specification {
     void "test update score with no answers"() {
 
         given:"an interaction with its response submission spec"
-        ResponseSubmissionSpecification responseSubmissionSpec = Mock() {
-            getExpectedChoiceList() >> [new InteractionChoice(1,50), new InteractionChoice(3,50)]
+        ChoiceSpecification choiceSpecification = Mock(ChoiceSpecification) {
+            getExpectedChoiceList() >> [new ChoiceItemSpecification(1,50), new ChoiceItemSpecification(3,50)]
             getItemCount() >> 4
             getChoiceInteractionType() >> ChoiceInteractionType.MULTIPLE.name()
         }
-        Interaction interaction = Mock() {
-            getInteractionSpecification() >> responseSubmissionSpec
+        Statement statement = Mock(Statement) {
+            getChoiceSpecificationObject() >> choiceSpecification
+        }
+
+        Sequence sequence = Mock(Sequence) {
+            getStatement() >> statement
+        }
+        Interaction interaction = Mock(Interaction) {
+            getSequence() >> sequence
         }
 
         and: "a learner response with no choices"
@@ -137,13 +164,20 @@ class InteractionResponseSpec extends Specification {
     void "test update score with all answers"() {
 
         given:"an interaction with its response submission spec"
-        ResponseSubmissionSpecification responseSubmissionSpec = Mock() {
-            getExpectedChoiceList() >> [new InteractionChoice(1,50), new InteractionChoice(3,50)]
+        ChoiceSpecification choiceSpecification = Mock(ChoiceSpecification) {
+            getExpectedChoiceList() >> [new ChoiceItemSpecification(1,50), new ChoiceItemSpecification(3,50)]
             getItemCount() >> 4
             getChoiceInteractionType() >> ChoiceInteractionType.MULTIPLE.name()
         }
-        Interaction interaction = Mock() {
-            getInteractionSpecification() >> responseSubmissionSpec
+        Statement statement = Mock(Statement) {
+            getChoiceSpecificationObject() >> choiceSpecification
+        }
+
+        Sequence sequence = Mock(Sequence) {
+            getStatement() >> statement
+        }
+        Interaction interaction = Mock(Interaction) {
+            getSequence() >> sequence
         }
 
         and: "a learner response with all choices"
@@ -161,13 +195,20 @@ class InteractionResponseSpec extends Specification {
     void "test update score with one good and one bad answers"() {
 
         given:"an interaction with its response submission spec"
-        ResponseSubmissionSpecification responseSubmissionSpec = Mock() {
-            getExpectedChoiceList() >> [new InteractionChoice(1,50), new InteractionChoice(3,50)]
+        ChoiceSpecification choiceSpecification = Mock(ChoiceSpecification) {
+            getExpectedChoiceList() >> [new ChoiceItemSpecification(1,50), new ChoiceItemSpecification(3,50)]
             getItemCount() >> 4
             getChoiceInteractionType() >> ChoiceInteractionType.MULTIPLE.name()
         }
-        Interaction interaction = Mock() {
-            getInteractionSpecification() >> responseSubmissionSpec
+        Statement statement = Mock(Statement) {
+            getChoiceSpecificationObject() >> choiceSpecification
+        }
+
+        Sequence sequence = Mock(Sequence) {
+            getStatement() >> statement
+        }
+        Interaction interaction = Mock(Interaction) {
+            getSequence() >> sequence
         }
 
         and: "a learner response with all choices"
@@ -185,13 +226,20 @@ class InteractionResponseSpec extends Specification {
     void "test update score with two good and one bad answers"() {
 
         given:"an interaction with its response submission spec"
-        ResponseSubmissionSpecification responseSubmissionSpec = Mock() {
-            getExpectedChoiceList() >> [new InteractionChoice(1,50), new InteractionChoice(3,50)]
+        ChoiceSpecification choiceSpecification = Mock(ChoiceSpecification) {
+            getExpectedChoiceList() >> [new ChoiceItemSpecification(1,50), new ChoiceItemSpecification(3,50)]
             getItemCount() >> 4
             getChoiceInteractionType() >> ChoiceInteractionType.MULTIPLE.name()
         }
-        Interaction interaction = Mock() {
-            getInteractionSpecification() >> responseSubmissionSpec
+        Statement statement = Mock(Statement) {
+            getChoiceSpecificationObject() >> choiceSpecification
+        }
+
+        Sequence sequence = Mock(Sequence) {
+            getStatement() >> statement
+        }
+        Interaction interaction = Mock(Interaction) {
+            getSequence() >> sequence
         }
 
         and: "a learner response with all choices"
@@ -208,13 +256,20 @@ class InteractionResponseSpec extends Specification {
 
     void "test update score with 5 items and one excusive choice as good response"() {
         given:"an interaction with its response submission spec"
-        ResponseSubmissionSpecification responseSubmissionSpec = Mock() {
-            getExpectedChoiceList() >> [new InteractionChoice(3,100)]
+        ChoiceSpecification choiceSpecification = Mock(ChoiceSpecification) {
+            getExpectedChoiceList() >> [new ChoiceItemSpecification(3,100)]
             getItemCount() >> 5
             getChoiceInteractionType() >> ChoiceInteractionType.EXCLUSIVE.name()
         }
-        Interaction interaction = Mock() {
-            getInteractionSpecification() >> responseSubmissionSpec
+        Statement statement = Mock(Statement) {
+            getChoiceSpecificationObject() >> choiceSpecification
+        }
+
+        Sequence sequence = Mock(Sequence) {
+            getStatement() >> statement
+        }
+        Interaction interaction = Mock(Interaction) {
+            getSequence() >> sequence
         }
 
         and: "a learner response with choice 4"
@@ -230,13 +285,20 @@ class InteractionResponseSpec extends Specification {
 
     void "test update score with 5 items and one multiple choice as good response"() {
         given:"an interaction with its response submission spec"
-        ResponseSubmissionSpecification responseSubmissionSpec = Mock() {
-            getExpectedChoiceList() >> [new InteractionChoice(3,100)]
+        ChoiceSpecification choiceSpecification = Mock(ChoiceSpecification) {
+            getExpectedChoiceList() >> [new ChoiceItemSpecification(3,100)]
             getItemCount() >> 5
             getChoiceInteractionType() >> ChoiceInteractionType.MULTIPLE.name()
         }
-        Interaction interaction = Mock() {
-            getInteractionSpecification() >> responseSubmissionSpec
+        Statement statement = Mock(Statement) {
+            getChoiceSpecificationObject() >> choiceSpecification
+        }
+
+        Sequence sequence = Mock(Sequence) {
+            getStatement() >> statement
+        }
+        Interaction interaction = Mock(Interaction) {
+            getSequence() >> sequence
         }
 
         and: "a learner response with choice 4"

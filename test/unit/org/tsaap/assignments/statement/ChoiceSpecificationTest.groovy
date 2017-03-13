@@ -1,6 +1,5 @@
 package org.tsaap.assignments.statement
 
-import grails.test.mixin.TestFor
 import grails.test.mixin.TestMixin
 import grails.test.mixin.web.ControllerUnitTestMixin
 import spock.lang.Specification
@@ -32,10 +31,11 @@ class ChoiceSpecificationTest extends Specification {
 
     when: 'getJsonString representation'
     String jsonStringRepresentation = choiceSpecification.getJsonString()
+    String json2 = choiceSpecification.getJsonString()
 
     then: 'jsonStringRepresentation equal choiceSpecification json string representation'
     jsonStringRepresentation ==  '{"expectedChoiceList":[{"index":0,"score":50.0},{"index":1,"score":50.0}],"choiceInteractionType":"MULTIPLE","itemCount":3}'
-
+    json2 == jsonStringRepresentation
   }
 
   def "test GetJsonString with empty ChoiceSpecification"() {
@@ -189,4 +189,32 @@ class ChoiceSpecificationTest extends Specification {
     item2 == choiceSpecification.expectedChoiceList[1]
 
   }
+  void "test spec creation based on a valid json specification"() {
+    given: "a specification build on a valid json specification"
+    ChoiceSpecification choiceSpecification = new ChoiceSpecification('''
+                {
+                    "choiceInteractionType":"MULTIPLE",
+                    "itemCount":4,
+                    "studentsProvideConfidenceDegree":true,
+                    "studentsProvideExplanation":false,
+                    "expectedChoiceList":[{"index":1,"score":50},{"index":3,"score":50}]
+                }
+        ''')
+
+    expect: "expect properties are set correctly"
+    choiceSpecification.choiceInteractionType == ChoiceInteractionType.MULTIPLE.name()
+    choiceSpecification.itemCount == 4
+    choiceSpecification.expectedChoiceList.size() == 2
+    choiceSpecification.expectedChoiceList[0] instanceof ChoiceItemSpecification
+    choiceSpecification.expectedChoiceList[0].index == 1
+    choiceSpecification.expectedChoiceList[0].score == 50.0
+    choiceSpecification.expectedChoiceList[1] instanceof ChoiceItemSpecification
+    choiceSpecification.expectedChoiceList[1].index == 3
+    choiceSpecification.expectedChoiceList[1].score == 50.0
+    choiceSpecification.expectedChoiceListContainsChoiceWithIndex(1)
+    !choiceSpecification.expectedChoiceListContainsChoiceWithIndex(2)
+    choiceSpecification.expectedChoiceListContainsChoiceWithIndex(3)
+
+  }
+
 }

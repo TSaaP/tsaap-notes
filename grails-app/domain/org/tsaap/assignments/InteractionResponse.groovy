@@ -2,8 +2,8 @@ package org.tsaap.assignments
 
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
-import org.tsaap.assignments.interactions.ChoiceInteractionType
-import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
+import org.tsaap.assignments.statement.ChoiceInteractionType
+import org.tsaap.assignments.statement.ChoiceSpecification
 import org.tsaap.directory.User
 
 
@@ -86,24 +86,25 @@ class InteractionResponse {
      * @return the score value
      */
     Float updateScore() {
-        ResponseSubmissionSpecification spec = interaction.interactionSpecification
-        List<Integer> expectedChoices = spec.expectedChoiceList*.index
-        if (spec.choiceInteractionType == ChoiceInteractionType.MULTIPLE.name()) {
+        ChoiceSpecification choiceSpecification = interaction.sequence.statement.getChoiceSpecificationObject()
+        List<Integer> expectedChoices = choiceSpecification.expectedChoiceList*.index
+        if (choiceSpecification.choiceInteractionType == ChoiceInteractionType.MULTIPLE.name()) {
             Float res = 0
-            for (int i = 1; i <= spec.itemCount ; i++) {
+            for (int i = 1; i <= choiceSpecification.itemCount ; i++) {
                 if (choiceList().contains(i) && expectedChoices.contains(i)) {
-                    res += 100f/spec.itemCount
+                    res += 100f/choiceSpecification.itemCount
                 } else if (!choiceList().contains(i) && !expectedChoices.contains(i)) {
-                    res += 100f/spec.itemCount
+                    res += 100f/choiceSpecification.itemCount
                 } else {
-                    res -= 100f/spec.itemCount
+                    res -= 100f/choiceSpecification.itemCount
                 }
             }
             score = (res < 0) ? 0 : res
-        } else if (spec.choiceInteractionType == ChoiceInteractionType.EXCLUSIVE.name()) {
+        } else if (choiceSpecification.choiceInteractionType == ChoiceInteractionType.EXCLUSIVE.name()) {
             def goodChoice = expectedChoices.get(0)
             score = choiceList().contains(goodChoice) ? 100 : 0
         }
+
         score
     }
 

@@ -25,6 +25,7 @@ class JsonDefaultSpecification implements JsonSpecification {
     JsonDefaultSpecification(String jsonString) {
         JsonSlurper jsonSlurper = new JsonSlurper()
         specificationProperties = jsonSlurper.parseText(jsonString)
+
     }
 
     @Override

@@ -4,7 +4,7 @@ import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 import org.grails.plugins.sanitizer.MarkupSanitizerService
-import org.tsaap.assignments.interactions.ChoiceInteractionType
+import org.tsaap.assignments.statement.ChoiceInteractionType
 import org.tsaap.assignments.interactions.EvaluationSpecification
 import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
 import org.tsaap.assignments.statement.ChoiceSpecification
@@ -66,6 +66,7 @@ class SequenceController {
         }
         User user = springSecurityService.currentUser
         Statement statementInstance = getStatementInstanceToUpdate(sequenceInstance, params)
+        sequenceService.saveOrUpdateStatement(statementInstance,sequenceInstance)
 
         if (sequenceInstance.hasErrors()) {
             respond sequenceInstance, view: '/assignment/sequence/edit_sequence'

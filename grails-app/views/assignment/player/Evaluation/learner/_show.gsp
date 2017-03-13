@@ -15,7 +15,7 @@
             <g:if test="${i < interactionInstance.interactionSpecification.responseToEvaluateCount}">
             <li class="list-group-item">
                 <p>
-                    <g:if test="${responseInteractionSpec.hasChoices()}">
+                    <g:if test="${sequence.statement.hasChoices()}">
                         <strong>${message(code: 'player.sequence.interaction.choice.label')} ${currentResponse.choiceList()}</strong>
                         <br/>
                     </g:if>
@@ -35,7 +35,7 @@
                  $.ajax({
                     type: "GET",
                     url: "${createLink(action: 'createOrUpdatePeerGrading', controller: 'player')}",
-                    data: {grader_id:${user.id},response_id:${currentResponse.id},responseIsChoiceResponse:${responseInteractionSpec.hasChoices()}, grade:value}
+                    data: {grader_id:${user.id},response_id:${currentResponse.id},responseIsChoiceResponse:${sequence.statement.hasChoices()}, grade:value}
                 }).done(function(data) {
                     //$('#grade_${currentResponse.id}').rating('refresh', {showClear: true});
                 });
@@ -45,7 +45,7 @@
         </g:each>
     </ul>
 </g:if>
-<g:if test="${responseInteractionSpec.hasChoices()}">
+<g:if test="${sequence.statement.hasChoices()}">
     <g:render template="/assignment/player/ResponseSubmission/learner/show"
               model="[user: user, interactionInstance: responseInteractionInstance, attempt: 2]"/>
 </g:if><g:else>

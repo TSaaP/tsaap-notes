@@ -25,7 +25,7 @@ class ChoiceItemSpecification extends JsonDefaultSpecification {
     }
 
     Integer getIndex() {
-        return getSpecificationProperty(INDEX)
+        getSpecificationProperty(INDEX)
     }
 
     void setIndex(Integer index) {
@@ -33,7 +33,7 @@ class ChoiceItemSpecification extends JsonDefaultSpecification {
     }
 
     Float getScore() {
-        return getSpecificationProperty(SCORE)
+        getSpecificationProperty(SCORE)
     }
 
     void setScore(Float score) {

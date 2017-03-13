@@ -2,6 +2,9 @@ package org.tsaap.assignments.interactions
 
 import org.tsaap.assignments.Interaction
 import org.tsaap.assignments.InteractionResponse
+import org.tsaap.assignments.Sequence
+import org.tsaap.assignments.Statement
+import org.tsaap.assignments.statement.ChoiceSpecification
 import spock.lang.Specification
 
 /**
@@ -13,12 +16,18 @@ class InteractionResultListServiceSpec extends Specification {
 
     void "build matrix result from response submission interaction"() {
         given:"an interaction with its response submission spec"
-        ResponseSubmissionSpecification responseSubmissionSpec = Mock() {
+        ChoiceSpecification choiceSpecification = Mock(ChoiceSpecification) {
             getItemCount() >> 4
         }
-        Interaction interaction = Mock() {
+        Statement statement = Mock(Statement) {
+            getChoiceSpecificationObject() >> choiceSpecification
+        }
+        Sequence sequence = Mock(Sequence) {
+            getStatement() >> statement
+        }
+        Interaction interaction = Mock(Interaction) {
             isResponseSubmission() >> true
-            getInteractionSpecification() >> responseSubmissionSpec
+            getSequence() >> sequence
         }
 
         and: "learner responses "

@@ -17,17 +17,8 @@
 
 package org.tsaap
 
-import org.tsaap.assignments.Assignment
-import org.tsaap.assignments.AssignmentService
-import org.tsaap.assignments.Interaction
-import org.tsaap.assignments.InteractionType
-import org.tsaap.assignments.QuestionType
-import org.tsaap.assignments.Schedule
-import org.tsaap.assignments.SequenceService
-import org.tsaap.assignments.Statement
-import org.tsaap.assignments.interactions.ChoiceInteractionType
+import org.tsaap.assignments.*
 import org.tsaap.assignments.interactions.EvaluationSpecification
-import org.tsaap.assignments.interactions.InteractionChoice
 import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
 import org.tsaap.assignments.statement.ChoiceItemSpecification
 import org.tsaap.assignments.statement.ChoiceSpecification
@@ -61,7 +52,6 @@ class BootstrapTestService {
     Statement statement4
     Statement statement5
 
-
     Assignment assignment1
     Assignment assignment2With2Sequences
     Assignment assignment3WithInteractions
@@ -74,12 +64,15 @@ class BootstrapTestService {
     Interaction readInteraction
     Interaction readOpenInteraction
 
-
+    ChoiceSpecification multipleChoiceSpec
+    ChoiceSpecification exclusiveChoiceSpec
+    ChoiceSpecification openEndedChoiceSpec
 
     def initializeTests() {
         initializeUsers()
         initializeNotes()
         initializeContexts()
+        initializeChoiceSpecification()
         initializeStatements()
         initializeInteractions()
         initializeAssignments()
@@ -130,6 +123,11 @@ class BootstrapTestService {
 
     }
 
+    def initializeChoiceSpecification() {
+        initializeMultipleChoiceSpec()
+        initializeExclusiveChoiceSpec()
+        initializeOpenEndedChoiceSpec()
+    }
 
     def initializeAssignments() {
         if (!Assignment.findByTitle("Assignment 1")) {
@@ -152,30 +150,59 @@ class BootstrapTestService {
 
     def initializeStatements() {
         if (!Statement.findByTitle("Statement 1")) {
-            statement1 = sequenceService.saveStatement(new Statement(title: "Statement 1", content:"Content of statement 1", questionType: QuestionType.OpenEnded),teacherJeanne)
+            statement1 = sequenceService.saveStatement(
+                new Statement(
+                    title: "Statement 1",
+                    content:"Content of statement 1",
+                    questionType: QuestionType.MultipleChoice,
+                    choiceSpecification: multipleChoiceSpec.jsonString
+                ),
+                teacherJeanne
+            )
         }
         if (!Statement.findByTitle("Statement 2")) {
-            statement2 = sequenceService.saveStatement(new Statement(title: "Statement 2", content:"Content of statement 2", questionType: QuestionType.OpenEnded),teacherJeanne)
+            statement2 = sequenceService.saveStatement(
+                new Statement(
+                    title: "Statement 2",
+                    content:"Content of statement 2",
+                    questionType: QuestionType.ExclusiveChoice,
+                    choiceSpecification: exclusiveChoiceSpec.jsonString
+                ),
+                teacherJeanne
+            )
         }
         if (!Statement.findByTitle("Statement 3")) {
-            statement3 = sequenceService.saveStatement(new Statement(title: "Statement 3", content:"Content of statement 3", questionType: QuestionType.OpenEnded),teacherJeanne)
+            statement3 = sequenceService.saveStatement(
+                new Statement(
+                    title: "Statement 3",
+                    content:"Content of statement 3",
+                    questionType: QuestionType.MultipleChoice,
+                    choiceSpecification: multipleChoiceSpec.jsonString
+                ),
+                teacherJeanne
+            )
         }
         if (!Statement.findByTitle("Statement 4")) {
-            statement4 = sequenceService.saveStatement(new Statement(title: "Statement 4", content:"Content of statement 4", questionType: QuestionType.OpenEnded),teacherJeanne)
+            statement4 = sequenceService.saveStatement(
+                new Statement(
+                    title: "Statement 4",
+                    content:"Content of statement 4",
+                    questionType: QuestionType.OpenEnded,
+                    choiceSpecification: openEndedChoiceSpec.jsonString
+                ),
+                teacherJeanne
+            )
         }
         if (!Statement.findByTitle("Statement 5")) {
-            ChoiceSpecification choiceSpecification = new ChoiceSpecification()
-            choiceSpecification.choiceInteractionType = 'MULTIPLE'
-            choiceSpecification.itemCount = 5
-            choiceSpecification.expectedChoiceList = [
-                new ChoiceItemSpecification(2, 100f/3f as Float),
-                new ChoiceItemSpecification(3, 100f/3f as Float),
-                new ChoiceItemSpecification(5, 100f/3f as Float)
-            ]
-            statement5 = sequenceService.saveStatement(new Statement(
-                title: "Statement 5", content:"Content of statement 5",
-                questionType: QuestionType.MultipleChoice,
-                choiceSpecification:choiceSpecification.jsonString),teacherJeanne)
+            statement5 = sequenceService.saveStatement(
+                new Statement(
+                    title: "Statement 5",
+                    content:"Content of statement 5",
+                    questionType: QuestionType.MultipleChoice,
+                    choiceSpecification: multipleChoiceSpec.jsonString
+                ),
+                teacherJeanne
+            )
         }
     }
 
@@ -206,11 +233,6 @@ class BootstrapTestService {
 
     private void initializeResponseSubmissionInteraction() {
         ResponseSubmissionSpecification respSpec = new ResponseSubmissionSpecification()
-        respSpec.choiceInteractionType = ChoiceInteractionType.MULTIPLE.name()
-        respSpec.itemCount = 5
-        respSpec.expectedChoiceList = [new InteractionChoice(2,100f/3f as Float),
-                                       new InteractionChoice(3,100f/3f as Float),
-                                       new InteractionChoice(5,100f/3f as Float)]
         respSpec.studentsProvideExplanation = true
         respSpec.studentsProvideConfidenceDegree = true
         responseSubmissionInteraction = new Interaction(rank: 1, specification: respSpec.jsonString,
@@ -222,8 +244,6 @@ class BootstrapTestService {
         ResponseSubmissionSpecification respSpec = new ResponseSubmissionSpecification()
         respSpec.studentsProvideExplanation = true
         respSpec.studentsProvideConfidenceDegree = true
-        respSpec.expectedChoiceList = null
-        respSpec.choiceInteractionType = null
         responseSubmissionOpenInteraction = new Interaction(rank: 1, specification: respSpec.jsonString,
                 interactionType: InteractionType.ResponseSubmission.name(),
                 schedule: new Schedule(startDate: new Date()))
@@ -238,6 +258,28 @@ class BootstrapTestService {
         readOpenInteraction = new Interaction(rank: 3, specification: Interaction.EMPTY_SPECIFICATION,
                 interactionType: InteractionType.Read.name(),
                 schedule: new Schedule(startDate: new Date()))
+    }
+
+    private initializeMultipleChoiceSpec() {
+        multipleChoiceSpec = new ChoiceSpecification()
+        multipleChoiceSpec.choiceInteractionType = 'MULTIPLE'
+        multipleChoiceSpec.itemCount = 5
+        multipleChoiceSpec.expectedChoiceList = [
+            new ChoiceItemSpecification(2, 100f/3f as Float),
+            new ChoiceItemSpecification(3, 100f/3f as Float),
+            new ChoiceItemSpecification(5, 100f/3f as Float)
+        ]
+    }
+    private initializeExclusiveChoiceSpec() {
+        exclusiveChoiceSpec = new ChoiceSpecification()
+        exclusiveChoiceSpec.choiceInteractionType = 'EXCLUSIVE'
+        exclusiveChoiceSpec.itemCount = 2
+        exclusiveChoiceSpec.expectedChoiceList = [
+            new ChoiceItemSpecification(2, 100f),
+        ]
+    }
+    private initializeOpenEndedChoiceSpec() {
+        openEndedChoiceSpec = new ChoiceSpecification()
     }
 
 

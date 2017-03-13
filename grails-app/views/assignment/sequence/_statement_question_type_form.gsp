@@ -1,4 +1,4 @@
-<%@ page import="org.tsaap.assignments.Schedule; org.tsaap.assignments.interactions.ResponseSubmissionSpecification; org.tsaap.assignments.interactions.ChoiceInteractionType" %>
+<%@ page import="org.tsaap.assignments.Schedule; org.tsaap.assignments.interactions.ResponseSubmissionSpecification; org.tsaap.assignments.statement.ChoiceInteractionType" %>
 <g:set var="responseSubmissionSpecificationInstance" value="${sequenceInstance?.responseSubmissionSpecification ?: new ResponseSubmissionSpecification()}"/>
 <div class="panel panel-default">
     <div class="panel-heading">

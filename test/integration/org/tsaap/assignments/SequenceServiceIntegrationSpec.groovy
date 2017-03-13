@@ -1,9 +1,7 @@
 package org.tsaap.assignments
 
 import org.tsaap.BootstrapTestService
-import org.tsaap.assignments.interactions.ChoiceInteractionType
-import org.tsaap.assignments.interactions.EvaluationSpecification
-import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
+import org.tsaap.assignments.statement.ChoiceInteractionType
 import org.tsaap.assignments.statement.ChoiceSpecification
 import org.tsaap.directory.User
 import spock.lang.*
@@ -122,7 +120,7 @@ class SequenceServiceIntegrationSpec extends Specification {
         statement.title = "new title"
 
         and: "update is triggered on the sequence"
-        sequenceService.updateStatementAndInteractionsOfSequence(sequence, assignment.owner)
+        sequenceService.saveOrUpdateStatement(statement, sequence)
 
         then: "the statement title of the sequence is modified"
         Statement.findById(sequence.statementId).title == "new title"
@@ -143,7 +141,7 @@ class SequenceServiceIntegrationSpec extends Specification {
         choiceSpecification.choiceInteractionType == ChoiceInteractionType.MULTIPLE.name()
         choiceSpecification.itemCount == 5
         choiceSpecification.expectedChoiceList.size() == 3
-        choiceSpecification.totalScoreFromExpectedChoice == 100
+        choiceSpecification.totalScoreFromExpectedChoice == 100f
     }
 
     void "test obtaining active interaction "() {
@@ -154,7 +152,7 @@ class SequenceServiceIntegrationSpec extends Specification {
         and: "a sequence added to the assignment with interactions"
         def interactions = [bootstrapTestService.responseSubmissionInteraction, bootstrapTestService.evaluationInteraction]
         Sequence sequence = sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement)
-        sequenceService.updateStatementAndInteractionsOfSequence(sequence, assignment.owner, interactions)
+        sequenceService.addSequenceInteractions(sequence,assignment.owner, interactions)
 
         when: "asking the active interaction"
         def interaction = sequence.activeInteraction

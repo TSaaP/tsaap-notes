@@ -1,17 +1,17 @@
 <g:set var="sequence" value="${interactionInstance.sequence}"/>
 <g:set var="displayedResultInteraction" value="${sequence.responseSubmissionInteraction}"/>
-<g:set var="spec" value="${displayedResultInteraction.interactionSpecification}"/>
-<g:if test="${spec.hasChoices()}">
+<g:set var="choiceSpecification" value="${sequence.statement.getChoiceSpecificationObject()}"/>
+<g:if test="${sequence.statement.hasChoices()}">
     <g:set var="resultList" value="${displayedResultInteraction.resultsOfLastAttempt()}"/>
     <g:set var="userResponse" value="${displayedResultInteraction.lastAttemptResponseForUser(user)}"/>
-    <g:each var="i" in="${(1..spec.itemCount)}">
-        <g:set var="choiceStatus" value="${spec.expectedChoiceListContainsChoiceWithIndex(i) ? 'success' : 'danger'}"/>
+    <g:each var="i" in="${(1..choiceSpecification.itemCount)}">
+        <g:set var="choiceStatus" value="${choiceSpecification.expectedChoiceListContainsChoiceWithIndex(i) ? 'success' : 'danger'}"/>
         <g:set var="percentResult" value="${resultList[i]}"/>
         <div class="panel panel-${choiceStatus}">
             <div class="panel-heading">
                 <g:if test="${userResponse?.choiceList()?.contains(i)}">
                     <g:set var="suffix"
-                           value="${spec.choiceWithIndexInExpectedChoiceList(i)?.score > 0 ? 'up' : 'down'}"/>
+                           value="${choiceSpecification.choiceWithIndexInExpectedChoiceList(i)?.score > 0 ? 'up' : 'down'}"/>
                     <span class="glyphicon glyphicon-thumbs-${suffix}"></span>
                 </g:if>
                 ${message(code: "player.sequence.interaction.choice.label")} ${i}
@@ -51,7 +51,7 @@
 
 
 <g:if test="${sequence.hasExplanations()}">
-    <g:if test="${spec.hasChoices()}">
+    <g:if test="${sequence.statement.hasChoices()}">
     <g:set var="responses" value="${sequence.findAllGoodResponses()}"/>
     </g:if>
     <g:else>

@@ -76,7 +76,7 @@ class Interaction {
     void doAfterStop() {
         state = StateType.afterStop.name()
         if (isResponseSubmission()) {
-            if (interactionSpecification.hasChoices()) {
+            if (sequence.statement.hasChoices()) {
                 updateResults()
             }
             if (interactionSpecification.studentsProvideExplanation) {
@@ -86,7 +86,7 @@ class Interaction {
         }
         if (isEvaluation()) {
             def respSubmInter = sequence.responseSubmissionInteraction
-            if (respSubmInter.interactionSpecification.hasChoices()) {
+            if (sequence.statement.hasChoices()) {
                 respSubmInter.updateResults(2)
                 respSubmInter.save()
             }
@@ -225,7 +225,7 @@ class Interaction {
         def responses = InteractionResponse.findAllByInteractionAndAttempt(this, attempt)
         if (responses) {
             def mapping
-            if (interactionSpecification.hasChoices()) {
+            if (sequence.statement.hasChoices()) {
                 mapping = responseRecommendationService.getRecommendedResponseIdByResponseId(responses)
             } else {
                 int recommendationCount = sequence.evaluationSpecification.responseToEvaluateCount

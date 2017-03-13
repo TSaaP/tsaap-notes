@@ -59,18 +59,16 @@ class SequenceService {
     }
 
     /**
-     * Update statement and interactions of a sequence
+     * Add interactions to sequence
      * @param sequence the sequence
-     * @param user the user performing the operation
-     * @return the sequence
+     * @param user the user performing the action
+     * @param interactionsToAdd the interactions to add
+     * @return
      */
-    Sequence updateStatementAndInteractionsOfSequence(Sequence sequence, User user, List<Interaction> interactionsToAdd = null) {
-        Statement statement = sequence.statement
-        Contract.requires(statement.owner == user, AssignmentService.USER__MUST__BE__ASSIGNMENT__OWNER)
-        saveOrUpdateStatement(statement, sequence)
+    Sequence addSequenceInteractions(Sequence sequence, User user, List<Interaction> interactionsToAdd = null) {
+        Contract.requires(sequence.owner == user, AssignmentService.USER__MUST__BE__ASSIGNMENT__OWNER)
         validateInteractions(interactionsToAdd, user, sequence)
         saveInteractions(interactionsToAdd, sequence)
-        updateInteractions(sequence)
         updateAssignmentLastUpdated(sequence, sequence.assignment)
         sequence
     }
@@ -85,7 +83,12 @@ class SequenceService {
         }
     }
 
-    private void saveOrUpdateStatement(Statement statement, Sequence sequence) {
+    /**
+     * Save or update a statement
+     * @param statement
+     * @param sequence
+     */
+    def void saveOrUpdateStatement(Statement statement, Sequence sequence) {
         if (!sequence.hasErrors()) {
             statement.save()
             if (statement.hasErrors()) {
@@ -105,8 +108,8 @@ class SequenceService {
     private def updateInteractions(Sequence sequence) {
         sequence.interactions.eachWithIndex { def interaction, int i ->
             interaction.save(failOnError: true)
-            interaction.schedule.save()
-            processInteractionScheduleError(interaction,i,sequence)
+           // interaction.schedule.save()
+            //processInteractionScheduleError(interaction,i,sequence)
         }
     }
 
@@ -114,8 +117,8 @@ class SequenceService {
         interactions.eachWithIndex { def interaction, int i ->
             interaction.owner = user
             interaction.sequence = sequence
-            interaction.schedule.interaction = interaction
-            interaction.schedule.validate()
+           // interaction.schedule.interaction = interaction
+            //interaction.schedule.validate()
            // processInteractionScheduleError(interaction, i, sequence)
         }
     }

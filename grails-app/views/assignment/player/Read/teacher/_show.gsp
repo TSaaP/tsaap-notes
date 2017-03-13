@@ -2,7 +2,7 @@
      role="alert">${message(code: "player.sequence.interaction.read.teacher.show.message", args: [interactionInstance.rank])}</div>
 <g:set var="sequence" value="${interactionInstance.sequence}"/>
 <g:if test="${sequence.hasExplanations()}">
-    <g:if test="${sequence.responseSubmissionSpecification.hasChoices()}">
+    <g:if test="${sequence.statement.hasChoices()}">
         <g:set var="responses" value="${sequence.findAllGoodResponses()}"/>
         <g:set var="badResponses" value="${sequence.findAllBadResponses()}"/>
     </g:if>

@@ -46,7 +46,7 @@ class InteractionService {
         Contract.requires(response.firstAttemptIsSubmitable() || response.secondAttemptIsSubmitable(), INTERACTION_CANNOT_RECEIVE_RESPONSE)
         Contract.requires(response.learner.isRegisteredInAssignment(response.assignment()),
                 LEARNER_NOT_REGISTERED_IN_ASSIGNMENT)
-        if (response.isChoiceResponse()) {
+        if (response.interaction.sequence.statement.hasChoices()) {
             response.updateScore()
         }
         response.save()

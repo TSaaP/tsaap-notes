@@ -35,7 +35,7 @@ class EvaluationSpecification extends JsonDefaultSpecification {
      * @param responseCount the response count
      */
     void setResponseToEvaluateCount(Integer responseCount) {
-        setSpecificationProperty(RESPONSE_COUNT,responseCount)
+        setSpecificationProperty(RESPONSE_COUNT, responseCount)
     }
 
     /**

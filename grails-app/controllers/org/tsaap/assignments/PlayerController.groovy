@@ -3,6 +3,7 @@ package org.tsaap.assignments
 import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
 import org.grails.plugins.sanitizer.MarkupSanitizerService
+import org.tsaap.assignments.interactions.EvaluationSpecification
 import org.tsaap.assignments.interactions.InteractionService
 import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
 import org.tsaap.directory.User
@@ -12,6 +13,7 @@ class PlayerController {
     SpringSecurityService springSecurityService
     AssignmentService assignmentService
     InteractionService interactionService
+    SequenceService sequenceService
     MarkupSanitizerService markupSanitizerService
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
@@ -60,6 +62,17 @@ class PlayerController {
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def initializeInteractionsAndStartFirst(Sequence sequenceInstance) {
+        User user = springSecurityService.currentUser
+        List<Interaction> interactions =
+            getDynamicsInteractions(sequenceInstance.statement, params)
+
+        sequenceService.addSequenceInteractions(sequenceInstance, user, interactions)
+        interactionService.startInteraction(interactions.get(0), user)
+        renderSequenceTemplate(user, sequenceInstance)
+    }
+
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def stopInteraction(Interaction interactionInstance) {
         User user = springSecurityService.currentUser
         interactionService.stopInteraction(interactionInstance, user)
@@ -96,7 +109,6 @@ class PlayerController {
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def submitResponse(Interaction interactionInstance) {
         def user = springSecurityService.currentUser
-        ResponseSubmissionSpecification spec = interactionInstance.interactionSpecification
         InteractionResponse response = new InteractionResponse(
                 learner: user,
                 interaction: interactionInstance,
@@ -106,8 +118,8 @@ class PlayerController {
         if (params.explanation) {
             response.explanation = markupSanitizerService.sanitize(params.explanation)?.cleanString
         }
-        if (spec.hasChoices()) {
-            List choiceList = getChoiceListFromParams(spec, params)
+        if (interactionInstance.sequence.statement.hasChoices()) {
+            List choiceList = getChoiceListFromParams(interactionInstance.sequence.statement, params)
             response.updateChoiceListSpecification(choiceList)
         }
         interactionService.saveInteractionResponse(response)
@@ -132,9 +144,9 @@ class PlayerController {
     }
 
 
-    protected List<Integer> getChoiceListFromParams(ResponseSubmissionSpecification spec, def params) {
+    protected List<Integer> getChoiceListFromParams(Statement statement, def params) {
         List<Integer> choiceList = []
-        if (spec.isMultipleChoice()) {
+        if (statement.isMultipleChoice()) {
             params.choiceList?.each {
                 if (it && it != "null") {
                     choiceList << (it as Integer)
@@ -148,6 +160,92 @@ class PlayerController {
             }
         }
         choiceList
+    }
+
+
+    private List<Interaction> getDynamicsInteractions (Statement statement, def params) {
+        List<Interaction> interactions;
+        boolean textualExplanation = params.studentsProvideExplanation?.toBoolean()
+        boolean confidenceDegree = params.studentsProvideConfidenceDegree?.toBoolean()
+        ResponseSubmissionSpecification responseSpec = new ResponseSubmissionSpecification()
+        responseSpec.setStudentsProvideExplanation(textualExplanation)
+        responseSpec.setStudentsProvideConfidenceDegree(confidenceDegree)
+
+        EvaluationSpecification evalSpec = new EvaluationSpecification()
+        if (params.responseToEvaluateCount != null && params.responseToEvaluateCount.toInteger() <= 3) {
+            evalSpec.setResponseToEvaluateCount((Integer) params.responseToEvaluateCount.toInteger())
+        }
+
+        if (textualExplanation) {
+            interactions = getInteractionsToDefaultProcess(
+                responseSpec,
+                evalSpec
+            )
+        } else if (statement.isOpenEnded()) {
+            responseSpec.setStudentsProvideExplanation(true)
+            responseSpec.setStudentsProvideConfidenceDegree(true)
+            interactions = getInteractionsToDefaultProcess(
+              responseSpec,
+              evalSpec
+          )
+        } else {
+            interactions = getInteractionsToShortProcess(
+                responseSpec
+            )
+        }
+
+        interactions
+    }
+
+    private List<Interaction> getInteractionsToDefaultProcess(ResponseSubmissionSpecification responseSpec, EvaluationSpecification evalSpec) {
+        List<Interaction> interactions = []
+
+        Interaction interaction1 = new Interaction(
+            interactionType: InteractionType.ResponseSubmission.name(),
+            rank: 1,
+            specification: responseSpec.jsonString
+        )
+        interactions.add(interaction1)
+
+
+        Interaction interaction2 = new Interaction(
+            interactionType: InteractionType.Evaluation.name(),
+            rank: 2,
+            specification: evalSpec.jsonString
+        )
+        interactions.add(interaction2)
+
+
+        Interaction interaction3 = new Interaction(
+            interactionType: InteractionType.Read.name(),
+            rank: 3,
+            specification: Interaction.EMPTY_SPECIFICATION
+        )
+        interactions.add(interaction3)
+
+
+        interactions
+    }
+
+    private List<Interaction> getInteractionsToShortProcess(ResponseSubmissionSpecification responseSpec) {
+        List<Interaction> interactions = []
+
+        Interaction interaction1 = new Interaction(
+            interactionType: InteractionType.ResponseSubmission.name(),
+            rank: 1,
+            specification: responseSpec.jsonString
+        )
+        interactions.add(interaction1)
+
+        Interaction interaction3 = new Interaction(
+            interactionType: InteractionType.Read.name(),
+            rank: 2,
+            specification: Interaction.EMPTY_SPECIFICATION
+        )
+        interactions.add(interaction3)
+
+
+        interactions
     }
 
 }

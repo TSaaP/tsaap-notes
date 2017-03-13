@@ -3,7 +3,6 @@ package org.tsaap.assignments.statement
 import grails.validation.Validateable
 import groovy.json.JsonOutput
 import org.tsaap.assignments.JsonDefaultSpecification
-import org.tsaap.assignments.interactions.ChoiceInteractionType
 
 /**
  * Created by qsaieb on 01/03/2017.
@@ -20,7 +19,8 @@ class ChoiceSpecification extends JsonDefaultSpecification {
     }
 
     ChoiceSpecification (String jsonString) {
-      super(jsonString)
+        super(jsonString)
+        getExpectedChoiceListFromListOrMap()
     }
 
     static constraints = {
@@ -38,9 +38,11 @@ class ChoiceSpecification extends JsonDefaultSpecification {
     @Override
     String getJsonString() {
         if (validateSpecification()) {
-            def map = specificationProperties
+            def map = [:]
+            map.putAll(specificationProperties)
             if (getExpectedChoiceList()) {
-                map.put(EXPECTED_CHOICE_LIST, getExpectedChoiceList().specificationProperties)
+                ArrayList al = getExpectedChoiceList()*.specificationProperties
+                map.put(EXPECTED_CHOICE_LIST, al)
             }
             return JsonOutput.toJson(map)
         }
@@ -105,6 +107,25 @@ class ChoiceSpecification extends JsonDefaultSpecification {
     }
 
     /**
+     * Check if a choice with given index is in the expected choice list
+     * @param index
+     * @return
+     */
+    boolean expectedChoiceListContainsChoiceWithIndex(Integer index) {
+        def res = false
+        if (expectedChoiceList) {
+            for (int i = 0; i < expectedChoiceList.size(); i++) {
+                if (expectedChoiceList[i].index == index) {
+                    res = true
+                    break
+                }
+            }
+        }
+        res
+    }
+
+
+    /**
      * Return the choice with the given index in the expected choice
      * @param index the index
      * @return the interaction choice
@@ -120,6 +141,16 @@ class ChoiceSpecification extends JsonDefaultSpecification {
             }
         }
         res
+    }
+
+    private void getExpectedChoiceListFromListOrMap() {
+        expectedChoiceList = expectedChoiceList.collect {
+            if (it instanceof Map) {
+                new ChoiceItemSpecification(specificationProperties: it)
+            } else {
+                new ChoiceItemSpecification(it, ((it as Float) * 100 / (itemCount as Float)) as Float)
+            }
+        }
     }
 
     /**

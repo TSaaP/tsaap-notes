@@ -57,7 +57,7 @@ grails.project.dependency.resolution = {
         compile 'org.springframework.security:spring-security-crypto:3.2.3.RELEASE'
 
         compile 'com.github.TSaaP:tsaap-questions:1.0'
-        compile 'com.github.TSaaP:tsaap-lti:0.2'
+        compile 'com.github.TSaaP:tsaap-lti:0.3'
 
         // Latest httpcore and httpmime for Coveralls plugin
         build 'org.apache.httpcomponents:httpcore:4.4.5'

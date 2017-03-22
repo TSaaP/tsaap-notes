@@ -78,10 +78,7 @@ public class Launch extends HttpServlet implements Callback {
      */
     @Override
     public boolean execute(ToolProvider toolProvider) {
-        if (!isAnAuthorizedUserRole(toolProvider)) {
-            toolProvider.setReason("Invalid role.");
-            return false;
-        }
+        logger.error(toolProvider.getUser().toString());
         try {
             Sql sql = getSql();
             initializeUserSession(toolProvider);
@@ -207,9 +204,6 @@ public class Launch extends HttpServlet implements Callback {
         return new Sql(connection);
     }
 
-    private boolean isAnAuthorizedUserRole(ToolProvider toolProvider) {
-        return toolProvider.getUser().isLearner() || toolProvider.getUser().isStaff();
-    }
 
     private ToolProvider getToolProvider(HttpServletRequest request, HttpServletResponse response, DataConnector dc) {
         ToolProvider tp = new ToolProvider(request, response, this, dc);

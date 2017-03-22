@@ -135,16 +135,18 @@ class BootstrapTestService {
         }
         if (!Assignment.findByTitle("Assignment 2")) {
             assignment2With2Sequences = assignmentService.saveAssignment(new Assignment(title: "Assignment 2", owner: teacherJeanne))
-            sequenceService.addSequenceToAssignment(assignment2With2Sequences, teacherJeanne, statement1)
-            sequenceService.addSequenceToAssignment(assignment2With2Sequences, teacherJeanne, statement2)
+            sequenceService.createAndAddSequenceToAssignment(assignment2With2Sequences, teacherJeanne, statement1)
+            sequenceService.createAndAddSequenceToAssignment(assignment2With2Sequences, teacherJeanne, statement2)
         }
         if (!Assignment.findByTitle("Assignment 3")) {
             assignment3WithInteractions = assignmentService.saveAssignment(new Assignment(title: "Assignment 3", owner: teacherJeanne))
-            sequenceService.addSequenceToAssignment(assignment3WithInteractions, teacherJeanne, statement3,[responseSubmissionInteraction,evaluationInteraction, readInteraction])
+            Sequence s = sequenceService.createAndAddSequenceToAssignment(assignment3WithInteractions, teacherJeanne, statement3)
+            sequenceService.addSequenceInteractions(s, teacherJeanne, [responseSubmissionInteraction, evaluationInteraction, readInteraction])
         }
         if (!Assignment.findByTitle("Assignment 4")) {
             assignment4WithOpenInteractions = assignmentService.saveAssignment(new Assignment(title: "Assignment 4", owner: teacherJeanne))
-            sequenceService.addSequenceToAssignment(assignment4WithOpenInteractions, teacherJeanne, statement4,[responseSubmissionOpenInteraction,evaluationOpenInteraction, readOpenInteraction])
+            Sequence s = sequenceService.createAndAddSequenceToAssignment(assignment4WithOpenInteractions, teacherJeanne, statement4)
+            sequenceService.addSequenceInteractions(s, teacherJeanne, [responseSubmissionOpenInteraction, evaluationOpenInteraction, readOpenInteraction])
         }
     }
 

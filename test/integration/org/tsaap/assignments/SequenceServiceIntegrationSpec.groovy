@@ -59,7 +59,7 @@ class SequenceServiceIntegrationSpec extends Specification {
         Statement statement = bootstrapTestService.statement1
 
         when: "when adding a first sequence"
-        Sequence sequence = sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement)
+        Sequence sequence = sequenceService.createAndAddSequenceToAssignment(assignment, assignment.owner, statement)
 
         then: "the sequence has no errors"
         !sequence.hasErrors()
@@ -72,7 +72,7 @@ class SequenceServiceIntegrationSpec extends Specification {
 
         when: "adding a new sequence"
         Statement statement2 = bootstrapTestService.statement2
-        sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement2)
+        sequenceService.createAndAddSequenceToAssignment(assignment, assignment.owner, statement2)
 
         then:"the sequence has no errors"
         !sequence.hasErrors()
@@ -89,14 +89,14 @@ class SequenceServiceIntegrationSpec extends Specification {
         given: "an assignment with a sequence"
         Assignment assignment = bootstrapTestService.assignment1
         Statement statement = bootstrapTestService.statement1
-        sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement)
+        sequenceService.createAndAddSequenceToAssignment(assignment, assignment.owner, statement)
 
         and: "an invalid statement"
         Statement statement2 =
             new Statement(title: null, content: "a content", owner: null, questionType: QuestionType.OpenEnded)
 
         when: "adding a sequence with the invalid statement"
-        Sequence sequence = sequenceService.addSequenceToAssignment(assignment,assignment.owner,statement2)
+        Sequence sequence = sequenceService.createAndAddSequenceToAssignment(assignment,assignment.owner,statement2)
 
         then: "assignment has only one sequence"
         assignment.sequences.size() == 1
@@ -114,7 +114,7 @@ class SequenceServiceIntegrationSpec extends Specification {
         Statement statement = bootstrapTestService.statement1
 
         and: "a sequence added to the assignment with interaction"
-        Sequence sequence = sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement)
+        Sequence sequence = sequenceService.createAndAddSequenceToAssignment(assignment, assignment.owner, statement)
 
         when: "statement is modified"
         statement.title = "new title"
@@ -132,7 +132,7 @@ class SequenceServiceIntegrationSpec extends Specification {
         Statement statement = bootstrapTestService.statement5
 
         and: "a sequence added to the assignment with interactions"
-        Sequence sequence = sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement)
+        Sequence sequence = sequenceService.createAndAddSequenceToAssignment(assignment, assignment.owner, statement)
 
         when:"getting the choiceSpecification spec from the statement"
         ChoiceSpecification choiceSpecification = sequence.statement.choiceSpecificationObject
@@ -151,7 +151,7 @@ class SequenceServiceIntegrationSpec extends Specification {
 
         and: "a sequence added to the assignment with interactions"
         def interactions = [bootstrapTestService.responseSubmissionInteraction, bootstrapTestService.evaluationInteraction]
-        Sequence sequence = sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement)
+        Sequence sequence = sequenceService.createAndAddSequenceToAssignment(assignment, assignment.owner, statement)
         sequenceService.addSequenceInteractions(sequence,assignment.owner, interactions)
 
         when: "asking the active interaction"

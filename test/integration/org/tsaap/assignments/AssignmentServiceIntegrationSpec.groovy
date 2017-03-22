@@ -112,8 +112,8 @@ class AssignmentServiceIntegrationSpec extends Specification {
 
         and: "a sequence added to the assignment with interactions"
         def interactions = [bootstrapTestService.responseSubmissionInteraction, bootstrapTestService.evaluationInteraction]
-        Sequence sequence1 = sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement1, interactions)
-        Sequence sequence2 = sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement2)
+        Sequence sequence1 = sequenceService.createAndAddSequenceToAssignment(assignment, assignment.owner, statement1, interactions)
+        Sequence sequence2 = sequenceService.createAndAddSequenceToAssignment(assignment, assignment.owner, statement2)
         def schedule1 = bootstrapTestService.responseSubmissionInteraction.schedule
         def schedule2 = bootstrapTestService.evaluationInteraction.schedule
         schedule1 && schedule2
@@ -156,8 +156,8 @@ class AssignmentServiceIntegrationSpec extends Specification {
 
         and: "a sequence added to the assignment with interactions"
         def interactions = [bootstrapTestService.responseSubmissionInteraction, bootstrapTestService.evaluationInteraction]
-        Sequence sequence1 = sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement1, interactions)
-        Sequence sequence2 = sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement2)
+        Sequence sequence1 = sequenceService.createAndAddSequenceToAssignment(assignment, assignment.owner, statement1, interactions)
+        Sequence sequence2 = sequenceService.createAndAddSequenceToAssignment(assignment, assignment.owner, statement2)
 
 
         when: "removing the first sequence"
@@ -278,6 +278,78 @@ class AssignmentServiceIntegrationSpec extends Specification {
         la2 == la1
         assignmentService.countAllAssignmentsForLearner(paul) == 1 as Long
 
+    }
+
+    void "test duplication of the assignment"() {
+        given: "an assignment"
+        Assignment assignment = bootstrapTestService.assignment1
+
+        and: "teacher"
+        User teacher = bootstrapTestService.teacherJeanne
+
+        when: "duplicate sequence and statement of assignment"
+        Assignment duplicatedAssignment = assignmentService.duplicate(assignment, teacher)
+
+        then: "new assignment equal old assignment"
+        duplicatedAssignment.globalId != assignment.globalId
+        duplicatedAssignment.title == assignment.title + '-copy'
+        duplicatedAssignment.owner == assignment.owner
+        for (int i = 0; i < duplicatedAssignment.sequences.size(); i++) {
+            Sequence duplicatedSequence = duplicatedAssignment.sequences.get(i)
+            Sequence originalSequence = assignment.sequences.get(i)
+
+            duplicatedSequence.state == originalSequence.state
+            duplicatedSequence.rank == originalSequence.rank
+            duplicatedSequence.phasesAreScheduled ==  originalSequence.phasesAreScheduled
+            duplicatedSequence.activeInteraction ==  originalSequence.activeInteraction
+            duplicatedSequence.owner ==  originalSequence.owner
+
+            duplicatedSequence.statement.title ==  originalSequence.statement.title
+            duplicatedSequence.statement.content ==  originalSequence.statement.content
+            duplicatedSequence.statement.choiceSpecification ==  originalSequence.statement.choiceSpecification
+            duplicatedSequence.statement.questionType ==  originalSequence.statement.questionType
+            duplicatedSequence.statement.owner ==  originalSequence.statement.owner
+        }
+    }
+
+    void "test duplication of the assignment - user doesn't assignment's owner"() {
+        given: "an assignment"
+        Assignment assignment = bootstrapTestService.assignment1
+
+        and: "teacher"
+        User teacher = bootstrapTestService.teacherJeanne
+
+        and: 'an other student'
+        User other = bootstrapTestService.learnerPaul
+
+        when: "duplicate sequence and statement of assignment"
+        Assignment duplicatedAssignment = assignmentService.duplicate(assignment, other)
+
+        then: "Exception is thrown"
+        def exception = thrown(ConditionViolationException)
+        exception.message == AssignmentService.USER__MUST__BE__ASSIGNMENT__OWNER
+
+        and: "assignment is not duplicated"
+        duplicatedAssignment == null
+    }
+
+    void "test duplication of the assignment - assignment is null"() {
+        given: "an assignment"
+        Assignment assignment = null
+
+        and: "teacher"
+        User teacher = bootstrapTestService.teacherJeanne
+
+
+        when: "duplicate sequence and statement of assignment"
+        Assignment duplicatedAssignment = assignmentService.duplicate(assignment, teacher)
+
+        then: "Exception is thrown"
+        def exception = thrown(ConditionViolationException)
+        exception.message == AssignmentService.USER__MUST__BE__ASSIGNMENT__OWNER
+
+        and: "assignment is not duplicated"
+        duplicatedAssignment == null
     }
 
 }

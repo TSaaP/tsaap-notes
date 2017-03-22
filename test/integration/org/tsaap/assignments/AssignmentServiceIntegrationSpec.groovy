@@ -112,13 +112,14 @@ class AssignmentServiceIntegrationSpec extends Specification {
 
         and: "a sequence added to the assignment with interactions"
         def interactions = [bootstrapTestService.responseSubmissionInteraction, bootstrapTestService.evaluationInteraction]
-        Sequence sequence1 = sequenceService.createAndAddSequenceToAssignment(assignment, assignment.owner, statement1, interactions)
+        Sequence sequence1 = sequenceService.createAndAddSequenceToAssignment(assignment, assignment.owner, statement1)
+        sequenceService.addSequenceInteractions(sequence1, assignment.owner, interactions);
         Sequence sequence2 = sequenceService.createAndAddSequenceToAssignment(assignment, assignment.owner, statement2)
         def schedule1 = bootstrapTestService.responseSubmissionInteraction.schedule
         def schedule2 = bootstrapTestService.evaluationInteraction.schedule
         schedule1 && schedule2
 
-        when: "deleting assignment is  performed by the owner"
+        when: "deleting assignment is performed by the owner"
         assignmentService.deleteAssignment(assignment, teacher)
 
         then: "the assignment and the sequences are deleted"
@@ -156,7 +157,8 @@ class AssignmentServiceIntegrationSpec extends Specification {
 
         and: "a sequence added to the assignment with interactions"
         def interactions = [bootstrapTestService.responseSubmissionInteraction, bootstrapTestService.evaluationInteraction]
-        Sequence sequence1 = sequenceService.createAndAddSequenceToAssignment(assignment, assignment.owner, statement1, interactions)
+        Sequence sequence1 = sequenceService.createAndAddSequenceToAssignment(assignment, assignment.owner, statement1)
+        sequenceService.addSequenceInteractions(sequence1, assignment.owner, interactions)
         Sequence sequence2 = sequenceService.createAndAddSequenceToAssignment(assignment, assignment.owner, statement2)
 
 
@@ -282,7 +284,7 @@ class AssignmentServiceIntegrationSpec extends Specification {
 
     void "test duplication of the assignment"() {
         given: "an assignment"
-        Assignment assignment = bootstrapTestService.assignment1
+        Assignment assignment = bootstrapTestService.assignment2With2Sequences
 
         and: "teacher"
         User teacher = bootstrapTestService.teacherJeanne

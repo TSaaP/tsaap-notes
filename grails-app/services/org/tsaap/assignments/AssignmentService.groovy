@@ -2,9 +2,11 @@ package org.tsaap.assignments
 
 import grails.transaction.Transactional
 import groovy.sql.Sql
+import org.gcontracts.annotations.Requires
 import org.tsaap.attachement.Attachement
 import org.tsaap.contracts.Contract
 import org.tsaap.directory.User
+import org.tsaap.directory.UserAccountService
 import org.tsaap.lti.LmsAssignmentHelper
 
 import javax.sql.DataSource
@@ -13,6 +15,7 @@ import javax.sql.DataSource
 class AssignmentService {
 
     DataSource dataSource
+    SequenceService sequenceService
 
     /**
      * Find all assignment owned by owner
@@ -49,6 +52,45 @@ class AssignmentService {
         assignment.lastUpdated = new Date();
         assignment.save()
         assignment
+    }
+
+    /**
+     * Duplicate a assignment (create a copy of it, generating a new title, and assigning a
+     * new owner to the copy)
+     * @param user the user duplicating the assignment
+     * @param assignment the course to duplicate
+     * @return the duplicated course
+     */
+    Assignment duplicate (Assignment assignment, User user) {
+        Contract.requires(assignment?.owner == user, USER__MUST__BE__ASSIGNMENT__OWNER)
+        Assignment newAssignment = new Assignment();
+        newAssignment.globalId = null
+        newAssignment.owner = assignment.owner
+        newAssignment.title = assignment.title + '-copy'
+        Assignment duplicateAssignment = saveAssignment(newAssignment)
+
+        assignment.sequences.each {sequence ->
+            sequenceService.duplicate(duplicateAssignment, user, sequence)
+        }
+
+        duplicateAssignment
+    }
+
+    /**
+     * Check is no other course for the given user having the same title (to preserve title unicity)
+     * @param user
+     * @param course
+     * @return
+     */
+    private static boolean checkUniqueTitleForUser(User user, Assignment assignment) {
+        def criteria = Assignment.createCriteria()
+        def assignments = criteria {
+            eq('owner', user)
+            ne('id', assignment.id)
+            rlike('title', '(?i)^' + assignment.title + '$')
+        }
+
+        return assignments.isEmpty()
     }
 
     /**

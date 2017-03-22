@@ -44,15 +44,27 @@ class SequenceService {
      * @param user the user adding the sequence
      * @return the sequence
      */
-    Sequence addSequenceToAssignment(Assignment assignment, User user, Statement statement, List<Interaction> interactions = null, boolean phasesAreScheduled = false) {
+    Sequence createAndAddSequenceToAssignment(Assignment assignment, User user, Statement statement, List<Interaction> interactions = null, boolean phasesAreScheduled = false) {
         Contract.requires(assignment.owner == user, AssignmentService.USER__MUST__BE__ASSIGNMENT__OWNER)
         def rank = assignment.lastSequence ? assignment.lastSequence.rank + 1 : 1
         Sequence sequence = new Sequence(rank: rank, phasesAreScheduled: phasesAreScheduled)
 
+        addSequenceToAssignment(user, assignment, sequence, statement)
+    }
+
+    /**
+     * Add a sequence to an assignment.
+     *
+     * @param user the user adding the sequence
+     * @param assignment the assignment to add the sequence
+     * @param sequence the sequence
+     * @param statement the statement the sequence is based on
+     *
+     * @return the sequence
+     */
+    private Sequence addSequenceToAssignment(User user, Assignment assignment, Sequence sequence, Statement statement) {
         saveOrUpdateStatement(statement, sequence)
-        validateInteractions(interactions, user, sequence)
         saveSequence(sequence, user, assignment, statement)
-        saveInteractions(interactions, sequence)
         updateAssignmentLastUpdated(sequence, assignment)
 
         sequence
@@ -70,7 +82,29 @@ class SequenceService {
         validateInteractions(interactionsToAdd, user, sequence)
         saveInteractions(interactionsToAdd, sequence)
         updateAssignmentLastUpdated(sequence, sequence.assignment)
+
         sequence
+    }
+
+    Sequence duplicate(Assignment duplicatedAssignment, User user, Sequence sequence) {
+        Sequence duplicatedSequence = new Sequence(
+            rank: sequence.rank,
+            owner: sequence.owner,
+            assignment: duplicatedAssignment,
+            phasesAreScheduled: sequence.phasesAreScheduled,
+            activeInteraction: sequence.activeInteraction,
+            state: sequence.state
+        )
+
+        Statement duplicatedStatement = new Statement(
+            title: sequence.statement.title,
+            content: sequence.statement.content,
+            choiceSpecification: sequence.statement.choiceSpecification,
+            questionType: sequence.statement.questionType,
+            owner: sequence.statement.owner
+        )
+
+        addSequenceToAssignment(user, duplicatedAssignment, duplicatedSequence, duplicatedStatement)
     }
 
     private void updateAssignmentLastUpdated(Sequence sequence, Assignment assignment) {
@@ -145,4 +179,5 @@ class SequenceService {
             }
         }
     }
+
 }

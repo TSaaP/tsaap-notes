@@ -113,12 +113,12 @@ class DefaultResponseRecommendationService implements ResponseRecommendationServ
         // apply round robin algorithm
         int indexValues = 0
         responseKeyList.each { InteractionResponse keyResponse ->
-            List<Long> explIdList = []
+            TreeSet<Long> explIdList = new TreeSet<>()
             for (int i = 0; i < recommendationCount; i++) {
                 explIdList << responseValueList.get(indexValues % valuesCount).id
                 indexValues++
             }
-            res.put(keyResponse.id as String, explIdList)
+            res.put(keyResponse.id as String, explIdList as List<Long>)
         }
         res
     }

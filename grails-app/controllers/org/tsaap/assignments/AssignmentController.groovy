@@ -116,10 +116,10 @@ class AssignmentController {
             return
         }
         def user = springSecurityService.currentUser
-        assignmentService.duplicate(assignmentInstance, user)
+        Assignment duplicatedAssignment = assignmentService.duplicate(assignmentInstance, user)
 
         flash.message = message(code: 'assignment.duplicate.message', args: [message(code: 'assignment.label', default: 'Assignment'), assignmentInstance.title])
-        redirect action: "index", method: "GET"
+        redirect action: "edit", method: "GET", id: duplicatedAssignment.id
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])

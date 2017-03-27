@@ -293,6 +293,7 @@ class AssignmentServiceIntegrationSpec extends Specification {
         Assignment duplicatedAssignment = assignmentService.duplicate(assignment, teacher)
 
         then: "new assignment equal old assignment"
+        duplicatedAssignment.id != assignment.id
         duplicatedAssignment.globalId != assignment.globalId
         duplicatedAssignment.title == assignment.title + '-copy'
         duplicatedAssignment.owner == assignment.owner
@@ -300,12 +301,14 @@ class AssignmentServiceIntegrationSpec extends Specification {
             Sequence duplicatedSequence = duplicatedAssignment.sequences.get(i)
             Sequence originalSequence = assignment.sequences.get(i)
 
+            assert duplicatedSequence.id != originalSequence.id
             assert duplicatedSequence.state == originalSequence.state
             assert duplicatedSequence.rank == originalSequence.rank
             assert duplicatedSequence.phasesAreScheduled ==  originalSequence.phasesAreScheduled
-            assert duplicatedSequence.activeInteraction ==  originalSequence.activeInteraction
+            assert !duplicatedSequence.interactions
             assert duplicatedSequence.owner ==  originalSequence.owner
 
+            assert duplicatedSequence.statementId != originalSequence.statementId
             assert duplicatedSequence.statement.title ==  originalSequence.statement.title
             assert duplicatedSequence.statement.content ==  originalSequence.statement.content
             assert duplicatedSequence.statement.choiceSpecification ==  originalSequence.statement.choiceSpecification

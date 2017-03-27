@@ -2,11 +2,9 @@ package org.tsaap.assignments
 
 import grails.transaction.Transactional
 import groovy.sql.Sql
-import org.gcontracts.annotations.Requires
 import org.tsaap.attachement.Attachement
 import org.tsaap.contracts.Contract
 import org.tsaap.directory.User
-import org.tsaap.directory.UserAccountService
 import org.tsaap.lti.LmsAssignmentHelper
 
 import javax.sql.DataSource
@@ -70,28 +68,12 @@ class AssignmentService {
         Assignment duplicateAssignment = saveAssignment(newAssignment)
 
         assignment.sequences.each {sequence ->
-            sequenceService.duplicate(duplicateAssignment, user, sequence)
+            sequenceService.duplicateSequenceInAssignment(sequence, duplicateAssignment, user)
         }
 
         duplicateAssignment
     }
 
-    /**
-     * Check is no other course for the given user having the same title (to preserve title unicity)
-     * @param user
-     * @param course
-     * @return
-     */
-    private static boolean checkUniqueTitleForUser(User user, Assignment assignment) {
-        def criteria = Assignment.createCriteria()
-        def assignments = criteria {
-            eq('owner', user)
-            ne('id', assignment.id)
-            rlike('title', '(?i)^' + assignment.title + '$')
-        }
-
-        return assignments.isEmpty()
-    }
 
     /**
      * Delete assignment

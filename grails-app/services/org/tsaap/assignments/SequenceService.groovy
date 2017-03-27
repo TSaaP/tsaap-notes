@@ -86,23 +86,29 @@ class SequenceService {
         sequence
     }
 
-    Sequence duplicate(Assignment duplicatedAssignment, User user, Sequence sequence) {
+    /**
+     * Duplicate a sequence in an assignment (without interactions)
+     * @param sequence the sequence to duplicate
+     * @param duplicatedAssignment the target assignment
+     * @param user the user performing the operation
+     * @return the duplicated sequence
+     */
+    Sequence duplicateSequenceInAssignment(Sequence sequence, Assignment duplicatedAssignment, User user) {
         Sequence duplicatedSequence = new Sequence(
-            rank: sequence.rank,
-            owner: sequence.owner,
-            assignment: duplicatedAssignment,
-            phasesAreScheduled: sequence.phasesAreScheduled,
-            activeInteraction: sequence.activeInteraction,
-            state: sequence.state
+                rank: sequence.rank,
+                owner: sequence.owner,
+                assignment: duplicatedAssignment,
+                phasesAreScheduled: sequence.phasesAreScheduled,
+                state: sequence.state
         )
 
         Statement duplicatedStatement = new Statement(
-            title: sequence.statement.title,
-            content: sequence.statement.content,
-            choiceSpecification: sequence.statement.choiceSpecification,
-            questionType: sequence.statement.questionType,
-            owner: sequence.statement.owner,
-            parentStatement: sequence.statement
+                title: sequence.statement.title,
+                content: sequence.statement.content,
+                choiceSpecification: sequence.statement.choiceSpecification,
+                questionType: sequence.statement.questionType,
+                owner: sequence.statement.owner,
+                parentStatement: sequence.statement
         )
 
         addSequenceToAssignment(user, duplicatedAssignment, duplicatedSequence, duplicatedStatement)
@@ -143,7 +149,7 @@ class SequenceService {
     private def updateInteractions(Sequence sequence) {
         sequence.interactions.eachWithIndex { def interaction, int i ->
             interaction.save(failOnError: true)
-           // interaction.schedule.save()
+            // interaction.schedule.save()
             //processInteractionScheduleError(interaction,i,sequence)
         }
     }
@@ -152,9 +158,9 @@ class SequenceService {
         interactions.eachWithIndex { def interaction, int i ->
             interaction.owner = user
             interaction.sequence = sequence
-           // interaction.schedule.interaction = interaction
+            // interaction.schedule.interaction = interaction
             //interaction.schedule.validate()
-           // processInteractionScheduleError(interaction, i, sequence)
+            // processInteractionScheduleError(interaction, i, sequence)
         }
     }
 

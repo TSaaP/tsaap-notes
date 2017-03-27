@@ -101,7 +101,8 @@ class SequenceService {
             content: sequence.statement.content,
             choiceSpecification: sequence.statement.choiceSpecification,
             questionType: sequence.statement.questionType,
-            owner: sequence.statement.owner
+            owner: sequence.statement.owner,
+            parentStatement: sequence.statement
         )
 
         addSequenceToAssignment(user, duplicatedAssignment, duplicatedSequence, duplicatedStatement)

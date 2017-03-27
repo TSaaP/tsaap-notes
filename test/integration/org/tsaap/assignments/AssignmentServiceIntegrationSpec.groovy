@@ -300,17 +300,18 @@ class AssignmentServiceIntegrationSpec extends Specification {
             Sequence duplicatedSequence = duplicatedAssignment.sequences.get(i)
             Sequence originalSequence = assignment.sequences.get(i)
 
-            duplicatedSequence.state == originalSequence.state
-            duplicatedSequence.rank == originalSequence.rank
-            duplicatedSequence.phasesAreScheduled ==  originalSequence.phasesAreScheduled
-            duplicatedSequence.activeInteraction ==  originalSequence.activeInteraction
-            duplicatedSequence.owner ==  originalSequence.owner
+            assert duplicatedSequence.state == originalSequence.state
+            assert duplicatedSequence.rank == originalSequence.rank
+            assert duplicatedSequence.phasesAreScheduled ==  originalSequence.phasesAreScheduled
+            assert duplicatedSequence.activeInteraction ==  originalSequence.activeInteraction
+            assert duplicatedSequence.owner ==  originalSequence.owner
 
-            duplicatedSequence.statement.title ==  originalSequence.statement.title
-            duplicatedSequence.statement.content ==  originalSequence.statement.content
-            duplicatedSequence.statement.choiceSpecification ==  originalSequence.statement.choiceSpecification
-            duplicatedSequence.statement.questionType ==  originalSequence.statement.questionType
-            duplicatedSequence.statement.owner ==  originalSequence.statement.owner
+            assert duplicatedSequence.statement.title ==  originalSequence.statement.title
+            assert duplicatedSequence.statement.content ==  originalSequence.statement.content
+            assert duplicatedSequence.statement.choiceSpecification ==  originalSequence.statement.choiceSpecification
+            assert duplicatedSequence.statement.questionType ==  originalSequence.statement.questionType
+            assert duplicatedSequence.statement.owner ==  originalSequence.statement.owner
+            assert duplicatedSequence.statement.parentStatement.id == originalSequence.statement.id
         }
     }
 
@@ -352,6 +353,26 @@ class AssignmentServiceIntegrationSpec extends Specification {
 
         and: "assignment is not duplicated"
         duplicatedAssignment == null
+    }
+
+    void "test delete an assignment - statement parent is null "() {
+        given: "an assignment"
+        Assignment assignment = bootstrapTestService.assignment1
+
+        and: "teacher"
+        User teacher = bootstrapTestService.teacherJeanne
+
+        and: "duplicate sequence and statement of assignment"
+        Assignment duplicatedAssignment = assignmentService.duplicate(assignment, teacher)
+
+        when: "delete original assignment"
+        assignmentService.deleteAssignment(assignment, teacher, true)
+
+        then: 'duplicated statement have null reference to parentStatement'
+        for (int i = 0; i < duplicatedAssignment.sequences.size(); i++) {
+            Sequence duplicatedSequence = duplicatedAssignment.sequences.get(i)
+            duplicatedSequence.statement.parentStatement == null
+        }
     }
 
 }

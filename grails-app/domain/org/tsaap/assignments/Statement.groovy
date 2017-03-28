@@ -10,6 +10,7 @@ class Statement {
     String content
     String choiceSpecification
     QuestionType questionType
+    Statement parentStatement
 
     Date dateCreated
     Date lastUpdated
@@ -24,6 +25,7 @@ class Statement {
             if ((obj.questionType == QuestionType.MultipleChoice || obj.questionType == QuestionType.ExclusiveChoice)
                     && !val) return ['choiceSpecificationMustBeSet']
         }
+        parentStatement nullable: true
     }
 
     static transients = ['choiceSpecificationObject']

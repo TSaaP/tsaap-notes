@@ -13,6 +13,7 @@ import javax.sql.DataSource
 class AssignmentService {
 
     DataSource dataSource
+    SequenceService sequenceService
 
     /**
      * Find all assignment owned by owner
@@ -50,6 +51,29 @@ class AssignmentService {
         assignment.save()
         assignment
     }
+
+    /**
+     * Duplicate a assignment (create a copy of it, generating a new title, and assigning a
+     * new owner to the copy)
+     * @param user the user duplicating the assignment
+     * @param assignment the course to duplicate
+     * @return the duplicated course
+     */
+    Assignment duplicate (Assignment assignment, User user) {
+        Contract.requires(assignment?.owner == user, USER__MUST__BE__ASSIGNMENT__OWNER)
+        Assignment newAssignment = new Assignment();
+        newAssignment.globalId = null
+        newAssignment.owner = assignment.owner
+        newAssignment.title = assignment.title + '-copy'
+        Assignment duplicateAssignment = saveAssignment(newAssignment)
+
+        assignment.sequences.each {sequence ->
+            sequenceService.duplicateSequenceInAssignment(sequence, duplicateAssignment, user)
+        }
+
+        duplicateAssignment
+    }
+
 
     /**
      * Delete assignment

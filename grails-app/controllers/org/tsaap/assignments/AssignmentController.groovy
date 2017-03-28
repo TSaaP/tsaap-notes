@@ -108,6 +108,20 @@ class AssignmentController {
 
     }
 
+    @Transactional
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def duplicate(Assignment assignmentInstance) {
+        if (assignmentInstance == null) {
+            notFound()
+            return
+        }
+        def user = springSecurityService.currentUser
+        Assignment duplicatedAssignment = assignmentService.duplicate(assignmentInstance, user)
+
+        flash.message = message(code: 'assignment.duplicate.message', args: [message(code: 'assignment.label', default: 'Assignment'), assignmentInstance.title])
+        redirect action: "edit", method: "GET", id: duplicatedAssignment.id
+    }
+
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def addSequence(Assignment assignmentInstance) {
         if (assignmentInstance == null) {

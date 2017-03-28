@@ -35,7 +35,7 @@ class SequenceController {
         }
         User owner = springSecurityService.currentUser
         Statement statementInstance = getStatementInstanceToSave(owner, params)
-        Sequence sequenceInstance = sequenceService.addSequenceToAssignment(assignmentInstance, owner, statementInstance)
+        Sequence sequenceInstance = sequenceService.createAndAddSequenceToAssignment(assignmentInstance, owner, statementInstance)
 
         if (sequenceInstance.hasErrors()) {
             respond assignmentInstance, model: [sequenceInstance: sequenceInstance],

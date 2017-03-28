@@ -8,5 +8,7 @@
         <g:message code="assignment.action.propertiesEdition.label"/></g:link></li>
         <li role="separator" class="divider"></li>
         <li><g:link action="delete" controller="assignment" id="${assignmentInstance.id}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"><g:message code="assignment.action.delete.label"/></g:link></li>
+        <li role="separator" class="divider"></li>
+        <li><g:link action="duplicate" controller="assignment" id="${assignmentInstance.id}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"><g:message code="assignment.action.duplicate.label"/></g:link></li>
     </ul>
 </div>

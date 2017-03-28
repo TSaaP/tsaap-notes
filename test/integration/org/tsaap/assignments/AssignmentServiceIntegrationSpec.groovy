@@ -112,13 +112,14 @@ class AssignmentServiceIntegrationSpec extends Specification {
 
         and: "a sequence added to the assignment with interactions"
         def interactions = [bootstrapTestService.responseSubmissionInteraction, bootstrapTestService.evaluationInteraction]
-        Sequence sequence1 = sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement1, interactions)
-        Sequence sequence2 = sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement2)
+        Sequence sequence1 = sequenceService.createAndAddSequenceToAssignment(assignment, assignment.owner, statement1)
+        sequenceService.addSequenceInteractions(sequence1, assignment.owner, interactions);
+        Sequence sequence2 = sequenceService.createAndAddSequenceToAssignment(assignment, assignment.owner, statement2)
         def schedule1 = bootstrapTestService.responseSubmissionInteraction.schedule
         def schedule2 = bootstrapTestService.evaluationInteraction.schedule
         schedule1 && schedule2
 
-        when: "deleting assignment is  performed by the owner"
+        when: "deleting assignment is performed by the owner"
         assignmentService.deleteAssignment(assignment, teacher)
 
         then: "the assignment and the sequences are deleted"
@@ -156,8 +157,9 @@ class AssignmentServiceIntegrationSpec extends Specification {
 
         and: "a sequence added to the assignment with interactions"
         def interactions = [bootstrapTestService.responseSubmissionInteraction, bootstrapTestService.evaluationInteraction]
-        Sequence sequence1 = sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement1, interactions)
-        Sequence sequence2 = sequenceService.addSequenceToAssignment(assignment, assignment.owner, statement2)
+        Sequence sequence1 = sequenceService.createAndAddSequenceToAssignment(assignment, assignment.owner, statement1)
+        sequenceService.addSequenceInteractions(sequence1, assignment.owner, interactions)
+        Sequence sequence2 = sequenceService.createAndAddSequenceToAssignment(assignment, assignment.owner, statement2)
 
 
         when: "removing the first sequence"
@@ -278,6 +280,102 @@ class AssignmentServiceIntegrationSpec extends Specification {
         la2 == la1
         assignmentService.countAllAssignmentsForLearner(paul) == 1 as Long
 
+    }
+
+    void "test duplication of the assignment"() {
+        given: "an assignment"
+        Assignment assignment = bootstrapTestService.assignment2With2Sequences
+
+        and: "teacher"
+        User teacher = bootstrapTestService.teacherJeanne
+
+        when: "duplicate sequence and statement of assignment"
+        Assignment duplicatedAssignment = assignmentService.duplicate(assignment, teacher)
+
+        then: "new assignment equal old assignment"
+        duplicatedAssignment.id != assignment.id
+        duplicatedAssignment.globalId != assignment.globalId
+        duplicatedAssignment.title == assignment.title + '-copy'
+        duplicatedAssignment.owner == assignment.owner
+        for (int i = 0; i < duplicatedAssignment.sequences.size(); i++) {
+            Sequence duplicatedSequence = duplicatedAssignment.sequences.get(i)
+            Sequence originalSequence = assignment.sequences.get(i)
+
+            assert duplicatedSequence.id != originalSequence.id
+            assert duplicatedSequence.state == originalSequence.state
+            assert duplicatedSequence.rank == originalSequence.rank
+            assert duplicatedSequence.phasesAreScheduled ==  originalSequence.phasesAreScheduled
+            assert !duplicatedSequence.interactions
+            assert duplicatedSequence.owner ==  originalSequence.owner
+
+            assert duplicatedSequence.statementId != originalSequence.statementId
+            assert duplicatedSequence.statement.title ==  originalSequence.statement.title
+            assert duplicatedSequence.statement.content ==  originalSequence.statement.content
+            assert duplicatedSequence.statement.choiceSpecification ==  originalSequence.statement.choiceSpecification
+            assert duplicatedSequence.statement.questionType ==  originalSequence.statement.questionType
+            assert duplicatedSequence.statement.owner ==  originalSequence.statement.owner
+            assert duplicatedSequence.statement.parentStatement.id == originalSequence.statement.id
+        }
+    }
+
+    void "test duplication of the assignment - user doesn't assignment's owner"() {
+        given: "an assignment"
+        Assignment assignment = bootstrapTestService.assignment1
+
+        and: "teacher"
+        User teacher = bootstrapTestService.teacherJeanne
+
+        and: 'an other student'
+        User other = bootstrapTestService.learnerPaul
+
+        when: "duplicate sequence and statement of assignment"
+        Assignment duplicatedAssignment = assignmentService.duplicate(assignment, other)
+
+        then: "Exception is thrown"
+        def exception = thrown(ConditionViolationException)
+        exception.message == AssignmentService.USER__MUST__BE__ASSIGNMENT__OWNER
+
+        and: "assignment is not duplicated"
+        duplicatedAssignment == null
+    }
+
+    void "test duplication of the assignment - assignment is null"() {
+        given: "an assignment"
+        Assignment assignment = null
+
+        and: "teacher"
+        User teacher = bootstrapTestService.teacherJeanne
+
+
+        when: "duplicate sequence and statement of assignment"
+        Assignment duplicatedAssignment = assignmentService.duplicate(assignment, teacher)
+
+        then: "Exception is thrown"
+        def exception = thrown(ConditionViolationException)
+        exception.message == AssignmentService.USER__MUST__BE__ASSIGNMENT__OWNER
+
+        and: "assignment is not duplicated"
+        duplicatedAssignment == null
+    }
+
+    void "test delete an assignment - statement parent is null "() {
+        given: "an assignment"
+        Assignment assignment = bootstrapTestService.assignment1
+
+        and: "teacher"
+        User teacher = bootstrapTestService.teacherJeanne
+
+        and: "duplicate sequence and statement of assignment"
+        Assignment duplicatedAssignment = assignmentService.duplicate(assignment, teacher)
+
+        when: "delete original assignment"
+        assignmentService.deleteAssignment(assignment, teacher, true)
+
+        then: 'duplicated statement have null reference to parentStatement'
+        for (int i = 0; i < duplicatedAssignment.sequences.size(); i++) {
+            Sequence duplicatedSequence = duplicatedAssignment.sequences.get(i)
+            duplicatedSequence.statement.parentStatement == null
+        }
     }
 
 }

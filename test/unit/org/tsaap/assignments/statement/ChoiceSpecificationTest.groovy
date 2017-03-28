@@ -10,15 +10,15 @@ import spock.lang.Specification
 @TestMixin(ControllerUnitTestMixin)
 class ChoiceSpecificationTest extends Specification {
 
-  def "test GetJsonString"() {
+  def "test GetJsonString - without explanationChoiceList"() {
     given: 'a new ChoiceSpecification'
     ChoiceSpecification choiceSpecification = new ChoiceSpecification()
 
-    and: 'give an itemCount'
+    and: 'given an itemCount'
     int givenItemCount = 3
     choiceSpecification.itemCount = givenItemCount
 
-    and: 'give a choiceInteractionType'
+    and: 'given a choiceInteractionType'
     String givenChoiceInteractionType = 'MULTIPLE'
     choiceSpecification.choiceInteractionType = givenChoiceInteractionType
 
@@ -37,6 +37,44 @@ class ChoiceSpecificationTest extends Specification {
     jsonStringRepresentation ==  '{"expectedChoiceList":[{"index":0,"score":50.0},{"index":1,"score":50.0}],"choiceInteractionType":"MULTIPLE","itemCount":3}'
     json2 == jsonStringRepresentation
   }
+
+  def "test GetJsonString - with explanationChoiceList"() {
+    given: 'a new ChoiceSpecification'
+    ChoiceSpecification choiceSpecification = new ChoiceSpecification()
+
+    and: 'given an itemCount'
+    int givenItemCount = 3
+    choiceSpecification.itemCount = givenItemCount
+
+    and: 'given a choiceInteractionType'
+    String givenChoiceInteractionType = 'MULTIPLE'
+    choiceSpecification.choiceInteractionType = givenChoiceInteractionType
+
+    and: 'given a expectedChoiceList'
+    List<ChoiceItemSpecification> givenExpectedChoiceList = [
+        new ChoiceItemSpecification(0, 50f),
+        new ChoiceItemSpecification(1, 50f)
+    ]
+    choiceSpecification.expectedChoiceList = givenExpectedChoiceList
+
+    and: 'given explanationChoiceList'
+    List<ExplanationChoice> givenExplanationChoiceList = [
+        new ExplanationChoice(0, "first explanation"),
+        new ExplanationChoice(1, "second explanation")
+    ]
+    choiceSpecification.explanationChoiceList = givenExplanationChoiceList
+
+    when: 'getJsonString representation'
+    String jsonStringRepresentation = choiceSpecification.getJsonString()
+    String json2 = choiceSpecification.getJsonString()
+
+    then: 'jsonStringRepresentation equal choiceSpecification json string representation'
+    jsonStringRepresentation ==  '{"expectedChoiceList":[{"index":0,"score":50.0},{"index":1,"score":50.0}],"explanationChoiceList":[{"index":0,"explanation":"first explanation"},{"index":1,"explanation":"second explanation"}],"choiceInteractionType":"MULTIPLE","itemCount":3}'
+    json2 == jsonStringRepresentation
+  }
+
+
+
 
   def "test GetJsonString with empty ChoiceSpecification"() {
     given: 'a new ChoiceSpecification'
@@ -189,6 +227,30 @@ class ChoiceSpecificationTest extends Specification {
     item2 == choiceSpecification.expectedChoiceList[1]
 
   }
+
+  def "test explanationWithIndexInExplanationChoiceList"() {
+    given: "a new ChoiceSpecification"
+    ChoiceSpecification choiceSpecification = new ChoiceSpecification()
+
+    and: 'given a explanationChoiceList'
+    List<ExplanationChoice> givenExplanationChoiceList = [
+        new ExplanationChoice(1, "This is explanation of first item"),
+        new ExplanationChoice(2, "This is explanation of second item")
+    ]
+    choiceSpecification.explanationChoiceList = givenExplanationChoiceList
+
+    when: 'get explanationChoiceList'
+    ExplanationChoice item1 = choiceSpecification.explanationWithIndexInExplanationChoiceList(1);
+    ExplanationChoice item2 = choiceSpecification.explanationWithIndexInExplanationChoiceList(2);
+
+    then: 'items equals given item'
+    item1.index == choiceSpecification.explanationChoiceList[0].index
+    item1.explanation == choiceSpecification.explanationChoiceList[0].explanation
+    item2.index == choiceSpecification.explanationChoiceList[1].index
+    item2.explanation == choiceSpecification.explanationChoiceList[1].explanation
+
+  }
+
   void "test spec creation based on a valid json specification"() {
     given: "a specification build on a valid json specification"
     ChoiceSpecification choiceSpecification = new ChoiceSpecification('''
@@ -197,7 +259,11 @@ class ChoiceSpecificationTest extends Specification {
                     "itemCount":4,
                     "studentsProvideConfidenceDegree":true,
                     "studentsProvideExplanation":false,
-                    "expectedChoiceList":[{"index":1,"score":50},{"index":3,"score":50}]
+                    "expectedChoiceList":[{"index":1,"score":50},{"index":3,"score":50}],
+                    "explanationChoiceList":[
+                          {"index":1, "explanation":"This is explanation of first item"},
+                          {"index":2, "explanation":"This is explanation of second item"}
+                     ]
                 }
         ''')
 
@@ -214,7 +280,10 @@ class ChoiceSpecificationTest extends Specification {
     choiceSpecification.expectedChoiceListContainsChoiceWithIndex(1)
     !choiceSpecification.expectedChoiceListContainsChoiceWithIndex(2)
     choiceSpecification.expectedChoiceListContainsChoiceWithIndex(3)
-
+    choiceSpecification.explanationChoiceList.size() == 2
+    choiceSpecification.explanationChoiceList[0] instanceof ExplanationChoice
+    choiceSpecification.explanationChoiceList[0].index == 1
+    choiceSpecification.explanationChoiceList[0].explanation == "This is explanation of first item"
   }
 
 }

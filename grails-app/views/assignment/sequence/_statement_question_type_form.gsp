@@ -45,6 +45,28 @@
                 </label>
             </g:each>
         </div>
+        <div class="accordion" id="accordionExplanations" style="margin-left: 2%;">
+          <div class="accordion-group">
+            <div class="accordion-heading">
+              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionExplanations" href="#collapseOne" style="margin-left: 5%">
+                Provides explanation
+              </a>
+            </div>
+            <div id="collapseOne" class="accordion-body collapse" style="padding-left: 5%">
+              <g:set var="explanationCount" value="${sequenceInstance?.statement?.choiceSpecificationObject?.explanationChoiceList?.size()?: 2}"/>
+              <div class="accordion-inner" id="teacherExplanation">
+                <g:each var="index" in="${1..explanationCount}">
+                  <div style="margin-top: 10px" id="test_${index}">
+                    <label> Explanation for choice ${index}</label>
+                    <ckeditor:editor name="explanations" id="explanation_${index}" height="7em">
+                      ${statementInstance?.choiceSpecificationObject?.explanationWithIndexInExplanationChoiceList(index)?.explanation}
+                    </ckeditor:editor>
+                  </div>
+                </g:each>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <div class="checkbox">
             <label>
@@ -56,8 +78,7 @@
 
 <r:script>
     init();
-
-
+    console.log(CKEDITOR);
     function init () {
       if ($('#radioOpenEnded').is(':checked')) {
         $('#multiple_choice').addClass('hidden');
@@ -125,12 +146,30 @@
         }
     }
 
+
+    function manageExplanationChoice() {
+      var explanationCount = $("#itemCount").val();
+      var teacherExplanation = $('#teacherExplanation');
+      teacherExplanation.empty();
+      for (var i = 1; i <= explanationCount; i++) {
+        var div = '<div style="margin-top: 10px">';
+        var textarea = '<textarea name="explanations" id="explanation_' + i +'">' + '</textarea>'
+        var explanationTextArea = $(div + '<label> Explanation for choice' + i +'</label>' + textarea +'</div>');
+        teacherExplanation.append(explanationTextArea);
+        CKEDITOR.replace('explanation_' + i, {
+          customConfig: '/ckeditor/config.js',
+          height: '110px'
+        });
+      }
+    }
+
     // Listeners
     $("input:radio[name='hasChoices']").change(function() {
-        manageHasChoices(this)
+    manageHasChoices(this)
     });
 
     $("#choiceInteractionType, #itemCount").change(function () {
-      manageChoices()
+    manageChoices()
+    manageExplanationChoice()
     });
 </r:script>

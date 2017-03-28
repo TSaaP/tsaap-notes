@@ -13,6 +13,7 @@ class ChoiceSpecification extends JsonDefaultSpecification {
     private static final String CHOICE_INTERACTION_TYPE = "choiceInteractionType"
     private static final String ITEM_COUNT = "itemCount"
     public static final String EXPECTED_CHOICE_LIST = "expectedChoiceList"
+    public static final String EXPLANATION_CHOICE_LIST = "explanationChoiceList"
 
     ChoiceSpecification () {
       super()
@@ -21,6 +22,7 @@ class ChoiceSpecification extends JsonDefaultSpecification {
     ChoiceSpecification (String jsonString) {
         super(jsonString)
         getExpectedChoiceListFromListOrMap()
+        getExplanationChoiceListFromListOrMap()
     }
 
     static constraints = {
@@ -33,6 +35,7 @@ class ChoiceSpecification extends JsonDefaultSpecification {
                 }
             }
         }
+        explanationChoiceList nullable: true
     }
 
     @Override
@@ -43,6 +46,9 @@ class ChoiceSpecification extends JsonDefaultSpecification {
             if (getExpectedChoiceList()) {
                 ArrayList al = getExpectedChoiceList()*.specificationProperties
                 map.put(EXPECTED_CHOICE_LIST, al)
+            }
+            if (getExplanationChoiceList()) {
+                map.put(EXPLANATION_CHOICE_LIST, getExplanationChoiceList()*.specificationProperties)
             }
             return JsonOutput.toJson(map)
         }
@@ -83,6 +89,24 @@ class ChoiceSpecification extends JsonDefaultSpecification {
     }
 
     /**
+     * Get the list of explanations choices
+     * @return
+     */
+    List<ExplanationChoice> getExplanationChoiceList() {
+        getSpecificationProperty(EXPLANATION_CHOICE_LIST)
+    }
+
+    /**
+     * Set the list of explanations choices
+     * @return
+     */
+   void setExplanationChoiceList(List<ExplanationChoice> explanationChoiceList) {
+       setSpecificationProperty(EXPLANATION_CHOICE_LIST, explanationChoiceList)
+    }
+
+
+
+    /**
      * Set the choice interaction type
      * @param choiceInteractionType the choice interaction type (exclusive or multiple)
      */
@@ -105,6 +129,7 @@ class ChoiceSpecification extends JsonDefaultSpecification {
     void setExpectedChoiceList(List<ChoiceItemSpecification> choiceList) {
         setSpecificationProperty(EXPECTED_CHOICE_LIST, choiceList)
     }
+
 
     /**
      * Check if a choice with given index is in the expected choice list
@@ -142,6 +167,24 @@ class ChoiceSpecification extends JsonDefaultSpecification {
         }
         res
     }
+    /**
+     * Return the explanation with the given index in the expected choice.
+     *
+     * @param index the index
+     * @return the explnation choice
+     */
+    ExplanationChoice explanationWithIndexInExplanationChoiceList(Integer index) {
+        def res = null
+        if (explanationChoiceList) {
+            for (int i = 0; i < explanationChoiceList.size(); i++) {
+                if (explanationChoiceList[i].index == index) {
+                    res = explanationChoiceList[i]
+                    break
+                }
+            }
+        }
+        res
+    }
 
     private void getExpectedChoiceListFromListOrMap() {
         expectedChoiceList = expectedChoiceList.collect {
@@ -152,6 +195,18 @@ class ChoiceSpecification extends JsonDefaultSpecification {
             }
         }
     }
+
+    private void getExplanationChoiceListFromListOrMap() {
+        explanationChoiceList = explanationChoiceList.collect {
+            if (it instanceof Map) {
+                new ExplanationChoice(specificationProperties: it)
+            } else {
+                new ExplanationChoice(it.index, it.explanation)
+            }
+        }
+    }
+
+
 
     /**
      * Calculate the total score obtained when adding score from each expected choice.

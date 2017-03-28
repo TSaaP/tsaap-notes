@@ -9,6 +9,7 @@ import org.tsaap.assignments.interactions.EvaluationSpecification
 import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
 import org.tsaap.assignments.statement.ChoiceSpecification
 import org.tsaap.assignments.statement.ChoiceItemSpecification
+import org.tsaap.assignments.statement.ExplanationChoice
 import org.tsaap.attachement.AttachementService
 import org.tsaap.directory.User
 import grails.transaction.Transactional
@@ -218,6 +219,15 @@ class SequenceController {
             choiceSpecification.expectedChoiceList = []
           }
         }
+          def tmp = params.explanations
+          if (params.explanations) {
+              int index = 1
+              choiceSpecification.explanationChoiceList = params.explanations.collect { explanation ->
+                if (explanation) {
+                    new ExplanationChoice(index++, explanation)
+                }
+              }
+          }
       } else {
           choiceSpecification = null
       }

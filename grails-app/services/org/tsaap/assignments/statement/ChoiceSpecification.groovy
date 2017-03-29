@@ -3,6 +3,7 @@ package org.tsaap.assignments.statement
 import grails.validation.Validateable
 import groovy.json.JsonOutput
 import org.tsaap.assignments.JsonDefaultSpecification
+import org.tsaap.assignments.QuestionType
 
 /**
  * Created by qsaieb on 01/03/2017.
@@ -26,10 +27,10 @@ class ChoiceSpecification extends JsonDefaultSpecification {
     }
 
     static constraints = {
-        choiceInteractionType nullable: true, inList: ChoiceInteractionType.values()*.name()
+        choiceInteractionType nullable: true, inList: [ChoiceInteractionType.MULTIPLE.name(), ChoiceInteractionType.EXCLUSIVE.name(), QuestionType.OpenEnded.name()]
         itemCount nullable: true, max: 10
         expectedChoiceList nullable: true, validator: { val, obj ->
-            if (obj.choiceInteractionType) {
+            if (obj.choiceInteractionType && obj.choiceInteractionType != QuestionType.OpenEnded.name()) {
                 if (val?.size() < 1) {
                     return ['cannotBeEmpty']
                 }
@@ -201,7 +202,7 @@ class ChoiceSpecification extends JsonDefaultSpecification {
             if (it instanceof Map) {
                 new ExplanationChoice(specificationProperties: it)
             } else {
-                new ExplanationChoice(it.index, it.explanation)
+                new ExplanationChoice(it.index, it.explanation, it.score)
             }
         }
     }

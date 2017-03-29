@@ -45,19 +45,19 @@
                 </label>
             </g:each>
         </div>
-        <div class="accordion" id="accordionExplanations" style="margin-left: 2%;">
+        <div class="accordion" id="hasChoiceAccordionExplanations" style="margin-left: 2%;">
           <div class="accordion-group">
             <div class="accordion-heading">
-              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionExplanations" href="#collapseOne" style="margin-left: 5%">
-                Provides explanation
+              <a class="accordion-toggle" data-toggle="collapse" data-parent="#hasChoiceAccordionExplanations" href="#collapseOne" style="margin-left: 5%">
+                <g:message code="sequence.explanation.label"/>
               </a>
             </div>
             <div id="collapseOne" class="accordion-body collapse" style="padding-left: 5%">
-              <g:set var="explanationCount" value="${sequenceInstance?.statement?.choiceSpecificationObject?.explanationChoiceList?.size()?: 2}"/>
+              <g:set var="explanationCount" value="${itemCount?: 2}"/>
               <div class="accordion-inner" id="teacherExplanation">
                 <g:each var="index" in="${1..explanationCount}">
                   <div style="margin-top: 10px" id="test_${index}">
-                    <label> Explanation for choice ${index}</label>
+                    <label><g:message code="statement.openEndedExplanation.label" args="[index]"/></label>
                     <ckeditor:editor name="explanations" id="explanation_${index}" height="7em">
                       ${statementInstance?.choiceSpecificationObject?.explanationWithIndexInExplanationChoiceList(index)?.explanation}
                     </ckeditor:editor>
@@ -73,18 +73,49 @@
               <input type="radio" value="false" id="radioOpenEnded" name="hasChoices"  ${sequenceInstance?.statement?.isOpenEnded() ? 'checked' : ''}> <g:message code="sequence.interaction.openEnded"/>
             </label>
         </div>
+        <div class="accordion hidden" id="openEndedAccordionExplanations" style="margin-left: 2%;">
+        <div class="accordion-group">
+          <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#OpenEndedAccordionExplanations" href="#collapseOpenEnded" style="margin-left: 5%">
+              <g:message code="sequence.explanation.label"/>
+            </a>
+          </div>
+          <div id="collapseOpenEnded" class="accordion-body collapse" style="padding-left: 5%">
+            <g:set var="explanationCount" value="${itemCount?: 2}"/>
+            <div class="accordion-inner" id="teacherExplanation">
+              <g:each var="index" in="${1..3}">
+                <div style="margin-top: 10px" id="test_${index}">
+                  <div class="form-horizontal form-group">
+                    <label class="control-label col-sm-3">
+                      <g:message code="statement.openEndedExplanation.label" args="[index]"/>
+                    </label>
+                    <label class="control-label col-sm-2">
+                      <g:message code="statement.explanation.score"/>
+                    </label>
+                    <input type="text" class="form-control-static" name="scores" placeholder="between 0 and 100" value="${statementInstance?.choiceSpecificationObject?.explanationWithIndexInExplanationChoiceList(index)?.score}">
+                  </div>
+                  <ckeditor:editor name="openEndedExplanations" id="openEndedExplanation_${index}" height="7em">
+                    ${statementInstance?.choiceSpecificationObject?.explanationWithIndexInExplanationChoiceList(index)?.explanation}
+                  </ckeditor:editor>
+                </div>
+              </g:each>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 </div>
 
 <r:script>
     init();
-    console.log(CKEDITOR);
     function init () {
       if ($('#radioOpenEnded').is(':checked')) {
         $('#multiple_choice').addClass('hidden');
         $('#exclusive_choice').addClass('hidden');
         $("#itemCount").prop('disabled',true);
         $("#choiceInteractionType").prop('disabled', true);
+        $('#hasChoiceAccordionExplanations').addClass('hidden')
+        $('#openEndedAccordionExplanations').removeClass('hidden')
       }
 
       if ($("input:radio[name='exclusiveChoice']:checked").val() === undefined) {
@@ -101,7 +132,8 @@
             } else {
                 $('#exclusive_choice').removeClass('hidden');
             }
-
+            $('#hasChoiceAccordionExplanations').removeClass('hidden')
+            $('#openEndedAccordionExplanations').addClass('hidden')
             if ($("input:radio[name='exclusiveChoice']:checked").val() === undefined) {
                 manageChoices()
             }
@@ -113,6 +145,9 @@
             } else {
                 $('#exclusive_choice').addClass('hidden');
             }
+
+            $('#hasChoiceAccordionExplanations').addClass('hidden')
+            $('#openEndedAccordionExplanations').removeClass('hidden')
         }
     }
 

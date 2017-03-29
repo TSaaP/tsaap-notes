@@ -198,7 +198,7 @@ class SequenceController {
     private ChoiceSpecification getChoiceSpecification(def params, Sequence sequence = null) {
       ChoiceSpecification choiceSpecification =  sequence?.statement?.choiceSpecificationObject ?: new ChoiceSpecification()
       boolean hasChoices = params.hasChoices.toBoolean()
-
+        List<ExplanationChoice> explanationChoiceList = null;
       if (hasChoices) {
           choiceSpecification.choiceInteractionType = params.choiceInteractionType
           choiceSpecification.itemCount = params.itemCount as Integer
@@ -218,19 +218,49 @@ class SequenceController {
                   choiceSpecification.expectedChoiceList = []
               }
           }
-          if (params.explanations) {
-              int index = 1
-              choiceSpecification.explanationChoiceList = params.explanations.collect { explanation ->
-                if (explanation) {
-                    new ExplanationChoice(index++, explanation)
-                }
-              }
-          }
+          explanationChoiceList = getExplanationChoiceListFromChoiceQuestionType(params)
       } else {
-          choiceSpecification = null
+          choiceSpecification.choiceInteractionType = QuestionType.OpenEnded.name()
+          explanationChoiceList = getExplanationChoiceListFromOpenEndedQuestionType(params)
+          // when transform multiple or exclusive sequence in openEnded sequence
+          choiceSpecification.specificationProperties.remove("itemCount")
+          choiceSpecification.specificationProperties.remove("expectedChoiceList")
       }
 
+        if (explanationChoiceList.size() > 0) {
+            choiceSpecification.explanationChoiceList = explanationChoiceList
+        }
+
       choiceSpecification
+    }
+
+    private List<ExplanationChoice> getExplanationChoiceListFromChoiceQuestionType (def params) {
+        List<ExplanationChoice> explanationChoiceList = new ArrayList<>();
+        if (params.explanations) {
+            params.explanations.eachWithIndex{ String explanation, int index ->
+                if (explanation != null && !explanation.trim().isEmpty()) {
+                    explanationChoiceList.add(new ExplanationChoice(index + 1, explanation))
+                }
+            }
+        }
+
+        explanationChoiceList
+    }
+
+    private List<ExplanationChoice> getExplanationChoiceListFromOpenEndedQuestionType (def params) {
+        List<ExplanationChoice> explanationChoiceList = new ArrayList<>();
+        if (params.openEndedExplanations) {
+            String [] scores = params.scores
+            params.openEndedExplanations.eachWithIndex{ String explanation, int index ->
+                if (explanation != null && !explanation.trim().isEmpty()) {
+                    if (scores != null && scores.size() > 0) {
+                        Float score = scores[index] != null  && !scores[index].trim().isEmpty() ? Float.parseFloat(scores[index]) : 0
+                        explanationChoiceList.add(new ExplanationChoice(index + 1, explanation, score))
+                    }
+                }
+            }
+        }
+        explanationChoiceList
     }
 
     private ResponseSubmissionSpecification getResponseSubmissionSpecificationToSaveOrUpdate(GrailsParameterMap params, Sequence sequence = null) {

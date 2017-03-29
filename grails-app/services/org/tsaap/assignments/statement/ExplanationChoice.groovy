@@ -8,6 +8,7 @@ import org.tsaap.assignments.JsonDefaultSpecification
 class ExplanationChoice extends JsonDefaultSpecification {
   private static final String INDEX = "index"
   private static final String EXPLANATION = "explanation"
+  private static final String SCORE = "score"
 
 
   ExplanationChoice () {}
@@ -21,6 +22,19 @@ class ExplanationChoice extends JsonDefaultSpecification {
   ExplanationChoice(Integer index, String explanation) {
     this.index = index
     this.explanation = explanation
+  }
+
+  /**
+   * Create an explanation with score choice object
+   *
+   * @param index the index of the choice in the list of choice starting from 1
+   * @param explanation the asscociated to this choice
+   * @param score the asscociated to this explanation
+   */
+  ExplanationChoice(Integer index, String explanation, Float score) {
+    this.index = index
+    this.explanation = explanation
+    this.score = score
   }
 
   Integer getIndex() {
@@ -39,9 +53,18 @@ class ExplanationChoice extends JsonDefaultSpecification {
     setSpecificationProperty(EXPLANATION, explanation)
   }
 
+  void setScore (Float score) {
+    setSpecificationProperty(SCORE, score)
+  }
+
+  Float getScore () {
+    getSpecificationProperty(SCORE)
+  }
+
 
   static constraints = {
     index nullable: false
     explanation nullable: false
+    score nullable: true
   }
 }

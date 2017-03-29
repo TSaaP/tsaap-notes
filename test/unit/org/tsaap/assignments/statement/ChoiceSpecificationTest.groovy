@@ -60,7 +60,8 @@ class ChoiceSpecificationTest extends Specification {
     and: 'given explanationChoiceList'
     List<ExplanationChoice> givenExplanationChoiceList = [
         new ExplanationChoice(0, "first explanation"),
-        new ExplanationChoice(1, "second explanation")
+        new ExplanationChoice(1, "second explanation"),
+        new ExplanationChoice(2, "third explanation", 100.0f)
     ]
     choiceSpecification.explanationChoiceList = givenExplanationChoiceList
 
@@ -69,12 +70,9 @@ class ChoiceSpecificationTest extends Specification {
     String json2 = choiceSpecification.getJsonString()
 
     then: 'jsonStringRepresentation equal choiceSpecification json string representation'
-    jsonStringRepresentation ==  '{"expectedChoiceList":[{"index":0,"score":50.0},{"index":1,"score":50.0}],"explanationChoiceList":[{"index":0,"explanation":"first explanation"},{"index":1,"explanation":"second explanation"}],"choiceInteractionType":"MULTIPLE","itemCount":3}'
+    jsonStringRepresentation ==  '{"expectedChoiceList":[{"index":0,"score":50.0},{"index":1,"score":50.0}],"explanationChoiceList":[{"index":0,"explanation":"first explanation"},{"index":1,"explanation":"second explanation"},{"index":2,"explanation":"third explanation","score":100.0}],"choiceInteractionType":"MULTIPLE","itemCount":3}'
     json2 == jsonStringRepresentation
   }
-
-
-
 
   def "test GetJsonString with empty ChoiceSpecification"() {
     given: 'a new ChoiceSpecification'
@@ -262,7 +260,7 @@ class ChoiceSpecificationTest extends Specification {
                     "expectedChoiceList":[{"index":1,"score":50},{"index":3,"score":50}],
                     "explanationChoiceList":[
                           {"index":1, "explanation":"This is explanation of first item"},
-                          {"index":2, "explanation":"This is explanation of second item"}
+                          {"index":2, "explanation":"This is explanation of second item", "score": 50.0}
                      ]
                 }
         ''')
@@ -284,6 +282,8 @@ class ChoiceSpecificationTest extends Specification {
     choiceSpecification.explanationChoiceList[0] instanceof ExplanationChoice
     choiceSpecification.explanationChoiceList[0].index == 1
     choiceSpecification.explanationChoiceList[0].explanation == "This is explanation of first item"
+    choiceSpecification.explanationChoiceList[0].score == null
+    choiceSpecification.explanationChoiceList[1].score == 50.0
   }
 
 }

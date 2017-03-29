@@ -16,6 +16,7 @@ class Sequence {
     Assignment assignment
     Statement statement
     Boolean phasesAreScheduled = false
+    Boolean asynchronousProcess = false
 
     Interaction activeInteraction
     String state = StateType.beforeStart.name()

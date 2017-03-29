@@ -109,8 +109,23 @@
     $('input[name=studentsProvideConfidenceDegree]').on('change', function () {
         this.value = this.checked;
     });
+
+    $('input[name=asynchronousProcess]').on('change', function () {
+        this.value = this.checked;
+    });
+
     function remoteLinkSuccess (id) {
         $('#' + 'interactionSpec_' + id).css('display', 'none')
+    }
+
+    function switchBtnText(checkbox, sequenceId) {
+       if (checkbox.checked)  {
+           $('#synchronous_' + sequenceId).css('display', 'none');
+           $('#asynchronous_' + sequenceId).css('display', 'inline-block');
+       }  else {
+           $('#asynchronous_' + sequenceId).css('display', 'none');
+           $('#synchronous_' + sequenceId).css('display', 'inline-block');
+       }
     }
 </script>
 </body>

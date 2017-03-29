@@ -44,7 +44,7 @@ class SequenceService {
      * @param user the user adding the sequence
      * @return the sequence
      */
-    Sequence createAndAddSequenceToAssignment(Assignment assignment, User user, Statement statement, List<Interaction> interactions = null, boolean phasesAreScheduled = false) {
+    Sequence createAndAddSequenceToAssignment(Assignment assignment, User user, Statement statement, boolean phasesAreScheduled = false) {
         Contract.requires(assignment.owner == user, AssignmentService.USER__MUST__BE__ASSIGNMENT__OWNER)
         def rank = assignment.lastSequence ? assignment.lastSequence.rank + 1 : 1
         Sequence sequence = new Sequence(rank: rank, phasesAreScheduled: phasesAreScheduled)

@@ -200,26 +200,24 @@ class SequenceController {
       boolean hasChoices = params.hasChoices.toBoolean()
 
       if (hasChoices) {
-        choiceSpecification.choiceInteractionType = params.choiceInteractionType
-        choiceSpecification.itemCount = params.itemCount as Integer
-
-        if (params.choiceInteractionType == ChoiceInteractionType.MULTIPLE.name()) {
-          def expectedChoiceList = params.expectedChoiceList
-          def countExpectedChoice = expectedChoiceList?.size() as Float
-          choiceSpecification.expectedChoiceList = expectedChoiceList.collect {
-            new ChoiceItemSpecification(it as Integer,
-                (100 / countExpectedChoice) as Float)
-          }
-        } else {
-          def exclusiveChoice = params.exclusiveChoice as Integer
-
-          if (exclusiveChoice != null) {
-            choiceSpecification.expectedChoiceList = [new ChoiceItemSpecification(exclusiveChoice, 100f)]
+          choiceSpecification.choiceInteractionType = params.choiceInteractionType
+          choiceSpecification.itemCount = params.itemCount as Integer
+          if (params.choiceInteractionType == ChoiceInteractionType.MULTIPLE.name()) {
+              def expectedChoiceList = params.expectedChoiceList
+              def countExpectedChoice = expectedChoiceList?.size() as Float
+              choiceSpecification.expectedChoiceList = expectedChoiceList.collect {
+                  new ChoiceItemSpecification(it as Integer,
+                      (100 / countExpectedChoice) as Float)
+              }
           } else {
-            choiceSpecification.expectedChoiceList = []
+              def exclusiveChoice = params.exclusiveChoice as Integer
+
+              if (exclusiveChoice != null) {
+                  choiceSpecification.expectedChoiceList = [new ChoiceItemSpecification(exclusiveChoice, 100f)]
+              } else {
+                  choiceSpecification.expectedChoiceList = []
+              }
           }
-        }
-          def tmp = params.explanations
           if (params.explanations) {
               int index = 1
               choiceSpecification.explanationChoiceList = params.explanations.collect { explanation ->

@@ -13,7 +13,6 @@ class InteractionService {
      * @param interaction the interaction to start
      * @return the started interaction
      */
-
     Interaction startInteraction(Interaction interaction, User user) {
         Contract.requires(interaction.owner == user, ONLY_OWNER_CAN_START_INTERACTION)
         Sequence sequence = interaction.sequence
@@ -88,6 +87,20 @@ class InteractionService {
         response
     }
 
+    /**
+     * Create and activate a learner interaction
+     * @param learner
+     * @param interaction
+     * @param user
+     * @return the created interaction
+     */
+    LearnerInteraction createAndActivateLearnerInteraction(User learner, Interaction interaction, User user) {
+        Contract.requires(learner == user, ONLY_LEARNER_CAN_CREATE_LEARNER_INTERACTION)
+        LearnerInteraction learnerInteraction = new LearnerInteraction(learner: learner, interaction: interaction)
+        learnerInteraction.activate()
+        learnerInteraction
+    }
+
     private void updateActiveInteractionInSequence(Interaction interaction) {
         Sequence sequence = interaction.sequence
         for (Integer rank in interaction.rank + 1..sequence.interactions.size()) {
@@ -106,4 +119,8 @@ class InteractionService {
     private static final String INTERACTION_CANNOT_RECEIVE_RESPONSE = 'The interaction cannot receive response'
     private static
     final String LEARNER_NOT_REGISTERED_IN_ASSIGNMENT = 'Learner is not registered in the relative assignment'
+    private static
+    final String ONLY_LEARNER_CAN_CREATE_LEARNER_INTERACTION = "Only the learner can create a learner interaction"
+
+
 }

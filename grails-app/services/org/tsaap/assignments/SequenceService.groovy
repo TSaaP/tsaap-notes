@@ -2,11 +2,15 @@ package org.tsaap.assignments
 
 import grails.transaction.Transactional
 import org.springframework.validation.FieldError
+import org.tsaap.attachement.Attachement
+import org.tsaap.attachement.AttachementService
 import org.tsaap.contracts.Contract
 import org.tsaap.directory.User
 
 @Transactional
 class SequenceService {
+
+    AttachementService attachementService
 
     /**
      * Save a sequence
@@ -112,6 +116,14 @@ class SequenceService {
         )
 
         addSequenceToAssignment(user, duplicatedAssignment, duplicatedSequence, duplicatedStatement)
+
+        Attachement attachement = sequence.statement.attachment
+        if (attachement) {
+            Attachement duplicatedAttachement = attachementService.duplicateAttachment(attachement)
+            attachementService.addStatementToAttachment(duplicatedStatement,duplicatedAttachement)
+        }
+
+        duplicatedSequence
     }
 
     private void updateAssignmentLastUpdated(Sequence sequence, Assignment assignment) {

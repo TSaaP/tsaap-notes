@@ -293,7 +293,7 @@ class AttachementServiceIntegrationSpec extends Specification {
 
     def "test add file to statement"() {
 
-        given: "a note and a multipart file"
+        given: "a statement and a multipart file"
         Statement statement = bootstrapTestService.statement1
         byte[] content = "Attachment".getBytes()
         MultipartFile multipartFile = new MockMultipartFile("grails", "grails", "text/plain", content)
@@ -307,4 +307,37 @@ class AttachementServiceIntegrationSpec extends Specification {
         statement.attachment
 
     }
+
+    def "test duplication of an attachment"() {
+        given: "an attachement"
+        AttachementDto attachementDto = new AttachementDto(
+                size: 6,
+                typeMime: 'image/png',
+                name: 'grails.png',
+                originalFileName: 'grails.png',
+                bytes: [2, 3, 4, 5, 6, 7]
+        )
+        Attachement original = attachementService.createAttachement(attachementDto, 10)
+
+        when: "the attachment is duplicated"
+        Attachement copy = attachementService.duplicateAttachment(original)
+
+        then: "the copy has no errors"
+        //copy.errors.allErrors.each { println it }
+        !copy.hasErrors()
+
+        and: "all properties are set correctly"
+        copy.size == original.size
+        copy.typeMime == original.typeMime
+        copy.name == original.name
+        copy.originalName == original.originalName
+        copy.dimension?.height == original.dimension?.height
+        copy.dimension?.width == original.dimension?.width
+        copy.path == original.path
+        copy.toDelete == original.toDelete
+
+
+    }
+
+
 }

@@ -219,6 +219,33 @@ class AttachementService {
     }
 
     /**
+     * Duplicate an attachement
+     * @param original
+     * @return
+     */
+    Attachement duplicateAttachment(Attachement original) {
+        if (!original) {
+            return null
+        }
+        Attachement attachement = new Attachement(
+                size: original.size,
+                typeMime: original.typeMime,
+                name: original.name,
+                originalName: original.originalName,
+                path: original.path,
+                toDelete: original.toDelete,
+
+        )
+        if (original.dimension) {
+            attachement.dimension = new Dimension(width: original.dimension.width,
+                    height: original.dimension.height)
+        }
+        attachement.save()
+        attachement
+    }
+
+
+    /**
      * Detach an attachment
      * @param myAttachement the attachment to detach
      * @return the detached attachment

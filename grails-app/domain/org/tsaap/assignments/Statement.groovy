@@ -8,6 +8,7 @@ class Statement {
 
     String title
     String content
+    String expectedExplanation
     String choiceSpecification
     QuestionType questionType
     Statement parentStatement
@@ -26,6 +27,7 @@ class Statement {
                     && !val) return ['choiceSpecificationMustBeSet']
         }
         parentStatement nullable: true
+        expectedExplanation nullable: true
     }
 
     static transients = ['choiceSpecificationObject']

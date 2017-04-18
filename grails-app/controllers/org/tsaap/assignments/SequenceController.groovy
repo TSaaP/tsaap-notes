@@ -162,6 +162,7 @@ class SequenceController {
         Statement statementInstance = sequenceInstance.statement
         statementInstance.title = params.title
         statementInstance.content = markupSanitizerService.sanitize(params.content)?.cleanString
+        statementInstance.expectedExplanation = markupSanitizerService.sanitize(params.expectedExplanation)?.cleanString
         statementInstance.questionType = getQuestionType(params)
         statementInstance.choiceSpecification = getChoiceSpecification(params, sequenceInstance)?.jsonString
 
@@ -171,6 +172,7 @@ class SequenceController {
     private Statement getStatementInstanceToSave(User owner, def params) {
         Statement statementInstance = new Statement(title: params.title)
         statementInstance.content = markupSanitizerService.sanitize(params.content)?.cleanString
+        statementInstance.expectedExplanation = markupSanitizerService.sanitize(params.expectedExplanation)?.cleanString
         statementInstance.owner = owner
         statementInstance.questionType = getQuestionType(params)
         statementInstance.choiceSpecification = getChoiceSpecification(params)?.jsonString

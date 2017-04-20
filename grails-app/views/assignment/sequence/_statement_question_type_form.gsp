@@ -61,25 +61,6 @@
     </div>
 </div>
 
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <a data-toggle="collapse" data-parent="#hasChoiceAccordionExplanations"
-           href="#collapseOne">
-            <g:message code="sequence.explanation.label"/>
-        </a>
-    </div>
-
-    <div class="panel-body accordion-body collapse" id="collapseOne">
-        <div class="accordion-inner" id="teacherExplanation">
-            <div style="margin-top: 10px" id="test_${index}">
-                <label><g:message code="statement.expectedExplanation.label" args="[index]"/></label>
-                <ckeditor:editor name="expectedExplanation" id="expectedExplanation" height="7em">
-                    ${statementInstance?.expectedExplanation}
-                </ckeditor:editor>
-            </div>
-        </div>
-    </div>
-</div>
 
 <r:script>
     init();

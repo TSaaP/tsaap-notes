@@ -39,6 +39,7 @@
         <g:render template="/assignment/sequence/statement_form" bean="${statementInstance}"
                   model="[assignmentInstance: assignmentInstance, sequenceInstance: sequenceInstance]"/>
         <g:render template="/assignment/sequence/statement_question_type_form" model="[sequenceInstance:sequenceInstance]"/>
+        <g:render template="/assignment/sequence/statement_explanations_form" model="[sequenceInstance:sequenceInstance]"/>
         <button type="submit"
                 class="btn btn-default">
             ${message(code: 'default.button.update.label', default: 'Update')}

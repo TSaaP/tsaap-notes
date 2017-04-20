@@ -49,6 +49,7 @@
             <g:render template="/assignment/sequence/statement_form" bean="${statementInstance}" model="[assignmentInstance:assignmentInstance]"/>
             <g:set var="defaultDate" value="${assignmentInstance?.schedule?.startDate ?: new Date()}"/>
             <g:render template="/assignment/sequence/statement_question_type_form" model="[defaultDate:defaultDate]"/>
+            <g:render template="/assignment/sequence/statement_explanations_form"/>
         </fieldset>
         <fieldset class="buttons">
             <g:actionSubmit class="btn btn-info" action="saveSequence"

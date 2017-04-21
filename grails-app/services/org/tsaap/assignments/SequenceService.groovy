@@ -141,7 +141,7 @@ class SequenceService {
      * @param statement
      * @param sequence
      */
-    def void saveOrUpdateStatement(Statement statement, Sequence sequence) {
+    def saveOrUpdateStatement(Statement statement, Sequence sequence) {
         if (!sequence.hasErrors()) {
             statement.save()
             if (statement.hasErrors()) {
@@ -156,6 +156,24 @@ class SequenceService {
                 }
             }
         }
+    }
+
+    /**
+     * Add a fake explanation to a statement
+     * @param content the content of the fake explanation
+     * @param statement the given statement the explanation is added to
+     * @param user the user performing the operation
+     * @return fakeExplanation the created fake explanation
+     */
+    FakeExplanation addFakeExplanationToStatement(String content, Statement statement, User user) {
+        Contract.requires(statement.owner == user, USER_MUST_BE_STATEMENT_OWNER)
+        FakeExplanation fakeExplanation = new FakeExplanation(
+                author: user,
+                statement: statement,
+                content: content
+        )
+        fakeExplanation.save()
+        fakeExplanation
     }
 
     private def updateInteractions(Sequence sequence) {
@@ -198,5 +216,7 @@ class SequenceService {
             }
         }
     }
+
+    private static final String USER_MUST_BE_STATEMENT_OWNER = "user must be the statement owner"
 
 }

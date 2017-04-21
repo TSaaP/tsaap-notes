@@ -30,5 +30,47 @@
             </column>
         </addColumn>
     </changeSet>
+    
+    <changeSet id="2" author="fsil">
+        <comment>Add fake explanation table</comment>
+        <createTable tableName="fake_explanation">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_created" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_updated" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="author_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="statement_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="corresponding_item" type="INT"/>
+        </createTable>
+        <createIndex tableName="fake_explanation" indexName="idx_fake_explanation_author_id">
+            <column name="author_id"></column>
+        </createIndex>
+        <createIndex tableName="fake_explanation" indexName="idx_fake_explanation_statement_id">
+            <column name="statement_id"></column>
+        </createIndex>
+        <addForeignKeyConstraint baseTableName="fake_explanation" baseColumnNames="author_id"
+                                 constraintName="fk_fake_explanation_author"
+                                 referencedTableName="user"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="fake_explanation" baseColumnNames="statement_id"
+                                 constraintName="fk_fake_explanation_statement"
+                                 referencedTableName="statement"
+                                 referencedColumnNames="id"/>
+    </changeSet>
 
 </databaseChangeLog>

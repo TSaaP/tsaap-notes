@@ -19,10 +19,11 @@
                 <div style="margin-top: 1em" v-for="(fakeExplanation,index) in fakeExplanationList">
                     <label><g:message code="statement.fakeExplanation.label"/> {{ index + 1 }}</label>
                     <button class="btn btn-default btn-xs pull-right"
-                            id="removeFakeExplanationButton" type="button" v-on:click="removeFakeExplanation(index)"><span
+                            id="removeFakeExplanationButton" type="button"
+                            v-on:click="removeFakeExplanation(index)"><span
                             class="glyphicon glyphicon-remove"></span>
                     </button>
-                    <textarea v-bind:name="'fakeExplanation_'+index" v-bind:id="'fakeExplanation_'+index"
+                    <textarea v-bind:name="'fakeExplanations['+index+']'" v-bind:id="'fakeExplanations['+index+']'"
                               v-model="fakeExplanation.data"></textarea>
                 </div>
 
@@ -51,25 +52,65 @@
     var explanationApp = new Vue({
         el: '#explanationApp',
         data: {
-            fakeExplanationList: []
+            fakeExplanationList: [],
+            ckeditorInstances: []
         },
 
+        created: function() {
+            this.$http.get("/tsaap-notes/sequence/findAllFakeExplanation/${statementInstance.id}").then(response => {
+                    this.fakeExplanationList = response.body
+            }, response => {
+                alert('An error occured contacting the server: '+response.body);
+            });
+        },
+
+
         updated: function () {
-            if (this.fakeExplanationList.length > 0) {
-                CKEDITOR.replace('fakeExplanation_' + (this.fakeExplanationList.length - 1), {
-                    customConfig: '/tsaap-notes/ckeditor/config.js',
-                    height: 100
-                });
-            }
+            this.initializeCKEditors();
+            this.synchroniseModelAndCkeditorData();
+            this.destroyUnusedCkeditors();
         },
 
         methods: {
+
             addFakeExplanation: function () {
                 this.fakeExplanationList.push({data: 'Type a fake explanation here...'});
             },
+
             removeFakeExplanation: function(index) {
                 this.fakeExplanationList.splice(index,1);
+            },
+
+            initializeCKEditors: function() {
+                for(var i=this.ckeditorInstances.length ; i < this.fakeExplanationList.length ; i++) {
+                    var currentInstance = CKEDITOR.replace('fakeExplanations[' + i +']', {
+                        customConfig: '/tsaap-notes/ckeditor/config.js',
+                        height: 100
+                    });
+                    this.ckeditorInstances.push(currentInstance);
+                }
+            },
+
+            destroyUnusedCkeditors: function() {
+                for(var i=this.fakeExplanationList.length ; i < this.ckeditorInstances.length ; i++) {
+                    var currentInstance = this.ckeditorInstances[i];
+                    try {
+                        currentInstance.destroy(true);
+                    } catch (e) {}
+                }
+                var nbOfNotUsedCkeditor = this.ckeditorInstances.length - this.fakeExplanationList.length;
+                if (nbOfNotUsedCkeditor > 0) {
+                    this.ckeditorInstances.splice(this.fakeExplanationList.length,nbOfNotUsedCkeditor);
+                }
+            },
+
+            synchroniseModelAndCkeditorData: function() {
+                for (var i= 0 ; i < this.fakeExplanationList.length ; i++) {
+                        if (this.fakeExplanationList[i] !== this.ckeditorInstances[i].getData()) {
+                            this.ckeditorInstances[i].setData(this.fakeExplanationList[i])
+                        }
+                 }
             }
         }
-    })
+    });
 </r:script>

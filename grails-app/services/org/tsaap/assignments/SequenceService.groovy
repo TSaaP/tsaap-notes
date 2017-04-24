@@ -176,6 +176,43 @@ class SequenceService {
         fakeExplanation
     }
 
+    /**
+     * Update fake explanations of the given statement
+     * @param fakeExplanations the list of fake explanations to update
+     * @param statement the given statement
+     * @param user the user performing the operation
+     */
+    def updateFakeExplanationListToStatement(List<String> contents, Statement statement, User user) {
+        Contract.requires(statement.owner == user, USER_MUST_BE_STATEMENT_OWNER)
+        removeAllFakeExplanationFromStatement(statement)
+        contents.each {
+            def fe = addFakeExplanationToStatement(it, statement,user)
+            if (fe.hasErrors()) {
+                log.error(fe.errors)
+            }
+        }
+    }
+
+    private void removeAllFakeExplanationFromStatement(Statement statement) {
+        def query = FakeExplanation.where {
+            statement == statement
+        }
+        query.deleteAll()
+    }
+
+    /**
+     * Find all fake explanations for the given statement
+     * @param statement the statement
+     * @param user the user performing the operation
+     * @return the list of fake explanations
+     */
+    List<FakeExplanation> findAllFakeExplanationsForStatement(Statement statement, User user) {
+        Contract.requires(statement.owner == user, USER_MUST_BE_STATEMENT_OWNER)
+        FakeExplanation.findAllByStatement(statement)
+    }
+
+
+
     private def updateInteractions(Sequence sequence) {
         sequence.interactions.eachWithIndex { def interaction, int i ->
             interaction.save(failOnError: true)
@@ -218,5 +255,6 @@ class SequenceService {
     }
 
     private static final String USER_MUST_BE_STATEMENT_OWNER = "user must be the statement owner"
+
 
 }

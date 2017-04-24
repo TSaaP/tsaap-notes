@@ -44,6 +44,9 @@ class SequenceController {
             return
         }
 
+        List<String> fakeExplanationContents = getFakeExplanationContents(params)
+        sequenceService.updateFakeExplanationListToStatement(fakeExplanationContents, statementInstance, user)
+
         attachFileIfAny(statementInstance, request)
 
         flash.message = message(code: 'sequence.updated.message',
@@ -67,12 +70,15 @@ class SequenceController {
         }
         User user = springSecurityService.currentUser
         Statement statementInstance = getStatementInstanceToUpdate(sequenceInstance, params)
-        sequenceService.saveOrUpdateStatement(statementInstance,sequenceInstance)
+        sequenceService.saveOrUpdateStatement(statementInstance, sequenceInstance)
 
         if (sequenceInstance.hasErrors()) {
             respond sequenceInstance, view: '/assignment/sequence/edit_sequence'
             return
         }
+
+        List<String> fakeExplanationContents = getFakeExplanationContents(params)
+        sequenceService.updateFakeExplanationListToStatement(fakeExplanationContents, statementInstance, user)
 
         attachFileIfAny(statementInstance, request)
 
@@ -152,6 +158,23 @@ class SequenceController {
        style="margin-top: 5px"/>"""
     }
 
+
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def findAllFakeExplanation(Statement statementInstance) {
+        if (statementInstance == null) {
+            notFound()
+            return
+        }
+        def user = springSecurityService.currentUser
+        List<FakeExplanation> explanations = sequenceService.findAllFakeExplanationsForStatement(statementInstance, user)
+        render(contentType: "application/json") {
+            for (e in explanations) {
+                element data: e.content
+            }
+        }
+    }
+
+
     protected void notFound() {
         flash.message = message(code: 'default.not.found.message',
                 args: [message(code: 'assignment.label', default: 'Assignment'), params.id])
@@ -160,86 +183,91 @@ class SequenceController {
 
     private Statement getStatementInstanceToUpdate(Sequence sequenceInstance, def params) {
         Statement statementInstance = sequenceInstance.statement
+        statementInstance.choiceSpecification = getChoiceSpecification(params, sequenceInstance)?.jsonString
+        populateStatementFromParams(params, statementInstance)
+    }
+
+    private Statement getStatementInstanceToSave(User owner, def params) {
+        Statement statementInstance = new Statement(owner: owner)
+        statementInstance.choiceSpecification = getChoiceSpecification(params)?.jsonString
+        populateStatementFromParams(params, statementInstance)
+    }
+
+    private Statement populateStatementFromParams(params, Statement statementInstance) {
         statementInstance.title = params.title
         statementInstance.content = markupSanitizerService.sanitize(params.content)?.cleanString
         statementInstance.expectedExplanation = markupSanitizerService.sanitize(params.expectedExplanation)?.cleanString
         statementInstance.questionType = getQuestionType(params)
-        statementInstance.choiceSpecification = getChoiceSpecification(params, sequenceInstance)?.jsonString
-
         statementInstance
     }
 
-    private Statement getStatementInstanceToSave(User owner, def params) {
-        Statement statementInstance = new Statement(title: params.title)
-        statementInstance.content = markupSanitizerService.sanitize(params.content)?.cleanString
-        statementInstance.expectedExplanation = markupSanitizerService.sanitize(params.expectedExplanation)?.cleanString
-        statementInstance.owner = owner
-        statementInstance.questionType = getQuestionType(params)
-        statementInstance.choiceSpecification = getChoiceSpecification(params)?.jsonString
-
-        statementInstance
+    private List<String> getFakeExplanationContents(params) {
+        def wrapper = new FakeExplanationContentsWrapper()
+        bindData(wrapper, params)
+        wrapper.fakeExplanations
     }
 
-    private QuestionType getQuestionType(def params)  {
-      boolean hasChoices = params.hasChoices.toBoolean()
-      QuestionType questionType
 
-      if (hasChoices) {
-        if (params.choiceInteractionType == ChoiceInteractionType.MULTIPLE.name()) {
-          questionType = QuestionType.MultipleChoice
+    private QuestionType getQuestionType(def params) {
+        boolean hasChoices = params.hasChoices.toBoolean()
+        QuestionType questionType
+
+        if (hasChoices) {
+            if (params.choiceInteractionType == ChoiceInteractionType.MULTIPLE.name()) {
+                questionType = QuestionType.MultipleChoice
+            } else {
+                questionType = QuestionType.ExclusiveChoice
+            }
         } else {
-          questionType = QuestionType.ExclusiveChoice
+            questionType = QuestionType.OpenEnded
         }
-      } else {
-        questionType = QuestionType.OpenEnded
-      }
 
-      questionType
+        questionType
     }
 
     private ChoiceSpecification getChoiceSpecification(def params, Sequence sequence = null) {
-      ChoiceSpecification choiceSpecification =  sequence?.statement?.choiceSpecificationObject ?: new ChoiceSpecification()
-      boolean hasChoices = params.hasChoices.toBoolean()
+        ChoiceSpecification choiceSpecification = sequence?.statement?.choiceSpecificationObject ?: new ChoiceSpecification()
+        boolean hasChoices = params.hasChoices.toBoolean()
         List<ExplanationChoice> explanationChoiceList = null;
-      if (hasChoices) {
-          choiceSpecification.choiceInteractionType = params.choiceInteractionType
-          choiceSpecification.itemCount = params.itemCount as Integer
-          if (params.choiceInteractionType == ChoiceInteractionType.MULTIPLE.name()) {
-              def expectedChoiceList = params.expectedChoiceList
-              def countExpectedChoice = expectedChoiceList?.size() as Float
-              choiceSpecification.expectedChoiceList = expectedChoiceList.collect {
-                  new ChoiceItemSpecification(it as Integer,
-                      (100 / countExpectedChoice) as Float)
-              }
-          } else {
-              def exclusiveChoice = params.exclusiveChoice as Integer
+        if (hasChoices) {
+            choiceSpecification.choiceInteractionType = params.choiceInteractionType
+            choiceSpecification.itemCount = params.itemCount as Integer
+            if (params.choiceInteractionType == ChoiceInteractionType.MULTIPLE.name()) {
+                def expectedChoiceList = params.expectedChoiceList
+                def countExpectedChoice = expectedChoiceList?.size() as Float
+                choiceSpecification.expectedChoiceList = expectedChoiceList.collect {
+                    new ChoiceItemSpecification(it as Integer,
+                            (100 / countExpectedChoice) as Float)
+                }
+            } else {
+                def exclusiveChoice = params.exclusiveChoice as Integer
 
-              if (exclusiveChoice != null) {
-                  choiceSpecification.expectedChoiceList = [new ChoiceItemSpecification(exclusiveChoice, 100f)]
-              } else {
-                  choiceSpecification.expectedChoiceList = []
-              }
-          }
-          explanationChoiceList = getExplanationChoiceListFromChoiceQuestionType(params)
-      } else {
-          choiceSpecification.choiceInteractionType = QuestionType.OpenEnded.name()
-          explanationChoiceList = getExplanationChoiceListFromOpenEndedQuestionType(params)
-          // when transform multiple or exclusive sequence in openEnded sequence
-          choiceSpecification.specificationProperties.remove("itemCount")
-          choiceSpecification.specificationProperties.remove("expectedChoiceList")
-      }
+                if (exclusiveChoice != null) {
+                    choiceSpecification.expectedChoiceList = [new ChoiceItemSpecification(exclusiveChoice, 100f)]
+                } else {
+                    choiceSpecification.expectedChoiceList = []
+                }
+            }
+            explanationChoiceList = getExplanationChoiceListFromChoiceQuestionType(params)
+        } else {
+            choiceSpecification.choiceInteractionType = QuestionType.OpenEnded.name()
+            explanationChoiceList = getExplanationChoiceListFromOpenEndedQuestionType(params)
+            // when transform multiple or exclusive sequence in openEnded sequence
+            choiceSpecification.specificationProperties.remove("itemCount")
+            choiceSpecification.specificationProperties.remove("expectedChoiceList")
+        }
 
         if (explanationChoiceList.size() > 0) {
             choiceSpecification.explanationChoiceList = explanationChoiceList
         }
 
-      choiceSpecification
+        choiceSpecification
     }
 
-    private List<ExplanationChoice> getExplanationChoiceListFromChoiceQuestionType (def params) {
+    private List<ExplanationChoice> getExplanationChoiceListFromChoiceQuestionType(def params) {
         List<ExplanationChoice> explanationChoiceList = new ArrayList<>();
         if (params.explanations) {
-            params.explanations.eachWithIndex{ String explanation, int index ->
+            params.explanations.eachWithIndex { String explanation, int index ->
                 if (explanation != null && !explanation.trim().isEmpty()) {
                     explanationChoiceList.add(new ExplanationChoice(index + 1, explanation))
                 }
@@ -249,14 +277,14 @@ class SequenceController {
         explanationChoiceList
     }
 
-    private List<ExplanationChoice> getExplanationChoiceListFromOpenEndedQuestionType (def params) {
+    private List<ExplanationChoice> getExplanationChoiceListFromOpenEndedQuestionType(def params) {
         List<ExplanationChoice> explanationChoiceList = new ArrayList<>();
         if (params.openEndedExplanations) {
-            String [] scores = params.scores
-            params.openEndedExplanations.eachWithIndex{ String explanation, int index ->
+            String[] scores = params.scores
+            params.openEndedExplanations.eachWithIndex { String explanation, int index ->
                 if (explanation != null && !explanation.trim().isEmpty()) {
                     if (scores != null && scores.size() > 0) {
-                        Float score = scores[index] != null  && !scores[index].trim().isEmpty() ? Float.parseFloat(scores[index]) : 0
+                        Float score = scores[index] != null && !scores[index].trim().isEmpty() ? Float.parseFloat(scores[index]) : 0
                         explanationChoiceList.add(new ExplanationChoice(index + 1, explanation, score))
                     }
                 }
@@ -266,8 +294,8 @@ class SequenceController {
     }
 
     private ResponseSubmissionSpecification getResponseSubmissionSpecificationToSaveOrUpdate(GrailsParameterMap params, Sequence sequence = null) {
-      ResponseSubmissionSpecification subSpec = sequence?.responseSubmissionSpecification ?: new ResponseSubmissionSpecification()
-      subSpec
+        ResponseSubmissionSpecification subSpec = sequence?.responseSubmissionSpecification ?: new ResponseSubmissionSpecification()
+        subSpec
     }
 
     private void attachFileIfAny(Statement statementInstance, def request) {
@@ -384,4 +412,8 @@ class SequenceController {
         null
     }
 
+}
+
+class FakeExplanationContentsWrapper {
+    List<String> fakeExplanations = []
 }

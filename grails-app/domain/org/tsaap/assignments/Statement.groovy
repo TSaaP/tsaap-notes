@@ -30,37 +30,59 @@ class Statement {
         expectedExplanation nullable: true
     }
 
-    static transients = ['choiceSpecificationObject']
+    static transients = ['choiceSpecificationObject', 'fakeExplanations']
 
+    /**
+     * Get the list of fake explanations for this statement
+     * @return the list of fake explanations
+     */
+    List<FakeExplanation> getFakeExplanations() {
+        FakeExplanation.findAllByStatement(this)
+    }
 
     /**
      * Get the choice specification object
      * @return the choice specification
      */
     ChoiceSpecification getChoiceSpecificationObject() {
-      if (choiceSpecification) {
-          new ChoiceSpecification(choiceSpecification);
-      } else {
-          null
-      }
+        if (choiceSpecification) {
+            new ChoiceSpecification(choiceSpecification);
+        } else {
+            null
+        }
     }
 
-    boolean hasChoices () {
+    /**
+     *
+     * @return true if statement describes a choice question
+     */
+    boolean hasChoices() {
         questionType == QuestionType.ExclusiveChoice || questionType == QuestionType.MultipleChoice
     }
 
-    boolean isOpenEnded () {
+    /**
+     *
+     * @return true if statement describes an open-ended question
+     */
+    boolean isOpenEnded() {
         questionType == QuestionType.OpenEnded
     }
 
-    boolean isMultipleChoice () {
+    /**
+     *
+     * @return true if statement describes a multiple choice question
+     */
+    boolean isMultipleChoice() {
         questionType == QuestionType.MultipleChoice
     }
 
-    boolean isExclusiveChoice () {
+    /**
+     *
+     * @return true if statement describes an exclusive choice question
+     */
+    boolean isExclusiveChoice() {
         questionType == QuestionType.ExclusiveChoice
     }
-
 
     /**
      * Get the attachment
@@ -81,5 +103,5 @@ public enum QuestionType {
     Undefined,
     ExclusiveChoice,
     MultipleChoice,
-    OpenEnded;
+    OpenEnded
 }

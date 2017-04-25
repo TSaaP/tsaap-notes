@@ -161,4 +161,19 @@ class SequenceServiceIntegrationSpec extends Specification {
         interaction == bootstrapTestService.responseSubmissionInteraction
 
     }
+
+    void "test adding a fake explanation"() {
+        given: "a statement"
+        Statement statement = bootstrapTestService.statement1
+
+        when: "adding a fake explanation to the statement"
+        FakeExplanation fakeExplanation = sequenceService.addFakeExplanationToStatement("a fake explanation", statement, statement.owner)
+
+        then: "the fake explanation has no errors"
+        !fakeExplanation.hasErrors()
+
+        and:"the statement has one fake explanation"
+        statement.fakeExplanations[0] == fakeExplanation
+
+    }
 }

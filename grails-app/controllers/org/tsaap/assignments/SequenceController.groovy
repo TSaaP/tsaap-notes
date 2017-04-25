@@ -44,8 +44,8 @@ class SequenceController {
             return
         }
 
-        List<String> fakeExplanationContents = getFakeExplanationContents(params)
-        sequenceService.updateFakeExplanationListToStatement(fakeExplanationContents, statementInstance, user)
+        List<FakeExplanationDto> fakeExplanationDtos = getFakeExplanationDtos(params)
+        sequenceService.updateFakeExplanationListToStatement(fakeExplanationDtos, statementInstance, user)
 
         attachFileIfAny(statementInstance, request)
 
@@ -77,8 +77,8 @@ class SequenceController {
             return
         }
 
-        List<String> fakeExplanationContents = getFakeExplanationContents(params)
-        sequenceService.updateFakeExplanationListToStatement(fakeExplanationContents, statementInstance, user)
+        List<FakeExplanationDto> fakeExplanationDtos = getFakeExplanationDtos(params)
+        sequenceService.updateFakeExplanationListToStatement(fakeExplanationDtos, statementInstance, user)
 
         attachFileIfAny(statementInstance, request)
 
@@ -168,8 +168,12 @@ class SequenceController {
         def user = springSecurityService.currentUser
         List<FakeExplanation> explanations = sequenceService.findAllFakeExplanationsForStatement(statementInstance, user)
         render(contentType: "application/json") {
-            for (e in explanations) {
-                element data: e.content
+            if (explanations) {
+                for (e in explanations) {
+                    element content: e.content, correspondingItem: e.correspondingItem
+                }
+            } else {
+                []
             }
         }
     }
@@ -201,8 +205,8 @@ class SequenceController {
         statementInstance
     }
 
-    private List<String> getFakeExplanationContents(params) {
-        def wrapper = new FakeExplanationContentsWrapper()
+    private List<FakeExplanationDto> getFakeExplanationDtos(params) {
+        def wrapper = new FakeExplanationDtosWrapper()
         bindData(wrapper, params)
         wrapper.fakeExplanations
     }
@@ -414,6 +418,7 @@ class SequenceController {
 
 }
 
-class FakeExplanationContentsWrapper {
-    List<String> fakeExplanations = []
+class FakeExplanationDtosWrapper {
+    List<FakeExplanationDto> fakeExplanations = []
 }
+

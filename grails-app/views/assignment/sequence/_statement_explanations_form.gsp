@@ -1,4 +1,4 @@
-<div class="panel panel-default">
+<div class="panel panel-default" xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
     <div class="panel-heading">
         <a data-toggle="collapse"
            href="#explanationsBloc">
@@ -17,19 +17,31 @@
 
             <div id="explanationApp">
                 <div style="margin-top: 1em" v-for="(fakeExplanation,index) in fakeExplanationList">
-                    <label><g:message code="statement.fakeExplanation.label"/> {{ index + 1 }}</label>
                     <button class="btn btn-default btn-xs pull-right"
                             id="removeFakeExplanationButton" type="button"
                             v-on:click="removeFakeExplanation(index)"><span
                             class="glyphicon glyphicon-remove"></span>
                     </button>
-                    <textarea v-bind:name="'fakeExplanations['+index+']'" v-bind:id="'fakeExplanations['+index+']'"
-                              v-model="fakeExplanation.data"></textarea>
+                    <template v-if="isOpenEnded">
+                        <label><g:message code="statement.fakeExplanation.label"/> {{ index + 1 }}</label>
+                    </template>
+                    <template v-else="isOpenEnded">
+                        <label><g:message code="statement.fakeExplanation.correspondingItem"/></label>
+                        <select v-model="fakeExplanation.correspondingItem"
+                                v-bind:name="'fakeExplanations['+index+'].correspondingItem'">
+                            <option v-for="choiceIndex in itemCount" v-bind:value="choiceIndex">
+                                {{ choiceIndex }}
+                            </option>
+                        </select>
+                    </template>
+                    <vue-ckeditor v-bind:name="'fakeExplanations['+index+'].content'"
+                                  v-bind:id="'fakeExplanations['+index+']'"
+                                  v-model="fakeExplanation.content" v-bind:config="ckeditorConfig"></vue-ckeditor>
                 </div>
 
                 <div id="fakeExplanationsBloc" style="margin-top: 1em; margin-bottom: 3em">
                     <button class="btn btn-default pull-right"
-                            id="addFakeExplanationButton" type="button" v-on:click="addFakeExplanation"><span
+                            id="addFakeExplanationButton" type="button" v-on:click="addFakeExplanation()"><span
                             class="glyphicon glyphicon-plus"></span> <g:message
                             code="statement.addFakeExplanation.label"/>
                     </button>
@@ -49,67 +61,75 @@
         }
     }
 
+    Vue.component('vue-ckeditor', {
+        template: '<textarea v-bind:id="id" v-bind:value="value"></textarea>',
+        props: {
+            value: {
+                type: String
+            },
+            id: {
+                type: String
+            },
+            config: {
+                type: Object,
+                default: {}
+            }
+        },
+        computed: {
+            instance: function() {
+                return CKEDITOR.instances[this.id]
+            }
+         },
+         beforeUpdate: function() {
+            if (this.value !== this.instance.getData()) {
+                this.instance.setData(this.value)
+            }
+        },
+        mounted: function() {
+            CKEDITOR.replace(this.id, this.config)
+        },
+        beforeDestroy: function() {
+            try {
+                this.instance.destroy();
+            } catch(e) {}
+        }
+    });
+
     var explanationApp = new Vue({
         el: '#explanationApp',
         data: {
             fakeExplanationList: [],
-            ckeditorInstances: []
+            statementId: "${statementInstance?.id}",
+            itemCount: parseInt($('#itemCount').val()),
+            isOpenEnded: $('#radioOpenEnded:checked').length > 0,
+            ckeditorConfig: {
+                customConfig: '/tsaap-notes/ckeditor/config.js',
+                height: 100
+            }
         },
 
         created: function() {
-            this.$http.get("/tsaap-notes/sequence/findAllFakeExplanation/${statementInstance.id}").then(response => {
+            if (this.statementId) {
+                this.$http.get('/tsaap-notes/sequence/findAllFakeExplanation/'+this.statementId).then(function(response)  {
                     this.fakeExplanationList = response.body
-            }, response => {
-                alert('An error occured contacting the server: '+response.body);
-            });
+                }, function(response) {
+                    alert('An error occured contacting the server: '+response.body);
+                });
+            }
         },
 
-
-        updated: function () {
-            this.initializeCKEditors();
-            this.synchroniseModelAndCkeditorData();
-            this.destroyUnusedCkeditors();
+        beforeUpdate: function() {
+          this.isOpenEnded = $('#radioOpenEnded:checked').length > 0 ;
         },
 
         methods: {
 
-            addFakeExplanation: function () {
-                this.fakeExplanationList.push({data: 'Type a fake explanation here...'});
+            addFakeExplanation: function(index) {
+                this.fakeExplanationList.push({content: 'Type a fake explanation here...', correspondingItem: 1});
             },
 
             removeFakeExplanation: function(index) {
                 this.fakeExplanationList.splice(index,1);
-            },
-
-            initializeCKEditors: function() {
-                for(var i=this.ckeditorInstances.length ; i < this.fakeExplanationList.length ; i++) {
-                    var currentInstance = CKEDITOR.replace('fakeExplanations[' + i +']', {
-                        customConfig: '/tsaap-notes/ckeditor/config.js',
-                        height: 100
-                    });
-                    this.ckeditorInstances.push(currentInstance);
-                }
-            },
-
-            destroyUnusedCkeditors: function() {
-                for(var i=this.fakeExplanationList.length ; i < this.ckeditorInstances.length ; i++) {
-                    var currentInstance = this.ckeditorInstances[i];
-                    try {
-                        currentInstance.destroy(true);
-                    } catch (e) {}
-                }
-                var nbOfNotUsedCkeditor = this.ckeditorInstances.length - this.fakeExplanationList.length;
-                if (nbOfNotUsedCkeditor > 0) {
-                    this.ckeditorInstances.splice(this.fakeExplanationList.length,nbOfNotUsedCkeditor);
-                }
-            },
-
-            synchroniseModelAndCkeditorData: function() {
-                for (var i= 0 ; i < this.fakeExplanationList.length ; i++) {
-                        if (this.fakeExplanationList[i] !== this.ckeditorInstances[i].getData()) {
-                            this.ckeditorInstances[i].setData(this.fakeExplanationList[i])
-                        }
-                 }
             }
         }
     });

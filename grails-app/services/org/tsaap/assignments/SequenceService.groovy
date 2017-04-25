@@ -165,12 +165,13 @@ class SequenceService {
      * @param user the user performing the operation
      * @return fakeExplanation the created fake explanation
      */
-    FakeExplanation addFakeExplanationToStatement(String content, Statement statement, User user) {
+    FakeExplanation addFakeExplanationToStatement(String content, Statement statement, User user, Integer correspondingItem = null) {
         Contract.requires(statement.owner == user, USER_MUST_BE_STATEMENT_OWNER)
         FakeExplanation fakeExplanation = new FakeExplanation(
                 author: user,
                 statement: statement,
-                content: content
+                content: content,
+                correspondingItem: correspondingItem
         )
         fakeExplanation.save()
         fakeExplanation
@@ -182,11 +183,11 @@ class SequenceService {
      * @param statement the given statement
      * @param user the user performing the operation
      */
-    def updateFakeExplanationListToStatement(List<String> contents, Statement statement, User user) {
+    def updateFakeExplanationListToStatement(List<FakeExplanationDto> fakeExplanationDtos, Statement statement, User user) {
         Contract.requires(statement.owner == user, USER_MUST_BE_STATEMENT_OWNER)
         removeAllFakeExplanationFromStatement(statement)
-        contents.each {
-            def fe = addFakeExplanationToStatement(it, statement,user)
+        fakeExplanationDtos.each {
+            def fe = addFakeExplanationToStatement(it.content, statement,user, it.correspondingItem)
             if (fe.hasErrors()) {
                 log.error(fe.errors)
             }
@@ -216,8 +217,6 @@ class SequenceService {
     private def updateInteractions(Sequence sequence) {
         sequence.interactions.eachWithIndex { def interaction, int i ->
             interaction.save(failOnError: true)
-            // interaction.schedule.save()
-            //processInteractionScheduleError(interaction,i,sequence)
         }
     }
 
@@ -225,9 +224,6 @@ class SequenceService {
         interactions.eachWithIndex { def interaction, int i ->
             interaction.owner = user
             interaction.sequence = sequence
-            // interaction.schedule.interaction = interaction
-            //interaction.schedule.validate()
-            // processInteractionScheduleError(interaction, i, sequence)
         }
     }
 
@@ -249,7 +245,6 @@ class SequenceService {
         if (!sequence.hasErrors()) {
             interactions.each { def interaction ->
                 interaction.save(failOnError: true)
-                // interaction.schedule.save()
             }
         }
     }

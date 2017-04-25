@@ -53,7 +53,7 @@
 
         <div class="checkbox">
             <label>
-                <input type="radio" value="false" id="radioOpenEnded"
+                <input type="radio" id="radioOpenEnded"
                        name="hasChoices" ${sequenceInstance?.statement?.isOpenEnded() ? 'checked' : ''}> <g:message
                     code="sequence.interaction.openEnded"/>
             </label>

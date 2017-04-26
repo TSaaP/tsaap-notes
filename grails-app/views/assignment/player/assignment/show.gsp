@@ -86,47 +86,50 @@
     </ul>
 </div>
 <script lang="text/javascript">
-    $('input[name=studentsProvideExplanation]').on('change', function () {
-        var currentInput = $('#' + this.id);
-        var sequenceId = this.id.split("_")[1];
-        var studentsProvideConfidenceDegree =  $('#' + 'studentsProvideConfidenceDegree_' + sequenceId);
-        var phaseConfrontationPanel =  $('#' + 'phaseConfrontation_' + sequenceId);
-        if (currentInput.is(':checked')) {
-            this.value = true;
-            studentsProvideConfidenceDegree.prop('value', true);
-            studentsProvideConfidenceDegree.prop( 'checked', true );
-            studentsProvideConfidenceDegree.prop( 'disabled', true );
-            phaseConfrontationPanel.css( 'display', 'block' );
+
+    function manageConfigurationChange(sequenceId, sourceEvent) {
+        var phaseConfrontationPanel =  $('#phaseConfrontation_' + sequenceId);
+        if (sourceEvent.is(':checked')) {
+            sourceEvent.val(true);
+            phaseConfrontationPanel.removeClass('hidden');
         } else {
-            this.value = false;
-            studentsProvideConfidenceDegree.prop('value', false);
-            studentsProvideConfidenceDegree.prop( 'checked', false );
-            studentsProvideConfidenceDegree.prop( 'disabled', false );
-            phaseConfrontationPanel.css( 'display', 'none' );
+            sourceEvent.val(false);
+            phaseConfrontationPanel.addClass('hidden');
         }
+    }
+
+    function manageExecutionContext(sequenceId, sourceEvent) {
+        var studentsProvideExplanation =  $('#studentsProvideExplanation_' + sequenceId);
+        var configurationPanel = $('#configuration_' + sequenceId);
+        switch(sourceEvent.val()) {
+            case 'FaceToFace':
+                configurationPanel.removeClass('hidden')
+                studentsProvideExplanation.prop("checked", false);
+                manageConfigurationChange(sequenceId,studentsProvideExplanation);
+                break;
+            default:
+                studentsProvideExplanation.prop("checked", true);
+                configurationPanel.addClass('hidden');
+                break;
+        }
+
+    }
+
+    $('input[name=studentsProvideExplanation]').on('change', function () {
+        var sequenceId = this.id.split("_")[1];
+        manageConfigurationChange(sequenceId, $(this))
     });
 
-    $('input[name=studentsProvideConfidenceDegree]').on('change', function () {
-        this.value = this.checked;
+    $("input[type=radio][name*='executionContext_']").on('change', function() {
+        var sequenceId = this.name.split("_")[1];
+        manageExecutionContext(sequenceId, $(this))
     });
 
-    $('input[name=asynchronousProcess]').on('change', function () {
-        this.value = this.checked;
-    });
 
     function remoteLinkSuccess (id) {
         $('#' + 'interactionSpec_' + id).css('display', 'none')
     }
 
-    function switchBtnText(checkbox, sequenceId) {
-       if (checkbox.checked)  {
-           $('#synchronous_' + sequenceId).css('display', 'none');
-           $('#asynchronous_' + sequenceId).css('display', 'inline-block');
-       }  else {
-           $('#asynchronous_' + sequenceId).css('display', 'none');
-           $('#synchronous_' + sequenceId).css('display', 'inline-block');
-       }
-    }
 </script>
 </body>
 </html>

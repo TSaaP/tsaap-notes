@@ -225,13 +225,12 @@ class Interaction {
      */
     String stateForLearner(User user) {
         String stateForLearner = this.state
-        if (sequence.asynchronousProcess) {
+        if (sequence.executionIsAsynchronous()) {
             def li =  LearnerInteraction.findByLearnerAndInteraction(user,this)
             stateForLearner = li ? li.state : this.state
         }
         stateForLearner
     }
-
 
     ResponseRecommendationService responseRecommendationService
 

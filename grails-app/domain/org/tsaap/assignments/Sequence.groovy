@@ -16,7 +16,7 @@ class Sequence {
     Assignment assignment
     Statement statement
     Boolean phasesAreScheduled = false
-    Boolean asynchronousProcess = false
+    String executionContext = ExecutionContextType.FaceToFace.name()
 
     Interaction activeInteraction
     String state = StateType.beforeStart.name()
@@ -24,6 +24,7 @@ class Sequence {
     static constraints = {
         activeInteraction nullable: true
         state inList: StateType.values()*.name()
+        executionContext inList: ExecutionContextType.values()*.name()
     }
 
     static transients = ['interactions', 'content', 'title',
@@ -56,15 +57,6 @@ class Sequence {
             }
         }
         result
-    }
-
-    /**
-     * get the interaction of the given type
-     * @param interactionType the interaction type
-     * @return the interaction
-     */
-    Interaction getInteractionOfType(InteractionType interactionType) {
-        this."get${interactionType.name()}Interaction"()
     }
 
     /**
@@ -218,6 +210,34 @@ class Sequence {
     }
 
     /**
+     * Indicate if sequence execution is asynchronous
+     * @return true if sequence execution is asynchronous
+     */
+    boolean executionIsAsynchronous() {
+        executionIsBlended() || executionIsDistance()
+    }
+
+    /**
+     * Indicate if sequence execution is distance
+     * @return true if sequence execution is distance
+     */
+    boolean executionIsDistance() {
+        executionContext == ExecutionContextType.Distance.name()
+    }
+
+    /**
+     * Indicate if sequence execution is blended
+     * @return true if sequence execution is blended
+     */
+    boolean executionIsBlended() {
+        executionContext == ExecutionContextType.Blended.name()
+    }
+
+    boolean executionIsFaceToFace() {
+        executionContext == ExecutionContextType.FaceToFace.name()
+    }
+
+    /**
      * Find all recommended responses for user
      * @param user the user
      * @return the response list
@@ -316,11 +336,16 @@ class Sequence {
         res
     }
 
-
 }
 
 enum StateType {
     beforeStart,
     show,
     afterStop
+}
+
+enum ExecutionContextType {
+    FaceToFace,
+    Distance,
+    Blended
 }

@@ -417,7 +417,7 @@ class InteractionServiceIntegrationSpec extends Specification {
 
         and: "the sequence is set to be used in asynchronous process"
         Sequence sequence = assignment.sequences[0]
-        sequence.asynchronousProcess = true
+        sequence.executionContext = ExecutionContextType.Blended.name()
 
         and:"the response submission interaction"
         Interaction interaction = sequence.responseSubmissionInteraction

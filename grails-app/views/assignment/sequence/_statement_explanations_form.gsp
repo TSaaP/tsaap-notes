@@ -120,6 +120,7 @@
 
         beforeUpdate: function() {
           this.isOpenEnded = $('#radioOpenEnded:checked').length > 0 ;
+          this.itemCount = parseInt($('#itemCount').val());
         },
 
         methods: {

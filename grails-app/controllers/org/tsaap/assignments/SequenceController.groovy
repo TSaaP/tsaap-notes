@@ -45,7 +45,7 @@ class SequenceController {
         }
 
         List<FakeExplanationDto> fakeExplanationDtos = getFakeExplanationDtos(params)
-        sequenceService.updateFakeExplanationListToStatement(fakeExplanationDtos, statementInstance, user)
+        sequenceService.updateFakeExplanationListToStatement(fakeExplanationDtos, statementInstance, owner)
 
         attachFileIfAny(statementInstance, request)
 

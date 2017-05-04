@@ -232,7 +232,7 @@ class SequenceController {
     private ChoiceSpecification getChoiceSpecification(def params, Sequence sequence = null) {
         ChoiceSpecification choiceSpecification = sequence?.statement?.choiceSpecificationObject ?: new ChoiceSpecification()
         boolean hasChoices = params.hasChoices.toBoolean()
-        List<ExplanationChoice> explanationChoiceList = null;
+        List<ExplanationChoice> explanationChoiceList
         if (hasChoices) {
             choiceSpecification.choiceInteractionType = params.choiceInteractionType
             choiceSpecification.itemCount = params.itemCount as Integer
@@ -303,29 +303,6 @@ class SequenceController {
         if (file && !file.isEmpty()) {
             attachementService.addFileToStatement(file, statementInstance)
         }
-    }
-
-
-
-    private Schedule getNewSchedule(def params, int indexInteraction) {
-        Date startDate = getStartDate(params, "startDate${indexInteraction}")
-        Date endDate = getEndDate(params, "endDate${indexInteraction}")
-        def res = new Schedule(startDate: startDate, endDate: endDate)
-        res
-    }
-
-    private Date getStartDate(def params, String paramName) {
-        if (params.("$paramName")) {
-            return new Date().parse(message(code: 'date.startDate.format'), params.("$paramName"))
-        }
-        null
-    }
-
-    private Date getEndDate(def params, String paramName) {
-        if (params.("$paramName")) {
-            return new Date().parse(message(code: 'date.endDate.format'), params.("$paramName"))
-        }
-        null
     }
 
 }

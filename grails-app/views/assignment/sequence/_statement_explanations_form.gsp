@@ -16,27 +16,30 @@
             </div>
 
             <div id="explanationApp">
-                <div style="margin-top: 1em" v-for="(fakeExplanation,index) in fakeExplanationList">
+                <div style="margin-top: 1em" v-for="index in fakeExplanationList.length">
+                    <template v-if="fakeExplationIsNotNull(index-1)">
                     <button class="btn btn-default btn-xs pull-right"
                             id="removeFakeExplanationButton" type="button"
-                            v-on:click="removeFakeExplanation(index)"><span
+                            v-on:click="removeFakeExplanation(index-1)"><span
                             class="glyphicon glyphicon-remove"></span>
                     </button>
                     <template v-if="isOpenEnded">
-                        <label><g:message code="statement.fakeExplanation.label"/> {{ index + 1 }}</label>
+                        <label><g:message code="statement.fakeExplanation.label"/> {{ index }}</label>
                     </template>
                     <template v-else="isOpenEnded">
                         <label><g:message code="statement.fakeExplanation.correspondingItem"/></label>
-                        <select v-model="fakeExplanation.correspondingItem"
-                                v-bind:name="'fakeExplanations['+index+'].correspondingItem'">
+                        <select v-model="fakeExplanationList[index-1].correspondingItem"
+                                v-bind:name="'fakeExplanations['+(index-1)+'].correspondingItem'">
                             <option v-for="choiceIndex in itemCount" v-bind:value="choiceIndex">
                                 {{ choiceIndex }}
                             </option>
                         </select>
                     </template>
-                    <vue-ckeditor v-bind:name="'fakeExplanations['+index+'].content'"
-                                  v-bind:id="'fakeExplanations['+index+']'"
-                                  v-model="fakeExplanation.content" v-bind:config="ckeditorConfig"></vue-ckeditor>
+                    <vue-ckeditor v-bind:name="'fakeExplanations['+(index-1)+'].content'"
+                                  v-model="fakeExplanationList[index-1].content"
+                                  v-bind:config="ckeditorConfig"
+                                    v-on:shouldPreventInfiniteLoop="shouldPreventInfiniteLoop()"></vue-ckeditor>
+                    </template>
                 </div>
 
                 <div id="fakeExplanationsBloc" style="margin-top: 1em; margin-bottom: 3em">
@@ -61,6 +64,8 @@
         }
     }
 
+    var editorCounter = 0;
+
     Vue.component('vue-ckeditor', {
         template: '<textarea v-bind:id="id" v-bind:value="value"></textarea>',
         props: {
@@ -68,7 +73,8 @@
                 type: String
             },
             id: {
-                type: String
+                type: String,
+                default: () => 'editor-' + (++editorCounter)
             },
             config: {
                 type: Object,
@@ -77,22 +83,31 @@
         },
         computed: {
             instance: function() {
-                return CKEDITOR.instances[this.id]
+                return CKEDITOR.instances[this.id];
             }
          },
          beforeUpdate: function() {
             if (this.value !== this.instance.getData()) {
-                this.instance.setData(this.value)
+              this.instance.setData(this.value);
             }
         },
         mounted: function() {
-            CKEDITOR.replace(this.id, this.config)
+            CKEDITOR.replace(this.id, this.config);
+            this.instance.on('change', () => {
+                let html = this.instance.getData();
+                if (html !== this.value) {
+                    this.$emit('input', html)
+                }
+            });
         },
         beforeDestroy: function() {
             try {
                 this.instance.destroy();
             } catch(e) {}
-        }
+            this.instance = null;
+        },
+
+
     });
 
     var explanationApp = new Vue({
@@ -125,13 +140,18 @@
 
         methods: {
 
-            addFakeExplanation: function(index) {
+            addFakeExplanation: function() {
                 this.fakeExplanationList.push({content: 'Type a fake explanation here...', correspondingItem: 1});
             },
 
             removeFakeExplanation: function(index) {
-                this.fakeExplanationList.splice(index,1);
+                this.fakeExplanationList[index].content = null;
+            },
+
+            fakeExplationIsNotNull: function(index) {
+                return this.fakeExplanationList[index].content !== null
             }
+
         }
     });
 </r:script>

@@ -194,7 +194,11 @@ class SequenceService {
         }
     }
 
-    private void removeAllFakeExplanationFromStatement(Statement statement) {
+    /**
+     * Remove all fake explanations from a given statement
+     * @param statement the statement
+     */
+    void removeAllFakeExplanationFromStatement(Statement statement) {
         def query = FakeExplanation.where {
             statement == statement
         }

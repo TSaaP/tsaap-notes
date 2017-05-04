@@ -121,7 +121,9 @@ class AssignmentService {
             sequence == sequence
         }
         query.deleteAll()
-        sequence.statement.delete(flush: true)
+        def statement = sequence.statement
+        sequenceService.removeAllFakeExplanationFromStatement(statement)
+        statement.delete(flush: true)
         // sequence is deleted by cascade
         assignment.lastUpdated = new Date()
         assignment.save()

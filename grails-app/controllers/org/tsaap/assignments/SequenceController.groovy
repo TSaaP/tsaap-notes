@@ -208,7 +208,7 @@ class SequenceController {
     private List<FakeExplanationDto> getFakeExplanationDtos(params) {
         def wrapper = new FakeExplanationDtosWrapper()
         bindData(wrapper, params)
-        wrapper.fakeExplanations
+        wrapper.fakeExplanations.findAll { it != null }
     }
 
 

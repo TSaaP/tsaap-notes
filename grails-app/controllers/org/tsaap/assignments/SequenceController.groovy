@@ -282,7 +282,7 @@ class SequenceController {
     }
 
     private List<ExplanationChoice> getExplanationChoiceListFromOpenEndedQuestionType(def params) {
-        List<ExplanationChoice> explanationChoiceList = new ArrayList<>();
+        List<ExplanationChoice> explanationChoiceList = new ArrayList<>()
         if (params.openEndedExplanations) {
             String[] scores = params.scores
             params.openEndedExplanations.eachWithIndex { String explanation, int index ->
@@ -297,10 +297,6 @@ class SequenceController {
         explanationChoiceList
     }
 
-    private ResponseSubmissionSpecification getResponseSubmissionSpecificationToSaveOrUpdate(GrailsParameterMap params, Sequence sequence = null) {
-        ResponseSubmissionSpecification subSpec = sequence?.responseSubmissionSpecification ?: new ResponseSubmissionSpecification()
-        subSpec
-    }
 
     private void attachFileIfAny(Statement statementInstance, def request) {
         def file = request.getFile('myFile')
@@ -309,91 +305,7 @@ class SequenceController {
         }
     }
 
-    private EvaluationSpecification getEvaluationSpecificationToSave(ResponseSubmissionSpecification subSpec,
-                                                                     def params) {
-        EvaluationSpecification evalSpec = null
-        evalSpec = new EvaluationSpecification()
-        evalSpec
-    }
 
-    private EvaluationSpecification getEvaluationSpecificationToUpdate(ResponseSubmissionSpecification subSpec, GrailsParameterMap params, Sequence sequence) {
-        EvaluationSpecification evalSpec = sequence?.evaluationSpecification
-        if (subSpec.studentsProvideExplanation) {
-            if (!evalSpec) {
-                evalSpec = new EvaluationSpecification()
-            }
-            evalSpec.responseToEvaluateCount = params.responseToEvaluateCount as Integer ?: 1
-        }
-        evalSpec
-    }
-
-    private List<Interaction> getInteractionsToSave(
-            def params, ResponseSubmissionSpecification subSpec, EvaluationSpecification evalSpec, Assignment assignment) {
-        List<Interaction> interactions
-        def interaction1 = new Interaction(interactionType: InteractionType.ResponseSubmission.name(), rank: 1,
-                specification: subSpec.jsonString,
-                schedule: getNewSchedule(params, 1))
-        interactions = [interaction1]
-        def interaction2 = new Interaction(interactionType: InteractionType.Evaluation.name(), rank: 2,
-                specification: evalSpec.jsonString, schedule: getNewSchedule(params, 2))
-        if (!subSpec.studentsProvideExplanation) {
-            interaction2.enabled = false
-        }
-        interactions.add(interaction2)
-        def interaction3 = new Interaction(interactionType: InteractionType.Read.name(), rank: 3, specification: Interaction.EMPTY_SPECIFICATION,
-                schedule: getNewSchedule(params, 3))
-        interactions.add(interaction3)
-        interactions
-    }
-
-
-    private List<Interaction> getInteractionsToAddAtUpdate(
-            def params, ResponseSubmissionSpecification responseSubmissionSpecification, EvaluationSpecification evaluationSpecification, Sequence sequence) {
-        List<Interaction> interactions = []
-
-        Interaction interaction1 = sequence.responseSubmissionInteraction
-        if (interaction1) {
-            interaction1.specification = responseSubmissionSpecification.jsonString
-            interaction1.enabled = true
-            interaction1.schedule.startDate = getStartDate(params, "startDate1")
-            interaction1.schedule.endDate = getEndDate(params, "endDate1")
-        } else {
-            interaction1 = new Interaction(interactionType: InteractionType.ResponseSubmission.name(), rank: 1,
-                    specification: responseSubmissionSpecification.jsonString,
-                    schedule: getNewSchedule(params, 1))
-            interactions.add(interaction1)
-        }
-
-
-        Interaction interaction2 = sequence.evaluationInteraction
-        if (!responseSubmissionSpecification.studentsProvideExplanation) {
-            if (interaction2) {
-                interaction2.enabled = false
-            }
-        } else if (interaction2) {
-            interaction2.specification = evaluationSpecification.jsonString
-            interaction2.enabled = true
-            interaction2.schedule.startDate = getStartDate(params, "startDate2")
-            interaction2.schedule.endDate = getEndDate(params, "endDate2")
-        } else {
-            interaction2 = new Interaction(interactionType: InteractionType.Evaluation.name(), rank: 2,
-                    specification: evaluationSpecification.jsonString,
-                    schedule: getNewSchedule(params, 2))
-            interactions.add(interaction2)
-        }
-
-        Interaction interaction3 = sequence.readInteraction
-        if (interaction3) {
-            interaction3.schedule.startDate = getStartDate(params, "startDate3")
-            interaction3.schedule.endDate = getEndDate(params, "endDate3")
-        } else {
-            interaction3 = new Interaction(interactionType: InteractionType.Read.name(), rank: 3, specification: Interaction.EMPTY_SPECIFICATION,
-                    schedule: getNewSchedule(params, 3))
-            interactions.add(interaction3)
-        }
-
-        interactions
-    }
 
     private Schedule getNewSchedule(def params, int indexInteraction) {
         Date startDate = getStartDate(params, "startDate${indexInteraction}")

@@ -87,9 +87,15 @@
 </div>
 <script lang="text/javascript">
 
-    function manageConfigurationChange(sequenceId, sourceEvent) {
+    function manageConfigurationChange(sequenceId, questionType, sourceEvent) {
         var phaseConfrontationPanel =  $('#phaseConfrontation_' + sequenceId);
-        if (sourceEvent.is(':checked')) {
+        var phaseFirstSubmission =  $('#phaseFirstSubmission_' + sequenceId);
+        if (questionType == "OpenEnded") {
+            sourceEvent.prop("checked", true);
+            phaseFirstSubmission.addClass("hidden");
+            sourceEvent.val(true);
+            phaseConfrontationPanel.removeClass('hidden');
+        } else if (sourceEvent.is(':checked')) {
             sourceEvent.val(true);
             phaseConfrontationPanel.removeClass('hidden');
         } else {
@@ -98,31 +104,43 @@
         }
     }
 
-    function manageExecutionContext(sequenceId, sourceEvent) {
-        var studentsProvideExplanation =  $('#studentsProvideExplanation_' + sequenceId);
+    function manageExecutionContext(sequenceId, questionType, sourceEvent) {
+        var studentsProvideExplanation =  $('#studentsProvideExplanation_' + sequenceId + '_' + questionType);
         var configurationPanel = $('#configuration_' + sequenceId);
+        var startMessageHolderSync = $('#synchronous_'+sequenceId);
+        var startMessageHolderASync = $('#asynchronous_'+sequenceId);
         switch(sourceEvent.val()) {
             case 'FaceToFace':
                 configurationPanel.removeClass('hidden')
                 studentsProvideExplanation.prop("checked", false);
-                manageConfigurationChange(sequenceId,studentsProvideExplanation);
+                manageConfigurationChange(sequenceId,questionType, studentsProvideExplanation);
+                startMessageHolderASync.addClass("hidden");
+                startMessageHolderSync.removeClass("hidden");
                 break;
             default:
                 studentsProvideExplanation.prop("checked", true);
-                configurationPanel.addClass('hidden');
+                startMessageHolderSync.addClass("hidden");
+                startMessageHolderASync.removeClass("hidden");
+                if (questionType != "OpenEnded") {
+                    configurationPanel.addClass('hidden');
+                }
                 break;
         }
 
     }
 
     $('input[name=studentsProvideExplanation]').on('change', function () {
-        var sequenceId = this.id.split("_")[1];
-        manageConfigurationChange(sequenceId, $(this))
+        var infos =  this.id.split("_")
+        var sequenceId = infos[1];
+        var questionType = infos[2];
+        manageConfigurationChange(sequenceId, questionType, $(this))
     });
 
     $("input[type=radio][name*='executionContext_']").on('change', function() {
-        var sequenceId = this.name.split("_")[1];
-        manageExecutionContext(sequenceId, $(this))
+        var infos = this.name.split("_");
+        var sequenceId = infos[1];
+        var questionType = infos[2];
+        manageExecutionContext(sequenceId, questionType, $(this))
     });
 
 

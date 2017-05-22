@@ -35,11 +35,13 @@ class BootStrap {
                 bootstrapService.inializeDevUsers()
                 bootstrapService.initializeDevContext()
                 bootstrapService.initializeDevContextWithFragment()
+                bootstrapService.inializeElaasticUsers()
             }
             demo {
                 bootstrapService.inializeDevUsers()
                 bootstrapService.initializeDevContext()
                 bootstrapService.initializeDevContextWithFragment()
+                bootstrapService.inializeElaasticUsers()
             }
         }
         // inti config db connection for LTI

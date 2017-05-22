@@ -21,6 +21,7 @@ import org.tsaap.lti.LtiUserException
 class UrlMappings {
 
     static mappings = {
+
         "/$controller/$action?/$id?" {
             constraints {
                 // apply constraints here
@@ -38,5 +39,7 @@ class UrlMappings {
         "404"(view: '/404')
 
         "/ckeditor/config.js"(view: '/staticjs/ckeditorconfig')
+
+
     }
 }

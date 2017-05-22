@@ -43,6 +43,9 @@ class BootstrapService {
     User erik
     User admin
 
+    User elaasticTeacher
+    User elaasticLearner
+
     Context science
     Context football
 
@@ -140,6 +143,22 @@ class BootstrapService {
         if (!note) {
             note = noteService.addStandardNote(fsil, "goal12", football, goal, null)
         }
+    }
+
+    def inializeElaasticUsers() {
+      elaasticTeacher = User.findByUsername("elaT")
+      if (!elaasticTeacher) {
+          def user = new User(firstName: "ElaasticTeacher", lastName: "Ela", username: "elaT", password: "1234", email: 'elaT@elaT.com')
+          elaasticTeacher = userAccountService.addUser(user, teacherRole, true, 'fr')
+
+      }
+
+      elaasticLearner = User.findByUsername("elaL")
+      if (!elaasticLearner) {
+          def user = new User(firstName: "ElaasticLearner", lastName: "Ela", username: "elaL", password: "1234", email: 'elaL@elaL.com')
+          elaasticLearner = userAccountService.addUser(user, studentRole, true, 'fr')
+
+      }
     }
 
 }

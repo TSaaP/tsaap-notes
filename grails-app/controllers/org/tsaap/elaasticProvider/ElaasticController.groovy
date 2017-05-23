@@ -24,17 +24,20 @@ class ElaasticController {
     def assignment (String id, String username) {
       User demoUser = User.findByUsername(username);
       String userRole = null;
-      if (!demoUser || !(demoUser.firstName == teacherName || demoUser.firstName == learnerName)) {
+   /*   if (!demoUser || !(demoUser.firstName == teacherName || demoUser.firstName == learnerName)) {
         render(status: 401, text:'401 - Unauthorized')
-      }
+      }*/
       Assignment assignment = Assignment.findById(Long.parseLong(id))
       if (!assignment) {
         render(status: 404, text:'404 - Not found - Assignment id is invalid')
       }
 
       // for demo user credential is username and password == username
-      springSecurityService.reauthenticate(demoUser.username, username)
+      if (springSecurityService.currentUser == null)
+        springSecurityService.reauthenticate(demoUser.username, username)
 
-      render(view: "show_assignment", model: [assignmentInstance: assignment, user: springSecurityService.currentUser])
+      redirect(uri: '/elaastic/assignment/' + id)
+       return
+     // render(view: "show_assignment", model: [assignmentInstance: assignment, user: springSecurityService.currentUser])
     }
 }

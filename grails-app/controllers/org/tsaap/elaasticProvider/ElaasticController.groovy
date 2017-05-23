@@ -1,5 +1,6 @@
 package org.tsaap.elaasticProvider
 
+import grails.plugins.springsecurity.Secured
 import grails.plugins.springsecurity.SpringSecurityService
 import net.sf.cglib.core.Local
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -20,8 +21,8 @@ class ElaasticController {
 
     def index() { println("index")}
 
-    def assignment (String id, String userId) {
-      User demoUser = User.findById(Long.parseLong(userId));
+    def assignment (String id, String username) {
+      User demoUser = User.findByUsername(username);
       String userRole = null;
       if (!demoUser || !(demoUser.firstName == teacherName || demoUser.firstName == learnerName)) {
         render(status: 401, text:'401 - Unauthorized')
@@ -31,6 +32,9 @@ class ElaasticController {
         render(status: 404, text:'404 - Not found - Assignment id is invalid')
       }
 
-      render(view: "show_assignment", model: [assignment: assignment, userRole: 'teacher'])
+      // for demo user credential is username and password == username
+      springSecurityService.reauthenticate(demoUser.username, username)
+
+      render(view: "show_assignment", model: [assignmentInstance: assignment, user: springSecurityService.currentUser])
     }
 }

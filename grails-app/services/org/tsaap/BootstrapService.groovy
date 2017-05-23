@@ -148,14 +148,14 @@ class BootstrapService {
     def inializeElaasticUsers() {
       elaasticTeacher = User.findByUsername("elaT")
       if (!elaasticTeacher) {
-          def user = new User(firstName: "demo-elaastic-teacher", lastName: "Ela", username: "elaT", password: "1234", email: 'dElaT@dElaT.com')
+          def user = new User(firstName: "demo-elaastic-teacher", lastName: "Ela", username: "elaT", password: "elaT", email: 'dElaT@dElaT.com')
           elaasticTeacher = userAccountService.addUser(user, teacherRole, true, 'fr')
 
       }
 
       elaasticLearner = User.findByUsername("elaL")
       if (!elaasticLearner) {
-          def user = new User(firstName: "demo-elaastic-learner", lastName: "Ela", username: "elaL", password: "1234", email: 'dElaT@dElaT.com')
+          def user = new User(firstName: "demo-elaastic-learner", lastName: "Ela", username: "elaL-1", password: "elaL-1", email: 'elaL-1@gmail.com')
           elaasticLearner = userAccountService.addUser(user, studentRole, true, 'fr')
 
       }

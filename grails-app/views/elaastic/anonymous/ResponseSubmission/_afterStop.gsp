@@ -1,0 +1,1 @@
+<g:render template="/assignment/player/ResponseSubmission/learner/afterStop"/>

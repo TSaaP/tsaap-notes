@@ -1,0 +1,1 @@
+<g:render template="/elaastic/anonymous/Read/show" model="[interactionInstance:interactionInstance]"/>

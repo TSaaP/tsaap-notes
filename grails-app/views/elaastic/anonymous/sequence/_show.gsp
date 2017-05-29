@@ -5,6 +5,7 @@
 <g:while test="${i < rank}">
   <g:set var="currentInteraction" value="${sequenceInstance.interactions[i++]}"/>
   <g:if test="${currentInteraction.enabled}">
-    <g:render template="/assignment/player/${currentInteraction.interactionType}/${userRole}/${currentInteraction.state}" model="[interactionInstance: currentInteraction, user: user, attempt:1]"/>
+    <g:render template="/elaastic/anonymous/${currentInteraction.interactionType}/${currentInteraction.state}"
+              model="[interactionInstance: currentInteraction, attempt:1]"/>
   </g:if>
 </g:while>

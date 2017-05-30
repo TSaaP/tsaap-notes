@@ -55,6 +55,7 @@
         <br/>
     </h4>
     <p><span title="${g.message(code: 'player.assignment.registration.link.tooltip')}"><g:createLink controller="player" action="register" absolute="true" params="[globalId:assignmentInstance.globalId]"/></span></p>
+    <p><span title="${g.message(code: 'player.assignment.elaastic.link.tooltip')}"><g:createLink controller="elaastic" action="assignment" absolute="true" params="[id:assignmentInstance.id]"/></span></p>
     <table class="table table-striped table-hover">
         <tbody>
         <g:each in="${assignmentInstance.sequences}" status="i" var="sequenceInstance">

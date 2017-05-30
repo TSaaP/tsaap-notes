@@ -18,6 +18,7 @@
 import grails.util.Environment
 import grails.util.Holders
 import groovy.sql.Sql
+import org.tsaap.BootstrapDemoService
 import org.tsaap.BootstrapService
 import org.tsaap.lti.Config
 
@@ -26,6 +27,7 @@ import java.util.logging.Level
 class BootStrap {
 
     BootstrapService bootstrapService
+    BootstrapDemoService bootstrapDemoService
 
     def init = { servletContext ->
         bootstrapService.initializeReferenceData()
@@ -35,13 +37,13 @@ class BootStrap {
                 bootstrapService.inializeDevUsers()
                 bootstrapService.initializeDevContext()
                 bootstrapService.initializeDevContextWithFragment()
-                bootstrapService.initializeElaasticDemo()
+                bootstrapDemoService.initializeElaasticDemo()
             }
             demo {
                 bootstrapService.inializeDevUsers()
                 bootstrapService.initializeDevContext()
                 bootstrapService.initializeDevContextWithFragment()
-                bootstrapService.initializeElaasticDemo()
+                bootstrapDemoService.initializeElaasticDemo()
             }
         }
         // inti config db connection for LTI

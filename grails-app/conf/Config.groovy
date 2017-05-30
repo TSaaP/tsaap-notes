@@ -148,6 +148,11 @@ grails.plugins.springsecurity.authority.className = 'org.tsaap.directory.Role'
 grails.plugins.springsecurity.password.algorithm = 'bcrypt'
 grails.plugins.springsecurity.successHandler.defaultTargetUrl = '/home/index'
 
+
+grails.plugin.springsecurity.controllerAnnotations.staticRules = [
+    '/elaastic/**': ["permitAll"]
+]
+
 environments {
     development {
         grails.plugins.springsecurity.useSwitchUserFilter = true

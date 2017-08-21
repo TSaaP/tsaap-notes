@@ -67,7 +67,6 @@ class PlayerController {
         List<Interaction> interactions =
             getDynamicsInteractions(sequenceInstance.statement, params)
 
-        sequenceInstance.asynchronousProcess = params.asynchronousProcess?.toBoolean()
         sequenceInstance = sequenceService.saveSequence(sequenceInstance, user, sequenceInstance.assignment, sequenceInstance.statement)
         sequenceService.addSequenceInteractions(sequenceInstance, user, interactions)
         interactionService.startInteraction(interactions.get(0), user)

@@ -1,6 +1,5 @@
 package org.tsaap.assignments
 
-import grails.transaction.Transactional
 import org.tsaap.directory.User
 
 class LearnerInteraction {
@@ -20,6 +19,8 @@ class LearnerInteraction {
         interaction fetch: 'join'
     }
 
+    static transients = ['sequence']
+
     /**
      * Activate the current learner interaction
      */
@@ -30,5 +31,13 @@ class LearnerInteraction {
         query.updateAll(isActive: false)
         isActive = true
         save()
+    }
+
+    /**
+     * Get the sequence
+     * @return the sequence
+     */
+    Sequence getSequence() {
+        interaction.sequence
     }
 }

@@ -50,8 +50,6 @@
 
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li id="mainLinkContexts"><g:link controller="context"
-                                                  params="[filter: FilterReservedValue.__MINE__.name()]">${message(code: "layout.main.scope")}</g:link></li>
                 <sec:ifAnyGranted
                         roles="${org.tsaap.directory.RoleEnum.ADMIN_ROLE.label},${org.tsaap.directory.RoleEnum.TEACHER_ROLE.label}">
                     <li id="mainLinkAssignments"><g:link

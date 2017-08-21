@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import org.tsaap.assignments.Statement
 import org.tsaap.directory.User
-import org.tsaap.notes.Note
 import org.tsaap.uploadImage.DataIdentifier
 import org.tsaap.uploadImage.DataRecord
 import org.tsaap.uploadImage.DataStore
@@ -156,31 +155,6 @@ class AttachementService {
         }
     }
 
-    /**
-     * Add file to attachment
-     * @param file the file to attach
-     * @param note the note
-     * @return the attached attachment
-     */
-    Attachement addFileToNote(MultipartFile file, Note note) {
-        Attachement attachement = createAttachementForMultipartFile(file)
-        addNoteToAttachement(note, attachement)
-        attachement
-    }
-
-    /**
-     * Add a note to an attachment
-     * @param myNote the note to add
-     * @param myAttachement the attachment
-     * @return the modified attachment
-     */
-    Attachement addNoteToAttachement(Note myNote, Attachement myAttachement) {
-        myAttachement.context = myNote.context
-        myAttachement.note = myNote
-        myAttachement.toDelete = false
-        myAttachement.save()
-        myAttachement
-    }
 
     /**
      * Add file to statement
@@ -207,16 +181,6 @@ class AttachementService {
         attachment
     }
 
-    Map<Note, Attachement> searchAttachementInNoteList(List<Note> noteList) {
-        Map<Note, Attachement> result = new HashMap<Note, Attachement>()
-        noteList.each {
-            if (Attachement.findByNote(it)) {
-                Attachement theAttachement = Attachement.findByNote(it)
-                result.put(it, theAttachement)
-            }
-        }
-        result
-    }
 
     /**
      * Duplicate an attachement
@@ -250,12 +214,8 @@ class AttachementService {
      * @param myAttachement the attachment to detach
      * @return the detached attachment
      */
-    @Requires({ !author || myAttachement.note.canBeEditedBy(author) })
+    @Requires({ !author })
     Attachement detachAttachement(Attachement myAttachement, User author = null) {
-        if (myAttachement.context != null) {
-            myAttachement.context = null
-        }
-        myAttachement.note = null
         myAttachement.statement = null
         myAttachement.toDelete = true
         myAttachement.save(flush: true)

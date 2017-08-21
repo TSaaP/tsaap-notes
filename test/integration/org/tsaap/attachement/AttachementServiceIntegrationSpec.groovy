@@ -21,7 +21,6 @@ import org.springframework.mock.web.MockMultipartFile
 import org.springframework.web.multipart.MultipartFile
 import org.tsaap.BootstrapTestService
 import org.tsaap.assignments.Statement
-import org.tsaap.notes.Note
 import spock.lang.Specification
 
 /**
@@ -31,7 +30,7 @@ class AttachementServiceIntegrationSpec extends Specification {
 
     BootstrapTestService bootstrapTestService
     AttachementService attachementService
-    List<Note> noteList = new ArrayList<Note>()
+
 
     def setup() {
         bootstrapTestService.initializeTests()
@@ -121,21 +120,7 @@ class AttachementServiceIntegrationSpec extends Specification {
         inputStream != null
     }
 
-    def "test add file to note"() {
 
-        given: "a note and a multipart file"
-        Note note = bootstrapTestService.note1
-        byte[] content = "Attachment".getBytes()
-        MultipartFile multipartFile = new MockMultipartFile("grails", "grails", "text/plain", content)
-
-        when: "I want to add multipart file to note"
-        Attachement attachement = attachementService.addFileToNote(multipartFile, note)
-
-        then: "The file is correctly add to note"
-        attachement != null
-        attachement.note == note
-
-    }
 
     def "test detachAttachement"() {
         given: "an attachement for a note"
@@ -147,98 +132,20 @@ class AttachementServiceIntegrationSpec extends Specification {
                 bytes: [2, 3, 4, 5, 6, 7]
         )
         Attachement myAttachement = attachementService.createAttachement(attachementDto, 10)
-        Note myNote = bootstrapTestService.note1
-        myAttachement = attachementService.addNoteToAttachement(myNote, myAttachement)
+
 
         when: "i want to detach the attachement"
         def detachedAttachment = attachementService.detachAttachement(myAttachement)
 
         then: "the attachement is correctly detach"
-        detachedAttachment.context == null
-        detachedAttachment.note == null
         detachedAttachment.statement == null
         detachedAttachment.toDelete
         !detachedAttachment.hasErrors()
     }
 
-    def "test searchAttachementInNoteList"() {
 
-        given: "a note List"
 
-        Note myNote1 = bootstrapTestService.note1
-        noteList.add(myNote1)
-        Note myNote2 = bootstrapTestService.note2
-        noteList.add(myNote2)
 
-        and: "an attachement"
-        AttachementDto attachementDto = new AttachementDto(
-                size: 6,
-                typeMime: 'image/png',
-                name: 'grails.png',
-                originalFileName: 'grails.png',
-                bytes: [2, 3, 4, 5, 6, 7]
-        )
-        Attachement myAttachement = attachementService.createAttachement(attachementDto, 10)
-
-        and: "the attachement bind to the note"
-        myAttachement = attachementService.addNoteToAttachement(bootstrapTestService.note1, myAttachement)
-
-        when: "i want all the attachement bind with notes"
-        Map<Note, Attachement> myMap
-        myMap = attachementService.searchAttachementInNoteList(noteList)
-
-        then: "we get the map with attachement and note"
-        myMap.containsKey(bootstrapTestService.note1)
-        myMap.containsValue(myAttachement)
-        !myMap.containsKey(bootstrapTestService.note2)
-    }
-
-    def "test add Note with context To Attachement"() {
-
-        given: "an attachement"
-        AttachementDto attachementDto = new AttachementDto(
-                size: 6,
-                typeMime: 'image/png',
-                name: 'grails.png',
-                originalFileName: 'grails.png',
-                bytes: [2, 3, 4, 5, 6, 7]
-        )
-        Attachement myAttachement = attachementService.createAttachement(attachementDto, 10)
-
-        and: "a note with a context"
-        Note myNote = bootstrapTestService.note1
-        myNote.context = bootstrapTestService.context1
-
-        when: "adding the note with context to an attachement"
-        myAttachement = attachementService.addNoteToAttachement(myNote, myAttachement)
-
-        then: "the context and the note is really add to the attachement"
-        myAttachement.context == myNote.context
-        myAttachement.note == myNote
-
-    }
-
-    def "addNoteToAttachement"() {
-
-        given: "an attachement"
-        AttachementDto attachementDto = new AttachementDto(
-                size: 6,
-                typeMime: 'image/png',
-                name: 'grails.png',
-                originalFileName: 'grails.png',
-                bytes: [2, 3, 4, 5, 6, 7]
-        )
-        Attachement myAttachement = attachementService.createAttachement(attachementDto, 10)
-
-        and: "a note"
-        Note myNote = bootstrapTestService.note2
-
-        when: "adding a note to an attachement"
-        myAttachement = attachementService.addNoteToAttachement(myNote, myAttachement)
-
-        then: "the note is really add to the attachement"
-        myAttachement.note == myNote
-    }
 
     def "test the delete of an attachment and file system"() {
         given: "two attachments to the same image"
@@ -278,9 +185,9 @@ class AttachementServiceIntegrationSpec extends Specification {
                 "${attachement1.path.substring(4, 6)}/$attachement1.path"
         Attachement attachement2 = attachementService.createAttachement(attachementDto, 10)
 
-        and: "one of them is attach to a note"
-        Note myNote = bootstrapTestService.note2
-        attachementService.addNoteToAttachement(myNote, attachement2)
+        and: "one of them is attach to a statement"
+        Statement statement = bootstrapTestService.statement1
+        attachementService.addStatementToAttachment(statement, attachement2)
 
         when: "the garbage collector is running"
         attachementService.deleteAttachementAndFileInSystem()

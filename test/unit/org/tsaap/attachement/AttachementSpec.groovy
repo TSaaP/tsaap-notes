@@ -18,8 +18,6 @@
 package org.tsaap.attachement
 
 import grails.test.mixin.TestFor
-import org.tsaap.notes.Context
-import org.tsaap.notes.Note
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -37,11 +35,11 @@ class AttachementSpec extends Specification {
     }
 
     @Unroll
-    void "test attachement validity of valid attachement"(String aPath, String aName, String anOriginalName, Integer aSize, Dimension aDimension, String aTypeMime, Note aNote, Context aContext) {
+    void "test attachement validity of valid attachement"(String aPath, String aName, String anOriginalName, Integer aSize, Dimension aDimension, String aTypeMime) {
 
         given: "an attachement correctly initialize"
 
-        Attachement myAttachement = new Attachement(path: aPath, name: aName, originalName: anOriginalName, size: aSize, dimension: myDimension, typeMime: aTypeMime, note: aNote, context: aContext)
+        Attachement myAttachement = new Attachement(path: aPath, name: aName, originalName: anOriginalName, size: aSize, dimension: myDimension, typeMime: aTypeMime)
 
 
         expect: "the attachement is valid"
@@ -52,14 +50,14 @@ class AttachementSpec extends Specification {
 
         where:
 
-        aPath          | aName        | anOriginalName | aSize | aDimension  | aTypeMime   | aNote      | aContext
-        "/home/dorian" | "grails.png" | "grails.png"   | 1     | myDimension | "image/png" | Mock(Note) | Mock(Context)
-        "/home/dorian" | "grails.png" | "grails.png"   | null  | myDimension | "image/png" | Mock(Note) | Mock(Context)
-        "/home/dorian" | "grails.png" | null           | 1     | myDimension | "image/png" | Mock(Note) | Mock(Context)
-        "/home/dorian" | "grails.png" | "grails.png"   | 1     | myDimension | null        | Mock(Note) | Mock(Context)
-        "/home/dorian" | "grails.png" | "grails.png"   | 1     | null        | "image/png" | Mock(Note) | Mock(Context)
-        "/home/dorian" | "grails.png" | "grails.png"   | 1     | myDimension | "image/png" | Mock(Note) | null
-        "/home/dorian" | "grails.png" | "grails.png"   | 1     | myDimension | "image/png" | null       | Mock(Context)
+        aPath          | aName        | anOriginalName | aSize | aDimension  | aTypeMime
+        "/home/dorian" | "grails.png" | "grails.png"   | 1     | myDimension | "image/png"
+        "/home/dorian" | "grails.png" | "grails.png"   | null  | myDimension | "image/png"
+        "/home/dorian" | "grails.png" | null           | 1     | myDimension | "image/png"
+        "/home/dorian" | "grails.png" | "grails.png"   | 1     | myDimension | null
+        "/home/dorian" | "grails.png" | "grails.png"   | 1     | null        | "image/png"
+        "/home/dorian" | "grails.png" | "grails.png"   | 1     | myDimension | "image/png"
+        "/home/dorian" | "grails.png" | "grails.png"   | 1     | myDimension | "image/png"
 
     }
 

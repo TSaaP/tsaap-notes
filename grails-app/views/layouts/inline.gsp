@@ -37,7 +37,7 @@
 
 <body style="padding-top: 10px;">
 <div class="container">
-    @<sec:username/> - <g:link controller="notes" params="[displaysMyNotes: 'on']" target="_blank">Tsaap-Notes</g:link>
+    @<sec:username/>
 </div>
 
 <g:layoutBody/>

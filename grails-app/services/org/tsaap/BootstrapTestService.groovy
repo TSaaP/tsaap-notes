@@ -24,15 +24,11 @@ import org.tsaap.assignments.statement.ChoiceItemSpecification
 import org.tsaap.assignments.statement.ChoiceSpecification
 import org.tsaap.directory.SettingsService
 import org.tsaap.directory.User
-import org.tsaap.notes.Context
-import org.tsaap.notes.ContextService
-import org.tsaap.notes.Note
-import org.tsaap.notes.NoteService
+
 
 class BootstrapTestService {
 
-    NoteService noteService
-    ContextService contextService
+
     SettingsService settingsService
     SequenceService sequenceService
     AssignmentService assignmentService
@@ -41,10 +37,7 @@ class BootstrapTestService {
     User teacherJeanne
     User learnerMary
     List<User> learners = []
-    Note note1
-    Note note2
-    Context context1
-    Context context2
+
 
     Statement statement1
     Statement statement2
@@ -70,8 +63,6 @@ class BootstrapTestService {
 
     def initializeTests() {
         initializeUsers()
-        initializeNotes()
-        initializeContexts()
         initializeChoiceSpecification()
         initializeStatements()
         initializeInteractions()
@@ -104,24 +95,7 @@ class BootstrapTestService {
         }
     }
 
-    def initializeNotes() {
-        if (!Note.findByContent("content note 1")) {
-            note1 = noteService.addStandardNote(learnerPaul, "content note 1")
-        }
-        if (!Note.findByContent("content note 2")) {
-            note2 = noteService.addStandardNote(learnerMary, "content note 2")
-        }
-    }
 
-    def initializeContexts() {
-        if (!Context.findByContextName("Context1")) {
-            context1 = contextService.saveContext(new Context(owner: learnerPaul, contextName: "Context1", url: 'http://www.w3.org', descriptionAsNote: 'a description', source: null))
-        }
-        if (!Context.findByContextName("Context2")) {
-            context2 = contextService.saveContext(new Context(owner: learnerPaul, contextName: "Context2", url: 'http://www.w3.org', descriptionAsNote: 'a description', source: null))
-        }
-
-    }
 
     def initializeChoiceSpecification() {
         initializeMultipleChoiceSpec()

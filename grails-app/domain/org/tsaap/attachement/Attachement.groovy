@@ -18,8 +18,7 @@
 package org.tsaap.attachement
 
 import org.tsaap.assignments.Statement
-import org.tsaap.notes.Context
-import org.tsaap.notes.Note
+
 
 /**
  * class reprensenting a file attach to a model object
@@ -39,8 +38,7 @@ class Attachement {
     Integer size
     Dimension dimension
     String typeMime
-    Note note
-    Context context
+
     Statement statement
     Boolean toDelete = false
 
@@ -49,8 +47,6 @@ class Attachement {
         typeMime nullable: true
         originalName nullable: true
         dimension nullable: true
-        context nullable: true
-        note nullable: true
         statement nullable: true
     }
 

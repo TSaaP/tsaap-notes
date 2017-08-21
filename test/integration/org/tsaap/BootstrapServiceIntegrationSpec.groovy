@@ -58,20 +58,6 @@ class BootstrapServiceIntegrationSpec extends Specification {
         bootstrapService.thom.settings.language == 'fr'
     }
 
-    def "context initialization"() {
 
-        given: "dev users initialized"
-        bootstrapService.inializeDevUsers()
-
-        when: "context are initialized"
-        bootstrapService.initializeDevContext()
-        bootstrapService.initializeDevContextWithFragment()
-
-        then: "we have two context"
-        bootstrapService.football != null
-        bootstrapService.football.contextName == "football"
-        bootstrapService.science != null
-        bootstrapService.science.contextName == "science"
-    }
 
 }

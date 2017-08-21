@@ -15,22 +15,21 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.tsaap.notes
+package org.tsaap.directory
 
-import org.tsaap.directory.User
 
-class NoteGrade {
+class MailCheckingJob {
 
-    Date dateCreated
-    User user
-    Note note
-    Double grade
+    MailCheckingService mailCheckingService
 
-    static constraints = {
-        grade min: 0d, max: 5d
+    static triggers = {
+        // every 2 minutes
+        cron name: 'mailCheckingCronTrigger', startDelay: 10000, cronExpression: '0 0/2 * * * ?'
     }
 
-    static mapping = {
-        version(false)
+    def execute() {
+        log.debug("Start email checking job...")
+        mailCheckingService.sendCheckingEmailMessages()
+        log.debug("End email checking  job.")
     }
 }

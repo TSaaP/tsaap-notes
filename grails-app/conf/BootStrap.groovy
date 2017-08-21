@@ -36,13 +36,9 @@ class BootStrap {
             development {
                 Sql.LOG.level = Level.FINE
                 bootstrapService.inializeDevUsers()
-                bootstrapService.initializeDevContext()
-                bootstrapService.initializeDevContextWithFragment()
             }
             demo {
                 bootstrapService.inializeDevUsers()
-                bootstrapService.initializeDevContext()
-                bootstrapService.initializeDevContextWithFragment()
             }
         }
         // inti config db connection for LTI

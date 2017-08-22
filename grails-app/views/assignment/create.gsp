@@ -29,20 +29,10 @@
             </ul>
         </div>
     </g:hasErrors>
-    <g:hasErrors bean="${scheduleInstance}">
-        <div class="alert alert-danger">
-            <ul class="errors" role="alert">
-                <g:eachError bean="${scheduleInstance}" var="error">
-                    <li <g:if test="${error in org.springframework.validation.FieldError}">data-field-id="${error.field}"</g:if>><g:message
-                            error="${error}"/></li>
-                </g:eachError>
-            </ul>
-        </div>
-    </g:hasErrors>
+
     <g:form controller="assignment" action="save">
         <fieldset class="form">
             <g:render template="assignment_form" bean="${assignmentInstance}"/>
-            <g:render template="schedule_form" bean="${scheduleInstance}"/>
         </fieldset>
         <fieldset class="buttons">
             <g:submitButton name="create" class="btn btn-info"

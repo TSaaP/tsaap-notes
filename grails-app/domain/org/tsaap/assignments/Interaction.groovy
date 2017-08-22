@@ -27,11 +27,9 @@ class Interaction {
     String results
     String explanationRecommendationMapping
 
-    static hasOne = [schedule: Schedule]
 
     static constraints = {
         interactionType inList: InteractionType.values()*.name()
-        schedule nullable: true
         state inList: StateType.values()*.name()
         results nullable: true
         explanationRecommendationMapping nullable: true

@@ -33,8 +33,7 @@ class AssignmentController {
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def create() {
-        Date now = new Date()
-        [assignmentInstance:new Assignment(), scheduleInstance: new Schedule(startDate: now)]
+        [assignmentInstance:new Assignment()]
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
@@ -43,14 +42,12 @@ class AssignmentController {
         Assignment assignmentInstance = new Assignment(params)
         assignmentInstance.owner = springSecurityService.currentUser
         assignmentInstance.validate()
-        Schedule scheduleInstance = new Schedule(startDate:getStartDate(params), endDate:getEndDate(params))
-        scheduleInstance.validate()
-        if (assignmentInstance.hasErrors() || scheduleInstance.hasErrors()) {
-            respond assignmentInstance, model:[scheduleInstance:scheduleInstance], view:'create'
+        if (assignmentInstance.hasErrors()) {
+            respond assignmentInstance, view:'create'
             return
         }
 
-        assignmentService.saveAssignment(assignmentInstance, scheduleInstance)
+        assignmentService.saveAssignment(assignmentInstance)
 
         flash.message = message(code: 'assignment.created.message', args: [message(code: 'assignment.label', default: 'Assignment'), assignmentInstance.title])
         redirect assignmentInstance
@@ -61,9 +58,7 @@ class AssignmentController {
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def edit(Assignment assignmentInstance) {
-        Date now = new Date()
-        Schedule scheduleInstance = assignmentInstance.schedule ?: new Schedule(startDate: now, endDate: now+1)
-        [assignmentInstance: assignmentInstance, scheduleInstance: scheduleInstance]
+        [assignmentInstance: assignmentInstance]
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
@@ -76,16 +71,12 @@ class AssignmentController {
         }
         assignmentInstance.title = params.title
         assignmentInstance.validate()
-        Schedule scheduleInstance = assignmentInstance.schedule ?: new Schedule()
-        scheduleInstance.startDate = getStartDate(params)
-        scheduleInstance.endDate = getEndDate(params)
-        scheduleInstance.validate()
-        if (assignmentInstance.hasErrors() || scheduleInstance.hasErrors()) {
-            respond assignmentInstance, model:[scheduleInstance:scheduleInstance], view:'edit'
+        if (assignmentInstance.hasErrors()) {
+            respond assignmentInstance, view:'edit'
             return
         }
 
-        assignmentService.saveAssignment(assignmentInstance, scheduleInstance)
+        assignmentService.saveAssignment(assignmentInstance)
 
         flash.message = message(code: 'assignment.updated.message', args: [message(code: 'assignment.label', default: 'Assignment'), assignmentInstance.title])
         redirect assignmentInstance

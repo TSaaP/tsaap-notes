@@ -21,14 +21,6 @@ class Assignment {
     }
 
     /**
-     * Get the schedule associated with this assignment if any
-     * @return the schedule
-     */
-    Schedule getSchedule() {
-        Schedule.findByAssignment(this)
-    }
-
-    /**
      * Get the sequences
      * @return the sequences
      */
@@ -48,7 +40,7 @@ class Assignment {
         res
     }
 
-    static transients = ['schedule', 'sequences', 'lastSequence']
+    static transients = ['sequences', 'lastSequence']
 
     /**
      * Count the number of registered users

@@ -15,7 +15,6 @@ class Sequence {
     User owner
     Assignment assignment
     Statement statement
-    Boolean phasesAreScheduled = false
     String executionContext = ExecutionContextType.FaceToFace.name()
 
     Interaction activeInteraction
@@ -29,7 +28,7 @@ class Sequence {
 
     static transients = ['interactions', 'content', 'title',
                          'responseSubmissionSpecification', 'evaluationSpecification', 'responseSubmissionInteraction',
-                         'evaluationInteraction', 'readInteraction', 'defaultStartDate']
+                         'evaluationInteraction', 'readInteraction']
 
     /**
      * Find all interactions
@@ -125,72 +124,6 @@ class Sequence {
             }
         }
         result
-    }
-
-    /**
-     * Get the start date of phase 1
-     * @return the start date of phase 1 if any
-     */
-    Date getStartDatePhase1() {
-        if (interactions?.size() > 0) {
-            return interactions?.get(0)?.schedule?.startDate
-        }
-        getDefaultStartDate()
-    }
-
-    /**
-     * Get the start date of phase 2
-     * @return the start date of phase 2 if any
-     */
-    Date getStartDatePhase2() {
-        if (interactions?.size() > 1) {
-            interactions?.get(1)?.schedule?.startDate
-        }
-        getDefaultStartDate() + 1
-    }
-
-    /**
-     * Get the start date of phase 3
-     * @return the start date of phase 3 if any
-     */
-    Date getStartDatePhase3() {
-        if (interactions?.size() > 2) {
-            interactions?.get(2)?.schedule?.startDate
-        }
-        getDefaultStartDate() + 1
-    }
-
-    /**
-     * Get the end date of phase 1
-     * @return the end date of phase 1 if any
-     */
-    Date getEndDatePhase1() {
-        if (interactions?.size() > 0) {
-            return interactions?.get(0)?.schedule?.endDate
-        }
-        null
-    }
-
-    /**
-     * Get the end date of phase 2
-     * @return the end date of phase 2 if any
-     */
-    Date getEndDatePhase2() {
-        if (interactions?.size() > 1) {
-            interactions?.get(1)?.schedule?.endDate
-        }
-        null
-    }
-
-    /**
-     * Get the end date of phase 3
-     * @return the end date of phase 3 if any
-     */
-    Date getEndDatePhase3() {
-        if (interactions?.size() > 2) {
-            interactions?.get(2)?.schedule?.endDate
-        }
-        null
     }
 
     /**
@@ -326,15 +259,6 @@ class Sequence {
         responseSubmissionSpecification?.studentsProvideExplanation
     }
 
-    private Date getDefaultStartDate() {
-        def res
-        if (assignment?.schedule?.startDate) {
-            res = assignment?.schedule?.startDate
-        } else {
-            res = new Date()
-        }
-        res
-    }
 
 }
 

@@ -195,16 +195,14 @@ class BootstrapTestService {
         EvaluationSpecification evalSpec = new EvaluationSpecification()
         evalSpec.responseToEvaluateCount = 3
         evaluationInteraction = new Interaction(rank: 2, specification: evalSpec.jsonString,
-                interactionType: InteractionType.Evaluation.name(),
-                schedule: new Schedule(startDate: new Date()))
+                interactionType: InteractionType.Evaluation.name())
     }
 
     private void initialiseEvaluationOpenInteraction() {
         EvaluationSpecification evalSpec = new EvaluationSpecification()
         evalSpec.responseToEvaluateCount = 2
         evaluationOpenInteraction = new Interaction(rank: 2, specification: evalSpec.jsonString,
-                interactionType: InteractionType.Evaluation.name(),
-                schedule: new Schedule(startDate: new Date()))
+                interactionType: InteractionType.Evaluation.name())
     }
 
     private void initializeResponseSubmissionInteraction() {
@@ -212,8 +210,7 @@ class BootstrapTestService {
         respSpec.studentsProvideExplanation = true
         respSpec.studentsProvideConfidenceDegree = true
         responseSubmissionInteraction = new Interaction(rank: 1, specification: respSpec.jsonString,
-                interactionType: InteractionType.ResponseSubmission.name(),
-                schedule: new Schedule(startDate: new Date()))
+                interactionType: InteractionType.ResponseSubmission.name())
     }
 
     private void initializeResponseSubmissionOpenInteraction() {
@@ -221,19 +218,16 @@ class BootstrapTestService {
         respSpec.studentsProvideExplanation = true
         respSpec.studentsProvideConfidenceDegree = true
         responseSubmissionOpenInteraction = new Interaction(rank: 1, specification: respSpec.jsonString,
-                interactionType: InteractionType.ResponseSubmission.name(),
-                schedule: new Schedule(startDate: new Date()))
+                interactionType: InteractionType.ResponseSubmission.name())
     }
 
     private void initializeReadInteraction() {
         readInteraction = new Interaction(rank: 3, specification: Interaction.EMPTY_SPECIFICATION,
-                interactionType: InteractionType.Read.name(),
-                schedule: new Schedule(startDate: new Date()))
+                interactionType: InteractionType.Read.name())
     }
     private void initializeReadOpenInteraction() {
         readOpenInteraction = new Interaction(rank: 3, specification: Interaction.EMPTY_SPECIFICATION,
-                interactionType: InteractionType.Read.name(),
-                schedule: new Schedule(startDate: new Date()))
+                interactionType: InteractionType.Read.name())
     }
 
     private initializeMultipleChoiceSpec() {

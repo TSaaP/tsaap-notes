@@ -1,4 +1,4 @@
-<%@ page import="org.tsaap.assignments.Assignment; org.tsaap.assignments.Schedule" %>
+<%@ page import="org.tsaap.assignments.Assignment" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -23,22 +23,15 @@
         <thead>
         <tr>
             <th><g:message code="player.assignment.label" default="Work"/></th>
-            <th><g:message code="schedule.startdate.label" default="Start date"/></th>
-            <th><g:message code="schedule.enddate.label" default="End date"/></th>
             <th><g:message code="assignment.lastupdated.label" default="Last update"/></th>
         </tr>
         </thead>
         <tbody>
         <g:each in="${learnerAssignmentList}" status="i" var="assignmentInstance">
-            <g:set var="scheduleInstance" value="${assignmentInstance.schedule}"/>
             <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
 
                 <td><g:link action="show" controller="player"
                             id="${assignmentInstance.id}">${fieldValue(bean: assignmentInstance, field: "title")}</g:link></td>
-
-                <td><g:formatDate date="${scheduleInstance?.startDate}"/></td>
-
-                <td><g:formatDate date="${scheduleInstance?.endDate}"/></td>
 
                 <td><g:formatDate date="${assignmentInstance.lastUpdated}"/></td>
 

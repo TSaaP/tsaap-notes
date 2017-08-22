@@ -1,4 +1,3 @@
-<%@ page import="org.tsaap.assignments.Schedule" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -24,7 +23,6 @@
             ${raw(flash.message)}
         </div>
     </g:if>
-    <g:set var="scheduleInstance" value="${assignmentInstance.schedule}"/>
 
     <div class="btn-toolbar" role="toolbar">
         <div class="btn-group btn-group-sm" role="group">
@@ -36,24 +34,7 @@
         </div>
     </div>
 
-    <h4>${assignmentInstance.title}
-        <g:if test="${scheduleInstance?.startDate}">
-            <small>
-                <span id="startDate-label" class="property-label"><g:message code="schedule.startdate.label"
-                                                                             default="Start Date"/></span>
-                <span class="property-value" aria-labelledby="startDate-label"><g:formatDate
-                        date="${scheduleInstance?.startDate}"/>.</span>
-                <g:if test="${scheduleInstance?.endDate}">
-                    <span id="endDate-label" class="property-label"><g:message code="schedule.enddate.label"
-                                                                               default="End Date"/></span>
-                    <span class="property-value" aria-labelledby="endDate-label"><g:formatDate
-                            date="${scheduleInstance?.endDate}"/>.</span>
-
-                </g:if>
-            </small>
-        </g:if>
-        <br/>
-    </h4>
+    <h4>${assignmentInstance.title}</h4>
     <p><span title="${g.message(code: 'player.assignment.registration.link.tooltip')}"><g:createLink controller="player" action="register" absolute="true" params="[globalId:assignmentInstance.globalId]"/></span></p>
     <table class="table table-striped table-hover">
         <tbody>

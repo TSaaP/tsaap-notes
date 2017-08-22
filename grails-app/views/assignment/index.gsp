@@ -1,4 +1,4 @@
-<%@ page import="org.tsaap.assignments.Assignment; org.tsaap.assignments.Schedule" %>
+<%@ page import="org.tsaap.assignments.Assignment" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -35,26 +35,11 @@
         </thead>
         <tbody>
         <g:each in="${assignmentInstanceList}" status="i" var="assignmentInstance">
-            <g:set var="scheduleInstance" value="${assignmentInstance.schedule}"/>
             <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
 
                 <td>
                     <g:link action="show"
-                            id="${assignmentInstance.id}">${fieldValue(bean: assignmentInstance, field: "title")}</g:link> <small>(<g:message code="schedule.lastupdated.label"/> ${assignmentInstance.lastUpdated})</small>
-                    <br/>
-                    <g:if test="${scheduleInstance?.startDate}">
-                            <span id="startDate-label" class="property-label"><g:message code="schedule.startdate.label"
-                                                                                         default="Start Date"/></span>
-                            <span class="property-value" aria-labelledby="startDate-label"><g:formatDate
-                                    date="${scheduleInstance?.startDate}"/>.</span>
-                            <g:if test="${scheduleInstance?.endDate}">
-                                <span id="endDate-label" class="property-label"><g:message code="schedule.enddate.label"
-                                                                                           default="End Date"/></span>
-                                <span class="property-value" aria-labelledby="endDate-label"><g:formatDate
-                                        date="${scheduleInstance?.endDate}"/>.</span>
-
-                            </g:if>
-                    </g:if>
+                            id="${assignmentInstance.id}">${fieldValue(bean: assignmentInstance, field: "title")}</g:link> <small>(<g:message code="assignment.lastupdated.label"/> ${assignmentInstance.lastUpdated})</small>
                     <br/>
                     <small><span title="${g.message(code: 'player.assignment.registration.link.tooltip')}"><g:createLink controller="player" action="register" absolute="true" params="[globalId:assignmentInstance.globalId]"/></span></small>
                 </td>

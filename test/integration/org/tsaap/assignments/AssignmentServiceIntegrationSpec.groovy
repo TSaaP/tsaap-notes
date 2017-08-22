@@ -62,8 +62,8 @@ class AssignmentServiceIntegrationSpec extends Specification {
     }
 
 
-    void "test delete assignment without schedule"() {
-        given: "an assignment without schedule"
+    void "test delete assignment"() {
+        given: "an assignment"
         Assignment assignment = assignmentService.saveAssignment(new Assignment(title: "an assignment", owner: teacher))
 
         when: "deleting assignment is not performed by the owner"
@@ -115,9 +115,6 @@ class AssignmentServiceIntegrationSpec extends Specification {
         Sequence sequence1 = sequenceService.createAndAddSequenceToAssignment(assignment, assignment.owner, statement1)
         sequenceService.addSequenceInteractions(sequence1, assignment.owner, interactions);
         Sequence sequence2 = sequenceService.createAndAddSequenceToAssignment(assignment, assignment.owner, statement2)
-        def schedule1 = bootstrapTestService.responseSubmissionInteraction.schedule
-        def schedule2 = bootstrapTestService.evaluationInteraction.schedule
-        schedule1 && schedule2
 
         when: "deleting assignment is performed by the owner"
         assignmentService.deleteAssignment(assignment, teacher)
@@ -134,17 +131,6 @@ class AssignmentServiceIntegrationSpec extends Specification {
         and: "the interactions have been deleted from the datable"
         Interaction.findById(bootstrapTestService.responseSubmissionInteraction.id) == null
         Interaction.findById(bootstrapTestService.evaluationInteraction.id) == null
-
-        when: "fetching schedule with new session"
-        def fetchSchedule1, fetchSchedule2
-        Schedule.withNewSession {
-            fetchSchedule1 = Schedule.findById(schedule1.id)
-            fetchSchedule2 = Schedule.findById(schedule2.id)
-        }
-
-        then: "the fetch schedules are null"
-        fetchSchedule2 == null
-        fetchSchedule1 == null
 
     }
 
@@ -304,7 +290,6 @@ class AssignmentServiceIntegrationSpec extends Specification {
             assert duplicatedSequence.id != originalSequence.id
             assert duplicatedSequence.state == originalSequence.state
             assert duplicatedSequence.rank == originalSequence.rank
-            assert duplicatedSequence.phasesAreScheduled ==  originalSequence.phasesAreScheduled
             assert !duplicatedSequence.interactions
             assert duplicatedSequence.owner ==  originalSequence.owner
 

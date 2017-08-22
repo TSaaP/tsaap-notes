@@ -1,4 +1,3 @@
-<%@ page import="org.tsaap.assignments.Schedule" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -47,8 +46,7 @@
         <g:hiddenField name="assignment_instance_id" value="${assignmentInstance?.id}"/>
         <fieldset class="form">
             <g:render template="/assignment/sequence/statement_form" bean="${statementInstance}" model="[assignmentInstance:assignmentInstance]"/>
-            <g:set var="defaultDate" value="${assignmentInstance?.schedule?.startDate ?: new Date()}"/>
-            <g:render template="/assignment/sequence/statement_question_type_form" model="[defaultDate:defaultDate]"/>
+            <g:render template="/assignment/sequence/statement_question_type_form"/>
             <g:render template="/assignment/sequence/statement_explanations_form"/>
         </fieldset>
         <fieldset class="buttons">

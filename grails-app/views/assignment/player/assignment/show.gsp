@@ -1,4 +1,3 @@
-<%@ page import="org.tsaap.assignments.Schedule" %>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
@@ -32,7 +31,6 @@
             ${flash.message}
         </div>
     </g:if>
-    <g:set var="scheduleInstance" value="${assignmentInstance.schedule}"/>
 
     <sec:ifAnyGranted roles="${org.tsaap.directory.RoleEnum.TEACHER_ROLE.label}">
         <g:if test="${assignmentInstance.owner.username == sec.username().toString()}">
@@ -47,23 +45,7 @@
         </g:if>
     </sec:ifAnyGranted>
 
-    <h4>${assignmentInstance.title}
-        <g:if test="${scheduleInstance?.startDate}">
-            <small>
-                <span id="startDate-label" class="property-label"><g:message code="schedule.startdate.label"
-                                                                             default="Start Date"/></span>
-                <span class="property-value" aria-labelledby="startDate-label"><g:formatDate
-                        date="${scheduleInstance?.startDate}"/>.</span>
-                <g:if test="${scheduleInstance?.endDate}">
-                    <span id="endDate-label" class="property-label"><g:message code="schedule.enddate.label"
-                                                                               default="End Date"/></span>
-                    <span class="property-value" aria-labelledby="endDate-label"><g:formatDate
-                            date="${scheduleInstance?.endDate}"/>.</span>
-
-                </g:if>
-            </small>
-        </g:if>
-    </h4>
+    <h4>${assignmentInstance.title}</h4>
 
     <div class="well well-sm"><g:message code="player.assignment.registeredUserCount"/> <span
             id="registered_user_count">${assignmentInstance.registeredUserCount()}</span> <g:remoteLink

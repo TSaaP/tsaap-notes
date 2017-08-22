@@ -39,11 +39,7 @@ class AssignmentService {
      *
      * @return the assignment saved or with errors
      */
-    Assignment saveAssignment(Assignment assignment, Schedule schedule = null) {
-        if (schedule) {
-            schedule.save()
-            schedule.assignment = assignment
-        }
+    Assignment saveAssignment(Assignment assignment) {
         if (assignment.globalId == null) {
             assignment.globalId = UUID.randomUUID().toString()
         }
@@ -84,9 +80,7 @@ class AssignmentService {
     def deleteAssignment(Assignment assignment, User user, boolean flush = true) {
         Contract.requires(assignment.owner == user, USER__MUST__BE__ASSIGNMENT__OWNER)
         deleteLmsAssignment(assignment)
-        assignment.schedule?.delete(flush: flush)
         LearnerAssignment.executeUpdate("delete LearnerAssignment la where la.assignment = ?",[assignment])
-        Schedule.executeUpdate("delete Schedule sch where sch.interaction in (from Interaction i where i.sequence in (from Sequence s where s.assignment = ?))",[assignment])
         PeerGrading.executeUpdate("delete PeerGrading pg where pg.response in (from InteractionResponse resp where resp.interaction in (from Interaction i where i.sequence in (from Sequence s where s.assignment = ?)))",[assignment])
         InteractionResponse.executeUpdate("delete InteractionResponse resp where resp.interaction in (from Interaction i where i.sequence in (from Sequence s where s.assignment = ?))",[assignment])
         Interaction.executeUpdate("delete Interaction i where i.sequence in (from Sequence s where s.assignment = ?)",[assignment])
@@ -114,7 +108,6 @@ class AssignmentService {
         Contract.requires(assignment.owner == user, USER__MUST__BE__ASSIGNMENT__OWNER)
         Contract.requires(assignment.sequences?.contains(sequence), SEQUENCE__DOESN__T__BELONG__TO__ASSIGNMENT)
         setupAttachementToDeleteFlag(sequence)
-        Schedule.executeUpdate("delete Schedule sch where sch.interaction in (from Interaction i where i.sequence = ?)",[sequence])
         PeerGrading.executeUpdate("delete PeerGrading pg where pg.response in (from InteractionResponse resp where resp.interaction in (from Interaction i where i.sequence = ?))",[sequence])
         InteractionResponse.executeUpdate("delete InteractionResponse resp where resp.interaction in (from Interaction i where i.sequence  = ?)",[sequence])
         def query = Interaction.where {

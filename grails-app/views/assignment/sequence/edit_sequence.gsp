@@ -1,4 +1,3 @@
-<%@ page import="org.tsaap.assignments.Schedule" %>
 <!DOCTYPE html>
 <html>
 <head>

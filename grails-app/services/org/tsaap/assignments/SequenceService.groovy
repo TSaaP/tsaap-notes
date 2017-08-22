@@ -48,10 +48,10 @@ class SequenceService {
      * @param user the user adding the sequence
      * @return the sequence
      */
-    Sequence createAndAddSequenceToAssignment(Assignment assignment, User user, Statement statement, boolean phasesAreScheduled = false) {
+    Sequence createAndAddSequenceToAssignment(Assignment assignment, User user, Statement statement) {
         Contract.requires(assignment.owner == user, AssignmentService.USER__MUST__BE__ASSIGNMENT__OWNER)
         def rank = assignment.lastSequence ? assignment.lastSequence.rank + 1 : 1
-        Sequence sequence = new Sequence(rank: rank, phasesAreScheduled: phasesAreScheduled)
+        Sequence sequence = new Sequence(rank: rank)
 
         addSequenceToAssignment(user, assignment, sequence, statement)
     }
@@ -102,7 +102,6 @@ class SequenceService {
                 rank: sequence.rank,
                 owner: sequence.owner,
                 assignment: duplicatedAssignment,
-                phasesAreScheduled: sequence.phasesAreScheduled,
                 state: sequence.state
         )
 
@@ -231,19 +230,6 @@ class SequenceService {
         }
     }
 
-    private void processInteractionScheduleError(Interaction interaction, int i, Sequence sequence) {
-        if (interaction.schedule.hasErrors()) {
-            interaction.schedule.errors.allErrors.each { FieldError error ->
-                def code = error.code
-                if (error.code.contains("endDateBeforeStartDate")) {
-                    code = "sequence.endDatePhase${i + 1}.endDateBeforeStartDate"
-                } else if (error.code.contains("nullable")) {
-                    code = "sequence.startDatePhase${i + 1}.nullable"
-                }
-                sequence.errors.rejectValue("${error.field}Phase${i + 1}", code)
-            }
-        }
-    }
 
     private def saveInteractions(List<Interaction> interactions, Sequence sequence) {
         if (!sequence.hasErrors()) {

@@ -28,8 +28,7 @@ class BootstrapService {
 
     def dataSource
     UserAccountService userAccountService
-    ContextService contextService
-    NoteService noteService
+
 
 
     Role studentRole
@@ -43,12 +42,6 @@ class BootstrapService {
     User erik
     User admin
 
-    Context science
-    Context football
-
-    Tag goal
-
-    Note note
 
     def initializeReferenceData() {
         initializeRoles()
@@ -111,35 +104,5 @@ class BootstrapService {
         }
     }
 
-
-    def initializeDevContext() {
-        science = Context.findByContextName('science')
-        if (!science) {
-            science = contextService.saveContext(new Context(owner: mary, contextName: 'science', descriptionAsNote: "everything about #science, but sur mainly on #computer", url: 'http://fr.wikipedia.org/wiki/Science', source: null))
-        }
-
-    }
-
-    def initializeDevContextWithFragment() {
-        football = Context.findByContextName('football')
-        if (!football) {
-            football = contextService.saveContext(new Context(owner: thom, contextName: 'football', descriptionAsNote: 'everything about #football', url: 'http://fr.wikipedia.org/wiki/Football', source: null))
-        }
-        goal = Tag.findOrSaveWhere(name: 'goal')
-        for (int i = 0; i < 10; i++) {
-            note = Note.findByContent("goal$i")
-            if (!note) {
-                note = noteService.addStandardNote(thom, "goal$i", football, goal, null)
-            }
-        }
-        note = Note.findByContent("goal11")
-        if (!note) {
-            note = noteService.addStandardNote(mary, "goal11", football, goal, null)
-        }
-        note = Note.findByContent("goal12")
-        if (!note) {
-            note = noteService.addStandardNote(fsil, "goal12", football, goal, null)
-        }
-    }
 
 }

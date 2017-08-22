@@ -14,7 +14,6 @@
   -     You should have received a copy of the GNU Affero General Public License
   -     along with this program.  If not, see <http://www.gnu.org/licenses/>.
   --}%
-<%@ page import="org.tsaap.notes.FilterReservedValue" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -50,8 +49,6 @@
 
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li id="mainLinkContexts"><g:link controller="context"
-                                                  params="[filter: FilterReservedValue.__MINE__.name()]">${message(code: "layout.main.scope")}</g:link></li>
                 <sec:ifAnyGranted
                         roles="${org.tsaap.directory.RoleEnum.ADMIN_ROLE.label},${org.tsaap.directory.RoleEnum.TEACHER_ROLE.label}">
                     <li id="mainLinkAssignments"><g:link

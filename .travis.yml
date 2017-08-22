@@ -3,14 +3,16 @@ notifications:
     secure: iv/rhl9JdEWMZp/IpDocWjxOvlYUHVQDaIh8pWpkcy/8eypq4sWcxnXPZUnlmnLDJGhrrLEUgEBOSBETaQ4t3+CKexu2TAuspuMAo5NEKP+AxoqYtOZCzsyujjQ6edNdE8NdFL9+t8KqcrrtMAMkSORgeDqZCP4cnh4pHj6Yr7U=
 language: groovy
 jdk:
-- oraclejdk7
+- openjdk7
 services:
 - mysql
 before_script:
 - mysql -e 'create database tsaap_notes_travis;'
+- mysql -e 'GRANT ALL ON tsaap_notes_travis.* TO 'travis'@'localhost';'
 - mkdir -p ./tsaap-repo
 script:
 - ./grailsw refresh-dependencies
-- ./grailsw -Dgrails.env=travis_ci test-app -coverage -xml
-after_success:
-- ./grailsw coveralls
+# - ./grailsw -Dgrails.env=travis_ci test-app -coverage -xml
+# after_success:
+# - ./grailsw coveralls
+dist: trusty

@@ -18,16 +18,12 @@
 import liquibase.integration.spring.SpringLiquibase
 import org.tsaap.assignments.ia.DefaultResponseRecommendationService
 import org.tsaap.attachement.AttachementDataStore
-import org.tsaap.questions.impl.gift.GiftQuestionService
-import org.tsaap.questions.impl.gift.utils.QuestionHelper
+
 
 beans = {
 
     //springSecurityService(SpringSecurityService)
     springConfig.addAlias "springSecurityService", "springSecurityCoreSpringSecurityService"
-
-    questionHelper(QuestionHelper)
-    giftQuestionService(GiftQuestionService)
 
     // beans pour la migration des données
     liquibase(SpringLiquibase) {

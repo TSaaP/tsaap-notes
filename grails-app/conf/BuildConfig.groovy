@@ -42,10 +42,6 @@ grails.project.dependency.resolution = {
         mavenLocal()
         mavenCentral()
         mavenRepo "http://repo.grails.org/grails/core"
-
-        mavenRepo "https://jitpack.io"
-
-
     }
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
@@ -55,9 +51,6 @@ grails.project.dependency.resolution = {
         compile 'commons-beanutils:commons-beanutils:1.8.3'
 
         compile 'org.springframework.security:spring-security-crypto:3.2.3.RELEASE'
-
-        compile 'com.github.TSaaP:tsaap-questions:1.0'
-        compile 'com.github.TSaaP:tsaap-lti:0.3'
 
         // Latest httpcore and httpmime for Coveralls plugin
         build 'org.apache.httpcomponents:httpcore:4.4.5'
@@ -88,7 +81,6 @@ grails.project.dependency.resolution = {
         compile ":mail:1.0.1"
         compile ":quartz:1.0"
 
-        compile ":export:1.6"
 
         // Coveralls plugin
         build(':coveralls:0.1.3', ':rest-client-builder:1.0.3') {

@@ -8,6 +8,7 @@ services:
 - mysql
 before_script:
 - mysql -e 'create database tsaap_notes_travis;'
+- mysql -e 'GRANT ALL ON tsaap_notes_travis.* TO 'travis'@'localhost';'
 - mkdir -p ./tsaap-repo
 script:
 - ./grailsw refresh-dependencies

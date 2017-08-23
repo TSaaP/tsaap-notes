@@ -67,7 +67,7 @@
         </g:each>
     </ul>
 </div>
-<script lang="text/javascript">
+<r:script>
 
     function manageConfigurationChange(sequenceId, questionType, sourceEvent) {
         var phaseConfrontationPanel =  $('#phaseConfrontation_' + sequenceId);
@@ -118,8 +118,8 @@
         manageConfigurationChange(sequenceId, questionType, $(this))
     });
 
-    $("input[type=radio][name*='executionContext_']").on('change', function() {
-        var infos = this.name.split("_");
+    $("input[type=radio][name='executionContext']").on('change', function() {
+        var infos = this.id.split("_");
         var sequenceId = infos[1];
         var questionType = infos[2];
         manageExecutionContext(sequenceId, questionType, $(this))
@@ -130,6 +130,6 @@
         $('#' + 'interactionSpec_' + id).css('display', 'none')
     }
 
-</script>
+</r:script>
 </body>
 </html>

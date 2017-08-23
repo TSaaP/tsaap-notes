@@ -11,6 +11,6 @@
   </g:while>
 </g:if>
 <g:else>
-    <g:render template="/assignment/player/interactions/${userRole}/interactions_form"
+    <g:render template="/assignment/player/interactions/${userRole}/beforeStart"
               model="[sequenceInstance: sequenceInstance]"/>
 </g:else>

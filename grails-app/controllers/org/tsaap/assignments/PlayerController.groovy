@@ -166,26 +166,25 @@ class PlayerController {
 
 
     private List<Interaction> getDynamicsInteractions (Statement statement, def params) {
-        List<Interaction> interactions;
-        boolean textualExplanation = params.studentsProvideExplanation?.toBoolean()
-        boolean confidenceDegree = params.studentsProvideConfidenceDegree?.toBoolean()
+        List<Interaction> interactions
+        boolean studentsProvideExplanation = params.studentsProvideExplanation?.toBoolean()
         ResponseSubmissionSpecification responseSpec = new ResponseSubmissionSpecification()
-        responseSpec.setStudentsProvideExplanation(textualExplanation)
-        responseSpec.setStudentsProvideConfidenceDegree(confidenceDegree)
+        responseSpec.studentsProvideExplanation = studentsProvideExplanation
+        responseSpec.studentsProvideConfidenceDegree = studentsProvideExplanation
 
         EvaluationSpecification evalSpec = new EvaluationSpecification()
-        if (params.responseToEvaluateCount != null && params.responseToEvaluateCount.toInteger() <= 3) {
+        if (params.responseToEvaluateCount != null) {
             evalSpec.setResponseToEvaluateCount((Integer) params.responseToEvaluateCount.toInteger())
         }
 
-        if (textualExplanation) {
+        if (studentsProvideExplanation) {
             interactions = getInteractionsToDefaultProcess(
                 responseSpec,
                 evalSpec
             )
         } else if (statement.isOpenEnded()) {
-            responseSpec.setStudentsProvideExplanation(true)
-            responseSpec.setStudentsProvideConfidenceDegree(true)
+            responseSpec.studentsProvideExplanation = true
+            responseSpec.studentsProvideConfidenceDegree = true
             interactions = getInteractionsToDefaultProcess(
               responseSpec,
               evalSpec

@@ -144,6 +144,120 @@ class SequenceServiceIntegrationSpec extends Specification {
         choiceSpecification.totalScoreFromExpectedChoice == 100f
     }
 
+    void "test create interactions for a face to face sequence with short process"() {
+
+        given: "an assignment with a sequence"
+        Assignment assignment = bootstrapTestService.assignment1
+        Statement statement = bootstrapTestService.statement1
+        Sequence sequence = sequenceService.createAndAddSequenceToAssignment(assignment, assignment.owner, statement)
+
+        expect: "the sequence is by default in face to face execution context"
+        sequence.executionIsFaceToFace()
+
+        when: "create interactions with no provision of explanations"
+        def interactions = sequenceService.createInteractionsForSequence(sequence, false)
+
+        then: "there are only 2 interactions created"
+        interactions.size() == 2
+
+        and: "first interaction is a response submission interaction"
+        interactions[0].isResponseSubmission()
+
+        and: "the first interaction specification is set properly"
+        interactions[0].interactionSpecification.studentsProvideExplanation == false
+        interactions[0].interactionSpecification.studentsProvideConfidenceDegree == false
+
+    }
+
+    void "test create interactions for a face to face sequence with default process"() {
+
+        given: "an assignment with a sequence"
+        Assignment assignment = bootstrapTestService.assignment1
+        Statement statement = bootstrapTestService.statement1
+        Sequence sequence = sequenceService.createAndAddSequenceToAssignment(assignment, assignment.owner, statement)
+
+        expect: "the sequence is by default in face to face execution context"
+        sequence.executionIsFaceToFace()
+
+        when: "create interactions with no provision of explanations"
+        def interactions = sequenceService.createInteractionsForSequence(sequence, true,3)
+
+        then: "there are  3 interactions created"
+        interactions.size() == 3
+
+        and: "first interaction is a response submission interaction"
+        interactions[0].isResponseSubmission()
+
+        and: "the first interaction specification is set properly"
+        interactions[0].interactionSpecification.studentsProvideExplanation == true
+        interactions[0].interactionSpecification.studentsProvideConfidenceDegree == true
+
+        and: "the second interaction is an evaluation interaction and is set properly"
+        interactions[1].isEvaluation()
+        interactions[1].interactionSpecification.responseToEvaluateCount == 3
+
+    }
+
+    void "test create interactions for a blended sequence with default process"() {
+
+        given: "an assignment with a blended sequence"
+        Assignment assignment = bootstrapTestService.assignment1
+        Statement statement = bootstrapTestService.statement1
+        Sequence sequence = sequenceService.createAndAddSequenceToAssignment(assignment, assignment.owner, statement)
+        sequence.executionContext = ExecutionContextType.Blended.name()
+
+        expect: "the sequence is in a blended execution context"
+        sequence.executionIsBlended()
+
+        when: "create interactions with no provision of explanations"
+        def interactions = sequenceService.createInteractionsForSequence(sequence, true,3)
+
+        then: "there are  3 interactions created"
+        interactions.size() == 3
+
+        and: "first interaction is a response submission interaction"
+        interactions[0].isResponseSubmission()
+
+        and: "the first interaction specification is set properly"
+        interactions[0].interactionSpecification.studentsProvideExplanation == true
+        interactions[0].interactionSpecification.studentsProvideConfidenceDegree == true
+
+        and: "the second interaction is an evaluation interaction and is set properly"
+        interactions[1].isEvaluation()
+        interactions[1].interactionSpecification.responseToEvaluateCount == 3
+
+    }
+
+    void "test create interactions for a distance sequence with default process"() {
+
+        given: "an assignment with a distance sequence"
+        Assignment assignment = bootstrapTestService.assignment1
+        Statement statement = bootstrapTestService.statement1
+        Sequence sequence = sequenceService.createAndAddSequenceToAssignment(assignment, assignment.owner, statement)
+        sequence.executionContext = ExecutionContextType.Distance.name()
+
+        expect: "the sequence is in a distance execution context"
+        sequence.executionIsDistance()
+
+        when: "create interactions with no provision of explanations"
+        def interactions = sequenceService.createInteractionsForSequence(sequence, true,3)
+
+        then: "there are  3 interactions created"
+        interactions.size() == 3
+
+        and: "first interaction is a response submission interaction"
+        interactions[0].isResponseSubmission()
+
+        and: "the first interaction specification is set properly"
+        interactions[0].interactionSpecification.studentsProvideExplanation == true
+        interactions[0].interactionSpecification.studentsProvideConfidenceDegree == true
+
+        and: "the second interaction is an evaluation interaction and is set properly"
+        interactions[1].isEvaluation()
+        interactions[1].interactionSpecification.responseToEvaluateCount == 3
+
+    }
+
     void "test obtaining active interaction "() {
         given: "an assignment with a sequence"
         Assignment assignment = bootstrapTestService.assignment1

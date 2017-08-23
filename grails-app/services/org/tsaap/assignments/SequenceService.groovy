@@ -2,6 +2,8 @@ package org.tsaap.assignments
 
 import grails.transaction.Transactional
 import org.springframework.validation.FieldError
+import org.tsaap.assignments.interactions.EvaluationSpecification
+import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
 import org.tsaap.attachement.Attachement
 import org.tsaap.attachement.AttachementService
 import org.tsaap.contracts.Contract
@@ -89,6 +91,91 @@ class SequenceService {
 
         sequence
     }
+
+    /**
+     * Create interactions for sequence
+     * @param sequence the sequence
+     * @param studentsProvideExplanation flag to indicate if students shoud provide explanations
+     * @param responseToEvatuateCount flag to indicate how many response students have to grade
+     * @return the list of created interactions
+     */
+    List<Interaction> createInteractionsForSequence(Sequence sequence,
+                                                        boolean studentsProvideExplanation = true,
+                                                        int responseToEvaluateCount = EvaluationSpecification.MAX_RESPONSE_TO_EVALUATE_COUNT) {
+        List<Interaction> interactions
+
+        ResponseSubmissionSpecification responseSpec = new ResponseSubmissionSpecification()
+        responseSpec.studentsProvideExplanation = studentsProvideExplanation
+        responseSpec.studentsProvideConfidenceDegree = studentsProvideExplanation
+
+        EvaluationSpecification evalSpec = new EvaluationSpecification()
+        evalSpec.responseToEvaluateCount = responseToEvaluateCount
+
+        if (sequence.executionIsFaceToFace() && !studentsProvideExplanation) {
+            interactions = getInteractionsToShortProcess(
+                    responseSpec
+            )
+        } else {
+            interactions = getInteractionsToDefaultProcess(
+                    responseSpec,
+                    evalSpec
+            )
+        }
+        interactions
+    }
+
+
+    private List<Interaction> getInteractionsToDefaultProcess(ResponseSubmissionSpecification responseSpec, EvaluationSpecification evalSpec) {
+        List<Interaction> interactions = []
+
+        Interaction interaction1 = new Interaction(
+                interactionType: InteractionType.ResponseSubmission.name(),
+                rank: 1,
+                specification: responseSpec.jsonString
+        )
+        interactions.add(interaction1)
+
+
+        Interaction interaction2 = new Interaction(
+                interactionType: InteractionType.Evaluation.name(),
+                rank: 2,
+                specification: evalSpec.jsonString
+        )
+        interactions.add(interaction2)
+
+
+        Interaction interaction3 = new Interaction(
+                interactionType: InteractionType.Read.name(),
+                rank: 3,
+                specification: Interaction.EMPTY_SPECIFICATION
+        )
+        interactions.add(interaction3)
+
+
+        interactions
+    }
+
+    private List<Interaction> getInteractionsToShortProcess(ResponseSubmissionSpecification responseSpec) {
+        List<Interaction> interactions = []
+
+        Interaction interaction1 = new Interaction(
+                interactionType: InteractionType.ResponseSubmission.name(),
+                rank: 1,
+                specification: responseSpec.jsonString
+        )
+        interactions.add(interaction1)
+
+        Interaction interaction3 = new Interaction(
+                interactionType: InteractionType.Read.name(),
+                rank: 2,
+                specification: Interaction.EMPTY_SPECIFICATION
+        )
+        interactions.add(interaction3)
+
+
+        interactions
+    }
+
 
     /**
      * Duplicate a sequence in an assignment (without interactions)

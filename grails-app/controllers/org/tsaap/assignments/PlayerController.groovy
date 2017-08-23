@@ -65,7 +65,7 @@ class PlayerController {
     def initializeInteractionsAndStartFirst(Sequence sequenceInstance) {
         User user = springSecurityService.currentUser
         List<Interaction> interactions =
-            getDynamicsInteractions(sequenceInstance.statement, params)
+            getDynamicsInteractions(sequenceInstance, params)
 
         sequenceInstance = sequenceService.saveSequence(sequenceInstance, user, sequenceInstance.assignment, sequenceInstance.statement)
         sequenceService.addSequenceInteractions(sequenceInstance, user, interactions)
@@ -154,99 +154,23 @@ class PlayerController {
                     choiceList << (it as Integer)
                 }
             }
-        } else {
-            if (params.exclusiveChoice && params.exclusiveChoice != "null") {
+        } else if (params.exclusiveChoice && params.exclusiveChoice != "null") {
                 choiceList = [params.exclusiveChoice as Integer]
-            } else {
-                choiceList = []
-            }
         }
         choiceList
     }
 
 
-    private List<Interaction> getDynamicsInteractions (Statement statement, def params) {
-        List<Interaction> interactions
-        boolean studentsProvideExplanation = params.studentsProvideExplanation?.toBoolean()
-        ResponseSubmissionSpecification responseSpec = new ResponseSubmissionSpecification()
-        responseSpec.studentsProvideExplanation = studentsProvideExplanation
-        responseSpec.studentsProvideConfidenceDegree = studentsProvideExplanation
-
-        EvaluationSpecification evalSpec = new EvaluationSpecification()
-        if (params.responseToEvaluateCount != null) {
-            evalSpec.setResponseToEvaluateCount((Integer) params.responseToEvaluateCount.toInteger())
+    private List<Interaction> getDynamicsInteractions (Sequence sequence, def params) {
+        boolean studentsProvideExplanation = true
+        int responseToEvaluateCount = EvaluationSpecification.MAX_RESPONSE_TO_EVALUATE_COUNT
+        if (sequence.executionIsFaceToFace()) {
+            studentsProvideExplanation = params.studentsProvideExplanation?.toBoolean()
+            responseToEvaluateCount = params.responseToEvaluateCount?.toInteger()
         }
-
-        if (studentsProvideExplanation) {
-            interactions = getInteractionsToDefaultProcess(
-                responseSpec,
-                evalSpec
-            )
-        } else if (statement.isOpenEnded()) {
-            responseSpec.studentsProvideExplanation = true
-            responseSpec.studentsProvideConfidenceDegree = true
-            interactions = getInteractionsToDefaultProcess(
-              responseSpec,
-              evalSpec
-          )
-        } else {
-            interactions = getInteractionsToShortProcess(
-                responseSpec
-            )
-        }
-
-        interactions
+        sequenceService.createInteractionsForSequence(sequence,studentsProvideExplanation,responseToEvaluateCount)
     }
 
-    private List<Interaction> getInteractionsToDefaultProcess(ResponseSubmissionSpecification responseSpec, EvaluationSpecification evalSpec) {
-        List<Interaction> interactions = []
 
-        Interaction interaction1 = new Interaction(
-            interactionType: InteractionType.ResponseSubmission.name(),
-            rank: 1,
-            specification: responseSpec.jsonString
-        )
-        interactions.add(interaction1)
-
-
-        Interaction interaction2 = new Interaction(
-            interactionType: InteractionType.Evaluation.name(),
-            rank: 2,
-            specification: evalSpec.jsonString
-        )
-        interactions.add(interaction2)
-
-
-        Interaction interaction3 = new Interaction(
-            interactionType: InteractionType.Read.name(),
-            rank: 3,
-            specification: Interaction.EMPTY_SPECIFICATION
-        )
-        interactions.add(interaction3)
-
-
-        interactions
-    }
-
-    private List<Interaction> getInteractionsToShortProcess(ResponseSubmissionSpecification responseSpec) {
-        List<Interaction> interactions = []
-
-        Interaction interaction1 = new Interaction(
-            interactionType: InteractionType.ResponseSubmission.name(),
-            rank: 1,
-            specification: responseSpec.jsonString
-        )
-        interactions.add(interaction1)
-
-        Interaction interaction3 = new Interaction(
-            interactionType: InteractionType.Read.name(),
-            rank: 2,
-            specification: Interaction.EMPTY_SPECIFICATION
-        )
-        interactions.add(interaction3)
-
-
-        interactions
-    }
 
 }

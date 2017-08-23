@@ -47,9 +47,10 @@ class EvaluationSpecification extends JsonDefaultSpecification {
     }
 
     static constraints = {
-        responseToEvaluateCount nullable: false, max: 5
+        responseToEvaluateCount nullable: false, max: MAX_RESPONSE_TO_EVALUATE_COUNT
     }
 
     private static final String RESPONSE_COUNT = "responseToEvaluateCount"
+    public static final int MAX_RESPONSE_TO_EVALUATE_COUNT = 5
 
 }

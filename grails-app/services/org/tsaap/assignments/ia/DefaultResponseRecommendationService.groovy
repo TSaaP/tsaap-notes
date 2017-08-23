@@ -2,6 +2,7 @@ package org.tsaap.assignments.ia
 
 import grails.transaction.Transactional
 import org.tsaap.assignments.InteractionResponse
+import org.tsaap.assignments.interactions.EvaluationSpecification
 import org.tsaap.contracts.Contract
 
 @Transactional
@@ -102,8 +103,8 @@ class DefaultResponseRecommendationService implements ResponseRecommendationServ
      * @param recommendationCount the number of recommended responses to associate to one given response
      * @return the mapping as a map
      */
-    Map<String, List<Long>> getRecommendedResponseIdByResponseIdForOpenQuestion(List<InteractionResponse> responseList, int recommendationCount = 3) {
-        Contract.requires(recommendationCount > 0 && recommendationCount < 4, RECOMMENDATION_COUNT_INVALID + recommendationCount)
+    Map<String, List<Long>> getRecommendedResponseIdByResponseIdForOpenQuestion(List<InteractionResponse> responseList, int recommendationCount = EvaluationSpecification.MAX_RESPONSE_TO_EVALUATE_COUNT) {
+        Contract.requires(recommendationCount > 0 && recommendationCount <= EvaluationSpecification.MAX_RESPONSE_TO_EVALUATE_COUNT, RECOMMENDATION_COUNT_INVALID + recommendationCount)
         Map<String, List<Long>> res = [:]
         def responseKeyList = new ArrayList<InteractionResponse>()
         responseKeyList.addAll(responseList)

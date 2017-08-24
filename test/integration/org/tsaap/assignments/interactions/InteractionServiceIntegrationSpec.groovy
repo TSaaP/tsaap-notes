@@ -437,7 +437,7 @@ class InteractionServiceIntegrationSpec extends Specification {
         learnerInteraction.state == StateType.show.name()
 
         and: "the intercation state for learner is OK"
-        interaction.stateForLearner(thom) == learnerInteraction.state
+        interaction.stateForUser(thom) == learnerInteraction.state
 
         when: "the learner interaction is created for the second interaction from an other user"
         Interaction interaction2 = sequence.evaluationInteraction

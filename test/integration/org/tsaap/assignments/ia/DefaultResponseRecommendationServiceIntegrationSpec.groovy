@@ -192,7 +192,7 @@ class DefaultResponseRecommendationServiceIntegrationSpec extends Specification 
 
         when: "building the explanation recommendation mapping with default value for recommendations number"
         def mapping = responseRecommendationService.getRecommendedResponseIdByResponseIdForOpenQuestion(
-                InteractionResponse.findAllByInteraction(interaction))
+                InteractionResponse.findAllByInteraction(interaction),3)
 
         then:"the algorithm provides a one to one recommendation as expected"
         println ">>>>>>>>>>>>> open response mapping $mapping "

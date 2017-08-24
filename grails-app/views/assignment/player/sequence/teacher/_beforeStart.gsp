@@ -1,3 +1,5 @@
+<g:render template="/assignment/player/statement/${userRole}/${sequenceInstance.state}"
+          model="[statementInstance: sequenceInstance.statement]"/>
 <g:set var="questionType" value="${sequenceInstance.statement.questionType.name()}"/>
 <div id="interactionSpec_${sequenceInstance.id}">
     <form>
@@ -30,7 +32,7 @@
         </div>
 
         <div id="configuration_${sequenceInstance.id}">
-            <g:render template="/assignment/player/interactions/teacher/interactions_configuration"
+            <g:render template="/assignment/player/sequence/teacher/interactions_configuration"
                       model="[sequenceId: sequenceInstance.id, questionType: questionType]"/>
         </div>
 
@@ -39,16 +41,6 @@
                               url="[action: 'initializeInteractionsAndStartFirst', controller: 'player']"
                               update="sequence_${sequenceInstance.id}"
                               value="${message(code: "player.sequence.interaction.start", args: [1])}"/>
-           %{-- <g:remoteLink class="btn btn-success" controller="player" action="initializeInteractionsAndStartFirst"
-                          id="${sequenceInstance.id}"
-                          update="sequence_${sequenceInstance.id}"
-                          onSuccess="remoteLinkSuccess(${sequenceInstance.id});"
-                          params="{studentsProvideExplanation:\$('#studentsProvideExplanation_${sequenceInstance.id}').val(), studentsProvideConfidenceDegree:\$('#studentsProvideConfidenceDegree_${sequenceInstance.id}').val(), responseToEvaluateCount:\$('#responseToEvaluateCount_${sequenceInstance.id}').val(), asynchronousProcess: \$('#asynchronousProcess_${sequenceInstance.id}').val()}">
-                <span class="glyphicon glyphicon-play"></span>
-                <span id="synchronous_${sequenceInstance.id}">${message(code: "player.sequence.interaction.start", args: [1])}</span>
-                <span class="hidden"
-                      id="asynchronous_${sequenceInstance.id}">${message(code: "player.sequence.interaction.asynchronous.start")}</span>
-            </g:remoteLink>--}%
         </div>
     </form>
 </div>

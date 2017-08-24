@@ -87,19 +87,7 @@ class InteractionService {
         response
     }
 
-    /**
-     * Create and activate a learner interaction
-     * @param learner
-     * @param interaction
-     * @param user
-     * @return the created interaction
-     */
-    LearnerInteraction createAndActivateLearnerInteraction(User learner, Interaction interaction, User user) {
-        Contract.requires(learner == user, ONLY_LEARNER_CAN_CREATE_LEARNER_INTERACTION)
-        LearnerInteraction learnerInteraction = new LearnerInteraction(learner: learner, interaction: interaction)
-        learnerInteraction.activate()
-        learnerInteraction
-    }
+
 
     private void updateActiveInteractionInSequence(Interaction interaction) {
         Sequence sequence = interaction.sequence

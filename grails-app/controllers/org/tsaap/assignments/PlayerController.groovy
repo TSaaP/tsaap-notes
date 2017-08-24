@@ -140,7 +140,7 @@ class PlayerController {
 
     private void renderSequenceTemplate(user, Sequence sequenceInstance) {
         def userRole = (user == sequenceInstance.assignment.owner ? 'teacher' : 'learner')
-        render template: "/assignment/player/sequence/show",
+        render template: "/assignment/player/sequence/${userRole}/${sequenceInstance.state}",
                 model: [userRole: userRole, sequenceInstance: sequenceInstance, user: user],
                 layout: "ajax"
     }

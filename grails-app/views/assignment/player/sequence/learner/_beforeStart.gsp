@@ -1,3 +1,5 @@
+<g:render template="/assignment/player/statement/${userRole}/${sequenceInstance.state}"
+          model="[statementInstance: sequenceInstance.statement]"/>
 <div class="alert alert-warning" role="alert">
   ${message(code:"player.sequence.interaction.beforeStart.message", args:[1])}
   <g:remoteLink controller="player" action="updateSequenceDisplay" id="${sequenceInstance.id}" title="Refresh" update="sequence_${sequenceInstance.id}">

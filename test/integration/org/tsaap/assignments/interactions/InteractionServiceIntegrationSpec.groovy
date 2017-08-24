@@ -411,52 +411,7 @@ class InteractionServiceIntegrationSpec extends Specification {
         !Assignment.findById(assignment.id)
     }
 
-    void "test creation of a learner interaction"() {
-        given: "an assignment with sequence and interactions"
-        Assignment assignment = bootstrapTestService.assignment3WithInteractions
 
-        and: "the sequence is set to be used in asynchronous process"
-        Sequence sequence = assignment.sequences[0]
-        sequence.executionContext = ExecutionContextType.Blended.name()
-
-        and:"the response submission interaction"
-        Interaction interaction = sequence.responseSubmissionInteraction
-
-        and: "learner registered in the assignment"
-        def learners = bootstrapTestService.learners
-        User thom = learners[0]
-
-        when: "the learner interaction is created by the learner"
-        LearnerInteraction learnerInteraction = interactionService.createAndActivateLearnerInteraction(thom, interaction, thom)
-
-        then: "the learner interaction is created, saved with all properties correctly set"
-        learnerInteraction.id
-        learnerInteraction.learner == thom
-        learnerInteraction.interaction == interaction
-        learnerInteraction.isActive
-        learnerInteraction.state == StateType.show.name()
-
-        and: "the intercation state for learner is OK"
-        interaction.stateForUser(thom) == learnerInteraction.state
-
-        when: "the learner interaction is created for the second interaction from an other user"
-        Interaction interaction2 = sequence.evaluationInteraction
-        interactionService.createAndActivateLearnerInteraction(thom, interaction2, bootstrapTestService.learnerMary)
-
-        then: "an exception is thrown"
-        thrown(ConditionViolationException)
-
-        when: "the second learner interaction is correctly created"
-        LearnerInteraction learnerInteraction2 = interactionService.createAndActivateLearnerInteraction(thom, interaction2, thom)
-        learnerInteraction.refresh()
-
-
-        then: "the second learner interaction is the only one active"
-        learnerInteraction2.id
-        learnerInteraction2.isActive
-        !learnerInteraction.isActive
-
-    }
 
 
 

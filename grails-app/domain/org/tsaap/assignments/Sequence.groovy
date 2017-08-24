@@ -110,6 +110,23 @@ class Sequence {
     }
 
     /**
+     * Find the active interaction for learner
+     * @param learner the learner
+     * @return the active interaction
+     */
+    Interaction activeInteractionForLearner(User learner) {
+        def interaction
+        if (executionIsFaceToFace()) {
+            interaction = this.activeInteraction
+        } else {
+            LearnerSequence learnerSequence = findOrCreateLearnerSequence(learner)
+            interaction = learnerSequence.activeInteraction
+        }
+        interaction
+    }
+
+
+    /**
      * Get the evaluation specification
      * @return the evaluation specification
      */
@@ -257,6 +274,42 @@ class Sequence {
      */
     boolean hasExplanations() {
         responseSubmissionSpecification?.studentsProvideExplanation
+    }
+
+    /**
+     *
+     * @return true if the sequence is played with default 3 phases process
+     */
+    boolean isDefaultProcess() {
+        responseSubmissionSpecification?.studentsProvideExplanation
+    }
+
+    /**
+     *
+     * @return true if the sequence is played with short 2 phases process
+     */
+    boolean isShortProcess() {
+        !isDefaultProcess()
+    }
+
+    /**
+     * Find or create learner sequence
+     * @param learner the learner
+     */
+    private LearnerSequence findOrCreateLearnerSequence(User learner) {
+        LearnerSequence ls = LearnerSequence.findByLearnerAndSequence(learner,this)
+        if (!ls) {
+            ls = new LearnerSequence(learner: learner, sequence: this)
+            if (activeInteraction) {
+                ls.activeInteraction = responseSubmissionInteraction
+            }
+            ls.save()
+        }
+        if (!ls.activeInteraction && activeInteraction) {
+            ls.activeInteraction = responseSubmissionInteraction
+            ls.save()
+        }
+        ls
     }
 
 

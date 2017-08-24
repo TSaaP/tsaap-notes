@@ -276,6 +276,47 @@ class SequenceServiceIntegrationSpec extends Specification {
 
     }
 
+    void "test obtaining active interaction for a learner in face to face process"() {
+        given: "a sequence with eval interaction as active interaction"
+        Assignment assignment = bootstrapTestService.assignment3WithInteractions
+        Sequence sequence = assignment.sequences[0]
+        sequence.activeInteraction = sequence.evaluationInteraction
+
+        and: "a learner"
+        def mary = bootstrapTestService.learnerMary
+
+        expect:"sequence is face to face"
+        sequence.executionIsFaceToFace()
+
+        and: "the active interaction for the learner is the active interaction of the sequence"
+        sequence.activeInteractionForLearner(mary) == sequence.activeInteraction
+
+    }
+
+    void "test obtaining active interaction for a learner in asynchronous process"() {
+        given: "a sequence with no active interaction"
+        Assignment assignment = bootstrapTestService.assignment3WithInteractions
+        Sequence sequence = assignment.sequences[0]
+        sequence.activeInteraction = null
+        sequence.executionContext = ExecutionContextType.Blended.name()
+
+        and: "a learner"
+        def mary = bootstrapTestService.learnerMary
+
+        expect:"sequence is not face to face"
+        !sequence.executionIsFaceToFace()
+
+        and: "the active interaction for the learner is null"
+        sequence.activeInteractionForLearner(mary) == null
+
+        when: "the sequence has started"
+        sequence.activeInteraction = sequence.responseSubmissionInteraction
+
+        then: "the active interaction for the learner is response submission interaction"
+        sequence.activeInteractionForLearner(mary) == sequence.responseSubmissionInteraction
+
+    }
+
     void "test adding a fake explanation"() {
         given: "a statement"
         Statement statement = bootstrapTestService.statement1

@@ -93,44 +93,6 @@ class InteractionServiceIntegrationSpec extends Specification {
         thrown(ConditionViolationException)
     }
 
-    void "test start and stop interaction with second interaction disabled"() {
-        given: "an assignment with one sequence and 2 interactions"
-        Assignment assignment = bootstrapTestService.assignment3WithInteractions
-        Sequence sequence = assignment.lastSequence
-        Interaction interaction = assignment.lastSequence.responseSubmissionInteraction
-
-        and:"the second interaction is disabled"
-        Interaction interaction2 = assignment.lastSequence.evaluationInteraction
-        interaction2.enabled = false
-        interaction.save()
-
-        and:"the tird interaction is enabled"
-        Interaction interaction3 = assignment.lastSequence.readInteraction
-
-
-        expect: "the active interaction is the first one"
-        sequence.activeInteraction == interaction
-
-        when:"the interaction is started"
-        interactionService.startInteraction(interaction, interaction.owner)
-
-        and: "the interaction is stopped"
-        interactionService.stopInteraction(interaction, interaction.owner)
-
-        then: "the interaction is in consistent state"
-        interaction.state == StateType.afterStop.name()
-
-        and: "the current active interaction is the last enabled because the second one is disabled"
-        sequence.activeInteraction == interaction3
-
-        when: "start and stop last interaction"
-        interactionService.startInteraction(interaction3, interaction3.owner)
-        interactionService.stopInteraction(interaction3, interaction3.owner)
-
-        then: "the current active interaction stay the same"
-        sequence.activeInteraction == interaction3
-
-    }
 
     void "test save choice interaction response when the learner is not registered i the assignment"() {
         given: "an assignment with sequence and interactions"

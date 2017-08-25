@@ -15,7 +15,6 @@ class Interaction {
     String interactionType
     Integer rank
     String specification
-    Boolean enabled = true
 
     Date dateCreated
     Date lastUpdated
@@ -221,16 +220,34 @@ class Interaction {
      * @param user the learner
      * @return the state of the current interaction for the given learner
      */
-    String stateForUser(User user) {
+    String stateForLearner(User user) {
         String state = this.state
         if (sequence.executionIsAsynchronous()) {
             if (this == sequence.activeInteractionForLearner(user)) {
-                if (!(sequence.executionIsBlended() && this.isRead())) {
+                if (sequence.executionIsBlended() && this.isRead()) {
+                    state = this.state
+                } else {
                     state = StateType.show.name()
                 }
             } else  {
                 state = StateType.afterStop.name()
             }
+        }
+        state
+    }
+
+    /**
+     * return the state of the current interaction for the given teacher
+     * @param user the teacher
+     * @return the state of the current interaction for the given teacher
+     */
+    String stateForTeacher(User user) {
+        String state = this.state
+        if (sequence.executionIsAsynchronous()) {
+            state = StateType.afterStop.name()
+        }
+        if (sequence.executionIsBlended() && isRead()) {
+            state = this.state
         }
         state
     }

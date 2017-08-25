@@ -47,7 +47,7 @@ class InteractionResponse {
      * @return true if first attempt is submitable
      */
     boolean firstAttemptIsSubmitable(User learner) {
-        interaction.stateForUser(learner) == StateType.show.name() && attempt == 1
+        interaction.stateForLearner(learner) == StateType.show.name() && attempt == 1
     }
 
     /**
@@ -55,7 +55,7 @@ class InteractionResponse {
      * @return true if second attempt is submitable
      */
     boolean secondAttemptIsSubmitable(User learner) {
-        interaction.stateForUser(learner) == StateType.afterStop.name() && attempt == 2
+        interaction.stateForLearner(learner) == StateType.afterStop.name() && attempt == 2
     }
 
     /**

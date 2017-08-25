@@ -84,4 +84,9 @@
                              constraintName="learner_sequence_unique"/>
     </changeSet>
 
+    <changeSet id="3" author="fsil">
+        <comment>drop enabled column in interaction table</comment>
+        <dropColumn tableName="interaction" columnName="enabled"/>
+    </changeSet>
+
 </databaseChangeLog>

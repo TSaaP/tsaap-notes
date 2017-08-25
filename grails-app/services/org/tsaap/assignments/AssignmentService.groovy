@@ -111,14 +111,14 @@ class AssignmentService {
         setupAttachementToDeleteFlag(sequence)
         PeerGrading.executeUpdate("delete PeerGrading pg where pg.response in (from InteractionResponse resp where resp.interaction in (from Interaction i where i.sequence = ?))",[sequence])
         InteractionResponse.executeUpdate("delete InteractionResponse resp where resp.interaction in (from Interaction i where i.sequence  = ?)",[sequence])
-        def query = Interaction.where {
-            sequence == sequence
-        }
-        query.deleteAll()
         def query2 = LearnerSequence.where {
             sequence == sequence
         }
         query2.deleteAll()
+        def query = Interaction.where {
+            sequence == sequence
+        }
+        query.deleteAll()
         def statement = sequence.statement
         sequenceService.removeAllFakeExplanationFromStatement(statement)
         statement.delete(flush: true)

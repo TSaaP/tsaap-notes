@@ -91,13 +91,10 @@ class InteractionService {
 
     private void updateActiveInteractionInSequence(Interaction interaction) {
         Sequence sequence = interaction.sequence
-        for (Integer rank in interaction.rank + 1..sequence.interactions.size()) {
-            Interaction newActInter = Interaction.findBySequenceAndRankAndEnabled(sequence, rank, true)
-            if (newActInter) {
-                sequence.activeInteraction = newActInter
-                sequence.save()
-                break
-            }
+        int newRank = interaction.rank+1
+        if (newRank <= sequence.interactions.size()) {
+            sequence.activeInteraction = sequence.interactions[newRank-1]
+            sequence.save()
         }
     }
 

@@ -69,8 +69,11 @@ class PlayerController {
 
         sequenceInstance = sequenceService.saveSequence(sequenceInstance, user, sequenceInstance.assignment, sequenceInstance.statement)
         sequenceService.addSequenceInteractions(sequenceInstance, user, interactions)
-        interactionService.startInteraction(interactions.get(0), user)
-
+        if (sequenceInstance.executionIsFaceToFace()) {
+            interactionService.startInteraction(interactions.get(0), user)
+        } else {
+            sequenceService.startSequenceInBlendedOrDistanceContext(sequenceInstance)
+        }
         renderSequenceTemplate(user, sequenceInstance)
     }
 

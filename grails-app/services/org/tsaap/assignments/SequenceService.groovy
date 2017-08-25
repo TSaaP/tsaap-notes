@@ -87,6 +87,13 @@ class SequenceService {
         Contract.requires(sequence.owner == user, AssignmentService.USER__MUST__BE__ASSIGNMENT__OWNER)
         validateInteractions(interactionsToAdd, user, sequence)
         saveInteractions(interactionsToAdd, sequence)
+        if (sequence.interactions) {
+            if (sequence.executionIsFaceToFace()) {
+                sequence.activeInteraction = sequence.responseSubmissionInteraction
+            } else {
+                sequence.activeInteraction = sequence.readInteraction
+            }
+        }
         updateAssignmentLastUpdated(sequence, sequence.assignment)
 
         sequence
@@ -118,14 +125,15 @@ class SequenceService {
         } else {
             interactions = getInteractionsToDefaultProcess(
                     responseSpec,
-                    evalSpec
+                    evalSpec,
+                    ExecutionContextType.valueOf(sequence.executionContext)
             )
         }
         interactions
     }
 
 
-    private List<Interaction> getInteractionsToDefaultProcess(ResponseSubmissionSpecification responseSpec, EvaluationSpecification evalSpec) {
+    private List<Interaction> getInteractionsToDefaultProcess(ResponseSubmissionSpecification responseSpec, EvaluationSpecification evalSpec, ExecutionContextType executionContextType = ExecutionContextType.FaceToFace) {
         List<Interaction> interactions = []
 
         Interaction interaction1 = new Interaction(
@@ -133,6 +141,7 @@ class SequenceService {
                 rank: 1,
                 specification: responseSpec.jsonString
         )
+
         interactions.add(interaction1)
 
 
@@ -150,7 +159,6 @@ class SequenceService {
                 specification: Interaction.EMPTY_SPECIFICATION
         )
         interactions.add(interaction3)
-
 
         interactions
     }
@@ -214,9 +222,6 @@ class SequenceService {
 
     private void updateAssignmentLastUpdated(Sequence sequence, Assignment assignment) {
         if (!sequence.hasErrors()) {
-            if (sequence.interactions) {
-                sequence.activeInteraction = sequence.interactions[0]
-            }
             assignment.lastUpdated = new Date()
             assignment.save()
         }
@@ -302,6 +307,19 @@ class SequenceService {
         FakeExplanation.findAllByStatement(statement)
     }
 
+    /**
+     * Start a sequence in distance or blended context
+     * @param sequence the sequence
+     * @return the sequence
+     */
+    Sequence startSequenceInBlendedOrDistanceContext(Sequence sequence) {
+        sequence.activeInteraction = sequence.readInteraction
+        if (sequence.executionIsBlended()) {
+            sequence.readInteraction.state = StateType.beforeStart.name()
+        }
+        sequence.state = StateType.show.name()
+        sequence.save()
+    }
 
 
     private def updateInteractions(Sequence sequence) {

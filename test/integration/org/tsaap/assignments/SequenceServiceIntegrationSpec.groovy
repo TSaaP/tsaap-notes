@@ -317,6 +317,33 @@ class SequenceServiceIntegrationSpec extends Specification {
 
     }
 
+    void "test update active interaction for learner"() {
+        given: "a blended sequence with response interaction as active interaction"
+        Assignment assignment = bootstrapTestService.assignment3WithInteractions
+        Sequence sequence = assignment.sequences[0]
+        sequence.activeInteraction = sequence.evaluationInteraction
+        sequence.executionContext = ExecutionContextType.Blended.name()
+
+        and: "a learner embedded in phase 1"
+        def mary = bootstrapTestService.learnerMary
+        def rankPhase = 1
+
+        when: "updating the active interaction"
+        sequence.updateActiveInteractionForLearner(mary, rankPhase)
+
+        then: "the active interaction is eval interaction"
+        sequence.activeInteractionForLearner(mary) == sequence.evaluationInteraction
+
+        when: "rank phase is 2"
+        rankPhase = 2
+
+        and: "updating the active interaction"
+        sequence.updateActiveInteractionForLearner(mary, rankPhase)
+
+        then: "the active interaction is eval interaction"
+        sequence.activeInteractionForLearner(mary) == sequence.readInteraction
+    }
+
     void "test adding a fake explanation"() {
         given: "a statement"
         Statement statement = bootstrapTestService.statement1

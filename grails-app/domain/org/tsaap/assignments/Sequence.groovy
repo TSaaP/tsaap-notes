@@ -125,6 +125,22 @@ class Sequence {
         interaction
     }
 
+    /**
+     * Update the active interaction for a given learner
+     * @param learner the learner
+     * @param phaseRank the current phase rank
+     * @return
+     */
+    LearnerSequence updateActiveInteractionForLearner(User learner, int phaseRank) {
+        LearnerSequence learnerSequence = findOrCreateLearnerSequence(learner)
+        if (phaseRank == 1) {
+            learnerSequence.activeInteraction = this.evaluationInteraction
+        } else {
+            learnerSequence.activeInteraction = this.readInteraction
+        }
+        learnerSequence.save()
+        learnerSequence
+    }
 
     /**
      * Get the evaluation specification

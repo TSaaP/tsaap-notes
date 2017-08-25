@@ -222,7 +222,17 @@ class Interaction {
      * @return the state of the current interaction for the given learner
      */
     String stateForUser(User user) {
-        this.state
+        String state = this.state
+        if (sequence.executionIsAsynchronous()) {
+            if (this == sequence.activeInteractionForLearner(user)) {
+                if (!(sequence.executionIsBlended() && this.isRead())) {
+                    state = StateType.show.name()
+                }
+            } else  {
+                state = StateType.afterStop.name()
+            }
+        }
+        state
     }
 
     ResponseRecommendationService responseRecommendationService

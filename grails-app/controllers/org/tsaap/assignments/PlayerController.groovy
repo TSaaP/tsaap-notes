@@ -125,8 +125,14 @@ class PlayerController {
             response.updateChoiceListSpecification(choiceList)
         }
         interactionService.saveInteractionResponse(response)
+
+        if (interactionInstance.sequence.executionIsAsynchronous()) {
+            interactionInstance.sequence.updateActiveInteractionForLearner(user,response.attempt)
+        }
+
         renderSequenceTemplate(user, interactionInstance.sequence)
     }
+
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def createOrUpdatePeerGrading() {

@@ -42,7 +42,7 @@ class InteractionService {
      * @return the saved response with the updated score
      */
     InteractionResponse saveInteractionResponse(InteractionResponse response) {
-        Contract.requires(response.firstAttemptIsSubmitable() || response.secondAttemptIsSubmitable(), INTERACTION_CANNOT_RECEIVE_RESPONSE)
+        Contract.requires(response.firstAttemptIsSubmitable(response.learner) || response.secondAttemptIsSubmitable(response.learner), INTERACTION_CANNOT_RECEIVE_RESPONSE)
         Contract.requires(response.learner.isRegisteredInAssignment(response.assignment()),
                 LEARNER_NOT_REGISTERED_IN_ASSIGNMENT)
         if (response.interaction.sequence.statement.hasChoices()) {
@@ -107,8 +107,6 @@ class InteractionService {
     private static final String INTERACTION_CANNOT_RECEIVE_RESPONSE = 'The interaction cannot receive response'
     private static
     final String LEARNER_NOT_REGISTERED_IN_ASSIGNMENT = 'Learner is not registered in the relative assignment'
-    private static
-    final String ONLY_LEARNER_CAN_CREATE_LEARNER_INTERACTION = "Only the learner can create a learner interaction"
 
 
 }

@@ -83,6 +83,7 @@ class AssignmentService {
         LearnerAssignment.executeUpdate("delete LearnerAssignment la where la.assignment = ?",[assignment])
         PeerGrading.executeUpdate("delete PeerGrading pg where pg.response in (from InteractionResponse resp where resp.interaction in (from Interaction i where i.sequence in (from Sequence s where s.assignment = ?)))",[assignment])
         InteractionResponse.executeUpdate("delete InteractionResponse resp where resp.interaction in (from Interaction i where i.sequence in (from Sequence s where s.assignment = ?))",[assignment])
+        LearnerSequence.executeUpdate("delete LearnerSequence ls where ls.sequence in (from Sequence s where s.assignment = ?)",[assignment])
         Interaction.executeUpdate("delete Interaction i where i.sequence in (from Sequence s where s.assignment = ?)",[assignment])
         Attachement.executeUpdate("update Attachement attach set toDelete=true, statement=null where attach.statement in (select s.statement from Sequence s where s.assignment = ?)",[assignment])
         Statement.executeUpdate("delete Statement st  where st in (select s.statement from Sequence s where s.assignment = ?)",[assignment])
@@ -114,6 +115,10 @@ class AssignmentService {
             sequence == sequence
         }
         query.deleteAll()
+        def query2 = LearnerSequence.where {
+            sequence == sequence
+        }
+        query2.deleteAll()
         def statement = sequence.statement
         sequenceService.removeAllFakeExplanationFromStatement(statement)
         statement.delete(flush: true)

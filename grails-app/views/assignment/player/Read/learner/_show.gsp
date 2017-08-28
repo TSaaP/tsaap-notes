@@ -60,7 +60,7 @@
     <g:render template="/assignment/player/ExplanationList" model="[responses: responses, sequence: sequence]"/>
 </g:if>
 
-<g:if test="${sequence.executionIsDistance()}">
+<g:if test="${sequence.executionIsDistance() && !sequence.isStopped()}">
     <div style="margin-top: 15px">
         <g:remoteLink class="btn btn-success" controller="player" action="updateResultsAndSequenceDisplay"
                       id="${sequence.id}" update="sequence_${interactionInstance.sequenceId}"><span

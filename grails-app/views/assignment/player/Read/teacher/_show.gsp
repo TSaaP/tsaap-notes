@@ -13,10 +13,13 @@
     <g:render template="/assignment/player/ExplanationList"
               model="[responses: responses, sequence: sequence, badResponses: badResponses]"/>
 </g:if>
-<g:if test="${sequence.executionIsBlendedOrDistance()}">
+<g:if test="${sequence.executionIsBlendedOrDistance() && !sequence.isStopped()}">
     <div style="margin-top: 15px">
         <g:remoteLink class="btn btn-success" controller="player" action="updateResultsAndSequenceDisplay"
                       id="${sequence.id}" update="sequence_${interactionInstance.sequenceId}"><span
                 class="glyphicon glyphicon-refresh"></span> ${message(code: "player.sequence.readinteraction.updateAllResults", args: [interactionInstance.rank])}</g:remoteLink>
+        <g:remoteLink class="btn btn-success" controller="player" action="stopSequence"
+                      id="${sequence.id}" update="sequence_${interactionInstance.sequenceId}"><span
+                class="glyphicon glyphicon-stop"></span> ${message(code: "player.sequence.readinteraction.stopSequence", args: [interactionInstance.rank])}</g:remoteLink>
     </div>
 </g:if>

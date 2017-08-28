@@ -434,4 +434,65 @@ class SequenceServiceIntegrationSpec extends Specification {
         statement.fakeExplanations[0] == fakeExplanation
 
     }
+
+    void "test start sequence in blended or distance context"() {
+        given: "a sequence"
+        Assignment assignment = bootstrapTestService.assignment3WithInteractions
+        Sequence sequence = assignment.sequences[0]
+
+        when: "the sequence is face to face"
+        sequence.executionContext = ExecutionContextType.FaceToFace.name()
+
+        and: "the owner try to trigger start of a blended or distance sequence"
+        sequenceService.startSequenceInBlendedOrDistanceContext(sequence, sequence.owner)
+
+        then:"an exception is thrown"
+        thrown(ConditionViolationException)
+
+        when:"the sequence is blended or distance"
+        sequence.executionContext = ExecutionContextType.Blended.name()
+
+        and: "a user not owner of the sequence try to trigger start of a blended or distance sequence"
+        sequenceService.startSequenceInBlendedOrDistanceContext(sequence, bootstrapTestService.learnerMary)
+
+        then:"an exception is thrown"
+        thrown(ConditionViolationException)
+
+        when: "the owner of the sequence try to trigger start of a blended or distance sequence"
+        sequenceService.startSequenceInBlendedOrDistanceContext(sequence,sequence.owner)
+
+        then:"the sequence is started"
+        sequence.state == StateType.show.name()
+        sequence.activeInteraction == sequence.readInteraction
+
+        and: "the owner try to trigger start of a blended or distance sequence"
+        sequenceService.startSequenceInBlendedOrDistanceContext(sequence, sequence.owner)
+
+        then:"the sequence is started"
+        sequence.state == StateType.show.name()
+        sequence.activeInteraction == sequence.readInteraction
+
+    }
+
+    void "test stop sequence"() {
+        given: "a sequence"
+        Assignment assignment = bootstrapTestService.assignment3WithInteractions
+        Sequence sequence = assignment.sequences[0]
+
+        when: "a user not owner of the sequence try to trigger start of a blended or distance sequence"
+        sequenceService.startSequenceInBlendedOrDistanceContext(sequence, bootstrapTestService.learnerMary)
+
+        then:"an exception is thrown"
+        thrown(ConditionViolationException)
+
+        when: "the owner of the sequence try to stop the sequence"
+        sequenceService.stopSequence(sequence,sequence.owner)
+
+        then:"the sequence is started"
+        sequence.state == StateType.afterStop.name()
+        sequence.interactions.each {
+            it.state == StateType.afterStop.name()
+        }
+
+    }
 }

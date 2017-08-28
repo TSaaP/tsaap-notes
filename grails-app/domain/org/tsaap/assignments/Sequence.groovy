@@ -308,6 +308,11 @@ class Sequence {
         !isDefaultProcess()
     }
 
+
+    boolean isStopped() {
+        state == StateType.afterStop.name()
+    }
+
     /**
      * Find or create learner sequence
      * @param learner the learner

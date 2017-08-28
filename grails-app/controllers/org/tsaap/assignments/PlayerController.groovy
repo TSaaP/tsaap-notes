@@ -5,6 +5,7 @@ import grails.plugins.springsecurity.SpringSecurityService
 import org.grails.plugins.sanitizer.MarkupSanitizerService
 import org.tsaap.assignments.interactions.EvaluationSpecification
 import org.tsaap.assignments.interactions.InteractionService
+import org.tsaap.contracts.ConditionViolationException
 import org.tsaap.directory.User
 
 class PlayerController {
@@ -85,6 +86,13 @@ class PlayerController {
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def stopSequence(Sequence sequenceInstance) {
+        User user = springSecurityService.currentUser
+        sequenceService.stopSequence(sequenceInstance, user)
+        renderSequenceTemplate(user, sequenceInstance)
+    }
+
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def updateRegisteredUserCount(Assignment assignmentInstance) {
         render assignmentInstance.registeredUserCount()
     }
@@ -103,7 +111,11 @@ class PlayerController {
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def updateResultsAndSequenceDisplay(Sequence sequenceInstance) {
         def user = springSecurityService.currentUser
-        sequenceService.updateAllResults(sequenceInstance, user)
+        try {
+            sequenceService.updateAllResults(sequenceInstance, user)
+        } catch (ConditionViolationException cve) {
+            log.error(cve.message)
+        }
         renderSequenceTemplate(user, sequenceInstance)
     }
 

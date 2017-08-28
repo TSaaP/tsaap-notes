@@ -316,6 +316,7 @@ class SequenceService {
      */
     Sequence startSequenceInBlendedOrDistanceContext(Sequence sequence,user) {
         Contract.requires(sequence.owner == user, USER_MUST_BE_SEQUENCE_OWNER)
+        Contract.requires(sequence.executionIsBlendedOrDistance(),SEQUENCE_MUST_BE_BLENDED_OR_DISTANCE)
         sequence.activeInteraction = sequence.readInteraction
         if (sequence.executionIsBlended()) {
             sequence.readInteraction.state = StateType.beforeStart.name()
@@ -341,8 +342,28 @@ class SequenceService {
 
     }
 
+    /**
+     * Stop the given sequence
+     * @param sequence the sequence
+     * @param user the user performing the operation
+     * @return the sequence
+     */
+    Sequence stopSequence(Sequence sequence, User user) {
+        Contract.requires(sequence.owner == user, USER_MUST_BE_SEQUENCE_OWNER)
+        sequence.state = StateType.afterStop.name()
+        sequence.interactions.each {
+            it.state = StateType.afterStop.name()
+        }
+        sequence.save()
+        sequence
+    }
+
     private boolean userCanUpdateAllResultsInSquence(User user, Sequence sequence) {
-        (sequence.owner == user && sequence.executionIsBlendedOrDistance()) || (user.isRegisteredInAssignment(sequence.assignment) && sequence.executionIsDistance())
+        if (sequence.isStopped()) {
+            return false
+        }
+        (sequence.owner == user && sequence.executionIsBlendedOrDistance()) ||
+                (user.isRegisteredInAssignment(sequence.assignment) && sequence.executionIsDistance())
     }
 
     private def updateInteractions(Sequence sequence) {
@@ -370,6 +391,7 @@ class SequenceService {
     private static final String USER_MUST_BE_STATEMENT_OWNER = "user must be the statement owner"
     private static final String USER_MUST_BE_SEQUENCE_OWNER = "user must be the sequence owner"
     private static final String USER_CANNOT_UPDATE_ALL_RESULTS= "user cannot update all resuts"
+    private static final String SEQUENCE_MUST_BE_BLENDED_OR_DISTANCE= "sequence must be blended or distance"
 
 
 }

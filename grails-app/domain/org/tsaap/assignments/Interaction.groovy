@@ -214,7 +214,7 @@ class Interaction {
      */
     String stateForLearner(User user) {
         String state = this.state
-        if (sequence.executionIsBlendedOrDistance()) {
+        if (sequence.executionIsBlendedOrDistance() && !sequence.isStopped()) {
             if (this == sequence.activeInteractionForLearner(user)) {
                 if (sequence.executionIsBlended() && this.isRead()) {
                     state = this.state

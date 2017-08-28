@@ -30,6 +30,8 @@ class Sequence {
                          'responseSubmissionSpecification', 'evaluationSpecification', 'responseSubmissionInteraction',
                          'evaluationInteraction', 'readInteraction']
 
+
+
     /**
      * Find all interactions
      * @return the interactions

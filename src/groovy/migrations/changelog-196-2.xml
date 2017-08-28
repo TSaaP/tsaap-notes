@@ -89,4 +89,11 @@
         <dropColumn tableName="interaction" columnName="enabled"/>
     </changeSet>
 
+    <changeSet id="4" author="fsil">
+        <comment>ensure consistency in sequence table</comment>
+        <sql>
+            update sequence set state = "beforeStart" where active_interaction_id is NULL
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

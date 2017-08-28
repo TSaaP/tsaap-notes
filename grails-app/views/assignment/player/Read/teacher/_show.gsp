@@ -1,6 +1,30 @@
+<g:set var="sequence" value="${interactionInstance.sequence}"/>
+
+<g:set var="responseSubmissionInteraction" value="${sequence.responseSubmissionInteraction}"/>
+<div class="well well-sm">
+    <p>
+        <g:message code="player.sequence.interaction.responseCount" args="[1]"/>
+        <span id="response_count_${responseSubmissionInteraction.id}">
+            ${responseSubmissionInteraction.interactionResponseCount(1)}
+        </span>
+    </p>
+    <g:if test="${sequence.isDefaultProcess()}">
+        <p>
+            <g:message code="player.sequence.interaction.responseCount" args="[2]"/>
+            <span id="response_count_${responseSubmissionInteraction.id}">
+                ${responseSubmissionInteraction.interactionResponseCount(2)}
+            </span>
+        </p>
+
+        <p>
+            ${message(code: 'player.sequence.interaction.evaluationCount', args: [])} <span
+                id="evaluation_count_${responseSubmissionInteraction.id}">${responseSubmissionInteraction.evaluationCount()}</span>
+        </p>
+    </g:if>
+</div>
+
 <div class="alert alert-warning"
      role="alert">${message(code: "player.sequence.interaction.read.teacher.show.message", args: [interactionInstance.rank])}</div>
-<g:set var="sequence" value="${interactionInstance.sequence}"/>
 <g:if test="${sequence.hasExplanations()}">
     <g:if test="${sequence.statement.hasChoices()}">
         <g:set var="responses" value="${sequence.findAllGoodResponses()}"/>
@@ -23,3 +47,4 @@
                 class="glyphicon glyphicon-stop"></span> ${message(code: "player.sequence.readinteraction.stopSequence", args: [interactionInstance.rank])}</g:remoteLink>
     </div>
 </g:if>
+

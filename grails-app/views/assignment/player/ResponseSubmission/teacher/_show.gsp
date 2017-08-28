@@ -1,6 +1,6 @@
 <p>
 <div class="well well-sm">
-  <g:message code="player.sequence.interaction.responseCount"/>
+  <g:message code="player.sequence.interaction.responseCount" args="[1]"/>
   <span id="response_count_${interactionInstance.id}">
     ${interactionInstance.interactionResponseCount()}
   </span>

@@ -3,6 +3,7 @@ package org.tsaap.assignments
 import org.tsaap.BootstrapTestService
 import org.tsaap.assignments.statement.ChoiceInteractionType
 import org.tsaap.assignments.statement.ChoiceSpecification
+import org.tsaap.contracts.ConditionViolationException
 import org.tsaap.directory.User
 import spock.lang.*
 
@@ -13,6 +14,7 @@ class SequenceServiceIntegrationSpec extends Specification {
 
     BootstrapTestService bootstrapTestService
     SequenceService sequenceService
+    AssignmentService assignmentService
 
     def setup() {
         bootstrapTestService.initializeTests()
@@ -342,6 +344,80 @@ class SequenceServiceIntegrationSpec extends Specification {
 
         then: "the active interaction is eval interaction"
         sequence.activeInteractionForLearner(mary) == sequence.readInteraction
+    }
+
+    void "test update all results is not granted for face to face sequence"() {
+        given: "a sequence"
+        Assignment assignment = bootstrapTestService.assignment3WithInteractions
+        Sequence sequence = assignment.sequences[0]
+
+        expect: "the sequence is face to face"
+        sequence.executionIsFaceToFace()
+
+        when: "the owner of the sequence is triggering the update of all results"
+        sequenceService.updateAllResults(sequence, sequence.owner)
+
+        then: "an exception is thrown"
+        thrown(ConditionViolationException)
+
+        when: "a student of the sequence is triggering the update of all results"
+        def mary = bootstrapTestService.learnerMary
+        assignmentService.registerUserOnAssignment(mary, sequence.assignment)
+        sequenceService.updateAllResults(sequence, mary )
+
+        then: "an exception is thrown"
+        thrown(ConditionViolationException)
+
+    }
+
+    void "test update all results is  granted to owner for blended sequence"() {
+        given: "a sequence"
+        Assignment assignment = bootstrapTestService.assignment3WithInteractions
+        Sequence sequence = assignment.sequences[0]
+        sequence.executionContext = ExecutionContextType.Blended.name()
+
+        expect: "the sequence is face to face"
+        sequence.executionIsBlended()
+
+        when: "the owner of the sequence is triggering the update of all results"
+        sequenceService.updateAllResults(sequence, sequence.owner)
+
+        then: "no exception is thrown"
+        noExceptionThrown()
+
+        when: "a student of the sequence is triggering the update of all results"
+        def mary = bootstrapTestService.learnerMary
+        assignmentService.registerUserOnAssignment(mary, sequence.assignment)
+        sequenceService.updateAllResults(sequence, mary )
+
+        then: "an exception is thrown"
+        thrown(ConditionViolationException)
+
+    }
+
+    void "test update all results is  granted to owner and learner for distance sequence"() {
+        given: "a sequence"
+        Assignment assignment = bootstrapTestService.assignment3WithInteractions
+        Sequence sequence = assignment.sequences[0]
+        sequence.executionContext = ExecutionContextType.Distance.name()
+
+        expect: "the sequence is face to face"
+        sequence.executionIsDistance()
+
+        when: "the owner of the sequence is triggering the update of all results"
+        sequenceService.updateAllResults(sequence, sequence.owner)
+
+        then: "no exception is thrown"
+        noExceptionThrown()
+
+        when: "a student of the sequence is triggering the update of all results"
+        def mary = bootstrapTestService.learnerMary
+        assignmentService.registerUserOnAssignment(mary, sequence.assignment)
+        sequenceService.updateAllResults(sequence, mary)
+
+        then: "no exception is thrown"
+        noExceptionThrown()
+
     }
 
     void "test adding a fake explanation"() {

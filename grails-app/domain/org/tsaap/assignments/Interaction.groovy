@@ -140,14 +140,6 @@ class Interaction {
     }
 
     /**
-     * Indicate id interaction is disabled
-     * @return true if interaction is disabled
-     */
-    boolean disabled() {
-        !enabled
-    }
-
-    /**
      * Calculate the number of choice interaction responses for the current interaction
      * @return the number of responses
      */
@@ -222,7 +214,7 @@ class Interaction {
      */
     String stateForLearner(User user) {
         String state = this.state
-        if (sequence.executionIsAsynchronous()) {
+        if (sequence.executionIsBlendedOrDistance()) {
             if (this == sequence.activeInteractionForLearner(user)) {
                 if (sequence.executionIsBlended() && this.isRead()) {
                     state = this.state
@@ -243,7 +235,7 @@ class Interaction {
      */
     String stateForTeacher(User user) {
         String state = this.state
-        if (sequence.executionIsAsynchronous()) {
+        if (sequence.executionIsBlendedOrDistance()) {
             state = StateType.afterStop.name()
         }
         if (sequence.executionIsBlended() && isRead()) {

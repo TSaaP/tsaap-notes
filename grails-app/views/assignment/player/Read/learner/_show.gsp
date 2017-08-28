@@ -59,3 +59,11 @@
     </g:else>
     <g:render template="/assignment/player/ExplanationList" model="[responses: responses, sequence: sequence]"/>
 </g:if>
+
+<g:if test="${sequence.executionIsDistance()}">
+    <div style="margin-top: 15px">
+        <g:remoteLink class="btn btn-success" controller="player" action="updateResultsAndSequenceDisplay"
+                      id="${sequence.id}" update="sequence_${interactionInstance.sequenceId}"><span
+                class="glyphicon glyphicon-refresh"></span> ${message(code: "player.sequence.readinteraction.updateAllResults", args: [interactionInstance.rank])}</g:remoteLink>
+    </div>
+</g:if>

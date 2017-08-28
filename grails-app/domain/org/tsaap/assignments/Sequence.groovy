@@ -176,10 +176,10 @@ class Sequence {
     }
 
     /**
-     * Indicate if sequence execution is asynchronous
-     * @return true if sequence execution is asynchronous
+     * Indicate if sequence execution is blended or distance
+     * @return true if sequence execution is blended or distance
      */
-    boolean executionIsAsynchronous() {
+    boolean executionIsBlendedOrDistance() {
         executionIsBlended() || executionIsDistance()
     }
 

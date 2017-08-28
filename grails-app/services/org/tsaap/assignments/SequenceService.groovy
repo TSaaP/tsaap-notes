@@ -3,6 +3,7 @@ package org.tsaap.assignments
 import grails.transaction.Transactional
 import org.springframework.validation.FieldError
 import org.tsaap.assignments.interactions.EvaluationSpecification
+import org.tsaap.assignments.interactions.InteractionService
 import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
 import org.tsaap.attachement.Attachement
 import org.tsaap.attachement.AttachementService
@@ -13,6 +14,7 @@ import org.tsaap.directory.User
 class SequenceService {
 
     AttachementService attachementService
+    InteractionService interactionService
 
     /**
      * Save a sequence
@@ -312,7 +314,8 @@ class SequenceService {
      * @param sequence the sequence
      * @return the sequence
      */
-    Sequence startSequenceInBlendedOrDistanceContext(Sequence sequence) {
+    Sequence startSequenceInBlendedOrDistanceContext(Sequence sequence,user) {
+        Contract.requires(sequence.owner == user, USER_MUST_BE_SEQUENCE_OWNER)
         sequence.activeInteraction = sequence.readInteraction
         if (sequence.executionIsBlended()) {
             sequence.readInteraction.state = StateType.beforeStart.name()
@@ -321,6 +324,26 @@ class SequenceService {
         sequence.save()
     }
 
+    /**
+     * Update all results for the given sequence
+     * @param sequence the sequence
+     * @param user the user triggering the operation
+     */
+    def updateAllResults(Sequence sequence, User user) {
+        Contract.requires(userCanUpdateAllResultsInSquence(user, sequence), USER_CANNOT_UPDATE_ALL_RESULTS)
+        Interaction interaction = sequence.responseSubmissionInteraction
+        interaction.updateResults(1)
+        interaction.updateResults(2)
+        interaction.save()
+        interaction.findAllEvaluatedResponses().each {
+            interactionService.updateMeanGradeOfResponse(it)
+        }
+
+    }
+
+    private boolean userCanUpdateAllResultsInSquence(User user, Sequence sequence) {
+        (sequence.owner == user && sequence.executionIsBlendedOrDistance()) || (user.isRegisteredInAssignment(sequence.assignment) && sequence.executionIsDistance())
+    }
 
     private def updateInteractions(Sequence sequence) {
         sequence.interactions.eachWithIndex { def interaction, int i ->
@@ -345,6 +368,8 @@ class SequenceService {
     }
 
     private static final String USER_MUST_BE_STATEMENT_OWNER = "user must be the statement owner"
+    private static final String USER_MUST_BE_SEQUENCE_OWNER = "user must be the sequence owner"
+    private static final String USER_CANNOT_UPDATE_ALL_RESULTS= "user cannot update all resuts"
 
 
 }

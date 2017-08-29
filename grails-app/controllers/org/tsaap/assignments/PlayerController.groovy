@@ -132,11 +132,12 @@ class PlayerController {
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def submitResponse(Interaction interactionInstance) {
         def user = springSecurityService.currentUser
+        def phaseRank = params.attempt as int
         InteractionResponse response = new InteractionResponse(
                 learner: user,
                 interaction: interactionInstance,
                 confidenceDegree: params.confidenceDegree as Integer,
-                attempt: params.attempt as int
+                attempt: phaseRank
         )
         if (params.explanation) {
             response.explanation = markupSanitizerService.sanitize(params.explanation)?.cleanString
@@ -147,11 +148,17 @@ class PlayerController {
         }
         interactionService.saveInteractionResponse(response)
 
-        if (interactionInstance.sequence.executionIsBlendedOrDistance()) {
-            interactionInstance.sequence.updateActiveInteractionForLearner(user, response.attempt)
+        def sequence = interactionInstance.sequence
+        def userHasCompletedPhase2 = sequence.userHasCompletedPhase2(user)
+        if (sequence.executionIsBlendedOrDistance()) {
+            if (userHasCompletedPhase2) {
+                sequence.updateActiveInteractionForLearner(user, 2)
+            } else if (phaseRank == 1) {
+                sequence.updateActiveInteractionForLearner(user, 1)
+            }
         }
 
-        renderSequenceTemplate(user, interactionInstance.sequence)
+        renderSequenceTemplate(user, sequence)
     }
 
 
@@ -166,7 +173,13 @@ class PlayerController {
                 interactionService.peerGradingFromUserOnResponse(grader, response, grade)
             }
         }
-        renderSequenceTemplate(grader, interactionInstance.sequence)
+
+        def sequence = interactionInstance.sequence
+        if (sequence.executionIsBlendedOrDistance() && sequence.userHasCompletedPhase2()) {
+            sequence.updateActiveInteractionForLearner(grader, 2)
+        }
+
+        renderSequenceTemplate(grader, sequence)
     }
 
     private void renderSequenceTemplate(user, Sequence sequenceInstance) {

@@ -333,9 +333,11 @@ class SequenceService {
     def updateAllResults(Sequence sequence, User user) {
         Contract.requires(userCanUpdateAllResultsInSquence(user, sequence), USER_CANNOT_UPDATE_ALL_RESULTS)
         Interaction interaction = sequence.responseSubmissionInteraction
-        interaction.updateResults(1)
-        interaction.updateResults(2)
-        interaction.save()
+        if (sequence.statement.hasChoices()) {
+            interaction.updateResults(1)
+            interaction.updateResults(2)
+            interaction.save()
+        }
         interaction.findAllEvaluatedResponses().each {
             interactionService.updateMeanGradeOfResponse(it)
         }

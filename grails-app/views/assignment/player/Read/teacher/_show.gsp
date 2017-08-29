@@ -9,13 +9,14 @@
         </span>
     </p>
     <g:if test="${sequence.isDefaultProcess()}">
-        <p>
-            <g:message code="player.sequence.interaction.responseCount" args="[2]"/>
-            <span id="response_count_${responseSubmissionInteraction.id}">
-                ${responseSubmissionInteraction.interactionResponseCount(2)}
-            </span>
-        </p>
-
+        <g:if test="${sequence.statement.hasChoices()}">
+            <p>
+                <g:message code="player.sequence.interaction.responseCount" args="[2]"/>
+                <span id="response_count_${responseSubmissionInteraction.id}">
+                    ${responseSubmissionInteraction.interactionResponseCount(2)}
+                </span>
+            </p>
+        </g:if>
         <p>
             ${message(code: 'player.sequence.interaction.evaluationCount', args: [])} <span
                 id="evaluation_count_${responseSubmissionInteraction.id}">${responseSubmissionInteraction.evaluationCount()}</span>

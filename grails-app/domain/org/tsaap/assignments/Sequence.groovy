@@ -41,7 +41,7 @@ class Sequence {
         if (id == null) {
             return null
         }
-        if (!interactions) {
+        if (interactions == null) {
             interactions = Interaction.findAllBySequence(this, [sort: 'rank', order: 'asc'])
         }
         interactions
@@ -52,7 +52,7 @@ class Sequence {
      * @return the response submission interaction
      */
     Interaction getResponseSubmissionInteraction() {
-        interactions?.first()
+        getInteractions()?.first()
     }
 
 /**
@@ -61,7 +61,7 @@ class Sequence {
  */
     Interaction getEvaluationInteraction() {
         def result = null
-        if (interactions?.size() > 2) {
+        if (getInteractions()?.size() > 2) {
             result = interactions[1]
         }
         result
@@ -72,7 +72,7 @@ class Sequence {
  * @return the read interaction
  */
     Interaction getReadInteraction() {
-        interactions?.last()
+        getInteractions()?.last()
     }
 
 /**
@@ -81,6 +81,14 @@ class Sequence {
  */
     ResponseSubmissionSpecification getResponseSubmissionSpecification() {
         responseSubmissionInteraction?.interactionSpecification
+    }
+
+    /**
+     * Get the evaluation specification
+     * @return the evaluation specification
+     */
+    EvaluationSpecification getEvaluationSpecification() {
+        evaluationInteraction?.interactionSpecification
     }
 
 /**
@@ -114,14 +122,6 @@ class Sequence {
         }
         learnerSequence.save()
         learnerSequence
-    }
-
-/**
- * Get the evaluation specification
- * @return the evaluation specification
- */
-    EvaluationSpecification getEvaluationSpecification() {
-        evaluationInteraction?.interactionSpecification
     }
 
 /**
@@ -273,9 +273,50 @@ class Sequence {
         !isDefaultProcess()
     }
 
-
+/**
+ *
+ * @return true if the sequence is stopped
+ */
     boolean isStopped() {
         state == StateType.afterStop.name()
+    }
+
+    /**
+     * Indicate if a user has performed evaluation for the current sequence
+     * @param user the user
+     * @return true if the user has performed evaluation
+     */
+    boolean userHasPerformedEvaluation(User user) {
+        Interaction interaction = this.responseSubmissionInteraction
+        def result = PeerGrading.executeQuery(
+                "select count(*) from PeerGrading pg where pg.grader = ? and pg.response in (from InteractionResponse resp where resp.interaction = ?)", [user, interaction])
+        result[0] > 0
+    }
+
+/**
+ * Indicate if a user has performed second submission for the current sequence
+ * @param user the user
+ * @return true if the user has performed second submission
+ */
+    boolean userHasSubmittedSecondAttempt(User user) {
+        responseSubmissionInteraction.hasResponseForUser(user, 2)
+    }
+
+    /**
+     * Indicate if a user has completed the second phase
+     * @param user the user
+     * @return true if the user has completed second phase
+     */
+    boolean userHasCompletedPhase2(User user) {
+        def res = false
+        def userHasPerformedEvaluation = userHasPerformedEvaluation(user)
+        def noRecommendedResponses = !findRecommendedResponsesForUser(user)
+        if (this.statement.isOpenEnded()) {
+            res =  (userHasPerformedEvaluation || noRecommendedResponses)
+        } else if (userHasSubmittedSecondAttempt(user)) {
+            res = (userHasPerformedEvaluation || noRecommendedResponses)
+        }
+        res
     }
 
 /**

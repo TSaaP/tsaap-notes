@@ -31,6 +31,7 @@ class Sequence {
                          'evaluationInteraction', 'readInteraction']
 
 
+    List<Interaction> interactions
 
     /**
      * Find all interactions
@@ -40,7 +41,10 @@ class Sequence {
         if (id == null) {
             return null
         }
-        Interaction.findAllBySequence(this, [sort: 'rank', order: 'asc'])
+        if (!interactions) {
+            interactions = Interaction.findAllBySequence(this, [sort: 'rank', order: 'asc'])
+        }
+        interactions
     }
 
     /**
@@ -48,74 +52,42 @@ class Sequence {
      * @return the response submission interaction
      */
     Interaction getResponseSubmissionInteraction() {
-        def result = null
-        if (interactions?.size() > 0) {
-            for (int i = 0; i < interactions.size(); i++) {
-                if (interactions[i].isResponseSubmission()) {
-                    result = interactions[i]
-                    break
-                }
-            }
-        }
-        result
+        interactions?.first()
     }
 
-    /**
-     * Get the evaluation interaction
-     * @return the evaluation interaction
-     */
+/**
+ * Get the evaluation interaction
+ * @return the evaluation interaction
+ */
     Interaction getEvaluationInteraction() {
         def result = null
-        if (interactions?.size() > 0) {
-            for (int i = 0; i < interactions.size(); i++) {
-                if (interactions[i].isEvaluation()) {
-                    result = interactions[i]
-                    break
-                }
-            }
+        if (interactions?.size() > 2) {
+            result = interactions[1]
         }
         result
     }
 
-    /**
-     * Get the read interaction
-     * @return the read interaction
-     */
+/**
+ * Get the read interaction
+ * @return the read interaction
+ */
     Interaction getReadInteraction() {
-        def result = null
-        if (interactions?.size() > 0) {
-            for (int i = 0; i < interactions.size(); i++) {
-                if (interactions[i].isRead()) {
-                    result = interactions[i]
-                    break
-                }
-            }
-        }
-        result
+        interactions?.last()
     }
 
-    /**
-     * Get the response submission specification
-     * @return the response submission specification
-     */
+/**
+ * Get the response submission specification
+ * @return the response submission specification
+ */
     ResponseSubmissionSpecification getResponseSubmissionSpecification() {
-        def result = null
-        if (interactions?.size() > 0) {
-            for (int i = 0; i < interactions.size(); i++) {
-                if (interactions[i].isResponseSubmission()) {
-                    result = interactions[i].interactionSpecification
-                    break
-                }
-            }
-        }
-        result
+        responseSubmissionInteraction?.interactionSpecification
     }
 
-    /**
-     * Find the active interaction for learner
-     * @param learner the learner
-     * @return the active interaction
-     */
+/**
+ * Find the active interaction for learner
+ * @param learner the learner
+ * @return the active interaction
+ */
     Interaction activeInteractionForLearner(User learner) {
         def interaction
         if (executionIsFaceToFace()) {
@@ -127,12 +99,12 @@ class Sequence {
         interaction
     }
 
-    /**
-     * Update the active interaction for a given learner
-     * @param learner the learner
-     * @param phaseRank the current phase rank
-     * @return
-     */
+/**
+ * Update the active interaction for a given learner
+ * @param learner the learner
+ * @param phaseRank the current phase rank
+ * @return
+ */
     LearnerSequence updateActiveInteractionForLearner(User learner, int phaseRank) {
         LearnerSequence learnerSequence = findOrCreateLearnerSequence(learner)
         if (phaseRank == 1) {
@@ -144,59 +116,50 @@ class Sequence {
         learnerSequence
     }
 
-    /**
-     * Get the evaluation specification
-     * @return the evaluation specification
-     */
+/**
+ * Get the evaluation specification
+ * @return the evaluation specification
+ */
     EvaluationSpecification getEvaluationSpecification() {
-        def result = null
-        if (interactions?.size() > 0) {
-            for (int i = 0; i < interactions.size(); i++) {
-                if (interactions[i].isEvaluation()) {
-                    result = interactions[i].interactionSpecification
-                    break
-                }
-            }
-        }
-        result
+        evaluationInteraction?.interactionSpecification
     }
 
-    /**
-     * Get the title of the statement
-     * @return the title
-     */
+/**
+ * Get the title of the statement
+ * @return the title
+ */
     String getTitle() {
         statement?.title
     }
 
-    /**
-     * Get the content of the statement
-     * @return the content
-     */
+/**
+ * Get the content of the statement
+ * @return the content
+ */
     String getContent() {
         statement?.content
     }
 
-    /**
-     * Indicate if sequence execution is blended or distance
-     * @return true if sequence execution is blended or distance
-     */
+/**
+ * Indicate if sequence execution is blended or distance
+ * @return true if sequence execution is blended or distance
+ */
     boolean executionIsBlendedOrDistance() {
         executionIsBlended() || executionIsDistance()
     }
 
-    /**
-     * Indicate if sequence execution is distance
-     * @return true if sequence execution is distance
-     */
+/**
+ * Indicate if sequence execution is distance
+ * @return true if sequence execution is distance
+ */
     boolean executionIsDistance() {
         executionContext == ExecutionContextType.Distance.name()
     }
 
-    /**
-     * Indicate if sequence execution is blended
-     * @return true if sequence execution is blended
-     */
+/**
+ * Indicate if sequence execution is blended
+ * @return true if sequence execution is blended
+ */
     boolean executionIsBlended() {
         executionContext == ExecutionContextType.Blended.name()
     }
@@ -205,11 +168,11 @@ class Sequence {
         executionContext == ExecutionContextType.FaceToFace.name()
     }
 
-    /**
-     * Find all recommended responses for user
-     * @param user the user
-     * @return the response list
-     */
+/**
+ * Find all recommended responses for user
+ * @param user the user
+ * @return the response list
+ */
     List<InteractionResponse> findRecommendedResponsesForUser(User user) {
         def responseInteraction = responseSubmissionInteraction
         InteractionResponse userResponse = InteractionResponse.findByInteractionAndLearnerAndAttempt(responseInteraction, user, 1)
@@ -224,20 +187,20 @@ class Sequence {
         res
     }
 
-    /**
-     * Find all good responses with explanations
-     * @return the good responses
-     */
+/**
+ * Find all good responses with explanations
+ * @return the good responses
+ */
     List<InteractionResponse> findAllGoodResponses() {
         Interaction interaction = responseSubmissionInteraction
         InteractionResponse.findAllByInteractionAndAttemptAndScore(interaction, 1, 100f,
                 [sort: "meanGrade", order: "desc"])
     }
 
-    /**
-     * Find all open responses with explanations
-     * @return the open responses
-     */
+/**
+ * Find all open responses with explanations
+ * @return the open responses
+ */
     List<InteractionResponse> findAllOpenResponses() {
         Interaction interaction = responseSubmissionInteraction
         def res = InteractionResponse.findAllByInteraction(interaction,
@@ -245,16 +208,16 @@ class Sequence {
         res
     }
 
-    /**
-     * Return all bad responses with explanations for the sequence
-     * Responses in returned structure can be accessed this way:
-     * map[score][answerGroup][index] where
-     * score is a Float eg: 100.0, 0.0, -50.0
-     * answerGroup is a String eg: "1", "1,3", ""
-     * index is an index on the response list for answerGroup eg: 0, 4
-     * @param sessionPhase
-     * @return
-     */
+/**
+ * Return all bad responses with explanations for the sequence
+ * Responses in returned structure can be accessed this way:
+ * map[score][answerGroup][index] where
+ * score is a Float eg: 100.0, 0.0, -50.0
+ * answerGroup is a String eg: "1", "1,3", ""
+ * index is an index on the response list for answerGroup eg: 0, 4
+ * @param sessionPhase
+ * @return
+ */
     Map<Float, Map<String, List<InteractionResponse>>> findAllBadResponses() {
         def list
         Map map = [:]
@@ -286,26 +249,26 @@ class Sequence {
         map
     }
 
-    /**
-     *
-     * @return true if the sequence has explanations
-     */
+/**
+ *
+ * @return true if the sequence has explanations
+ */
     boolean hasExplanations() {
         responseSubmissionSpecification?.studentsProvideExplanation
     }
 
-    /**
-     *
-     * @return true if the sequence is played with default 3 phases process
-     */
+/**
+ *
+ * @return true if the sequence is played with default 3 phases process
+ */
     boolean isDefaultProcess() {
         responseSubmissionSpecification?.studentsProvideExplanation
     }
 
-    /**
-     *
-     * @return true if the sequence is played with short 2 phases process
-     */
+/**
+ *
+ * @return true if the sequence is played with short 2 phases process
+ */
     boolean isShortProcess() {
         !isDefaultProcess()
     }
@@ -315,12 +278,12 @@ class Sequence {
         state == StateType.afterStop.name()
     }
 
-    /**
-     * Find or create learner sequence
-     * @param learner the learner
-     */
+/**
+ * Find or create learner sequence
+ * @param learner the learner
+ */
     private LearnerSequence findOrCreateLearnerSequence(User learner) {
-        LearnerSequence ls = LearnerSequence.findByLearnerAndSequence(learner,this)
+        LearnerSequence ls = LearnerSequence.findByLearnerAndSequence(learner, this)
         if (!ls) {
             ls = new LearnerSequence(learner: learner, sequence: this)
             if (activeInteraction) {

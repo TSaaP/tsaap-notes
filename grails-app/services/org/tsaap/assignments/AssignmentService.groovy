@@ -86,6 +86,7 @@ class AssignmentService {
         LearnerSequence.executeUpdate("delete LearnerSequence ls where ls.sequence in (from Sequence s where s.assignment = ?)",[assignment])
         Interaction.executeUpdate("delete Interaction i where i.sequence in (from Sequence s where s.assignment = ?)",[assignment])
         Attachement.executeUpdate("update Attachement attach set toDelete=true, statement=null where attach.statement in (select s.statement from Sequence s where s.assignment = ?)",[assignment])
+        FakeExplanation.executeUpdate("delete FakeExplanation fe where fe.statement in (select s.statement from Sequence s where s.assignment = ?)",[assignment])
         Statement.executeUpdate("delete Statement st  where st in (select s.statement from Sequence s where s.assignment = ?)",[assignment])
         //sequences are deleted by cascade
         assignment.delete(flush: flush)

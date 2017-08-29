@@ -72,7 +72,7 @@ class PlayerController {
         if (sequenceInstance.executionIsFaceToFace()) {
             interactionService.startInteraction(interactions.get(0), user)
         } else {
-            sequenceService.startSequenceInBlendedOrDistanceContext(sequenceInstance,user)
+            sequenceService.startSequenceInBlendedOrDistanceContext(sequenceInstance, user)
         }
         renderSequenceTemplate(user, sequenceInstance)
     }
@@ -156,13 +156,17 @@ class PlayerController {
 
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def createOrUpdatePeerGrading() {
+    def submitGrades(Interaction interactionInstance) {
+        User grader = springSecurityService.currentUser
         def params = params
-        User grader = User.get(params.grader_id as long)
-        InteractionResponse response = InteractionResponse.get(params.response_id as long)
-        Float grade = params.grade as Float
-        PeerGrading peerGrading = interactionService.peerGradingFromUserOnResponse(grader, response, grade)
-        render "${peerGrading.hasErrors() ? 'error' : 'success'}"
+        params.each {
+            if (it.key.startsWith("grade_")) {
+                InteractionResponse response = InteractionResponse.get(it.key.split("_")[1] as Long)
+                Float grade = it.value as Float
+                interactionService.peerGradingFromUserOnResponse(grader, response, grade)
+            }
+        }
+        renderSequenceTemplate(grader, interactionInstance.sequence)
     }
 
     private void renderSequenceTemplate(user, Sequence sequenceInstance) {

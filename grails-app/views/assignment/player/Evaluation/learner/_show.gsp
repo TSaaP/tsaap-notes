@@ -5,25 +5,24 @@
 <g:set var="responsesToGrade" value="${sequence.findRecommendedResponsesForUser(user)}"/>
 <g:if test="${!responseInteractionInstance.hasResponseForUser(user, 2)}">
     <g:if test="${responsesToGrade}">
-    <div class="alert alert-info">${message(code: 'player.sequence.interaction.evaluation.intro')}</div>
-    </g:if>
-    <g:else>
-        <div class="alert alert-info">${message(code: 'player.sequence.interaction.evaluation.intro.noresponsestograde')}</div>
-    </g:else>
-    <ul class="list-group">
-            <g:each in="${responsesToGrade}" var="currentResponse" status="i">
-            <g:if test="${i < interactionInstance.interactionSpecification.responseToEvaluateCount}">
-            <li class="list-group-item">
-                <p>
-                    <g:if test="${sequence.statement.hasChoices()}">
-                        <strong>${message(code: 'player.sequence.interaction.choice.label')} ${currentResponse.choiceList()}</strong>
-                        <br/>
-                    </g:if>
-                    ${raw(currentResponse.explanation)}
-                    <input id="grade_${currentResponse.id}" name="grade_${currentResponse.id}" class="rating" value="${currentResponse.getGradeFromUser(user)}">
-                </p>
-            </li>
-            <r:script>
+        <div class="alert alert-info">${message(code: 'player.sequence.interaction.evaluation.intro')}</div>
+        <g:form>
+            <g:hiddenField name="id" value="${interactionInstance.id}"/>
+            <ul class="list-group">
+                <g:each in="${responsesToGrade}" var="currentResponse" status="i">
+                    <g:if test="${i < interactionInstance.interactionSpecification.responseToEvaluateCount}">
+                        <li class="list-group-item">
+                            <p>
+                                <g:if test="${sequence.statement.hasChoices()}">
+                                    <strong>${message(code: 'player.sequence.interaction.choice.label')} ${currentResponse.choiceList()}</strong>
+                                    <br/>
+                                </g:if>
+                                ${raw(currentResponse.explanation)}
+                                <input id="grade_${currentResponse.id}" name="grade_${currentResponse.id}" class="rating"
+                                       value="${currentResponse.getGradeFromUser(user)}">
+                            </p>
+                        </li>
+                        <r:script>
             $("#grade_${currentResponse.id}").rating({
                 size: "xs",
                 step: 1,
@@ -31,19 +30,19 @@
                 showClear: false,
                 language: "${RequestContextUtils.getLocale(request).language}"
             });
-            $('#grade_${currentResponse.id}').on('rating.change', function(event, value, caption) {
-                 $.ajax({
-                    type: "GET",
-                    url: "${createLink(action: 'createOrUpdatePeerGrading', controller: 'player')}",
-                    data: {grader_id:${user.id},response_id:${currentResponse.id},responseIsChoiceResponse:${sequence.statement.hasChoices()}, grade:value}
-                }).done(function(data) {
-                    //$('#grade_${currentResponse.id}').rating('refresh', {showClear: true});
-                });
-            });
-            </r:script>
-            </g:if>
-        </g:each>
-    </ul>
+                        </r:script>
+                    </g:if>
+                </g:each>
+            </ul>
+            <g:submitToRemote controller="player" action="submitGrades"
+                              update="sequence_${interactionInstance.sequenceId}" class="btn btn-default"
+                              value="${message(code: 'player.sequence.interaction.submitGrades')}"/>
+            <p></p>
+        </g:form>
+    </g:if>
+    <g:else>
+        <div class="alert alert-info">${message(code: 'player.sequence.interaction.evaluation.intro.noresponsestograde')}</div>
+    </g:else>
 </g:if>
 <g:if test="${sequence.statement.hasChoices()}">
     <g:render template="/assignment/player/ResponseSubmission/learner/show"

@@ -89,20 +89,14 @@
     function manageExecutionContext(sequenceId, questionType, sourceEvent) {
         var studentsProvideExplanation =  $('#studentsProvideExplanation_' + sequenceId + '_' + questionType);
         var configurationPanel = $('#configuration_' + sequenceId);
-        var startMessageHolderSync = $('#synchronous_'+sequenceId);
-        var startMessageHolderASync = $('#asynchronous_'+sequenceId);
         switch(sourceEvent.val()) {
             case 'FaceToFace':
                 configurationPanel.removeClass('hidden')
                 studentsProvideExplanation.prop("checked", false);
                 manageConfigurationChange(sequenceId,questionType, studentsProvideExplanation);
-                startMessageHolderASync.addClass("hidden");
-                startMessageHolderSync.removeClass("hidden");
                 break;
             default:
                 studentsProvideExplanation.prop("checked", true);
-                startMessageHolderSync.addClass("hidden");
-                startMessageHolderASync.removeClass("hidden");
                 if (questionType != "OpenEnded") {
                     configurationPanel.addClass('hidden');
                 }
@@ -125,10 +119,6 @@
         manageExecutionContext(sequenceId, questionType, $(this))
     });
 
-
-    function remoteLinkSuccess (id) {
-        $('#' + 'interactionSpec_' + id).css('display', 'none')
-    }
 
 </r:script>
 </body>

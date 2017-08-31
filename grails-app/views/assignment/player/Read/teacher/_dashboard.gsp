@@ -29,12 +29,13 @@
 </g:if>
 
 <g:if test="${sequence.hasExplanations()}">
+    <g:set var="attempt" value="${sequence.executionIsBlendedOrDistance() ? 2 : 1}"/>
     <g:if test="${sequence.statement.hasChoices()}">
-        <g:set var="responses" value="${sequence.findAllGoodResponses()}"/>
-        <g:set var="badResponses" value="${sequence.findAllBadResponses()}"/>
+        <g:set var="responses" value="${sequence.findAllGoodResponses(attempt)}"/>
+        <g:set var="badResponses" value="${sequence.findAllBadResponses(attempt)}"/>
     </g:if>
     <g:else>
-        <g:set var="responses" value="${sequence.findAllOpenResponses()}"/>
+        <g:set var="responses" value="${sequence.findAllOpenResponses(attempt)}"/>
         <g:set var="badResponses" value="${[:]}"/>
     </g:else>
     <g:render template="/assignment/player/ExplanationList"

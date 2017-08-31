@@ -191,9 +191,9 @@ class Sequence {
  * Find all good responses with explanations
  * @return the good responses
  */
-    List<InteractionResponse> findAllGoodResponses() {
+    List<InteractionResponse> findAllGoodResponses(int attempt = 1) {
         Interaction interaction = responseSubmissionInteraction
-        InteractionResponse.findAllByInteractionAndAttemptAndScore(interaction, 1, 100f,
+        InteractionResponse.findAllByInteractionAndAttemptAndScore(interaction, attempt, 100f,
                 [sort: "meanGrade", order: "desc"])
     }
 
@@ -201,9 +201,9 @@ class Sequence {
  * Find all open responses with explanations
  * @return the open responses
  */
-    List<InteractionResponse> findAllOpenResponses() {
+    List<InteractionResponse> findAllOpenResponses(int attempt = 1) {
         Interaction interaction = responseSubmissionInteraction
-        def res = InteractionResponse.findAllByInteraction(interaction,
+        def res = InteractionResponse.findAllByInteractionAndAttempt(interaction, attempt,
                 [sort: "meanGrade", order: "desc"])
         res
     }
@@ -218,13 +218,13 @@ class Sequence {
  * @param sessionPhase
  * @return
  */
-    Map<Float, Map<String, List<InteractionResponse>>> findAllBadResponses() {
+    Map<Float, Map<String, List<InteractionResponse>>> findAllBadResponses(int attempt = 1) {
         def list
         Map map = [:]
         Interaction interaction = responseSubmissionInteraction
         list = InteractionResponse.withCriteria {
             eq('interaction', interaction)
-            eq('attempt', 1)
+            eq('attempt', attempt)
             lt('score', 100.0f)
             order('score', 'desc')
             'learner' {

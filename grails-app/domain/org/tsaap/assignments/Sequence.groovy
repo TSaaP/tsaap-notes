@@ -120,8 +120,10 @@ class Sequence {
             learnerSequence.activeInteraction = this.evaluationInteraction
         } else {
             learnerSequence.activeInteraction = this.readInteraction
-            this.responseSubmissionInteraction.updateResults(2)
-            this.responseSubmissionInteraction.save()
+            if (this.statement.hasChoices()) {
+                this.responseSubmissionInteraction.updateResults(2)
+                this.responseSubmissionInteraction.save()
+            }
         }
         learnerSequence.save()
         learnerSequence
@@ -318,14 +320,25 @@ class Sequence {
      */
     boolean userHasCompletedPhase2(User user) {
         def res = false
-        def userHasPerformedEvaluation = userHasPerformedEvaluation(user)
-        def noRecommendedResponses = !findRecommendedResponsesForUser(user)
-        if (this.statement.isOpenEnded()) {
-            res = (userHasPerformedEvaluation || noRecommendedResponses)
-        } else if (userHasSubmittedSecondAttempt(user)) {
-            res = (userHasPerformedEvaluation || noRecommendedResponses)
+        if (userHasCompletedPhase1(user)) {
+            def userHasPerformedEvaluation = userHasPerformedEvaluation(user)
+            def noRecommendedResponses = !findRecommendedResponsesForUser(user)
+            if (userHasSubmittedSecondAttempt(user)) {
+                res = (userHasPerformedEvaluation || noRecommendedResponses)
+            } else if (this.executionIsFaceToFace() && this.statement.isOpenEnded()) {
+                res = (userHasPerformedEvaluation || noRecommendedResponses)
+            }
         }
         res
+    }
+
+    /**
+     * Indicate if a user has completed the first phase
+     * @param user the user
+     * @return true if the user has completed first phase
+     */
+    boolean userHasCompletedPhase1(User user) {
+        InteractionResponse.countByInteractionAndAttemptAndLearner(this.responseSubmissionInteraction, 1, user) > 0
     }
 
 /**

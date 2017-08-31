@@ -56,7 +56,7 @@
     <g:else>
         <div class="alert alert-info">${message(code: 'player.sequence.interaction.evaluation.intro.noresponsestograde')}</div>
     </g:else>
-    <g:if test="${sequence.statement.hasChoices()}">
+    <g:if test="${!(sequence.executionIsFaceToFace() && sequence.statement.isOpenEnded())}">
         <g:if test="${sequence.userHasSubmittedSecondAttempt(user)}">
             <div class="alert alert-info">${message(code: 'player.sequence.interaction.secondAttemptSubmitted')}</div>
         </g:if>

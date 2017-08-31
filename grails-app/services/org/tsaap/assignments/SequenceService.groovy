@@ -338,7 +338,8 @@ class SequenceService {
             interaction.updateResults(2)
             interaction.save()
         }
-        interaction.findAllEvaluatedResponses().each {
+        int attemptEvaluated = sequence.executionIsFaceToFace() ? 1 : 2
+        interaction.findAllEvaluatedResponses(attemptEvaluated).each {
             interactionService.updateMeanGradeOfResponse(it)
         }
 

@@ -1,6 +1,7 @@
 package org.tsaap.assignments
 
 import org.hibernate.FetchMode
+import org.tsaap.assignments.ia.DefaultResponseRecommendationService
 import org.tsaap.assignments.interactions.EvaluationSpecification
 import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
 import org.tsaap.directory.User
@@ -28,7 +29,7 @@ class Sequence {
 
     static transients = ['interactions', 'content', 'title',
                          'responseSubmissionSpecification', 'evaluationSpecification', 'responseSubmissionInteraction',
-                         'evaluationInteraction', 'readInteraction']
+                         'evaluationInteraction', 'readInteraction', 'responseRecommendationService']
 
 
     List<Interaction> interactions
@@ -119,6 +120,8 @@ class Sequence {
             learnerSequence.activeInteraction = this.evaluationInteraction
         } else {
             learnerSequence.activeInteraction = this.readInteraction
+            this.responseSubmissionInteraction.updateResults(2)
+            this.responseSubmissionInteraction.save()
         }
         learnerSequence.save()
         learnerSequence
@@ -168,21 +171,27 @@ class Sequence {
         executionContext == ExecutionContextType.FaceToFace.name()
     }
 
+
+    DefaultResponseRecommendationService responseRecommendationService
+
 /**
  * Find all recommended responses for user
  * @param user the user
  * @return the response list
  */
-    List<InteractionResponse> findRecommendedResponsesForUser(User user) {
-        def responseInteraction = responseSubmissionInteraction
-        InteractionResponse userResponse = InteractionResponse.findByInteractionAndLearnerAndAttempt(responseInteraction, user, 1)
-        def res
-        if (userResponse) {
-            res = responseInteraction.explanationRecommendationMap()[userResponse.id as String].collect {
-                InteractionResponse.get(it)
+    List<InteractionResponse> findRecommendedResponsesForUser(User user, int attempt = 1) {
+        def interaction = this.responseSubmissionInteraction
+        def res = []
+        if (this.executionIsFaceToFace()) {
+            InteractionResponse userResponse = InteractionResponse.findByInteractionAndLearnerAndAttempt(interaction, user, attempt)
+            if (userResponse) {
+                res = interaction.explanationRecommendationMap()[userResponse.id as String].collect {
+                    InteractionResponse.get(it)
+                }
             }
         } else {
-            res = []
+            def limit = EvaluationSpecification.MAX_RESPONSE_TO_EVALUATE_COUNT
+            res = responseRecommendationService.findAllResponsesOrderedByEvaluationCount(interaction, 2, limit)
         }
         res
     }
@@ -312,7 +321,7 @@ class Sequence {
         def userHasPerformedEvaluation = userHasPerformedEvaluation(user)
         def noRecommendedResponses = !findRecommendedResponsesForUser(user)
         if (this.statement.isOpenEnded()) {
-            res =  (userHasPerformedEvaluation || noRecommendedResponses)
+            res = (userHasPerformedEvaluation || noRecommendedResponses)
         } else if (userHasSubmittedSecondAttempt(user)) {
             res = (userHasPerformedEvaluation || noRecommendedResponses)
         }

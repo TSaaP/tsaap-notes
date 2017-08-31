@@ -1,12 +1,16 @@
 package org.tsaap.assignments.ia
 
 import grails.transaction.Transactional
+import groovy.sql.Sql
+import org.tsaap.assignments.Interaction
 import org.tsaap.assignments.InteractionResponse
 import org.tsaap.assignments.interactions.EvaluationSpecification
 import org.tsaap.contracts.Contract
 
 @Transactional
 class DefaultResponseRecommendationService implements ResponseRecommendationService {
+
+    def dataSource
 
     private static final int MIN_SIZE_OF_EXPLANATION_TO_BE_EVALUATED = 10
     private static final String RECOMMENDATION_COUNT_INVALID = "recommendation count not between 1 and 3: "
@@ -124,5 +128,26 @@ class DefaultResponseRecommendationService implements ResponseRecommendationServ
         res
     }
 
+
+    /**
+     * Find all responses for a given interaction ordered by evaluation count
+     * @param interaction the interaction
+     * @param attempt indicate the attempt relative to the fetched responses
+     * @param limit limit the sise of the returning list
+     * @return the list of responses
+     */
+    List<InteractionResponse> findAllResponsesOrderedByEvaluationCount(Interaction interaction, int attempt, int limit) {
+        def res = []
+        Sql sql = new Sql(dataSource)
+        def sqlQuery = """
+              select cir.id as response_id,  (select count(*) from peer_grading pg where pg.response_id = cir.id) as evalCount
+              from choice_interaction_response cir WHERE cir.interaction_id = ${interaction.id} and cir. attempt = ${attempt}
+              ORDER BY evalCount ASC LIMIT ${limit};
+            """
+        sql.eachRow(sqlQuery,0,limit) {
+           res << InteractionResponse.get(it.response_id)
+        }
+        res
+    }
 }
 

@@ -87,7 +87,8 @@ class Interaction {
                 respSubmInter.updateResults(2)
                 respSubmInter.save()
             }
-            respSubmInter.findAllEvaluatedResponses().each {
+            int attemptEvaluated = sequence.executionIsFaceToFace() ? 1 : 2
+            respSubmInter.findAllEvaluatedResponses(attemptEvaluated).each {
                 interactionService.updateMeanGradeOfResponse(it)
             }
         }
@@ -97,8 +98,8 @@ class Interaction {
      * Find all evaluated responses for the current interaction
      * @return the list of evaluated responses
      */
-    List<InteractionResponse> findAllEvaluatedResponses() {
-        InteractionResponse.findAllByInteractionAndAttempt(this, 1)
+    List<InteractionResponse> findAllEvaluatedResponses(int attempt = 1) {
+        InteractionResponse.findAllByInteractionAndAttempt(this, attempt)
     }
 
 

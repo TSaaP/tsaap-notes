@@ -105,6 +105,13 @@ class PlayerController {
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def updateSequenceDisplay(Sequence sequenceInstance) {
         def user = springSecurityService.currentUser
+
+        if (sequenceInstance.executionIsBlendedOrDistance()) {
+            if (sequenceInstance.userHasCompletedPhase2(user)) {
+                sequenceInstance.updateActiveInteractionForLearner(user, 2)
+            }
+        }
+
         renderSequenceTemplate(user, sequenceInstance)
     }
 
@@ -149,9 +156,9 @@ class PlayerController {
         interactionService.saveInteractionResponse(response)
 
         def sequence = interactionInstance.sequence
-        def userHasCompletedPhase2 = sequence.userHasCompletedPhase2(user)
+
         if (sequence.executionIsBlendedOrDistance()) {
-            if (userHasCompletedPhase2) {
+            if (sequence.userHasCompletedPhase2(user)) {
                 sequence.updateActiveInteractionForLearner(user, 2)
             } else if (phaseRank == 1) {
                 sequence.updateActiveInteractionForLearner(user, 1)
@@ -175,7 +182,7 @@ class PlayerController {
         }
 
         def sequence = interactionInstance.sequence
-        if (sequence.executionIsBlendedOrDistance() && sequence.userHasCompletedPhase2()) {
+        if (sequence.executionIsBlendedOrDistance() && sequence.userHasCompletedPhase2(grader)) {
             sequence.updateActiveInteractionForLearner(grader, 2)
         }
 

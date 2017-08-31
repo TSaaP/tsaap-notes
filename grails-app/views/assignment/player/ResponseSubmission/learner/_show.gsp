@@ -42,8 +42,8 @@
                 </g:each>
             </div>
         </g:if>
-
-        <g:if test="${attempt == 1}">
+        <g:set var="shouldPresentExplanationAndConfidenceFields" value="${attempt == 1 || interactionInstance.sequence.executionIsBlendedOrDistance()}"/>
+        <g:if test="${shouldPresentExplanationAndConfidenceFields}">
             <g:if test="${responseSubmissionSpecificationInstance.studentsProvideExplanation}">
                 <div class="form-group fieldcontain">
                     <label for="explanation_${interactionInstance.id}">
@@ -72,7 +72,7 @@
                 </div>
             </g:if>
         </g:if>
-        <g:if test="${attempt == 1 && responseSubmissionSpecificationInstance.studentsProvideExplanation}">
+        <g:if test="${shouldPresentExplanationAndConfidenceFields && responseSubmissionSpecificationInstance.studentsProvideExplanation}">
             <g:submitToRemote controller="player" action="submitResponse"
                               update="sequence_${interactionInstance.sequenceId}" class="btn btn-default"
                               value="${message(code: 'player.sequence.interaction.submitResponse')}"

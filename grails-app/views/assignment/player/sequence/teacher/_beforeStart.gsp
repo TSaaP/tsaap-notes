@@ -40,7 +40,7 @@
             <g:submitToRemote class="btn btn-success"
                               url="[action: 'initializeInteractionsAndStartFirst', controller: 'player']"
                               update="sequence_${sequenceInstance.id}"
-                              value="${message(code: "player.sequence.interaction.start", args: [1])}"/>
+                              value="${message(code: "player.sequence.start")}"/>
         </div>
     </form>
 </div>

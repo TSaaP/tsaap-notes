@@ -74,6 +74,7 @@ class PlayerController {
         } else {
             sequenceService.startSequenceInBlendedOrDistanceContext(sequenceInstance, user)
         }
+        interactionService.buildInteractionResponsesFromTeacherExplanationsForASequence(user,sequenceInstance)
         renderSequenceTemplate(user, sequenceInstance)
     }
 

@@ -373,8 +373,74 @@ class InteractionServiceIntegrationSpec extends Specification {
         !Assignment.findById(assignment.id)
     }
 
+    void "test build Response Based On Teacher Expected Explanation For A Sequence with multiple choice and face to face"() {
 
+        given: "an assignment with sequence and interactions"
+        Assignment assignment = bootstrapTestService.assignment3WithInteractions
+        Sequence sequence = assignment.sequences[0]
 
+        expect: "explanation is not provided"
+        !sequence.statement.expectedExplanation
+
+        and: "sequence is choice based"
+        sequence.statement.hasChoices()
+
+        when: "trying to generate expected response"
+        def resp = interactionService.buildResponseBasedOnTeacherExpectedExplanationForASequence(
+                sequence,
+                assignment.owner
+        )
+
+        then: "no response is provided"
+        !resp
+
+        when: "an expected explanation is provided"
+        sequence.statement.expectedExplanation = "the expected explanation"
+
+        and: "sequence is face to face"
+        sequence.executionContext = ExecutionContextType.FaceToFace.name()
+
+        and: "trying to generate expected response"
+        resp = interactionService.buildResponseBasedOnTeacherExpectedExplanationForASequence(
+                sequence,
+                assignment.owner
+        )
+
+        then: "the response is generated as expected"
+        resp.interaction == sequence.responseSubmissionInteraction
+        resp.attempt == 1
+        resp.confidenceDegree == ConfidenceDegreeEnum.CONFIDENT.ordinal()
+        resp.learner == assignment.owner
+        resp.score == 100f
+    }
+
+    void "test build Response Based On Teacher Expected Explanation For A Sequence with open-ended question and distance"() {
+
+        given: "an assignment with sequence and expected explanation"
+        Assignment assignment = bootstrapTestService.assignment3WithInteractions
+        Sequence sequence = assignment.sequences[0]
+        sequence.statement.expectedExplanation = "the expected explanation"
+
+        and: "sequence is distance"
+        sequence.executionContext = ExecutionContextType.Distance.name()
+
+        and: "sequence is open-ended based"
+        sequence.statement.questionType = QuestionType.OpenEnded
+
+        when: "trying to generate expected response"
+        def resp = interactionService.buildResponseBasedOnTeacherExpectedExplanationForASequence(
+                sequence,
+                assignment.owner,
+                ConfidenceDegreeEnum.NOT_REALLY_CONFIDENT
+        )
+
+        then: "the response is generated as expected"
+        resp.interaction == sequence.responseSubmissionInteraction
+        resp.attempt == 2
+        resp.confidenceDegree == ConfidenceDegreeEnum.NOT_REALLY_CONFIDENT.ordinal()
+        resp.learner == assignment.owner
+        resp.score == null
+    }
 
 
 }

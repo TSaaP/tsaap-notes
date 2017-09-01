@@ -87,6 +87,68 @@ class InteractionService {
         response
     }
 
+    /**
+     * Build Interaction responses from teacher explanations
+     * @param teacher the teacher
+     * @param sequence the sequence
+     */
+    def buildInteractionResponsesFromTeacherExplanationsForASequence(User teacher, Sequence sequence, ConfidenceDegreeEnum confidenceDegree = ConfidenceDegreeEnum.CONFIDENT) {
+
+        buildResponseBasedOnTeacherExpectedExplanationForASequence(sequence, teacher, confidenceDegree)
+        //buildResponsesBasedOnTeacherFakeExplanationsForASequence()
+
+    }
+
+    /**
+     * Build Interaction response from teacher expected explanation
+     * @param teacher the teacher
+     * @param sequence the sequence
+     */
+    InteractionResponse buildResponseBasedOnTeacherExpectedExplanationForASequence(Sequence sequence, User teacher, ConfidenceDegreeEnum confidenceDegree = ConfidenceDegreeEnum.CONFIDENT) {
+        def statement = sequence.statement
+        if (!statement.expectedExplanation) {
+            return null
+        }
+        def attempt = sequence.executionIsFaceToFace() ? 1 : 2
+        def statementHasChoices = statement.hasChoices()
+        def interaction = sequence.responseSubmissionInteraction
+
+        InteractionResponse resp = new InteractionResponse(learner: teacher, explanation: statement.expectedExplanation,
+                confidenceDegree: confidenceDegree.ordinal(), attempt: attempt, interaction: interaction)
+        if (statementHasChoices) {
+            resp.updateChoiceListSpecification(statement.choiceSpecificationObject?.expectedChoiceList?.collect {
+                it.index
+            })
+            resp.updateScore()
+        }
+        resp.save()
+        resp
+    }
+
+    /**
+     * Build Interaction response from teacher expected explanation
+     * @param teacher the teacher
+     * @param sequence the sequence
+     */
+    List<InteractionResponse> buildResponsesBasedOnTeacherFakeExplanationsForASequence(Sequence sequence, User teacher, ConfidenceDegreeEnum confidenceDegree = ConfidenceDegreeEnum.CONFIDENT) {
+        def attempt = sequence.executionIsFaceToFace() ? 1 : 2
+        def statement = sequence.statement
+        def statementHasChoices = statement.hasChoices()
+        def interaction = sequence.responseSubmissionInteraction
+
+        def fakeExplanations = FakeExplanation.findAllByStatement(statement)
+        def res = []
+        fakeExplanations.each { fakeExplanation ->
+            InteractionResponse fakeResp = new InteractionResponse(learner: teacher, explanation: fakeExplanation.content,
+                    confidenceDegree: confidenceDegree.ordinal(), attempt:attempt, interaction: interaction)
+            if (statementHasChoices && fakeExplanation.correspondingItem) {
+                fakeResp.updateChoiceListSpecification([fakeExplanation.correspondingItem])
+            }
+            fakeResp.save()
+            res << fakeResp
+        }
+        res
+    }
 
 
     private void updateActiveInteractionInSequence(Interaction interaction) {

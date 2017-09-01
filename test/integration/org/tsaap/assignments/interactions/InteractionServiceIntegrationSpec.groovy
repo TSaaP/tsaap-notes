@@ -1,5 +1,6 @@
 package org.tsaap.assignments.interactions
 
+import org.tsaap.BootstrapService
 import org.tsaap.BootstrapTestService
 import org.tsaap.assignments.*
 import org.tsaap.contracts.ConditionViolationException
@@ -11,6 +12,7 @@ import spock.lang.Specification
  */
 class InteractionServiceIntegrationSpec extends Specification {
 
+    BootstrapService bootstrapService
     BootstrapTestService bootstrapTestService
     InteractionService interactionService
     AssignmentService assignmentService
@@ -440,6 +442,42 @@ class InteractionServiceIntegrationSpec extends Specification {
         resp.confidenceDegree == ConfidenceDegreeEnum.NOT_REALLY_CONFIDENT.ordinal()
         resp.learner == assignment.owner
         resp.score == null
+    }
+
+    void testBuildResponsesBasedOnTeacherFakeExplanationsForASequence() {
+
+        given: "an assignment with sequence and fake explanations"
+        Assignment assignment = bootstrapTestService.assignment3WithInteractions
+        Sequence sequence = assignment.sequences[0]
+        new FakeExplanation(content: "fake explanation 1", correspondingItem: 2, statement: sequence.statement, author: sequence.owner).save(failOnError: true)
+        new FakeExplanation(content: "fake explanation 2", correspondingItem: 1, statement: sequence.statement, author: sequence.owner).save(failOnError: true)
+
+        and: "sequence is distance"
+        sequence.executionContext = ExecutionContextType.Distance.name()
+
+        when: "trying to generate fake responses"
+        def resps = interactionService.buildResponsesBasedOnTeacherFakeExplanationsForASequence(
+                sequence,
+                ConfidenceDegreeEnum.NOT_REALLY_CONFIDENT
+        )
+
+        then: "the responses are generated as expected"
+        resps[0].id
+        !resps[0].hasErrors()
+        resps[0].interaction == sequence.responseSubmissionInteraction
+        resps[0].attempt == 2
+        resps[0].confidenceDegree == ConfidenceDegreeEnum.NOT_REALLY_CONFIDENT.ordinal()
+        resps[0].learner.id == bootstrapService.fakeUserList[0].id
+        resps[0].score > 0f
+        resps[1].id
+        !resps[1].hasErrors()
+        resps[1].interaction == sequence.responseSubmissionInteraction
+        resps[1].attempt == 2
+        resps[1].confidenceDegree == ConfidenceDegreeEnum.NOT_REALLY_CONFIDENT.ordinal()
+        resps[1].learner.id == bootstrapService.fakeUserList[1].id
+        resps[1].score == 0f
+
+
     }
 
 

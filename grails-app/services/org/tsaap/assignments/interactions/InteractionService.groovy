@@ -1,12 +1,15 @@
 package org.tsaap.assignments.interactions
 
 import grails.transaction.Transactional
+import org.tsaap.BootstrapService
 import org.tsaap.assignments.*
 import org.tsaap.contracts.Contract
 import org.tsaap.directory.User
 
 @Transactional
 class InteractionService {
+
+    BootstrapService bootstrapService
 
     /**
      * Start an interaction
@@ -95,7 +98,7 @@ class InteractionService {
     def buildInteractionResponsesFromTeacherExplanationsForASequence(User teacher, Sequence sequence, ConfidenceDegreeEnum confidenceDegree = ConfidenceDegreeEnum.CONFIDENT) {
 
         buildResponseBasedOnTeacherExpectedExplanationForASequence(sequence, teacher, confidenceDegree)
-        //buildResponsesBasedOnTeacherFakeExplanationsForASequence()
+        buildResponsesBasedOnTeacherFakeExplanationsForASequence(sequence, confidenceDegree)
 
     }
 
@@ -130,19 +133,25 @@ class InteractionService {
      * @param teacher the teacher
      * @param sequence the sequence
      */
-    List<InteractionResponse> buildResponsesBasedOnTeacherFakeExplanationsForASequence(Sequence sequence, User teacher, ConfidenceDegreeEnum confidenceDegree = ConfidenceDegreeEnum.CONFIDENT) {
-        def attempt = sequence.executionIsFaceToFace() ? 1 : 2
+    List<InteractionResponse> buildResponsesBasedOnTeacherFakeExplanationsForASequence(Sequence sequence, ConfidenceDegreeEnum confidenceDegree = ConfidenceDegreeEnum.CONFIDENT) {
         def statement = sequence.statement
+        def explanations = statement.fakeExplanations
+        if (!explanations) {
+            return []
+        }
+        def attempt = sequence.executionIsFaceToFace() ? 1 : 2
+
         def statementHasChoices = statement.hasChoices()
         def interaction = sequence.responseSubmissionInteraction
 
-        def fakeExplanations = FakeExplanation.findAllByStatement(statement)
         def res = []
-        fakeExplanations.each { fakeExplanation ->
-            InteractionResponse fakeResp = new InteractionResponse(learner: teacher, explanation: fakeExplanation.content,
+        explanations.eachWithIndex { fakeExplanation, index ->
+            def learner = User.load(bootstrapService.fakeUserList[index].id)
+            InteractionResponse fakeResp = new InteractionResponse(learner: learner, explanation: fakeExplanation.content,
                     confidenceDegree: confidenceDegree.ordinal(), attempt:attempt, interaction: interaction)
             if (statementHasChoices && fakeExplanation.correspondingItem) {
                 fakeResp.updateChoiceListSpecification([fakeExplanation.correspondingItem])
+                fakeResp.updateScore()
             }
             fakeResp.save()
             res << fakeResp

@@ -15,7 +15,6 @@ class Interaction {
     String interactionType
     Integer rank
     String specification
-    Boolean enabled = true
 
     Date dateCreated
     Date lastUpdated
@@ -88,7 +87,8 @@ class Interaction {
                 respSubmInter.updateResults(2)
                 respSubmInter.save()
             }
-            respSubmInter.findAllEvaluatedResponses().each {
+            int attemptEvaluated = sequence.executionIsFaceToFace() ? 1 : 2
+            respSubmInter.findAllEvaluatedResponses(attemptEvaluated).each {
                 interactionService.updateMeanGradeOfResponse(it)
             }
         }
@@ -98,8 +98,8 @@ class Interaction {
      * Find all evaluated responses for the current interaction
      * @return the list of evaluated responses
      */
-    List<InteractionResponse> findAllEvaluatedResponses() {
-        InteractionResponse.findAllByInteractionAndAttempt(this, 1)
+    List<InteractionResponse> findAllEvaluatedResponses(int attempt = 1) {
+        InteractionResponse.findAllByInteractionAndAttempt(this, attempt)
     }
 
 
@@ -138,14 +138,6 @@ class Interaction {
      */
     boolean isRead() {
         interactionType == InteractionType.Read.name()
-    }
-
-    /**
-     * Indicate id interaction is disabled
-     * @return true if interaction is disabled
-     */
-    boolean disabled() {
-        !enabled
     }
 
     /**
@@ -221,13 +213,36 @@ class Interaction {
      * @param user the learner
      * @return the state of the current interaction for the given learner
      */
-    String stateForUser(User user) {
-        String stateForUser = this.state
-        if (sequence.executionIsAsynchronous()) {
-            def li =  LearnerInteraction.findByLearnerAndInteraction(user,this)
-            stateForUser = li ? li.state : this.state
+    String stateForLearner(User user) {
+        String state = this.state
+        if (sequence.executionIsBlendedOrDistance() && !sequence.isStopped()) {
+            if (this == sequence.activeInteractionForLearner(user)) {
+                if (sequence.executionIsBlended() && this.isRead()) {
+                    state = this.state
+                } else {
+                    state = StateType.show.name()
+                }
+            } else  {
+                state = StateType.afterStop.name()
+            }
         }
-        stateForUser
+        state
+    }
+
+    /**
+     * return the state of the current interaction for the given teacher
+     * @param user the teacher
+     * @return the state of the current interaction for the given teacher
+     */
+    String stateForTeacher(User user) {
+        String state = this.state
+        if (sequence.executionIsBlendedOrDistance()) {
+            state = StateType.afterStop.name()
+        }
+        if (sequence.executionIsBlended() && isRead()) {
+            state = this.state
+        }
+        state
     }
 
     ResponseRecommendationService responseRecommendationService

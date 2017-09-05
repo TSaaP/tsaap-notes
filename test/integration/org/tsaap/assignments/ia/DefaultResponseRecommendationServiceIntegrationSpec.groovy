@@ -232,4 +232,88 @@ class DefaultResponseRecommendationServiceIntegrationSpec extends Specification 
         recommendations[0]
 
     }
+
+    void "test findAllResponseIdOrderedByEvaluationCount"() {
+        given: "an assignment with sequence and interactions"
+        Assignment assignment = bootstrapTestService.assignment3WithInteractions
+
+        and:"the response submission interaction"
+        Interaction interaction = assignment.sequences[0].responseSubmissionInteraction
+        interactionService.startInteraction(interaction, interaction.owner)
+
+        and: "learners registered in the assignment"
+        def learners = bootstrapTestService.learners
+        User thom = learners[0]
+        User mary = learners[1]
+        User john = learners[2]
+        User erik = learners[3]
+
+        for (int i = 0; i<4; i++) {
+            assignmentService.registerUserOnAssignment(learners[i], assignment)
+        }
+
+        and: "each one with an answer"
+        InteractionResponse respThom = new InteractionResponse(
+                interaction: interaction,
+                learner: thom,
+                choiceListSpecification: "[2,3,5]",
+                attempt: 1,
+                explanation: "Thom [2,3,5] score 100- not confident",
+                confidenceDegree: ConfidenceDegreeEnum.NOT_REALLY_CONFIDENT.integerValue
+        )
+        interactionService.saveInteractionResponse(respThom)
+        InteractionResponse respMary = new InteractionResponse(
+                interaction: interaction,
+                learner: mary   ,
+                choiceListSpecification: "[1,4]",
+                attempt: 1,
+                explanation: "Mary [1,4] score 0- very confident",
+                confidenceDegree: ConfidenceDegreeEnum.TOTALLY_CONFIDENT.integerValue
+        )
+        interactionService.saveInteractionResponse(respMary)
+        InteractionResponse respJohn = new InteractionResponse(
+                interaction: interaction,
+                learner: john   ,
+                choiceListSpecification: "[2,3,5]",
+                attempt: 1,
+                explanation: "John [2,3,5] score 100- very confident",
+                confidenceDegree: ConfidenceDegreeEnum.TOTALLY_CONFIDENT.integerValue
+        )
+        interactionService.saveInteractionResponse(respJohn)
+        InteractionResponse respErik = new InteractionResponse(
+                interaction: interaction,
+                learner: erik   ,
+                choiceListSpecification: "[1,4]",
+                attempt: 1,
+                explanation: "Erik [1,4] score 0- not really confident",
+                confidenceDegree: ConfidenceDegreeEnum.NOT_REALLY_CONFIDENT.integerValue
+        )
+        interactionService.saveInteractionResponse(respErik)
+
+        and: "some peer-grades have been distributed"
+        PeerGrading pgFromThomOnMary = new PeerGrading(grader: thom, response: respMary, grade: 2).save()
+        PeerGrading pgFromMaryOnJohn = new PeerGrading(grader: mary, response: respJohn, grade: 3).save()
+        PeerGrading pgFromJohnOnMary = new PeerGrading(grader: john, response: respMary, grade: 4).save()
+        PeerGrading pgFromErikOnThom = new PeerGrading(grader: erik, response: respThom, grade: 1).save()
+        PeerGrading pgFromErikOnMary = new PeerGrading(grader: erik, response: respMary, grade: 2).save()
+        PeerGrading pgFromThomOnJohn = new PeerGrading(grader: thom, response: respJohn, grade: 1).save()
+
+        when:"searching responses id ordered by evaluation count with limit of 4"
+        List<InteractionResponse> res = responseRecommendationService.findAllResponsesOrderedByEvaluationCount(interaction,1,4)
+
+        then:"the list contains the four expected elements"
+        res == [respErik, respThom, respJohn, respMary]
+
+        when:"searching responses id ordered by evaluation count with limit of 2"
+        res = responseRecommendationService.findAllResponsesOrderedByEvaluationCount(interaction,1,2)
+
+        then:"the list contains the two expected elements"
+        res == [respErik, respThom]
+
+        when:"searching responses id ordered by evaluation count with limit of 6"
+        res = responseRecommendationService.findAllResponsesOrderedByEvaluationCount(interaction,1,6)
+
+        then:"the list contains the four expected elements"
+        res == [respErik, respThom, respJohn, respMary]
+    }
 }

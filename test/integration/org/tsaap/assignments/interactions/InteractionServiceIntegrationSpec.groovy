@@ -1,5 +1,6 @@
 package org.tsaap.assignments.interactions
 
+import org.tsaap.BootstrapService
 import org.tsaap.BootstrapTestService
 import org.tsaap.assignments.*
 import org.tsaap.contracts.ConditionViolationException
@@ -11,6 +12,7 @@ import spock.lang.Specification
  */
 class InteractionServiceIntegrationSpec extends Specification {
 
+    BootstrapService bootstrapService
     BootstrapTestService bootstrapTestService
     InteractionService interactionService
     AssignmentService assignmentService
@@ -93,44 +95,6 @@ class InteractionServiceIntegrationSpec extends Specification {
         thrown(ConditionViolationException)
     }
 
-    void "test start and stop interaction with second interaction disabled"() {
-        given: "an assignment with one sequence and 2 interactions"
-        Assignment assignment = bootstrapTestService.assignment3WithInteractions
-        Sequence sequence = assignment.lastSequence
-        Interaction interaction = assignment.lastSequence.responseSubmissionInteraction
-
-        and:"the second interaction is disabled"
-        Interaction interaction2 = assignment.lastSequence.evaluationInteraction
-        interaction2.enabled = false
-        interaction.save()
-
-        and:"the tird interaction is enabled"
-        Interaction interaction3 = assignment.lastSequence.readInteraction
-
-
-        expect: "the active interaction is the first one"
-        sequence.activeInteraction == interaction
-
-        when:"the interaction is started"
-        interactionService.startInteraction(interaction, interaction.owner)
-
-        and: "the interaction is stopped"
-        interactionService.stopInteraction(interaction, interaction.owner)
-
-        then: "the interaction is in consistent state"
-        interaction.state == StateType.afterStop.name()
-
-        and: "the current active interaction is the last enabled because the second one is disabled"
-        sequence.activeInteraction == interaction3
-
-        when: "start and stop last interaction"
-        interactionService.startInteraction(interaction3, interaction3.owner)
-        interactionService.stopInteraction(interaction3, interaction3.owner)
-
-        then: "the current active interaction stay the same"
-        sequence.activeInteraction == interaction3
-
-    }
 
     void "test save choice interaction response when the learner is not registered i the assignment"() {
         given: "an assignment with sequence and interactions"
@@ -411,53 +375,110 @@ class InteractionServiceIntegrationSpec extends Specification {
         !Assignment.findById(assignment.id)
     }
 
-    void "test creation of a learner interaction"() {
+    void "test build Response Based On Teacher Expected Explanation For A Sequence with multiple choice and face to face"() {
+
         given: "an assignment with sequence and interactions"
         Assignment assignment = bootstrapTestService.assignment3WithInteractions
-
-        and: "the sequence is set to be used in asynchronous process"
         Sequence sequence = assignment.sequences[0]
-        sequence.executionContext = ExecutionContextType.Blended.name()
 
-        and:"the response submission interaction"
-        Interaction interaction = sequence.responseSubmissionInteraction
+        expect: "explanation is not provided"
+        !sequence.statement.expectedExplanation
 
-        and: "learner registered in the assignment"
-        def learners = bootstrapTestService.learners
-        User thom = learners[0]
+        and: "sequence is choice based"
+        sequence.statement.hasChoices()
 
-        when: "the learner interaction is created by the learner"
-        LearnerInteraction learnerInteraction = interactionService.createAndActivateLearnerInteraction(thom, interaction, thom)
+        when: "trying to generate expected response"
+        def resp = interactionService.buildResponseBasedOnTeacherExpectedExplanationForASequence(
+                sequence,
+                assignment.owner
+        )
 
-        then: "the learner interaction is created, saved with all properties correctly set"
-        learnerInteraction.id
-        learnerInteraction.learner == thom
-        learnerInteraction.interaction == interaction
-        learnerInteraction.isActive
-        learnerInteraction.state == StateType.show.name()
+        then: "no response is provided"
+        !resp
 
-        and: "the intercation state for learner is OK"
-        interaction.stateForUser(thom) == learnerInteraction.state
+        when: "an expected explanation is provided"
+        sequence.statement.expectedExplanation = "the expected explanation"
 
-        when: "the learner interaction is created for the second interaction from an other user"
-        Interaction interaction2 = sequence.evaluationInteraction
-        interactionService.createAndActivateLearnerInteraction(thom, interaction2, bootstrapTestService.learnerMary)
+        and: "sequence is face to face"
+        sequence.executionContext = ExecutionContextType.FaceToFace.name()
 
-        then: "an exception is thrown"
-        thrown(ConditionViolationException)
+        and: "trying to generate expected response"
+        resp = interactionService.buildResponseBasedOnTeacherExpectedExplanationForASequence(
+                sequence,
+                assignment.owner
+        )
 
-        when: "the second learner interaction is correctly created"
-        LearnerInteraction learnerInteraction2 = interactionService.createAndActivateLearnerInteraction(thom, interaction2, thom)
-        learnerInteraction.refresh()
-
-
-        then: "the second learner interaction is the only one active"
-        learnerInteraction2.id
-        learnerInteraction2.isActive
-        !learnerInteraction.isActive
-
+        then: "the response is generated as expected"
+        resp.interaction == sequence.responseSubmissionInteraction
+        resp.attempt == 1
+        resp.confidenceDegree == ConfidenceDegreeEnum.CONFIDENT.ordinal()
+        resp.learner == assignment.owner
+        resp.score == 100f
     }
 
+    void "test build Response Based On Teacher Expected Explanation For A Sequence with open-ended question and distance"() {
+
+        given: "an assignment with sequence and expected explanation"
+        Assignment assignment = bootstrapTestService.assignment3WithInteractions
+        Sequence sequence = assignment.sequences[0]
+        sequence.statement.expectedExplanation = "the expected explanation"
+
+        and: "sequence is distance"
+        sequence.executionContext = ExecutionContextType.Distance.name()
+
+        and: "sequence is open-ended based"
+        sequence.statement.questionType = QuestionType.OpenEnded
+
+        when: "trying to generate expected response"
+        def resp = interactionService.buildResponseBasedOnTeacherExpectedExplanationForASequence(
+                sequence,
+                assignment.owner,
+                ConfidenceDegreeEnum.NOT_REALLY_CONFIDENT
+        )
+
+        then: "the response is generated as expected"
+        resp.interaction == sequence.responseSubmissionInteraction
+        resp.attempt == 2
+        resp.confidenceDegree == ConfidenceDegreeEnum.NOT_REALLY_CONFIDENT.ordinal()
+        resp.learner == assignment.owner
+        resp.score == null
+    }
+
+    void testBuildResponsesBasedOnTeacherFakeExplanationsForASequence() {
+
+        given: "an assignment with sequence and fake explanations"
+        Assignment assignment = bootstrapTestService.assignment3WithInteractions
+        Sequence sequence = assignment.sequences[0]
+        new FakeExplanation(content: "fake explanation 1", correspondingItem: 2, statement: sequence.statement, author: sequence.owner).save(failOnError: true)
+        new FakeExplanation(content: "fake explanation 2", correspondingItem: 1, statement: sequence.statement, author: sequence.owner).save(failOnError: true)
+
+        and: "sequence is distance"
+        sequence.executionContext = ExecutionContextType.Distance.name()
+
+        when: "trying to generate fake responses"
+        def resps = interactionService.buildResponsesBasedOnTeacherFakeExplanationsForASequence(
+                sequence,
+                ConfidenceDegreeEnum.NOT_REALLY_CONFIDENT
+        )
+
+        then: "the responses are generated as expected"
+        resps[0].id
+        !resps[0].hasErrors()
+        resps[0].interaction == sequence.responseSubmissionInteraction
+        resps[0].attempt == 2
+        resps[0].confidenceDegree == ConfidenceDegreeEnum.NOT_REALLY_CONFIDENT.ordinal()
+        resps[0].learner.id == bootstrapService.fakeUserList[0].id
+        resps[0].score > 0f
+        resps[1].id
+        !resps[1].hasErrors()
+        resps[1].interaction == sequence.responseSubmissionInteraction
+        resps[1].attempt == 2
+        resps[1].confidenceDegree == ConfidenceDegreeEnum.NOT_REALLY_CONFIDENT.ordinal()
+        resps[1].learner.id == bootstrapService.fakeUserList[1].id
+        resps[1].score == 0f
+
+
+    }
 
 
 }

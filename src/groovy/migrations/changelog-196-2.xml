@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright (C) 2013-2016 Université Toulouse 3 Paul Sabatier
+  ~
+  ~     This program is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU Affero General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     This program is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU Affero General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU Affero General Public License
+  ~     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="fsil">
+        <comment>Remove learner_interaction table</comment>
+        <dropTable tableName="learner_interaction" cascadeConstraints="true"/>
+    </changeSet>
+
+
+    <changeSet id="2" author="fsil">
+        <comment>Add learner_sequence table</comment>
+        <createTable tableName="learner_sequence">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_created" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_updated" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="learner_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sequence_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="active_interaction_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="state" type="varchar(32)" defaultValue="show">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="learner_sequence" indexName="idx_learner_sequence_learner_id">
+            <column name="learner_id"/>
+        </createIndex>
+        <createIndex tableName="learner_sequence" indexName="idx_learner_sequence_sequence_id">
+            <column name="sequence_id"/>
+        </createIndex>
+        <createIndex tableName="learner_sequence" indexName="idx_learner_sequence_active_interaction_id">
+            <column name="active_interaction_id"/>
+        </createIndex>
+        <addForeignKeyConstraint baseTableName="learner_sequence" baseColumnNames="learner_id"
+                                 constraintName="fk_learner_sequence_learner"
+                                 referencedTableName="user"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="learner_sequence" baseColumnNames="sequence_id"
+                                 constraintName="fk_learner_sequence_sequence"
+                                 referencedTableName="sequence"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="learner_sequence" baseColumnNames="active_interaction_id"
+                                 constraintName="fk_learner_sequence_active_interaction"
+                                 referencedTableName="interaction"
+                                 referencedColumnNames="id"/>
+
+        <comment>Add unique constraints on learner_sequence table</comment>
+        <addUniqueConstraint tableName="learner_sequence" columnNames="learner_id, sequence_id"
+                             constraintName="learner_sequence_unique"/>
+    </changeSet>
+
+    <changeSet id="3" author="fsil">
+        <comment>drop enabled column in interaction table</comment>
+        <dropColumn tableName="interaction" columnName="enabled"/>
+    </changeSet>
+
+    <changeSet id="4" author="fsil">
+        <comment>ensure consistency in sequence table</comment>
+        <sql>
+            update sequence set state = "beforeStart" where active_interaction_id is NULL
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

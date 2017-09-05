@@ -24,14 +24,15 @@ class UserRoleSpec extends Specification {
     }
 
     void "test of removeAll function"() {
-        when:"count number of userRole in database"
-        def nbUserRole = UserRole.count()
 
-        and:"call function removeAll"
+        given: "an amount of user role"
+        def oldCount = UserRole.count()
+
+        when:"call function removeAll"
         userRole.removeAll(RoleEnum.STUDENT_ROLE.role)
 
-        then:"number of userRomle must decrease"
-        UserRole.count() == nbUserRole - 1
+        then:"number of userRole must decrease"
+        UserRole.count() < oldCount
     }
 
     void "test of remove function"() {

@@ -58,6 +58,23 @@ class BootstrapServiceIntegrationSpec extends Specification {
         bootstrapService.thom.settings.language == 'fr'
     }
 
+    def "fake user initilization"() {
 
+        when: "fake users are built"
+        bootstrapService.initializeFakeUsers()
+
+        then: "we have 9 fake users"
+        bootstrapService.fakeUserList.size() == 9
+
+        when: "selected on user"
+        def fakeUser = bootstrapService.fakeUserList[7]
+
+        then: "one selected fake user has expected property"
+        !fakeUser.hasErrors()
+        fakeUser.id
+        fakeUser.username == "John_Doe___8"
+        fakeUser.isEnabled()
+
+    }
 
 }

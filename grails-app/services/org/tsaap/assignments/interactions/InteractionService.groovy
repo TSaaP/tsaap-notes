@@ -1,12 +1,15 @@
 package org.tsaap.assignments.interactions
 
 import grails.transaction.Transactional
+import org.tsaap.BootstrapService
 import org.tsaap.assignments.*
 import org.tsaap.contracts.Contract
 import org.tsaap.directory.User
 
 @Transactional
 class InteractionService {
+
+    BootstrapService bootstrapService
 
     /**
      * Start an interaction
@@ -42,7 +45,7 @@ class InteractionService {
      * @return the saved response with the updated score
      */
     InteractionResponse saveInteractionResponse(InteractionResponse response) {
-        Contract.requires(response.firstAttemptIsSubmitable() || response.secondAttemptIsSubmitable(), INTERACTION_CANNOT_RECEIVE_RESPONSE)
+        Contract.requires(response.firstAttemptIsSubmitable(response.learner) || response.secondAttemptIsSubmitable(response.learner), INTERACTION_CANNOT_RECEIVE_RESPONSE)
         Contract.requires(response.learner.isRegisteredInAssignment(response.assignment()),
                 LEARNER_NOT_REGISTERED_IN_ASSIGNMENT)
         if (response.interaction.sequence.statement.hasChoices()) {
@@ -88,28 +91,81 @@ class InteractionService {
     }
 
     /**
-     * Create and activate a learner interaction
-     * @param learner
-     * @param interaction
-     * @param user
-     * @return the created interaction
+     * Build Interaction responses from teacher explanations
+     * @param teacher the teacher
+     * @param sequence the sequence
      */
-    LearnerInteraction createAndActivateLearnerInteraction(User learner, Interaction interaction, User user) {
-        Contract.requires(learner == user, ONLY_LEARNER_CAN_CREATE_LEARNER_INTERACTION)
-        LearnerInteraction learnerInteraction = new LearnerInteraction(learner: learner, interaction: interaction)
-        learnerInteraction.activate()
-        learnerInteraction
+    def buildInteractionResponsesFromTeacherExplanationsForASequence(User teacher, Sequence sequence, ConfidenceDegreeEnum confidenceDegree = ConfidenceDegreeEnum.CONFIDENT) {
+
+        buildResponseBasedOnTeacherExpectedExplanationForASequence(sequence, teacher, confidenceDegree)
+        buildResponsesBasedOnTeacherFakeExplanationsForASequence(sequence, confidenceDegree)
+
     }
+
+    /**
+     * Build Interaction response from teacher expected explanation
+     * @param teacher the teacher
+     * @param sequence the sequence
+     */
+    InteractionResponse buildResponseBasedOnTeacherExpectedExplanationForASequence(Sequence sequence, User teacher, ConfidenceDegreeEnum confidenceDegree = ConfidenceDegreeEnum.CONFIDENT) {
+        def statement = sequence.statement
+        if (!statement.expectedExplanation) {
+            return null
+        }
+        def attempt = sequence.executionIsFaceToFace() ? 1 : 2
+        def statementHasChoices = statement.hasChoices()
+        def interaction = sequence.responseSubmissionInteraction
+
+        InteractionResponse resp = new InteractionResponse(learner: teacher, explanation: statement.expectedExplanation,
+                confidenceDegree: confidenceDegree.ordinal(), attempt: attempt, interaction: interaction)
+        if (statementHasChoices) {
+            resp.updateChoiceListSpecification(statement.choiceSpecificationObject?.expectedChoiceList?.collect {
+                it.index
+            })
+            resp.updateScore()
+        }
+        resp.save()
+        resp
+    }
+
+    /**
+     * Build Interaction response from teacher expected explanation
+     * @param teacher the teacher
+     * @param sequence the sequence
+     */
+    List<InteractionResponse> buildResponsesBasedOnTeacherFakeExplanationsForASequence(Sequence sequence, ConfidenceDegreeEnum confidenceDegree = ConfidenceDegreeEnum.CONFIDENT) {
+        def statement = sequence.statement
+        def explanations = statement.fakeExplanations
+        if (!explanations) {
+            return []
+        }
+        def attempt = sequence.executionIsFaceToFace() ? 1 : 2
+
+        def statementHasChoices = statement.hasChoices()
+        def interaction = sequence.responseSubmissionInteraction
+
+        def res = []
+        explanations.eachWithIndex { fakeExplanation, index ->
+            def learner = User.load(bootstrapService.fakeUserList[index].id)
+            InteractionResponse fakeResp = new InteractionResponse(learner: learner, explanation: fakeExplanation.content,
+                    confidenceDegree: confidenceDegree.ordinal(), attempt:attempt, interaction: interaction)
+            if (statementHasChoices && fakeExplanation.correspondingItem) {
+                fakeResp.updateChoiceListSpecification([fakeExplanation.correspondingItem])
+                fakeResp.updateScore()
+            }
+            fakeResp.save()
+            res << fakeResp
+        }
+        res
+    }
+
 
     private void updateActiveInteractionInSequence(Interaction interaction) {
         Sequence sequence = interaction.sequence
-        for (Integer rank in interaction.rank + 1..sequence.interactions.size()) {
-            Interaction newActInter = Interaction.findBySequenceAndRankAndEnabled(sequence, rank, true)
-            if (newActInter) {
-                sequence.activeInteraction = newActInter
-                sequence.save()
-                break
-            }
+        int newRank = interaction.rank+1
+        if (newRank <= sequence.interactions.size()) {
+            sequence.activeInteraction = sequence.interactions[newRank-1]
+            sequence.save()
         }
     }
 
@@ -119,8 +175,6 @@ class InteractionService {
     private static final String INTERACTION_CANNOT_RECEIVE_RESPONSE = 'The interaction cannot receive response'
     private static
     final String LEARNER_NOT_REGISTERED_IN_ASSIGNMENT = 'Learner is not registered in the relative assignment'
-    private static
-    final String ONLY_LEARNER_CAN_CREATE_LEARNER_INTERACTION = "Only the learner can create a learner interaction"
 
 
 }

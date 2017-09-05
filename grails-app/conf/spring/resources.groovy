@@ -40,7 +40,7 @@ beans = {
 
     // configuration of algorithm for peer learning
     responseRecommendationService(DefaultResponseRecommendationService) { bean ->
-        //bean.scope = 'request'
+        dataSource = ref("dataSource")
     }
 }
 

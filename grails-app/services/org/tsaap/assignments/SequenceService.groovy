@@ -3,6 +3,7 @@ package org.tsaap.assignments
 import grails.transaction.Transactional
 import org.springframework.validation.FieldError
 import org.tsaap.assignments.interactions.EvaluationSpecification
+import org.tsaap.assignments.interactions.InteractionService
 import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
 import org.tsaap.attachement.Attachement
 import org.tsaap.attachement.AttachementService
@@ -13,6 +14,7 @@ import org.tsaap.directory.User
 class SequenceService {
 
     AttachementService attachementService
+    InteractionService interactionService
 
     /**
      * Save a sequence
@@ -87,6 +89,13 @@ class SequenceService {
         Contract.requires(sequence.owner == user, AssignmentService.USER__MUST__BE__ASSIGNMENT__OWNER)
         validateInteractions(interactionsToAdd, user, sequence)
         saveInteractions(interactionsToAdd, sequence)
+        if (sequence.interactions) {
+            if (sequence.executionIsFaceToFace()) {
+                sequence.activeInteraction = sequence.responseSubmissionInteraction
+            } else {
+                sequence.activeInteraction = sequence.readInteraction
+            }
+        }
         updateAssignmentLastUpdated(sequence, sequence.assignment)
 
         sequence
@@ -118,14 +127,15 @@ class SequenceService {
         } else {
             interactions = getInteractionsToDefaultProcess(
                     responseSpec,
-                    evalSpec
+                    evalSpec,
+                    ExecutionContextType.valueOf(sequence.executionContext)
             )
         }
         interactions
     }
 
 
-    private List<Interaction> getInteractionsToDefaultProcess(ResponseSubmissionSpecification responseSpec, EvaluationSpecification evalSpec) {
+    private List<Interaction> getInteractionsToDefaultProcess(ResponseSubmissionSpecification responseSpec, EvaluationSpecification evalSpec, ExecutionContextType executionContextType = ExecutionContextType.FaceToFace) {
         List<Interaction> interactions = []
 
         Interaction interaction1 = new Interaction(
@@ -133,6 +143,7 @@ class SequenceService {
                 rank: 1,
                 specification: responseSpec.jsonString
         )
+
         interactions.add(interaction1)
 
 
@@ -150,7 +161,6 @@ class SequenceService {
                 specification: Interaction.EMPTY_SPECIFICATION
         )
         interactions.add(interaction3)
-
 
         interactions
     }
@@ -214,9 +224,6 @@ class SequenceService {
 
     private void updateAssignmentLastUpdated(Sequence sequence, Assignment assignment) {
         if (!sequence.hasErrors()) {
-            if (sequence.interactions) {
-                sequence.activeInteraction = sequence.interactions[0]
-            }
             assignment.lastUpdated = new Date()
             assignment.save()
         }
@@ -302,7 +309,65 @@ class SequenceService {
         FakeExplanation.findAllByStatement(statement)
     }
 
+    /**
+     * Start a sequence in distance or blended context
+     * @param sequence the sequence
+     * @return the sequence
+     */
+    Sequence startSequenceInBlendedOrDistanceContext(Sequence sequence,user) {
+        Contract.requires(sequence.owner == user, USER_MUST_BE_SEQUENCE_OWNER)
+        Contract.requires(sequence.executionIsBlendedOrDistance(),SEQUENCE_MUST_BE_BLENDED_OR_DISTANCE)
+        sequence.activeInteraction = sequence.readInteraction
+        if (sequence.executionIsBlended()) {
+            sequence.readInteraction.state = StateType.beforeStart.name()
+        }
+        sequence.state = StateType.show.name()
+        sequence.save()
+    }
 
+    /**
+     * Update all results for the given sequence
+     * @param sequence the sequence
+     * @param user the user triggering the operation
+     */
+    def updateAllResults(Sequence sequence, User user) {
+        Contract.requires(userCanUpdateAllResultsInSquence(user, sequence), USER_CANNOT_UPDATE_ALL_RESULTS)
+        Interaction interaction = sequence.responseSubmissionInteraction
+        if (sequence.statement.hasChoices()) {
+            interaction.updateResults(1)
+            interaction.updateResults(2)
+            interaction.save()
+        }
+        int attemptEvaluated = sequence.executionIsFaceToFace() ? 1 : 2
+        interaction.findAllEvaluatedResponses(attemptEvaluated).each {
+            interactionService.updateMeanGradeOfResponse(it)
+        }
+
+    }
+
+    /**
+     * Stop the given sequence
+     * @param sequence the sequence
+     * @param user the user performing the operation
+     * @return the sequence
+     */
+    Sequence stopSequence(Sequence sequence, User user) {
+        Contract.requires(sequence.owner == user, USER_MUST_BE_SEQUENCE_OWNER)
+        sequence.state = StateType.afterStop.name()
+        sequence.interactions.each {
+            it.state = StateType.afterStop.name()
+        }
+        sequence.save()
+        sequence
+    }
+
+    private boolean userCanUpdateAllResultsInSquence(User user, Sequence sequence) {
+        if (sequence.isStopped()) {
+            return false
+        }
+        (sequence.owner == user && sequence.executionIsBlendedOrDistance()) ||
+                (user.isRegisteredInAssignment(sequence.assignment) && sequence.executionIsDistance())
+    }
 
     private def updateInteractions(Sequence sequence) {
         sequence.interactions.eachWithIndex { def interaction, int i ->
@@ -327,6 +392,9 @@ class SequenceService {
     }
 
     private static final String USER_MUST_BE_STATEMENT_OWNER = "user must be the statement owner"
+    private static final String USER_MUST_BE_SEQUENCE_OWNER = "user must be the sequence owner"
+    private static final String USER_CANNOT_UPDATE_ALL_RESULTS= "user cannot update all resuts"
+    private static final String SEQUENCE_MUST_BE_BLENDED_OR_DISTANCE= "sequence must be blended or distance"
 
 
 }

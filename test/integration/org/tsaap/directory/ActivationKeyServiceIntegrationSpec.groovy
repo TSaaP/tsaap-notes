@@ -66,14 +66,14 @@ class ActivationKeyServiceIntegrationSpec extends Specification {
 
         expect: "Users and activation keys are presents"
         ActivationKey.count() == 1
-        User.count() == 4
+        User.count() == 13 // because of fake users and admin
 
         when: "Start Activation Key garbage collector job "
         activationKeyService.removeOldActivationKeys()
 
         then: "Count number of ActivationKey and number of user"
         ActivationKey.count() == 1
-        User.count() == 4
+        User.count() == 13
 
         when: "Create activation key for user2"
         ActivationKey activationKey2 = new ActivationKey(activationKey: "Key", activationEmailSent: false, user: user2)
@@ -86,7 +86,7 @@ class ActivationKeyServiceIntegrationSpec extends Specification {
 
         then: "Count number of ActivationKey and number of user"
         ActivationKey.count() == 1
-        User.count() == 3
+        User.count() == 12
 
         when: "Create activation key for user3"
         ActivationKey activationKey3 = new ActivationKey(activationKey: "Key", activationEmailSent: true, user: user3)
@@ -99,6 +99,6 @@ class ActivationKeyServiceIntegrationSpec extends Specification {
 
         then: "Count number of ActivationKey and number of user"
         ActivationKey.count() == 1
-        User.count() == 3
+        User.count() == 12
     }
 }

@@ -45,12 +45,13 @@ class Statement {
      * @return the choice specification
      */
     ChoiceSpecification getChoiceSpecificationObject() {
+        def res = null
         if (choiceSpecification) {
-            new ChoiceSpecification(choiceSpecification);
-        } else {
-            null
+            res = new ChoiceSpecification(choiceSpecification);
         }
+        res
     }
+
 
     /**
      *

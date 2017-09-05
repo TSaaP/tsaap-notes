@@ -5,7 +5,8 @@
     <g:set var="resultList" value="${displayedResultInteraction.resultsOfLastAttempt()}"/>
     <g:set var="userResponse" value="${displayedResultInteraction.lastAttemptResponseForUser(user)}"/>
     <g:each var="i" in="${(1..choiceSpecification.itemCount)}">
-        <g:set var="choiceStatus" value="${choiceSpecification.expectedChoiceListContainsChoiceWithIndex(i) ? 'success' : 'danger'}"/>
+        <g:set var="choiceStatus"
+               value="${choiceSpecification.expectedChoiceListContainsChoiceWithIndex(i) ? 'success' : 'danger'}"/>
         <g:set var="percentResult" value="${resultList[i]}"/>
         <div class="panel panel-${choiceStatus}">
             <div class="panel-heading">
@@ -51,11 +52,20 @@
 
 
 <g:if test="${sequence.hasExplanations()}">
+    <g:set var="attempt" value="${sequence.executionIsBlendedOrDistance() ? 2 : 1}"/>
     <g:if test="${sequence.statement.hasChoices()}">
-    <g:set var="responses" value="${sequence.findAllGoodResponses()}"/>
+        <g:set var="responses" value="${sequence.findAllGoodResponses(attempt)}"/>
     </g:if>
     <g:else>
-        <g:set var="responses" value="${sequence.findAllOpenResponses()}"/>
+        <g:set var="responses" value="${sequence.findAllOpenResponses(attempt)}"/>
     </g:else>
     <g:render template="/assignment/player/ExplanationList" model="[responses: responses, sequence: sequence]"/>
+</g:if>
+
+<g:if test="${sequence.executionIsDistance() && !sequence.isStopped()}">
+    <div style="margin-top: 15px">
+        <g:remoteLink class="btn btn-success" controller="player" action="updateResultsAndSequenceDisplay"
+                      id="${sequence.id}" update="sequence_${interactionInstance.sequenceId}"><span
+                class="glyphicon glyphicon-refresh"></span> ${message(code: "player.sequence.readinteraction.updateAllResults", args: [interactionInstance.rank])}</g:remoteLink>
+    </div>
 </g:if>

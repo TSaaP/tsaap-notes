@@ -5,7 +5,7 @@ import grails.plugins.springsecurity.SpringSecurityService
 import org.grails.plugins.sanitizer.MarkupSanitizerService
 import org.tsaap.assignments.interactions.EvaluationSpecification
 import org.tsaap.assignments.interactions.InteractionService
-import org.tsaap.assignments.interactions.ResponseSubmissionSpecification
+import org.tsaap.contracts.ConditionViolationException
 import org.tsaap.directory.User
 
 class PlayerController {
@@ -20,10 +20,10 @@ class PlayerController {
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
         User user = springSecurityService.currentUser
-        def learnerAssignments =  assignmentService.findAllAssignmentsForLearner(user, params)
+        def learnerAssignments = assignmentService.findAllAssignmentsForLearner(user, params)
         def count = assignmentService.countAllAssignmentsForLearner(user)
-        render view: "/assignment/player/index", model: [learnerAssignmentList: learnerAssignments,
-                                                         learnerAssignmentListCount:count]
+        render view: "/assignment/player/index", model: [learnerAssignmentList     : learnerAssignments,
+                                                         learnerAssignmentListCount: count]
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
@@ -38,19 +38,19 @@ class PlayerController {
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def show(Assignment assignmentInstance) {
         render view: "/assignment/player/assignment/show", model: [assignmentInstance: assignmentInstance,
-                                                                   user:springSecurityService.currentUser]
+                                                                   user              : springSecurityService.currentUser]
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def ltiLaunch(Assignment assignmentInstance) {
         User user = springSecurityService.currentUser
         if (user.isLearner() && !user.isRegisteredInAssignment(assignmentInstance)) {
-            assignmentService.registerUserOnAssignment(user,assignmentInstance)
+            assignmentService.registerUserOnAssignment(user, assignmentInstance)
         } else if (user.isTeacher() && user != assignmentInstance.owner) {
             assignmentService.registerUserOnAssignment(user, assignmentInstance)
         }
         render view: "/assignment/player/assignment/show", model: [assignmentInstance: assignmentInstance,
-                                                                   user:user]
+                                                                   user              : user]
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
@@ -65,12 +65,16 @@ class PlayerController {
     def initializeInteractionsAndStartFirst(Sequence sequenceInstance) {
         User user = springSecurityService.currentUser
         List<Interaction> interactions =
-            getDynamicsInteractions(sequenceInstance, params)
+                getDynamicsInteractions(sequenceInstance, params)
 
         sequenceInstance = sequenceService.saveSequence(sequenceInstance, user, sequenceInstance.assignment, sequenceInstance.statement)
         sequenceService.addSequenceInteractions(sequenceInstance, user, interactions)
-        interactionService.startInteraction(interactions.get(0), user)
-
+        if (sequenceInstance.executionIsFaceToFace()) {
+            interactionService.startInteraction(interactions.get(0), user)
+        } else {
+            sequenceService.startSequenceInBlendedOrDistanceContext(sequenceInstance, user)
+        }
+        interactionService.buildInteractionResponsesFromTeacherExplanationsForASequence(user,sequenceInstance)
         renderSequenceTemplate(user, sequenceInstance)
     }
 
@@ -79,6 +83,13 @@ class PlayerController {
         User user = springSecurityService.currentUser
         interactionService.stopInteraction(interactionInstance, user)
         Sequence sequenceInstance = interactionInstance.sequence
+        renderSequenceTemplate(user, sequenceInstance)
+    }
+
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def stopSequence(Sequence sequenceInstance) {
+        User user = springSecurityService.currentUser
+        sequenceService.stopSequence(sequenceInstance, user)
         renderSequenceTemplate(user, sequenceInstance)
     }
 
@@ -95,7 +106,25 @@ class PlayerController {
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def updateSequenceDisplay(Sequence sequenceInstance) {
         def user = springSecurityService.currentUser
-        renderSequenceTemplate(user,sequenceInstance)
+
+        if (sequenceInstance.executionIsBlendedOrDistance()) {
+            if (sequenceInstance.userHasCompletedPhase2(user)) {
+                sequenceInstance.updateActiveInteractionForLearner(user, 2)
+            }
+        }
+
+        renderSequenceTemplate(user, sequenceInstance)
+    }
+
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def updateResultsAndSequenceDisplay(Sequence sequenceInstance) {
+        def user = springSecurityService.currentUser
+        try {
+            sequenceService.updateAllResults(sequenceInstance, user)
+        } catch (ConditionViolationException cve) {
+            log.error(cve.message)
+        }
+        renderSequenceTemplate(user, sequenceInstance)
     }
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
@@ -111,11 +140,12 @@ class PlayerController {
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def submitResponse(Interaction interactionInstance) {
         def user = springSecurityService.currentUser
+        def phaseRank = params.attempt as int
         InteractionResponse response = new InteractionResponse(
                 learner: user,
                 interaction: interactionInstance,
                 confidenceDegree: params.confidenceDegree as Integer,
-                attempt: params.attempt as int
+                attempt: phaseRank
         )
         if (params.explanation) {
             response.explanation = markupSanitizerService.sanitize(params.explanation)?.cleanString
@@ -125,22 +155,44 @@ class PlayerController {
             response.updateChoiceListSpecification(choiceList)
         }
         interactionService.saveInteractionResponse(response)
-        renderSequenceTemplate(user, interactionInstance.sequence)
+
+        def sequence = interactionInstance.sequence
+
+        if (sequence.executionIsBlendedOrDistance()) {
+            if (sequence.userHasCompletedPhase2(user)) {
+                sequence.updateActiveInteractionForLearner(user, 2)
+            } else if (phaseRank == 1) {
+                sequence.updateActiveInteractionForLearner(user, 1)
+            }
+        }
+
+        renderSequenceTemplate(user, sequence)
     }
 
+
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def createOrUpdatePeerGrading() {
+    def submitGrades(Interaction interactionInstance) {
+        User grader = springSecurityService.currentUser
         def params = params
-        User grader = User.get(params.grader_id as long)
-        InteractionResponse response = InteractionResponse.get(params.response_id as long)
-        Float grade = params.grade as Float
-        PeerGrading peerGrading = interactionService.peerGradingFromUserOnResponse(grader, response, grade)
-        render "${peerGrading.hasErrors() ? 'error' : 'success'}"
+        params.each {
+            if (it.key.startsWith("grade_")) {
+                InteractionResponse response = InteractionResponse.get(it.key.split("_")[1] as Long)
+                Float grade = it.value as Float
+                interactionService.peerGradingFromUserOnResponse(grader, response, grade)
+            }
+        }
+
+        def sequence = interactionInstance.sequence
+        if (sequence.executionIsBlendedOrDistance() && sequence.userHasCompletedPhase2(grader)) {
+            sequence.updateActiveInteractionForLearner(grader, 2)
+        }
+
+        renderSequenceTemplate(grader, sequence)
     }
 
     private void renderSequenceTemplate(user, Sequence sequenceInstance) {
         def userRole = (user == sequenceInstance.assignment.owner ? 'teacher' : 'learner')
-        render template: "/assignment/player/sequence/show",
+        render template: "/assignment/player/sequence/${userRole}/${sequenceInstance.state}",
                 model: [userRole: userRole, sequenceInstance: sequenceInstance, user: user],
                 layout: "ajax"
     }
@@ -155,22 +207,21 @@ class PlayerController {
                 }
             }
         } else if (params.exclusiveChoice && params.exclusiveChoice != "null") {
-                choiceList = [params.exclusiveChoice as Integer]
+            choiceList = [params.exclusiveChoice as Integer]
         }
         choiceList
     }
 
 
-    private List<Interaction> getDynamicsInteractions (Sequence sequence, def params) {
+    private List<Interaction> getDynamicsInteractions(Sequence sequence, def params) {
         boolean studentsProvideExplanation = true
         int responseToEvaluateCount = EvaluationSpecification.MAX_RESPONSE_TO_EVALUATE_COUNT
         if (sequence.executionIsFaceToFace()) {
             studentsProvideExplanation = params.studentsProvideExplanation?.toBoolean()
             responseToEvaluateCount = params.responseToEvaluateCount?.toInteger()
         }
-        sequenceService.createInteractionsForSequence(sequence,studentsProvideExplanation,responseToEvaluateCount)
+        sequenceService.createInteractionsForSequence(sequence, studentsProvideExplanation, responseToEvaluateCount)
     }
-
 
 
 }

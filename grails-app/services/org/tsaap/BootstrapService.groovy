@@ -22,13 +22,12 @@ import org.tsaap.directory.Role
 import org.tsaap.directory.RoleEnum
 import org.tsaap.directory.User
 import org.tsaap.directory.UserAccountService
-import org.tsaap.notes.*
+
 
 class BootstrapService {
 
     def dataSource
     UserAccountService userAccountService
-
 
 
     Role studentRole
@@ -42,10 +41,13 @@ class BootstrapService {
     User erik
     User admin
 
+    List<User> fakeUserList
+
 
     def initializeReferenceData() {
         initializeRoles()
         initializeAdmin()
+        initializeFakeUsers()
     }
 
     def initializeRoles() {
@@ -102,6 +104,24 @@ class BootstrapService {
             def user = new User(firstName: "Erik", lastName: "Erik", username: "erik", password: "1234", email: 'erik@erik.com')
             erik = userAccountService.addUser(user, studentRole, true, 'fr')
         }
+    }
+
+    def initializeFakeUsers() {
+        fakeUserList = buildFakeUserList()
+    }
+
+    List<User> buildFakeUserList() {
+        def res = []
+        for(int i=1; i <= 9 ; i++) {
+            def username ="John_Doe___${i}"
+            def fakeUser = User.findByUsername(username)
+            if (!fakeUser) {
+                def user = new User(firstName: "John", lastName: "Doe", username: username, password: "@&époi123", email: "${username}@fakeuser.com")
+                fakeUser = userAccountService.addUser(user, studentRole, true, 'fr')
+            }
+            res << fakeUser
+        }
+        res
     }
 
 

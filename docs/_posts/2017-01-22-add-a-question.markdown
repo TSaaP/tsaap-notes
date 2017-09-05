@@ -2,7 +2,7 @@
 layout: post
 title:  "How to add a new question?"
 date:   2017-01-22 14:39:45 +0200
-author: Jean-François Parmentier
+author: Jean-François Parmentier, Franck Silvestre
 categories: assignment question
 ---
 
@@ -36,23 +36,15 @@ Here is an example of a title and a statement. **Answer choices** have to be spe
 
 ![Question edition]({{ site.baseurl }}/assets/QuestionEdition1.png)
 
-### 3.2. Defining the correct choice(s)
+### 3.2. Define the correct choice(s)
 
-Select between single choice (**exclusive**) and multiple choice (**multiple**) and specify the number of choices in the **Phase 1** panel.
+Select between single choice (**exclusive**) and multiple choice (**multiple**) and specify the number of choices in the **Question type** panel.
 
-![Question edition, phase 1]({{ site.baseurl }}/assets/QuestionEditionPhase1.png)
+![Question edition, question type 1]({{ site.baseurl }}/assets/QuestionEditionType1.png)
 
 Select the correct answer(s) using radio buttons (single choice) or check boxes (multiple choice):
 
-![Question edition, phase 1.1]({{ site.baseurl }}/assets/QuestionEditionPhase1Bis.png)
-
-### 3.3. Activating the peer assessment process
-
-In the case where students have to give a **textual explanation**, you have to specify the number of contributions each student has to evaluate in the **Phase 2** panel.
-
-![Question edition, phase 2]({{ site.baseurl }}/assets/QuestionEditionPhase2.png)
-
-Once all parameters have been set, click on the ![Create button]({{ site.baseurl }}/assets/CreateButton.png) at the bottom of the page.
+![Question edition, question type 1.1]({{ site.baseurl }}/assets/QuestionEditionType1Bis.png)
 
 ## 4. Open-ended questions
 
@@ -62,9 +54,35 @@ Here is an example of a title and a statement.
 
 ![Question edition - Open ended]({{ site.baseurl }}/assets/QuestionEdition2OpenEnded.png)
 
-### 4.2. Selecting open-ended question
-You should **uncheck** the box in the **Phase 1** panel and specify the number of contributions each student has to evaluate in the **Phase 2** panel.
+### 4.2. Select open-ended question
+You should **check** the radio button in the **Question type** panel.
 
-![Question edition - Open ended phases]({{ site.baseurl }}/assets/QuestionEditionPhasesOpenEnded.png)
+![Question edition - question type Open ended]({{ site.baseurl }}/assets/QuestionEditionTypeOpenEnded.png)
+
+
+## 5. Add explanations 
+
+Explanations can be given by the teacher. Theses contributions, if they are provided, will be used during the peer assessment process.
+
+### 5.1. The expected explanation
+
+It is possible to provide the expected explanation for the current edited question. You have to **click** on the **Explanations** panel and fill the field labelled **Expected explanation**.
+
+![Question edition - expected explanation]({{ site.baseurl }}/assets/ExpectedExplanation.png)
+
+### 5.2 Fake explanations
+
+![Question edition - fake explanation button]({{ site.baseurl }}/assets/FakeExplanationButton.png)
+
+It is possible to provide fake explanations. **Click** on the **Add fake explanation** button to make appear the field for a first fake explanation.
+You can now fill the field to provide the fake explanation. If the question is a choice question (not open-ended), you can specify the corresponding item using de dropdown list labelled **Fake explanation for item**
+
+![Question edition - fake explanation]({{ site.baseurl }}/assets/FakeExplanation.png)
+
+You can add several fake explanations by repeating the same steps.
+
+![Question edition - several fake explanations]({{ site.baseurl }}/assets/SeveralFakeExplanations.png)
+
+## 6. Register the new question
 
 Once all parameters have been set, click on the ![Create button]({{ site.baseurl }}/assets/CreateButton.png) at the bottom of the page.

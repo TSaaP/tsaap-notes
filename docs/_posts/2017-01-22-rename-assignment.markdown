@@ -2,7 +2,7 @@
 layout: post
 title:  "How to rename an assignment?"
 date:   2017-01-22 14:38:45 +0200
-author: Jean-François Parmentier
+author: Jean-François Parmentier, Franck Silvestre
 categories: assignment question
 ---
 

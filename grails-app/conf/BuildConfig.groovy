@@ -46,6 +46,8 @@ grails.project.dependency.resolution = {
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
         runtime 'mysql:mysql-connector-java:5.1.24'
+        runtime 'jdom:jdom:1.0'
+
         compile 'org.gcontracts:gcontracts-grails:1.2.12'
         compile 'org.liquibase:liquibase-core:3.2.2'
         compile 'commons-beanutils:commons-beanutils:1.8.3'

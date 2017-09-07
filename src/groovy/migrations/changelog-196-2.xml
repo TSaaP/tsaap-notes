@@ -96,4 +96,11 @@
         </sql>
     </changeSet>
 
+    <changeSet id="5" author="fsil">
+        <comment>ensure consistency in sequence table after bug fix in duplication</comment>
+        <sql>
+            update sequence set state = "beforeStart" where active_interaction_id is NULL
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

@@ -199,7 +199,7 @@ class SequenceService {
                 rank: sequence.rank,
                 owner: sequence.owner,
                 assignment: duplicatedAssignment,
-                state: sequence.state
+                state: StateType.beforeStart.name()
         )
 
         Statement duplicatedStatement = new Statement(

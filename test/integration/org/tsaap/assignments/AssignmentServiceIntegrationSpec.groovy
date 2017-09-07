@@ -272,6 +272,9 @@ class AssignmentServiceIntegrationSpec extends Specification {
         given: "an assignment"
         Assignment assignment = bootstrapTestService.assignment2With2Sequences
 
+        and:"one sequence has been started in this assignment"
+        assignment.sequences[0].state = StateType.show.name()
+
         and: "teacher"
         User teacher = bootstrapTestService.teacherJeanne
 
@@ -288,7 +291,7 @@ class AssignmentServiceIntegrationSpec extends Specification {
             Sequence originalSequence = assignment.sequences.get(i)
 
             assert duplicatedSequence.id != originalSequence.id
-            assert duplicatedSequence.state == originalSequence.state
+            assert duplicatedSequence.state == StateType.beforeStart.name()
             assert duplicatedSequence.rank == originalSequence.rank
             assert !duplicatedSequence.interactions
             assert duplicatedSequence.owner ==  originalSequence.owner

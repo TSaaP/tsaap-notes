@@ -91,15 +91,15 @@
         var configurationPanel = $('#configuration_' + sequenceId);
         switch(sourceEvent.val()) {
             case 'FaceToFace':
-                configurationPanel.removeClass('hidden')
+                configurationPanel.removeClass('hidden');
                 studentsProvideExplanation.prop("checked", false);
+                studentsProvideExplanation.prop("disabled", false);
                 manageConfigurationChange(sequenceId,questionType, studentsProvideExplanation);
                 break;
             default:
                 studentsProvideExplanation.prop("checked", true);
-                if (questionType != "OpenEnded") {
-                    configurationPanel.addClass('hidden');
-                }
+                studentsProvideExplanation.prop("disabled", true);
+                manageConfigurationChange(sequenceId,questionType, studentsProvideExplanation);
                 break;
         }
 

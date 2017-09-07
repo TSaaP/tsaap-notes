@@ -215,10 +215,9 @@ class PlayerController {
 
     private List<Interaction> getDynamicsInteractions(Sequence sequence, def params) {
         boolean studentsProvideExplanation = true
-        int responseToEvaluateCount = EvaluationSpecification.MAX_RESPONSE_TO_EVALUATE_COUNT
+        int responseToEvaluateCount = params.responseToEvaluateCount?.toInteger() ?: EvaluationSpecification.MAX_RESPONSE_TO_EVALUATE_COUNT
         if (sequence.executionIsFaceToFace()) {
             studentsProvideExplanation = params.studentsProvideExplanation?.toBoolean()
-            responseToEvaluateCount = params.responseToEvaluateCount?.toInteger()
         }
         sequenceService.createInteractionsForSequence(sequence, studentsProvideExplanation, responseToEvaluateCount)
     }

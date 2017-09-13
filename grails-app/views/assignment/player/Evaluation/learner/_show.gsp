@@ -61,6 +61,7 @@
             <div class="alert alert-info">${message(code: 'player.sequence.interaction.secondAttemptSubmitted')}</div>
         </g:if>
         <g:else>
+            <div class="alert alert-info">${message(code: 'player.sequence.interaction.secondAttemptSubmittable')}</div>
             <g:render template="/assignment/player/ResponseSubmission/learner/show"
                       model="[user: user, interactionInstance: responseInteractionInstance, attempt: 2]"/>
         </g:else>

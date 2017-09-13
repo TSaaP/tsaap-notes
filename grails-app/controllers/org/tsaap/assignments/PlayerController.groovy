@@ -139,13 +139,35 @@ class PlayerController {
 
     @Secured(['IS_AUTHENTICATED_REMEMBERED'])
     def submitResponse(Interaction interactionInstance) {
-        def user = springSecurityService.currentUser
-        def phaseRank = params.attempt as int
+        User user = springSecurityService.currentUser
+        processSubmittedResponse(user,interactionInstance,1,params)
+        def sequence = interactionInstance.sequence
+        if (sequence.executionIsBlendedOrDistance()) {
+                sequence.updateActiveInteractionForLearner(user, 1)
+        }
+        renderSequenceTemplate(user, sequence)
+    }
+
+    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+    def submitGradesAndSecondAttempt(Interaction interactionInstance) {
+        User user = springSecurityService.currentUser
+        Sequence sequence = interactionInstance.sequence
+        processSubmittedGrades(user,interactionInstance,params)
+        if (sequence.allowsSecondAttemptInLongProcess()) {
+            processSubmittedResponse(user, sequence.responseSubmissionInteraction, 2, params)
+        }
+        if (sequence.executionIsBlendedOrDistance()) {
+            sequence.updateActiveInteractionForLearner(user, 2)
+        }
+        renderSequenceTemplate(user, sequence)
+    }
+
+    private def processSubmittedResponse(User user, Interaction interactionInstance, int attempt, def params) {
         InteractionResponse response = new InteractionResponse(
                 learner: user,
                 interaction: interactionInstance,
                 confidenceDegree: params.confidenceDegree as Integer,
-                attempt: phaseRank
+                attempt: attempt
         )
         if (params.explanation) {
             response.explanation = markupSanitizerService.sanitize(params.explanation)?.cleanString
@@ -155,40 +177,19 @@ class PlayerController {
             response.updateChoiceListSpecification(choiceList)
         }
         interactionService.saveInteractionResponse(response)
-
-        def sequence = interactionInstance.sequence
-
-        if (sequence.executionIsBlendedOrDistance()) {
-            if (sequence.userHasCompletedPhase2(user)) {
-                sequence.updateActiveInteractionForLearner(user, 2)
-            } else if (phaseRank == 1) {
-                sequence.updateActiveInteractionForLearner(user, 1)
-            }
-        }
-
-        renderSequenceTemplate(user, sequence)
     }
 
 
-    @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-    def submitGrades(Interaction interactionInstance) {
-        User grader = springSecurityService.currentUser
-        def params = params
+    private def processSubmittedGrades(User user, Interaction interactionInstance, def params) {
         params.each {
             if (it.key.startsWith("grade_")) {
                 InteractionResponse response = InteractionResponse.get(it.key.split("_")[1] as Long)
                 Float grade = it.value as Float
-                interactionService.peerGradingFromUserOnResponse(grader, response, grade)
+                interactionService.peerGradingFromUserOnResponse(user, response, grade)
             }
         }
-
-        def sequence = interactionInstance.sequence
-        if (sequence.executionIsBlendedOrDistance() && sequence.userHasCompletedPhase2(grader)) {
-            sequence.updateActiveInteractionForLearner(grader, 2)
-        }
-
-        renderSequenceTemplate(grader, sequence)
     }
+
 
     private void renderSequenceTemplate(user, Sequence sequenceInstance) {
         def userRole = (user == sequenceInstance.assignment.owner ? 'teacher' : 'learner')

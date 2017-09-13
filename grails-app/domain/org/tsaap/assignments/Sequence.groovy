@@ -333,6 +333,14 @@ class Sequence {
     }
 
     /**
+     * Indicate if the sequence allows students to give a second response in a long process
+     * @return true if a second response is allowed
+     */
+    boolean allowsSecondAttemptInLongProcess() {
+        !(executionIsFaceToFace() && statement.isOpenEnded())
+    }
+
+    /**
      * Indicate if a user has completed the first phase
      * @param user the user
      * @return true if the user has completed first phase

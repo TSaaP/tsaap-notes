@@ -11,30 +11,26 @@
                                                                       aria-hidden="true"></span></g:remoteLink></div>
 </g:if>
 <g:else>
-    <g:if test="${responsesToGrade}">
-        <g:if test="${sequence.userHasPerformedEvaluation(user)}">
-            <div class="alert alert-info">${message(code: 'player.sequence.interaction.evaluation.hasBeenRecorded')}</div>
-        </g:if>
-        <g:else>
+    <g:form>
+        <g:hiddenField name="id" value="${interactionInstance.id}"/>
+        <g:if test="${responsesToGrade}">
             <div class="alert alert-info">${message(code: 'player.sequence.interaction.evaluation.intro')}</div>
-            <g:form>
-                <g:hiddenField name="id" value="${interactionInstance.id}"/>
-                <ul class="list-group">
-                    <g:each in="${responsesToGrade}" var="currentResponse" status="i">
-                        <g:if test="${i < interactionInstance.interactionSpecification.responseToEvaluateCount}">
-                            <li class="list-group-item">
-                                <p>
-                                    <g:if test="${sequence.statement.hasChoices()}">
-                                        <strong>${message(code: 'player.sequence.interaction.choice.label')} ${currentResponse.choiceList()}</strong>
-                                        <br/>
-                                    </g:if>
-                                    ${raw(currentResponse.explanation)}
-                                    <input id="grade_${currentResponse.id}" name="grade_${currentResponse.id}"
-                                           class="rating"
-                                           value="${currentResponse.getGradeFromUser(user)}">
-                                </p>
-                            </li>
-                            <r:script>
+            <ul class="list-group">
+                <g:each in="${responsesToGrade}" var="currentResponse" status="i">
+                    <g:if test="${i < interactionInstance.interactionSpecification.responseToEvaluateCount}">
+                        <li class="list-group-item">
+                            <p>
+                                <g:if test="${sequence.statement.hasChoices()}">
+                                    <strong>${message(code: 'player.sequence.interaction.choice.label')} ${currentResponse.choiceList()}</strong>
+                                    <br/>
+                                </g:if>
+                                ${raw(currentResponse.explanation)}
+                                <input id="grade_${currentResponse.id}" name="grade_${currentResponse.id}"
+                                       class="rating"
+                                       value="${currentResponse.getGradeFromUser(user)}">
+                            </p>
+                        </li>
+                        <r:script>
             $("#grade_${currentResponse.id}").rating({
                 size: "xs",
                 step: 1,
@@ -42,28 +38,40 @@
                 showClear: false,
                 language: "${RequestContextUtils.getLocale(request).language}"
             });
-                            </r:script>
-                        </g:if>
-                    </g:each>
-                </ul>
-                <g:submitToRemote controller="player" action="submitGrades"
-                                  update="sequence_${interactionInstance.sequenceId}" class="btn btn-default"
-                                  value="${message(code: 'player.sequence.interaction.submitGrades')}"/>
-                <p></p>
-            </g:form>
-        </g:else>
-    </g:if>
-    <g:else>
-        <div class="alert alert-info">${message(code: 'player.sequence.interaction.evaluation.intro.noresponsestograde')}</div>
-    </g:else>
-    <g:if test="${!(sequence.executionIsFaceToFace() && sequence.statement.isOpenEnded())}">
-        <g:if test="${sequence.userHasSubmittedSecondAttempt(user)}">
-            <div class="alert alert-info">${message(code: 'player.sequence.interaction.secondAttemptSubmitted')}</div>
+                        </r:script>
+                    </g:if>
+                </g:each>
+            </ul>
+
         </g:if>
         <g:else>
-            <div class="alert alert-info">${message(code: 'player.sequence.interaction.secondAttemptSubmittable')}</div>
-            <g:render template="/assignment/player/ResponseSubmission/learner/show"
-                      model="[user: user, interactionInstance: responseInteractionInstance, attempt: 2]"/>
+            <div class="alert alert-info">${message(code: 'player.sequence.interaction.evaluation.intro.noresponsestograde')}</div>
         </g:else>
-    </g:if>
+        <g:set var="shouldPresentExplanationAndConfidenceFields"
+               value="${interactionInstance.sequence.executionIsBlendedOrDistance()}"/>
+        <g:set var="responseSubmissionSpecificationInstance" value="${responseInteractionInstance.interactionSpecification}"/>
+        <g:if test="${sequence.allowsSecondAttemptInLongProcess()}">
+            <g:if test="${sequence.userHasSubmittedSecondAttempt(user)}">
+                <div class="alert alert-info">${message(code: 'player.sequence.interaction.secondAttemptSubmitted')}</div>
+            </g:if>
+            <g:else>
+                <div class="alert alert-info">${message(code: 'player.sequence.interaction.secondAttemptSubmittable')}</div>
+                <g:render template="/assignment/player/ResponseSubmission/learner/response_form"
+                          model="[user: user, interactionInstance: responseInteractionInstance, attempt: 2,
+                                  shouldPresentExplanationAndConfidenceFields:shouldPresentExplanationAndConfidenceFields,
+                                  responseSubmissionSpecificationInstance:responseSubmissionSpecificationInstance]"/>
+            </g:else>
+        </g:if>
+        <g:if test="${shouldPresentExplanationAndConfidenceFields && responseSubmissionSpecificationInstance.studentsProvideExplanation}">
+            <g:submitToRemote controller="player" action="submitGradesAndSecondAttempt"
+                              update="sequence_${interactionInstance.sequenceId}" class="btn btn-default"
+                              value="${message(code: 'player.sequence.interaction.submitResponse')}"
+                              before="document.getElementById('explanation_${responseInteractionInstance.id}').textContent = CKEDITOR.instances.explanation_${responseInteractionInstance.id}.getData()"/>
+        </g:if>
+        <g:else>
+            <g:submitToRemote controller="player" action="submitGradesAndSecondAttempt"
+                              update="sequence_${interactionInstance.sequenceId}" class="btn btn-default"
+                              value="${message(code: 'player.sequence.interaction.submitResponse')}"/>
+        </g:else>
+    </g:form>
 </g:else>

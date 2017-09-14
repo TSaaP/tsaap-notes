@@ -495,4 +495,60 @@ class SequenceServiceIntegrationSpec extends Specification {
         }
 
     }
+
+    void "test sequence duplication"() {
+        given: "a sequence and its statement"
+        Assignment assignment = bootstrapTestService.assignment3WithInteractions
+        Sequence sequence = assignment.sequences[0]
+        sequence.state = StateType.show.name()
+        sequence.executionContext = ExecutionContextType.Blended.name()
+        Statement statement = sequence.statement
+
+        and: "the sequence statement has explanations"
+        statement.expectedExplanation = "expected explanation"
+        FakeExplanation fe1 = sequenceService.addFakeExplanationToStatement("a fake explanation", statement, statement.owner)
+        FakeExplanation fe2 = sequenceService.addFakeExplanationToStatement("a fake explanation 2", statement, statement.owner,2)
+
+        and: "a new assignment"
+        Assignment newAssignment = assignmentService.saveAssignment(new Assignment(owner: assignment.owner, title: "new assignment"))
+
+        when: "duplicate the sequence"
+        Sequence dupSeq = sequenceService.duplicateSequenceInAssignment(sequence, newAssignment, assignment.owner)
+
+        then: "the duplicate sequence is set properly"
+        dupSeq.id
+        !dupSeq.hasErrors()
+        dupSeq.assignment == newAssignment
+        dupSeq.owner == sequence.owner
+        dupSeq.state == StateType.beforeStart.name() // it's a new sequence
+        dupSeq.executionContext == ExecutionContextType.FaceToFace.name() // default value for a new sequence
+        dupSeq.statement.id != sequence.statement.id
+        dupSeq.statement.title == statement.title
+        dupSeq.statement.owner == statement.owner
+        dupSeq.statement.expectedExplanation == statement.expectedExplanation
+        dupSeq.statement.questionType == statement.questionType
+        dupSeq.statement.content == statement.content
+        dupSeq.statement.choiceSpecification == statement.choiceSpecification
+        dupSeq.statement.parentStatement == statement
+
+        when: "getting the duplicate sequence fake explanations"
+        def explanations = dupSeq.statement.fakeExplanations
+
+        then: "the fake explanations are OK"
+        explanations.size() == 2
+        explanations[0].statement == dupSeq.statement
+        explanations[0].content == fe1.content
+        explanations[0].author == fe1.author
+        explanations[0].id != fe1.id
+        explanations[0].correspondingItem == fe1.correspondingItem
+        explanations[1].statement == dupSeq.statement
+        explanations[1].content == fe2.content
+        explanations[1].author == fe2.author
+        explanations[1].id != fe2.id
+        explanations[1].correspondingItem == fe2.correspondingItem
+
+
+
+
+    }
 }

@@ -195,6 +195,7 @@ class SequenceService {
      * @return the duplicated sequence
      */
     Sequence duplicateSequenceInAssignment(Sequence sequence, Assignment duplicatedAssignment, User user) {
+        Contract.requires(duplicatedAssignment.owner == user, AssignmentService.USER__MUST__BE__ASSIGNMENT__OWNER)
         Sequence duplicatedSequence = new Sequence(
                 rank: sequence.rank,
                 owner: sequence.owner,
@@ -208,10 +209,15 @@ class SequenceService {
                 choiceSpecification: sequence.statement.choiceSpecification,
                 questionType: sequence.statement.questionType,
                 owner: sequence.statement.owner,
-                parentStatement: sequence.statement
+                parentStatement: sequence.statement,
+                expectedExplanation: sequence.statement.expectedExplanation
         )
 
         addSequenceToAssignment(user, duplicatedAssignment, duplicatedSequence, duplicatedStatement)
+
+        sequence.statement.fakeExplanations.each {
+            addFakeExplanationToStatement(it.content, duplicatedStatement, user, it.correspondingItem)
+        }
 
         Attachement attachement = sequence.statement.attachment
         if (attachement) {

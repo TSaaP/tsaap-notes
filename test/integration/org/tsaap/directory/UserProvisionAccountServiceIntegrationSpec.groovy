@@ -18,11 +18,13 @@
 package org.tsaap.directory
 
 import groovy.sql.Sql
+import org.tsaap.BootstrapService
 import org.tsaap.lti.LmsUser
 import org.tsaap.lti.LmsUserHelper
 import spock.lang.Specification
 
 import javax.sql.DataSource
+import java.sql.SQLException
 
 /**
  * Created by dorian on 24/06/15.
@@ -30,6 +32,7 @@ import javax.sql.DataSource
 class UserProvisionAccountServiceIntegrationSpec extends Specification {
 
     UserProvisionAccountService userProvisionAccountService
+    BootstrapService bootstrapService
     DataSource dataSource
     LmsUserHelper lmsUserHelper
     Sql sql
@@ -115,5 +118,30 @@ class UserProvisionAccountServiceIntegrationSpec extends Specification {
 
         then: "I got a username with the adhoc result"
         username == "elmmapa"
+    }
+
+    def "test select an username in database"() {
+
+        given: "some users"
+        bootstrapService.initializeRoles()
+        bootstrapService.inializeDevUsers()
+
+
+        when: "I want to know if an username in database begin with the username passed in parameter"
+        def res = null
+        def res2 = null
+        try {
+            sql.withTransaction { ->
+                res = userProvisionAccountService.findMostRecentUsernameStartingWithUsername(sql, "fsil")
+                res2 = userProvisionAccountService.findMostRecentUsernameStartingWithUsername(sql, "drol")
+                throw new SQLException()
+            }
+        }
+        catch (SQLException e) {
+        }
+
+        then: "an username is found for jdoe but not for drol"
+        res == "fsil"
+        res2 == null
     }
 }

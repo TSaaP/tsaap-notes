@@ -38,7 +38,7 @@ class UserProvisionAccountServiceSpec extends Specification {
 
         when: "I want to generate a password"
 
-        def pass = userProvisionAccountService.generatePassword()
+        def pass = userProvisionAccountService.generateEncodedPassword()
 
         then: "I got a password"
         1 * springSecurityService.encodePassword(_) >> "pass"

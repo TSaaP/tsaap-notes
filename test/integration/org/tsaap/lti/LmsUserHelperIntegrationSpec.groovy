@@ -92,26 +92,6 @@ class LmsUserHelperIntegrationSpec extends Specification {
 
     }
 
-    def "test select an username in database"() {
-
-        when: "I want to know if an username in database begin with the username passed in parameter"
-        def res = null
-        def res2 = null
-        try {
-            sql.withTransaction { ->
-                lmsUserHelper.insertUserInDatabase(sql, lmsUser)
-                res = lmsUserHelper.findMostRecentUsernameStartingWithUsername(sql, "jdoe")
-                res2 = lmsUserHelper.findMostRecentUsernameStartingWithUsername(sql, "drol")
-                throw new SQLException()
-            }
-        }
-        catch (SQLException e) {
-        }
-
-        then: "an username is found for jdoe but not for drol"
-        res == "jdoe"
-        res2 == null
-    }
 
     def "test insert lms user in database"() {
         when: "I want to insert a lms user"

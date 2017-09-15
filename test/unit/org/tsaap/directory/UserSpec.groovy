@@ -29,12 +29,15 @@ class UserSpec extends Specification {
 
     @Unroll
     def "'#username' is valid username is #usernameIsOK"() {
-        when:
+
+        given: "a user"
         User user = new User(firstName: "franck", lastName: "s", username: username, email: "mail@mail.com", password: "password")
-        then:
         println "-${user.username}-"
+
+        expect: "validation rules on username are coorectly applyed"
         user.validate() == usernameIsOK
         user.normalizedUsername == username.toLowerCase()
+
         where:
         username                | usernameIsOK
         "is not a word"         | false
@@ -59,5 +62,30 @@ class UserSpec extends Specification {
 
         then: "I get a string with this user fullname"
         res == "franck s"
+    }
+
+    def "user must have email or owner"() {
+        given:"a user with an email"
+        User user = new User(firstName: "franck", lastName: "s", username: "francks", email: "mail@mail.com", password: "password")
+
+        expect: "the user is valid"
+        user.errors.each { println it }
+        user.validate()
+        !user.hasErrors()
+
+        when:"the user has no email"
+        user.email = null
+
+        then: "the user is no more valid"
+        !user.validate()
+        user.errors.each { println it }
+
+        when:"the user has no email but references an owner"
+        user.owner = Mock(User)
+
+        then: "the user is valid"
+        user.errors.each { println it }
+        user.validate()
+
     }
 }

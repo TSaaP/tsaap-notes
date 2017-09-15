@@ -18,9 +18,13 @@
 package org.tsaap.directory
 
 import grails.plugins.springsecurity.SpringSecurityService
+import groovy.sql.Sql
 import org.tsaap.BootstrapService
+import org.tsaap.contracts.ConditionViolationException
 import spock.lang.Specification
 import spock.lang.Unroll
+
+import java.sql.SQLException
 
 class UserAccountServiceIntegrationSpec extends Specification {
 
@@ -167,5 +171,38 @@ class UserAccountServiceIntegrationSpec extends Specification {
         then:"the account of the user is enabled now"
         user.enabled == true
     }
+
+    def "test add user list by owner"() {
+        given: "a user with no authorization to create users"
+        bootstrapService.initializeRoles()
+        bootstrapService.inializeDevUsers()
+        User owner = bootstrapService.mary
+
+        and: "list of users specified by name and firstname"
+        User user1 = new User(firstName: "Paul", lastName: "Durand")
+        User user2 = new User(firstName: "Virgine", lastName: "Dupond")
+        def users = [user1, user2]
+
+        when: "the owner try to add the user list"
+        userAccountService.addUserListByOwner(users, owner)
+
+        then: "an expection is thrown"
+        thrown(ConditionViolationException)
+
+        when: "the owner has the authorization"
+        owner.canBeUserOwner = true
+
+        and: "the owner try to add the user list"
+        def resUsers = userAccountService.addUserListByOwner(users, owner)
+
+        then: "the list contains all generated users without errors"
+        resUsers[0].errors.each { error -> println error}
+        resUsers[0].validate()
+        resUsers[1].errors.each { error -> println error}
+        resUsers[1].validate()
+
+    }
+
+
 
 }

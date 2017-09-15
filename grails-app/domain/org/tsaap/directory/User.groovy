@@ -36,6 +36,10 @@ class User {
     boolean accountLocked
     boolean passwordExpired
 
+    boolean canBeUserOwner = false
+    User owner
+    String clearPassword
+
     static hasOne = [settings: Settings]
 
     void setUsername(String val) {
@@ -51,7 +55,10 @@ class User {
             val ==~ /^[a-zA-Z0-9_]{1,15}$/
         }
         password blank: false, minSize: 4
-        email email: true, unique: true
+        owner nullable: true
+        email email: true, unique: true, nullable: true, validator: { targetEmail, obj ->
+            targetEmail || obj.owner
+        }
         settings nullable: true
     }
 
@@ -60,7 +67,7 @@ class User {
         version(true)
     }
 
-    static transients = ['fullname', 'isTeacher', 'isLearner']
+    static transients = ['fullname', 'isTeacher', 'isLearner', "clearPassword"]
 
     String getFullname() {
         "$firstName $lastName"

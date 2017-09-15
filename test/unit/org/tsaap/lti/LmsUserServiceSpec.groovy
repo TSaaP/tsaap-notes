@@ -62,7 +62,7 @@ class LmsUserServiceSpec extends Specification {
         then: "The user is log with his learner created account"
         1 * lmsUserHelper.findUserIdForLtiUserId(sql, '10','key') >> null
         1 * userProvisionAccountService.generateUsername(sql, "john", "doe") >> "jdoe"
-        1 * userProvisionAccountService.generatePassword() >> "pass"
+        1 * userProvisionAccountService.generateEncodedPassword() >> "pass"
         1 * lmsUserHelper.insertUserInDatabase(sql, lmsUser)
         1 * lmsUserHelper.insertUserRoleInDatabase(sql, 2, lmsUser.userId)
         1 * lmsUserHelper.insertLmsUserInDatabase(sql, lmsUser.userId, 'key', '10')
@@ -75,7 +75,7 @@ class LmsUserServiceSpec extends Specification {
         then: "the user is log with his teacher created account"
         1 * lmsUserHelper.findUserIdForLtiUserId(sql, '11','key') >> null
         1 * userProvisionAccountService.generateUsername(sql, "jean", "test") >> "jtes"
-        1 * userProvisionAccountService.generatePassword() >> "password"
+        1 * userProvisionAccountService.generateEncodedPassword() >> "password"
         1 * lmsUserHelper.insertUserInDatabase(sql, lmsUserTeacher)
         1 * lmsUserHelper.insertUserRoleInDatabase(sql, 3, lmsUser.userId)
         1 * lmsUserHelper.insertLmsUserInDatabase(sql, lmsUser.userId, 'key', '11')

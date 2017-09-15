@@ -57,7 +57,7 @@ class LmsUserService {
 
     private void createUser(Sql sql, LmsUser lmsUser) {
         lmsUser.username = userProvisionAccountService.generateUsername(sql, lmsUser.firstname, lmsUser.lastname)
-        lmsUser.password = userProvisionAccountService.generatePassword()
+        lmsUser.password = userProvisionAccountService.generateEncodedPassword()
         lmsUserHelper.insertUserInDatabase(sql, lmsUser)
         def roleId = lmsUser.isLearner ? RoleEnum.STUDENT_ROLE.id : RoleEnum.TEACHER_ROLE.id
         lmsUserHelper.insertUserRoleInDatabase(sql, roleId,  lmsUser.userId)

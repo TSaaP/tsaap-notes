@@ -20,6 +20,7 @@ package org.tsaap.directory
 import grails.plugins.springsecurity.SpringSecurityService
 import groovy.sql.Sql
 import org.apache.commons.csv.CSVFormat
+import org.apache.commons.csv.CSVPrinter
 import org.apache.commons.csv.CSVRecord
 import org.gcontracts.annotations.Requires
 import org.tsaap.contracts.ConditionViolationException
@@ -110,6 +111,31 @@ class UserAccountService {
     }
 
     /**
+     * Print user list in a csv file
+     * @param userList the user list
+     * @param fileWriter the file write
+     * @return the file writer
+     */
+    FileWriter printUserListInCSVFile(List<User> userList, FileWriter fileWriter) {
+        CSVFormat csvFormat = CSVFormat.DEFAULT.withDelimiter(";" as char)
+        CSVPrinter csvPrinter = new CSVPrinter(fileWriter, csvFormat)
+        try {
+            csvPrinter.printRecord(FILE_HEADER)
+            userList.each { User user ->
+                def status = user.hasErrors() ? StatusType.INVALID.name() : StatusType.OK.name()
+                def username = user.hasErrors() ? "" : user.username
+                def password = user.hasErrors() ? "" : user.clearPassword
+                csvPrinter.printRecord([user.lastName, user.firstName, username, password, status])
+            }
+        } catch (Exception e) {
+            log.error(e.message)
+        } finally {
+            csvPrinter.close()
+        }
+        fileWriter
+    }
+
+    /**
      * Update the user
      * @param user the user
      * @param mainRole the main role
@@ -165,5 +191,13 @@ class UserAccountService {
     }
 
     private final static String USER_MUST_BE_AUTHORIZED_TO_BE_OWNER = "User must be authorized to be owner"
+    //CSV file header
+    private static final Object [] FILE_HEADER = ["Last name", "First name", "User name (login)", "password", "Status"] as Object[]
+    private static final STATUS
 
+}
+
+enum StatusType {
+    OK,
+    INVALID
 }

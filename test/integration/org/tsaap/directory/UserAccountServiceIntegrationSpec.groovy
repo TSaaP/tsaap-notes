@@ -207,7 +207,7 @@ class UserAccountServiceIntegrationSpec extends Specification {
     }
 
     def "test add user list from excell file by owner"() {
-        given: "a user with no authorization to create users"
+        given: "a user with  authorization to create users"
         bootstrapService.initializeRoles()
         bootstrapService.inializeDevUsers()
         User owner = bootstrapService.mary
@@ -241,7 +241,44 @@ class UserAccountServiceIntegrationSpec extends Specification {
 
     }
 
+    def "test csv report generation from user list added by user with csv file"() {
+        given: "a user with  authorization to create users"
+        bootstrapService.initializeRoles()
+        bootstrapService.inializeDevUsers()
+        User owner = bootstrapService.mary
+        owner.canBeUserOwner = true
 
+        and: "a csv file reader from excell"
+        FileReader fileReader = new FileReader("test/integration/resources/userList-excell.csv")
+
+        and: "the generated list of users"
+        List<User> users = userAccountService.addUserListFromFileByOwner(fileReader,owner)
+
+        and: "the target file"
+        FileWriter fileWriter = new FileWriter("test/integration/resources/target-user-list.csv")
+
+        expect: "the list contains the four users in the original file"
+        users.size() == 4
+
+        when: "generating the output csv file"
+        userAccountService.printUserListInCSVFile(users, fileWriter)
+
+        then: "no exception is thrown"
+        noExceptionThrown()
+
+        cleanup:"close file"
+        try {
+            fileWriter.flush()
+            fileWriter.close()
+        } catch (IOException e) {
+            System.out.println("Error while flushing/closing fileWriter !!!")
+            e.printStackTrace();
+        }
+
+
+
+
+    }
 
 
 }

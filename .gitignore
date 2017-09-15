@@ -15,3 +15,4 @@ cobertura.ser
 .slcache
 
 CustomConfig.groovy
+/test/integration/resources/target-user-list.csv

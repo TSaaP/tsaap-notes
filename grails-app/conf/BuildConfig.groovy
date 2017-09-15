@@ -54,6 +54,8 @@ grails.project.dependency.resolution = {
 
         compile 'org.springframework.security:spring-security-crypto:3.2.3.RELEASE'
 
+        compile 'org.apache.commons:commons-csv:1.5'
+
         // Latest httpcore and httpmime for Coveralls plugin
         build 'org.apache.httpcomponents:httpcore:4.4.5'
         build 'org.apache.httpcomponents:httpclient:4.5.2'

@@ -200,8 +200,47 @@ class UserAccountServiceIntegrationSpec extends Specification {
         resUsers[0].validate()
         resUsers[1].errors.each { error -> println error}
         resUsers[1].validate()
+        user1.id
+        user1.owner == owner
+        println "user 1 encoded password : ${user1.password}"
+        println "user 1 clear password : ${user1.clearPassword}"
+    }
+
+    def "test add user list from excell file by owner"() {
+        given: "a user with no authorization to create users"
+        bootstrapService.initializeRoles()
+        bootstrapService.inializeDevUsers()
+        User owner = bootstrapService.mary
+        owner.canBeUserOwner = true
+
+        and: "a csv file reader from excell"
+        FileReader fileReader = new FileReader("test/integration/resources/userList-excell.csv")
+
+        when: "owner add user from the files"
+        def resUsers = userAccountService.addUserListFromFileByOwner(fileReader,owner)
+
+        then: "all users have been created and inserted in database"
+        resUsers.size() == 4
+        resUsers[0].validate()
+        resUsers[0].id
+        resUsers[0].owner == owner
+        resUsers[0].username == "paudura"
+
+        resUsers[1].validate()
+        resUsers[1].username == "virdupo"
+        resUsers[1].id
+
+        resUsers[2].validate()
+        resUsers[2].id
+        println resUsers[2].username
+
+        resUsers[3].errors.each { error -> println error}
+        !resUsers[3].validate()
+        !resUsers[3].id
+        println resUsers[3].username
 
     }
+
 
 
 

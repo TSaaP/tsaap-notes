@@ -19,6 +19,8 @@ package org.tsaap.directory
 
 import grails.plugins.springsecurity.SpringSecurityService
 import groovy.sql.Sql
+import org.apache.commons.csv.CSVFormat
+import org.apache.commons.csv.CSVRecord
 import org.gcontracts.annotations.Requires
 import org.tsaap.contracts.ConditionViolationException
 import org.tsaap.contracts.Contract
@@ -72,6 +74,7 @@ class UserAccountService {
      * @param users the user list
      * @param owner the owner
      * @param language the favorite language for these users
+     * @throws ConditionViolationException
      * @return the list of users
      */
     List<User> addUserListByOwner(List<User> userList, User owner, String language = 'fr') throws ConditionViolationException {
@@ -86,6 +89,24 @@ class UserAccountService {
         }
         sql.close()
         userList
+    }
+
+    /**
+     * Add user list from a file reader CSV formatted
+     * @param fileReader the file reader
+     * @param owner the owner who trys to add user
+     * @param language the favorite language of added users
+     * @return the user list
+     * @throws ConditionViolationException
+     */
+    List<User> addUserListFromFileByOwner(FileReader fileReader, User owner, String language= 'fr') throws ConditionViolationException {
+        Contract.requires(owner.canBeUserOwner, USER_MUST_BE_AUTHORIZED_TO_BE_OWNER)
+        Iterable<CSVRecord> records = CSVFormat.DEFAULT.withDelimiter(";" as char).withFirstRecordAsHeader().parse(fileReader)
+        List<User> userList = []
+        for (CSVRecord record : records) {
+            userList << new User(lastName: record.get(0), firstName: record.get(1))
+        }
+        addUserListByOwner(userList,owner,language)
     }
 
     /**

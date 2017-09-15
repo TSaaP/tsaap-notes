@@ -100,7 +100,7 @@ class UserAccountService {
      * @return the user list
      * @throws ConditionViolationException
      */
-    List<User> addUserListFromFileByOwner(FileReader fileReader, User owner, String language= 'fr') throws ConditionViolationException {
+    List<User> addUserListFromFileByOwner(InputStreamReader fileReader, User owner, String language= 'fr') throws ConditionViolationException {
         Contract.requires(owner.canBeUserOwner, USER_MUST_BE_AUTHORIZED_TO_BE_OWNER)
         Iterable<CSVRecord> records = CSVFormat.DEFAULT.withDelimiter(";" as char).withFirstRecordAsHeader().parse(fileReader)
         List<User> userList = []

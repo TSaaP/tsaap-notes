@@ -73,6 +73,11 @@
                             <li class="divider"></li>
                             <li><g:link controller="settings"
                                         action="doSettings">${message(code: "layout.main.settings")}</g:link></li>
+                            <tsaap:ifUserOwner>
+                                <li class="divider"></li>
+                                <li><g:link
+                                        controller="userAccountBatchCreation">${message(code: "layout.main.goUserAccountCreation")}</g:link></li>
+                            </tsaap:ifUserOwner>
                             <li class="divider"></li>
                             <li><g:link controller="logout">${message(code: "layout.main.disconnect")}</g:link></li>
                         </ul>

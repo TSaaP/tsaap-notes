@@ -18,6 +18,7 @@
 package org.tsaap.taglibs
 
 import grails.plugins.springsecurity.SpringSecurityService
+import org.tsaap.directory.User
 
 class SimpleSecurityTagLib {
 
@@ -39,6 +40,16 @@ class SimpleSecurityTagLib {
      * Renders the body if the user is not authenticated.  */
     def ifNotLoggedIn = { attrs, body ->
         if (!springSecurityService.isLoggedIn()) {
+            out << body()
+        }
+    }
+
+    /**
+     * Renders the body if the user is authorized to create users
+     */
+    def ifUserOwner = { attrs, body ->
+        User user = springSecurityService.currentUser
+        if (user.canBeUserOwner) {
             out << body()
         }
     }

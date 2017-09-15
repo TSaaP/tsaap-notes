@@ -220,7 +220,7 @@ class UserAccountServiceIntegrationSpec extends Specification {
         def resUsers = userAccountService.addUserListFromFileByOwner(fileReader,owner)
 
         then: "all users have been created and inserted in database"
-        resUsers.size() == 4
+        resUsers.size() == 5
         resUsers[0].validate()
         resUsers[0].id
         resUsers[0].owner == owner
@@ -258,7 +258,7 @@ class UserAccountServiceIntegrationSpec extends Specification {
         FileWriter fileWriter = new FileWriter("test/integration/resources/target-user-list.csv")
 
         expect: "the list contains the four users in the original file"
-        users.size() == 4
+        users.size() == 5
 
         when: "generating the output csv file"
         userAccountService.printUserListInCSVFile(users, fileWriter)

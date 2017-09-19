@@ -39,18 +39,6 @@ class LmsUserHelper {
         res
     }
 
-    /**
-     * Get the most recent user who begin with username param
-     * @param sql the sql object
-     * @param username the username
-     * @return a username if found else null
-     */
-    String findMostRecentUsernameStartingWithUsername(Sql sql, String username) {
-        def userNameLike = '^' + username + '[0-9]*$'
-        def req = sql.firstRow("SELECT username FROM user WHERE username RLIKE $userNameLike ORDER BY username DESC")
-        def res = req?.username
-        res
-    }
 
     /**
      * Insert a user

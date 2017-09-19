@@ -1,0 +1,3 @@
+Last name;First name;User name (login);password;Status
+<g:each var="currentUser" in="${userList}"><g:if test="${currentUser.hasErrors()}">${raw(currentUser.lastName)};${raw(currentUser.firstName)};;;${org.tsaap.directory.StatusType.INVALID.name()}</g:if><g:else>${raw(currentUser.lastName)};${raw(currentUser.firstName)};${currentUser.username};${currentUser.clearPassword};${org.tsaap.directory.StatusType.OK.name()}</g:else>
+</g:each>

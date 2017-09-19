@@ -29,14 +29,25 @@ class UserProvisionAccountService {
     SpringSecurityService springSecurityService
     LmsUserHelper lmsUserHelper
 
-    def generatePassword() {
+    /**
+     * Generate an encoded password
+     * @return the encoded password
+     */
+    String generateEncodedPassword() {
+        springSecurityService.encodePassword(generatePassword())
+    }
+
+    /**
+     * Generate a password (not encoded)
+     * @return
+     */
+    String generatePassword() {
         def password = ""
         def alphabet = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789"
         Random rand = new Random()
         for (int i = 0; i < 8; i++) {
             password += alphabet.charAt(rand.nextInt(alphabet.length()))
         }
-        password = springSecurityService.encodePassword(password)
         password
     }
 
@@ -52,7 +63,7 @@ class UserProvisionAccountService {
         def indexFirstName = Math.min(MAX_INDEX_FIRSTNAME, firstName.length())
         def username = replaceAccent(firstName.replaceAll("\\s","").toLowerCase().substring(0, indexFirstName)) +
                 replaceAccent(lastName.replaceAll("\\s","").toLowerCase().substring(0, indexLastname))
-        def existingUsername = lmsUserHelper.findMostRecentUsernameStartingWithUsername(sql, username)
+        def existingUsername = findMostRecentUsernameStartingWithUsername(sql, username)
         if (existingUsername) {
             def matcher = existingUsername =~ /[0-9]+/
             if (matcher.count == 0) {
@@ -78,6 +89,19 @@ class UserProvisionAccountService {
         String nfdNormalizedString = Normalizer.normalize(str, Normalizer.Form.NFD);
         Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
         return pattern.matcher(nfdNormalizedString).replaceAll("");
+    }
+
+    /**
+     * Get the most recent user who begin with username param
+     * @param sql the sql object
+     * @param username the username
+     * @return a username if found else null
+     */
+    String findMostRecentUsernameStartingWithUsername(Sql sql, String username) {
+        def userNameLike = '^' + username + '[0-9]*$'
+        def req = sql.firstRow("SELECT username FROM user WHERE username RLIKE $userNameLike ORDER BY username DESC")
+        def res = req?.username
+        res
     }
 
 }

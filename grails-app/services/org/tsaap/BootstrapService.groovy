@@ -22,12 +22,14 @@ import org.tsaap.directory.Role
 import org.tsaap.directory.RoleEnum
 import org.tsaap.directory.User
 import org.tsaap.directory.UserAccountService
+import org.tsaap.directory.UserProvisionAccountService
 
 
 class BootstrapService {
 
     def dataSource
     UserAccountService userAccountService
+    UserProvisionAccountService userProvisionAccountService
 
 
     Role studentRole
@@ -116,7 +118,7 @@ class BootstrapService {
             def username ="John_Doe___${i}"
             def fakeUser = User.findByUsername(username)
             if (!fakeUser) {
-                def user = new User(firstName: "John", lastName: "Doe", username: username, password: "@&époi123", email: "${username}@fakeuser.com")
+                def user = new User(firstName: "John", lastName: "Doe", username: username, password: userProvisionAccountService.generatePassword(), email: "${username}@fakeuser.com")
                 fakeUser = userAccountService.addUser(user, studentRole, true, 'fr')
             }
             res << fakeUser

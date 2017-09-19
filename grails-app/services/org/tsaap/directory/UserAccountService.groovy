@@ -17,11 +17,21 @@
 
 package org.tsaap.directory
 
+import grails.plugins.springsecurity.SpringSecurityService
+import groovy.sql.Sql
+import org.apache.commons.csv.CSVFormat
+import org.apache.commons.csv.CSVPrinter
+import org.apache.commons.csv.CSVRecord
 import org.gcontracts.annotations.Requires
+import org.tsaap.contracts.ConditionViolationException
+import org.tsaap.contracts.Contract
 
 class UserAccountService {
 
     SettingsService settingsService
+    UserProvisionAccountService userProvisionAccountService
+    SpringSecurityService springSecurityService
+    def dataSource
 
     private static final HashMap<String, String> LANGUAGES_SUPPORTED = [
             'English' : 'en',
@@ -58,6 +68,71 @@ class UserAccountService {
             user.settings = settingsService.initializeSettingsForUser(user, language)
         }
         user
+    }
+
+    /**
+     * Add a list of users given by an "owner" of these users. The users are considered as students and immediatly enabled.
+     * @param users the user list
+     * @param owner the owner
+     * @param language the favorite language for these users
+     * @throws ConditionViolationException
+     * @return the list of users
+     */
+    List<User> addUserListByOwner(List<User> userList, User owner, String language = 'fr') throws ConditionViolationException {
+        Contract.requires(owner.canBeUserOwner, USER_MUST_BE_AUTHORIZED_TO_BE_OWNER)
+        Sql sql = new Sql(dataSource)
+        userList.each { User user ->
+            user.username = userProvisionAccountService.generateUsername(sql, user.firstName, user.lastName)
+            user.clearPassword = userProvisionAccountService.generatePassword()
+            user.password = user.clearPassword
+            user.owner = owner
+            addUser(user, RoleEnum.STUDENT_ROLE.role, true, language)
+        }
+        sql.close()
+        userList
+    }
+
+    /**
+     * Add user list from a file reader CSV formatted
+     * @param fileReader the file reader
+     * @param owner the owner who trys to add user
+     * @param language the favorite language of added users
+     * @return the user list
+     * @throws ConditionViolationException
+     */
+    List<User> addUserListFromFileByOwner(InputStreamReader fileReader, User owner, String language= 'fr') throws ConditionViolationException {
+        Contract.requires(owner.canBeUserOwner, USER_MUST_BE_AUTHORIZED_TO_BE_OWNER)
+        Iterable<CSVRecord> records = CSVFormat.DEFAULT.withDelimiter(";" as char).withFirstRecordAsHeader().parse(fileReader)
+        List<User> userList = []
+        for (CSVRecord record : records) {
+            userList << new User(lastName: record.get(0), firstName: record.get(1))
+        }
+        addUserListByOwner(userList,owner,language)
+    }
+
+    /**
+     * Print user list in a csv file
+     * @param userList the user list
+     * @param fileWriter the file write
+     * @return the file writer
+     */
+    FileWriter printUserListInCSVFile(List<User> userList, FileWriter fileWriter) {
+        CSVFormat csvFormat = CSVFormat.DEFAULT.withDelimiter(";" as char)
+        CSVPrinter csvPrinter = new CSVPrinter(fileWriter, csvFormat)
+        try {
+            csvPrinter.printRecord(FILE_HEADER)
+            userList.each { User user ->
+                def status = user.hasErrors() ? StatusType.INVALID.name() : StatusType.OK.name()
+                def username = user.hasErrors() ? "" : user.username
+                def password = user.hasErrors() ? "" : user.clearPassword
+                csvPrinter.printRecord([user.lastName, user.firstName, username, password, status])
+            }
+        } catch (Exception e) {
+            log.error(e.message)
+        } finally {
+            csvPrinter.close()
+        }
+        fileWriter
     }
 
     /**
@@ -115,4 +190,14 @@ class UserAccountService {
         user
     }
 
+    private final static String USER_MUST_BE_AUTHORIZED_TO_BE_OWNER = "User must be authorized to be owner"
+    //CSV file header
+    private static final Object [] FILE_HEADER = ["Last name", "First name", "User name (login)", "password", "Status"] as Object[]
+    private static final STATUS
+
+}
+
+enum StatusType {
+    OK,
+    INVALID
 }

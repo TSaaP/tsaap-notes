@@ -18,9 +18,13 @@
 package org.tsaap.directory
 
 import grails.plugins.springsecurity.SpringSecurityService
+import groovy.sql.Sql
 import org.tsaap.BootstrapService
+import org.tsaap.contracts.ConditionViolationException
 import spock.lang.Specification
 import spock.lang.Unroll
+
+import java.sql.SQLException
 
 class UserAccountServiceIntegrationSpec extends Specification {
 
@@ -167,5 +171,114 @@ class UserAccountServiceIntegrationSpec extends Specification {
         then:"the account of the user is enabled now"
         user.enabled == true
     }
+
+    def "test add user list by owner"() {
+        given: "a user with no authorization to create users"
+        bootstrapService.initializeRoles()
+        bootstrapService.inializeDevUsers()
+        User owner = bootstrapService.mary
+
+        and: "list of users specified by name and firstname"
+        User user1 = new User(firstName: "Paul", lastName: "Durand")
+        User user2 = new User(firstName: "Virgine", lastName: "Dupond")
+        def users = [user1, user2]
+
+        when: "the owner try to add the user list"
+        userAccountService.addUserListByOwner(users, owner)
+
+        then: "an expection is thrown"
+        thrown(ConditionViolationException)
+
+        when: "the owner has the authorization"
+        owner.canBeUserOwner = true
+
+        and: "the owner try to add the user list"
+        def resUsers = userAccountService.addUserListByOwner(users, owner)
+
+        then: "the list contains all generated users without errors"
+        resUsers[0].errors.each { error -> println error}
+        resUsers[0].validate()
+        resUsers[1].errors.each { error -> println error}
+        resUsers[1].validate()
+        user1.id
+        user1.owner == owner
+        println "user 1 encoded password : ${user1.password}"
+        println "user 1 clear password : ${user1.clearPassword}"
+    }
+
+    def "test add user list from excell file by owner"() {
+        given: "a user with  authorization to create users"
+        bootstrapService.initializeRoles()
+        bootstrapService.inializeDevUsers()
+        User owner = bootstrapService.mary
+        owner.canBeUserOwner = true
+
+        and: "a csv file reader from excell"
+        FileReader fileReader = new FileReader("test/integration/resources/userList-excell.csv")
+
+        when: "owner add user from the files"
+        def resUsers = userAccountService.addUserListFromFileByOwner(fileReader,owner)
+
+        then: "all users have been created and inserted in database"
+        resUsers.size() == 5
+        resUsers[0].validate()
+        resUsers[0].id
+        resUsers[0].owner == owner
+        resUsers[0].username == "paudura"
+
+        resUsers[1].validate()
+        resUsers[1].username == "virdupo"
+        resUsers[1].id
+
+        resUsers[2].validate()
+        resUsers[2].id
+        println resUsers[2].username
+
+        resUsers[3].errors.each { error -> println error}
+        !resUsers[3].validate()
+        !resUsers[3].id
+        println resUsers[3].username
+
+    }
+
+    def "test csv report generation from user list added by user with csv file"() {
+        given: "a user with  authorization to create users"
+        bootstrapService.initializeRoles()
+        bootstrapService.inializeDevUsers()
+        User owner = bootstrapService.mary
+        owner.canBeUserOwner = true
+
+        and: "a csv file reader from excell"
+        FileReader fileReader = new FileReader("test/integration/resources/userList-excell.csv")
+
+        and: "the generated list of users"
+        List<User> users = userAccountService.addUserListFromFileByOwner(fileReader,owner)
+
+        and: "the target file"
+        FileWriter fileWriter = new FileWriter("test/integration/resources/target-user-list.csv")
+
+        expect: "the list contains the four users in the original file"
+        users.size() == 5
+
+        when: "generating the output csv file"
+        userAccountService.printUserListInCSVFile(users, fileWriter)
+
+        then: "no exception is thrown"
+        noExceptionThrown()
+
+        cleanup:"close file"
+        try {
+            fileWriter.flush()
+            fileWriter.close()
+        } catch (IOException e) {
+            System.out.println("Error while flushing/closing fileWriter !!!")
+            e.printStackTrace();
+        }
+
+
+
+
+    }
+
 
 }

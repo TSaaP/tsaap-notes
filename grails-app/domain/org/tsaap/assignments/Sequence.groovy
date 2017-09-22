@@ -273,7 +273,7 @@ class Sequence {
  * @return true if the sequence is played with default 3 phases process
  */
     boolean isDefaultProcess() {
-        responseSubmissionSpecification?.studentsProvideExplanation
+        getInteractions()?.size() == 3
     }
 
 /**

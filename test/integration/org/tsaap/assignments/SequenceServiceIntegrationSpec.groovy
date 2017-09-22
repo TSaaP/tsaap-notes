@@ -159,8 +159,8 @@ class SequenceServiceIntegrationSpec extends Specification {
         when: "create interactions with no provision of explanations"
         def interactions = sequenceService.createInteractionsForSequence(sequence, false)
 
-        then: "there are only 2 interactions created"
-        interactions.size() == 2
+        then: "there are 3 interactions created"
+        interactions.size() == 3
 
         and: "first interaction is a response submission interaction"
         interactions[0].isResponseSubmission()

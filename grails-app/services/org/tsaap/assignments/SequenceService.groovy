@@ -109,9 +109,8 @@ class SequenceService {
      * @return the list of created interactions
      */
     List<Interaction> createInteractionsForSequence(Sequence sequence,
-                                                        boolean studentsProvideExplanation = true,
-                                                        int responseToEvaluateCount = EvaluationSpecification.MAX_RESPONSE_TO_EVALUATE_COUNT) {
-        List<Interaction> interactions
+                                                    boolean studentsProvideExplanation = true,
+                                                    int responseToEvaluateCount = 0) {
 
         ResponseSubmissionSpecification responseSpec = new ResponseSubmissionSpecification()
         responseSpec.studentsProvideExplanation = studentsProvideExplanation
@@ -120,18 +119,12 @@ class SequenceService {
         EvaluationSpecification evalSpec = new EvaluationSpecification()
         evalSpec.responseToEvaluateCount = responseToEvaluateCount
 
-        if (sequence.executionIsFaceToFace() && !studentsProvideExplanation) {
-            interactions = getInteractionsToShortProcess(
-                    responseSpec
-            )
-        } else {
-            interactions = getInteractionsToDefaultProcess(
-                    responseSpec,
-                    evalSpec,
-                    ExecutionContextType.valueOf(sequence.executionContext)
-            )
-        }
-        interactions
+        getInteractionsToDefaultProcess(
+                responseSpec,
+                evalSpec,
+                ExecutionContextType.valueOf(sequence.executionContext)
+        )
+
     }
 
 
@@ -186,7 +179,6 @@ class SequenceService {
         interactions
     }
 
-
     /**
      * Duplicate a sequence in an assignment (without interactions)
      * @param sequence the sequence to duplicate
@@ -222,7 +214,7 @@ class SequenceService {
         Attachement attachement = sequence.statement.attachment
         if (attachement) {
             Attachement duplicatedAttachement = attachementService.duplicateAttachment(attachement)
-            attachementService.addStatementToAttachment(duplicatedStatement,duplicatedAttachement)
+            attachementService.addStatementToAttachment(duplicatedStatement, duplicatedAttachement)
         }
 
         duplicatedSequence
@@ -286,7 +278,7 @@ class SequenceService {
         Contract.requires(statement.owner == user, USER_MUST_BE_STATEMENT_OWNER)
         removeAllFakeExplanationFromStatement(statement)
         fakeExplanationDtos.each {
-            def fe = addFakeExplanationToStatement(it.content, statement,user, it.correspondingItem)
+            def fe = addFakeExplanationToStatement(it.content, statement, user, it.correspondingItem)
             if (fe.hasErrors()) {
                 log.error(fe.errors)
             }
@@ -320,9 +312,9 @@ class SequenceService {
      * @param sequence the sequence
      * @return the sequence
      */
-    Sequence startSequenceInBlendedOrDistanceContext(Sequence sequence,user) {
+    Sequence startSequenceInBlendedOrDistanceContext(Sequence sequence, user) {
         Contract.requires(sequence.owner == user, USER_MUST_BE_SEQUENCE_OWNER)
-        Contract.requires(sequence.executionIsBlendedOrDistance(),SEQUENCE_MUST_BE_BLENDED_OR_DISTANCE)
+        Contract.requires(sequence.executionIsBlendedOrDistance(), SEQUENCE_MUST_BE_BLENDED_OR_DISTANCE)
         sequence.activeInteraction = sequence.readInteraction
         if (sequence.executionIsBlended()) {
             sequence.readInteraction.state = StateType.beforeStart.name()
@@ -399,8 +391,8 @@ class SequenceService {
 
     private static final String USER_MUST_BE_STATEMENT_OWNER = "user must be the statement owner"
     private static final String USER_MUST_BE_SEQUENCE_OWNER = "user must be the sequence owner"
-    private static final String USER_CANNOT_UPDATE_ALL_RESULTS= "user cannot update all resuts"
-    private static final String SEQUENCE_MUST_BE_BLENDED_OR_DISTANCE= "sequence must be blended or distance"
+    private static final String USER_CANNOT_UPDATE_ALL_RESULTS = "user cannot update all resuts"
+    private static final String SEQUENCE_MUST_BE_BLENDED_OR_DISTANCE = "sequence must be blended or distance"
 
 
 }

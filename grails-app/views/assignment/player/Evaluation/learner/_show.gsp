@@ -44,9 +44,6 @@
             </ul>
 
         </g:if>
-        <g:else>
-            <div class="alert alert-info">${message(code: 'player.sequence.interaction.evaluation.intro.noresponsestograde')}</div>
-        </g:else>
         <g:set var="shouldPresentExplanationAndConfidenceFields"
                value="${interactionInstance.sequence.executionIsBlendedOrDistance()}"/>
         <g:set var="responseSubmissionSpecificationInstance" value="${responseInteractionInstance.interactionSpecification}"/>

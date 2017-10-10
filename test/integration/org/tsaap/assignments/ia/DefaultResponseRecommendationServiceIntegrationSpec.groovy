@@ -247,8 +247,10 @@ class DefaultResponseRecommendationServiceIntegrationSpec extends Specification 
         User mary = learners[1]
         User john = learners[2]
         User erik = learners[3]
+        User paul = learners[4]
+        User ingrid = learners[5]
 
-        for (int i = 0; i<4; i++) {
+        for (int i = 0; i < 6; i++) {
             assignmentService.registerUserOnAssignment(learners[i], assignment)
         }
 
@@ -290,6 +292,25 @@ class DefaultResponseRecommendationServiceIntegrationSpec extends Specification 
         )
         interactionService.saveInteractionResponse(respErik)
 
+        InteractionResponse respTooShortPaul = new InteractionResponse(
+                interaction: interaction,
+                learner: paul,
+                choiceListSpecification: "[1,4]",
+                attempt: 1,
+                explanation: "short",
+                confidenceDegree: ConfidenceDegreeEnum.NOT_REALLY_CONFIDENT.integerValue
+        )
+        interactionService.saveInteractionResponse(respTooShortPaul)
+        InteractionResponse respNullIngrid = new InteractionResponse(
+                interaction: interaction,
+                learner: ingrid,
+                choiceListSpecification: "[1,4]",
+                attempt: 1,
+                explanation: null,
+                confidenceDegree: ConfidenceDegreeEnum.NOT_REALLY_CONFIDENT.integerValue
+        )
+        interactionService.saveInteractionResponse(respNullIngrid)
+
         and: "some peer-grades have been distributed"
         PeerGrading pgFromThomOnMary = new PeerGrading(grader: thom, response: respMary, grade: 2).save()
         PeerGrading pgFromMaryOnJohn = new PeerGrading(grader: mary, response: respJohn, grade: 3).save()
@@ -299,21 +320,26 @@ class DefaultResponseRecommendationServiceIntegrationSpec extends Specification 
         PeerGrading pgFromThomOnJohn = new PeerGrading(grader: thom, response: respJohn, grade: 1).save()
 
         when:"searching responses id ordered by evaluation count with limit of 4"
-        List<InteractionResponse> res = responseRecommendationService.findAllResponsesOrderedByEvaluationCount(interaction,1,4)
+        List<InteractionResponse> res = responseRecommendationService.findAllResponsesOrderedByEvaluationCount(interaction,1,4,1)
+        List<InteractionResponse> expected = [respErik, respThom, respJohn, respMary]
+        Collections.shuffle(expected, new Random(1))
 
         then:"the list contains the four expected elements"
-        res == [respErik, respThom, respJohn, respMary]
-
-        when:"searching responses id ordered by evaluation count with limit of 2"
-        res = responseRecommendationService.findAllResponsesOrderedByEvaluationCount(interaction,1,2)
-
-        then:"the list contains the two expected elements"
-        res == [respErik, respThom]
+        res == expected
 
         when:"searching responses id ordered by evaluation count with limit of 6"
-        res = responseRecommendationService.findAllResponsesOrderedByEvaluationCount(interaction,1,6)
+        res = responseRecommendationService.findAllResponsesOrderedByEvaluationCount(interaction,1,6,1)
 
         then:"the list contains the four expected elements"
-        res == [respErik, respThom, respJohn, respMary]
+        res == expected
+
+        when:"searching responses id ordered by evaluation count with limit of 2"
+        res = responseRecommendationService.findAllResponsesOrderedByEvaluationCount(interaction,1,2,1)
+        expected = [respErik, respThom]
+        Collections.shuffle(expected, new Random(1))
+
+        then:"the list contains the two expected elements"
+        res == expected
+
     }
 }

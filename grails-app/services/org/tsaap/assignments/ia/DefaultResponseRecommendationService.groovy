@@ -136,17 +136,20 @@ class DefaultResponseRecommendationService implements ResponseRecommendationServ
      * @param limit limit the sise of the returning list
      * @return the list of responses
      */
-    List<InteractionResponse> findAllResponsesOrderedByEvaluationCount(Interaction interaction, int attempt, int limit) {
+    List<InteractionResponse> findAllResponsesOrderedByEvaluationCount(Interaction interaction, int attempt, int limit, long seed = System.nanoTime()) {
         def res = []
+        def minSize = MIN_SIZE_OF_EXPLANATION_TO_BE_EVALUATED
         Sql sql = new Sql(dataSource)
         def sqlQuery = """
               select cir.id as response_id,  (select count(*) from peer_grading pg where pg.response_id = cir.id) as evalCount
-              from choice_interaction_response cir WHERE cir.interaction_id = ${interaction.id} and cir. attempt = ${attempt}
+              from choice_interaction_response cir WHERE cir.interaction_id = ${interaction.id} and cir.attempt = ${attempt}
+              and cir.explanation is not null and CHAR_LENGTH(cir.explanation) > ${minSize}
               ORDER BY evalCount ASC LIMIT ${limit};
             """
         sql.eachRow(sqlQuery,0,limit) {
            res << InteractionResponse.get(it.response_id)
         }
+        Collections.shuffle(res,new Random(seed))
         res
     }
 }

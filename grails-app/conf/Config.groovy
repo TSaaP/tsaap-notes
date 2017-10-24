@@ -17,12 +17,14 @@ import org.gualdi.grails.plugins.ckeditor.Ckeditor
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Fichier de configuration externe propre à l'application
+// Fichier de configuration externe par défaut
+grails.config.locations = ["file:${userHome}/.grails/tsaap-notes-config.groovy"]
+
+// Fichier de configuration externe spécifique (si la propriété système est définie)
 def appConfigLocation = System.properties["${appName}.config.location"]
 if (appConfigLocation) {
     grails.config.locations = ["file:$appConfigLocation"]
 }
-
 
 
 grails.project.groupId = appName // change this to alter the default package name and Maven publishing destination
@@ -52,7 +54,8 @@ grails.mime.types = [all          : '*/*',
 //grails.urlmapping.cache.maxsize = 1000
 
 // What URL patterns should be processed by the resources plugin
-grails.resources.adhoc.patterns = ['/images/*', '/css/*', '/js/*', '/plugins/*']
+grails.resources.adhoc.patterns = ['/images/*', '/css/*', '/js/*', '/plugins/*', '/fonts/*', '/semantic/*']
+grails.resources.adhoc.includes = ['/images/**', '/css/**', '/js/**', '/plugins/**', '/fonts/**', 'semantic/**']
 
 // Legacy setting for codec used to encode data with ${}
 grails.views.default.codec = "html"
@@ -103,6 +106,7 @@ grails.hibernate.cache.queries = false
 environments {
     development {
         grails.logging.jul.usebridge = true
+        grails.resources.debug=true
         grails.serverURL = "http://localhost:8080/tsaap-notes"
     }
     production {

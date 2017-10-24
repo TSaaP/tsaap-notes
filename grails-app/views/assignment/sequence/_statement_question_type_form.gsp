@@ -16,11 +16,12 @@
                 <g:message code="sequence.interaction.studentsSelect"/>
                 <g:select name="choiceInteractionType" id="choiceInteractionType"
                           from="${ChoiceInteractionType.values()*.name()}"
-                          value="${sequenceInstance?.statement?.choiceSpecificationObject?.getChoiceInteractionType()}"/> <g:message
+                          value="${sequenceInstance?.statement?.choiceSpecificationObject?.getChoiceInteractionType()}"/>
+                <g:message
                         code="sequence.interaction.choicesIn"/>
                 <g:select name="itemCount" id="itemCount" from="${2..10}"
-                          value="${sequenceInstance?.statement?.choiceSpecificationObject?.itemCount}"/><g:message
-                        code="sequence.interaction.items"/>
+                          value="${sequenceInstance?.statement?.choiceSpecificationObject?.itemCount}"/>
+                <g:message code="sequence.interaction.items"/>
             </label>
         </div>
         <g:set var="itemCount" value="${sequenceInstance?.statement?.choiceSpecificationObject?.itemCount ?: 2}"/>

@@ -1,0 +1,12 @@
+/*******************************
+        Site Overrides
+*******************************/
+
+/* Adapt Semantic UI message */
+.ui.message>p, .ui.message>ul {
+  margin: 0 0 0;
+}
+
+.ui.message.explanation {
+  overflow: auto;
+}

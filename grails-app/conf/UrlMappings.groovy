@@ -17,6 +17,7 @@
 
 import org.tsaap.lti.LtiContextInitialisationException
 import org.tsaap.lti.LtiUserException
+import org.tsaap.skin.SkinUtil
 
 class UrlMappings {
 
@@ -28,14 +29,14 @@ class UrlMappings {
         }
 
         "/scope/$action?/$id?"(controller: 'context')
-
-        "/"(view: "/index")
-        "/terms"(view: "/terms")
-        "/lti/terms"(view: "/lti/terms")
-        "500"(view: '/error')
-        "500"(view: '/lti/error', exception: LtiContextInitialisationException)
-        "500"(view: '/lti/error', exception: LtiUserException)
-        "404"(view: '/404')
+        "/"(controller: 'index')
+        "/elaastic-skin/home"(view: "/elaastic-skin/home")
+        "/terms"(controller: 'index', action: 'showTerms')
+        "/lti/terms"(controller: 'index', action: 'showLtiTerms')
+        "500"(controller: 'index', action: 'showErrorPage')
+        "500"(controller: 'index', action: 'showLtiErrorPage', exception: LtiContextInitialisationException)
+        "500"(controller: 'index', action: 'showLtiErrorPage', exception: LtiUserException)
+        "404"(controller: 'index', action: 'notFound')
 
         "/ckeditor/config.js"(view: '/staticjs/ckeditorconfig')
     }

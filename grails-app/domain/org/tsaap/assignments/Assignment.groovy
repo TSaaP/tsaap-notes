@@ -28,6 +28,10 @@ class Assignment {
         Sequence.findAllByAssignment(this,[sort:'rank', order:'asc'])
     }
 
+    Integer countSequences() {
+        Sequence.countByAssignment(this)
+    }
+
     /**
      * Get the last sequence of the current assignment
      * @return

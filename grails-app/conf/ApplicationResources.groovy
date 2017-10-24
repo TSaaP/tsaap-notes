@@ -20,6 +20,30 @@ modules = {
         resource url: 'js/application.js'
     }
 
+    vue_js {
+        resource url: 'js/vuejs/vue.js', linkOverride: 'https://unpkg.com/vue'
+        resource url: 'js/vuejs/vue-resource.min.js',  linkOverride: 'https://cdn.jsdelivr.net/vue.resource/1.3.1/vue-resource.min.js'
+    }
+
+    ckeditor_vue_js {
+        dependsOn('vue_js')
+        resource url: 'js/elaastic/VueCkeditorComponent.js'
+    }
+
+    underscore_js {
+        resource url: 'js/underscore-min.js'
+    }
+
+    semantic_ui {
+        dependsOn('jquery')
+        resource url: 'semantic/dist/semantic.min.css'
+        resource url: 'semantic/dist/semantic.min.js'
+    }
+
+    elaastic_ui {
+        resource url: 'css/elaastic.css'
+    }
+
     tsaap_ui {
         dependsOn('application')
         dependsOn('jquery')

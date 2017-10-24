@@ -35,13 +35,17 @@ class SettingsController {
                 [var: params.key])[0]
     })
     def doSettings() {
+        redirect(uri: '/')
+        return // Setting are desactivated
+
         render(view: '/settings/settings', model: [user: springSecurityService.currentUser])
-        //redirect(uri: '/settings/settings')
     }
 
     @Transactional
     @Secured(['IS_AUTHENTICATED_FULLY'])
     def doUpdate() {
+        redirect(uri: '/')
+        return // Setting are desactivated
 
         User user = springSecurityService.currentUser
 

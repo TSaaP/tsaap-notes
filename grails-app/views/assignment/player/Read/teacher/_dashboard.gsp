@@ -38,7 +38,7 @@
         <g:set var="responses" value="${sequence.findAllOpenResponses(attempt)}"/>
         <g:set var="badResponses" value="${[:]}"/>
     </g:else>
-    <g:render template="/assignment/player/ExplanationList"
+    <g:render template="/assignment/player/${org.tsaap.skin.SkinUtil.getView(params, session, 'ExplanationList')}"
               model="[responses: responses, sequence: sequence, badResponses: badResponses]"/>
 </g:if>
 <g:if test="${sequence.executionIsBlendedOrDistance() && !sequence.isStopped()}">

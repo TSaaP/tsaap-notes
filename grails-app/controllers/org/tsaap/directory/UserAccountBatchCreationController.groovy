@@ -20,6 +20,7 @@ package org.tsaap.directory
 
 import grails.plugins.springsecurity.SpringSecurityService
 import org.springframework.web.multipart.commons.CommonsMultipartFile
+import org.tsaap.skin.SkinUtil
 
 
 class UserAccountBatchCreationController {
@@ -31,7 +32,7 @@ class UserAccountBatchCreationController {
      * Displays form to upload csv file
      */
     def index() {
-        render(view: "/directory/userAccountBatchCreation")
+        render(view: "/directory/"+SkinUtil.getView(params, session, 'userAccountBatchCreation'))
     }
 
     /**

@@ -16,8 +16,11 @@
   --}%
 <%@ page contentType="text/javascript;charset=UTF-8" %>
 CKEDITOR.plugins.addExternal( 'pbckcode', '${resource(dir: '/ckeditor/plugins/pbckcode/')}' );
+CKEDITOR.plugins.addExternal( 'confighelper', '${resource(dir: '/ckeditor/plugins/confighelper/')}' );
 CKEDITOR.editorConfig = function( config ) {
-    config.extraPlugins = 'pbckcode';
+    config.floatSpaceDockedOffsetY = 30;
+    config.extraPlugins = 'pbckcode,confighelper';
+
         config.pbckcode = {
         modes :  [
             ['C/C++'        , 'c_pp'],

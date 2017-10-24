@@ -1,0 +1,9 @@
+/*******************************
+    User Variable Overrides
+*******************************/
+
+/* Menu */
+@horizontalMargin: 4em;
+
+/* Divider */
+@dividerSize: 0;

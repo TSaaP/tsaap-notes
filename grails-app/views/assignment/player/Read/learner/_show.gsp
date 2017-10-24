@@ -59,7 +59,8 @@
     <g:else>
         <g:set var="responses" value="${sequence.findAllOpenResponses(attempt)}"/>
     </g:else>
-    <g:render template="/assignment/player/ExplanationList" model="[responses: responses, sequence: sequence]"/>
+    <g:render template="/assignment/player/${org.tsaap.skin.SkinUtil.getView(params, session, 'ExplanationList')}"
+              model="[responses: responses, sequence: sequence]"/>
 </g:if>
 
 <g:if test="${sequence.executionIsDistance() && !sequence.isStopped()}">

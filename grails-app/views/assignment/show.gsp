@@ -39,7 +39,7 @@
     <table class="table table-striped table-hover">
         <tbody>
         <g:each in="${assignmentInstance.sequences}" status="i" var="sequenceInstance">
-            <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
+            <tr class="${(i % 2) == 0 ? 'even' : 'odd'}" id="sequence_${sequenceInstance.id}">
                 <td><g:link action="editSequence" controller="sequence"
                             id="${sequenceInstance.id}">${fieldValue(bean: sequenceInstance, field: "title")}</g:link></td>
 

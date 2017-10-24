@@ -1,0 +1,9 @@
+.ui.avatar.image.logo {
+  margin-right: 1.5em;
+}
+
+/* Hide the inline CKEditor outline */
+div[contenteditable]:focus {
+  outline: none;
+}
+

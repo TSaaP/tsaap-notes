@@ -1,0 +1,8 @@
+/*******************************
+         Site Overrides
+*******************************/
+
+
+.ui.compact.progress, .ui.compact.progress:last-child {
+  margin-bottom: 0.5em;
+}

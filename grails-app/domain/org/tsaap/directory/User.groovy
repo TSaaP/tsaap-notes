@@ -50,9 +50,8 @@ class User {
     static constraints = {
         firstName blank: false
         lastName blank: false
-        normalizedUsername blank: false, unique: true
-        username blank: false, unique: true, validator: { val ->
-            val ==~ /^[a-zA-Z0-9_]{1,15}$/
+        normalizedUsername blank: false, unique: true, validator: { val ->
+            (val ==~ /^[a-zA-Z0-9_\-]{1,15}$/) ?: 'user.normalizedUsername.invalid'
         }
         password blank: false, minSize: 4
         owner nullable: true

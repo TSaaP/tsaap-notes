@@ -70,9 +70,6 @@
                         <ul class="dropdown-menu">
                             <li><g:link controller="userAccount"
                                         action="doEdit">${message(code: "layout.main.account")}</g:link></li>
-                            <li class="divider"></li>
-                            <li><g:link controller="settings"
-                                        action="doSettings">${message(code: "layout.main.settings")}</g:link></li>
                             <tsaap:ifUserOwner>
                                 <li class="divider"></li>
                                 <li><g:link

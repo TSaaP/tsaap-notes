@@ -1,0 +1,5 @@
+/*******************************
+    User Variable Overrides
+*******************************/
+@primaryColor: #95C155;
+@secondaryColor: rgb(79, 118, 145);

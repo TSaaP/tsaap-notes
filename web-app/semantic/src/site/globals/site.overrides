@@ -1,0 +1,18 @@
+/*******************************
+         Site Overrides
+*******************************/
+
+@media only screen and ( max-width: @largestMobileScreen ) {
+  .not.mobile {
+    display: none !important;
+  }
+}
+@media only screen and ( min-width: @tabletBreakpoint ) {
+  .only.mobile {
+    display: none !important;
+  }
+}
+
+.large.text {
+    font-size: 2rem;
+}

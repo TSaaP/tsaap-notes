@@ -43,7 +43,7 @@ class UserSpec extends Specification {
         "is not a word"         | false
         "franck"                | true
         "Mary"                  | true
-        "franck-s"              | false
+        "franck-s"              | true
         "Mary_s"                | true
         "fr@nck"                | false
         "Mar%"                  | false

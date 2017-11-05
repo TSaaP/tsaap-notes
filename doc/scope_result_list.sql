@@ -13,7 +13,7 @@ where
 	response_1.`session_phase_id` = 360 and
 	response_2.`session_phase_id` = 363 
 order by
-	user.last_name, user.first_name
+	user.last_name, user.first_name;
 	
 	
 select 
@@ -31,7 +31,7 @@ where
 	response_1.`session_phase_id` = 360 and
 	response_2.`session_phase_id` = 363 
 order by
-	user.last_name, user.first_name
+	user.last_name, user.first_name;
 	
 	
 select 
@@ -43,4 +43,4 @@ user.id = `live_session_response`.`user_id` and
 `live_session`.id = `live_session_response`.`live_session_id` and
 `live_session_id` = 547
 order by
-last_name, `first_name`
+last_name, `first_name`;

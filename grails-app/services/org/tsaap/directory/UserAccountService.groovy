@@ -18,6 +18,7 @@
 package org.tsaap.directory
 
 import grails.plugins.springsecurity.SpringSecurityService
+import grails.transaction.NotTransactional
 import groovy.sql.Sql
 import org.apache.commons.csv.CSVFormat
 import org.apache.commons.csv.CSVPrinter
@@ -78,13 +79,16 @@ class UserAccountService {
      * @throws ConditionViolationException
      * @return the list of users
      */
+    @NotTransactional
     List<User> addUserListByOwner(List<User> userList, User owner, String language = 'fr') throws ConditionViolationException {
         Contract.requires(owner.canBeUserOwner, USER_MUST_BE_AUTHORIZED_TO_BE_OWNER)
         Sql sql = new Sql(dataSource)
         userList.each { User user ->
-            user.username = userProvisionAccountService.generateUsername(sql, user.firstName, user.lastName)
-            user.clearPassword = userProvisionAccountService.generatePassword()
-            user.password = user.clearPassword
+            if (!user.username) {
+                user.username = userProvisionAccountService.generateUsername(sql, user.firstName, user.lastName)
+                user.clearPassword = userProvisionAccountService.generatePassword()
+                user.password = user.clearPassword
+            }
             user.owner = owner
             addUser(user, RoleEnum.STUDENT_ROLE.role, true, language)
         }
@@ -100,12 +104,19 @@ class UserAccountService {
      * @return the user list
      * @throws ConditionViolationException
      */
+    @NotTransactional
     List<User> addUserListFromFileByOwner(InputStreamReader fileReader, User owner, String language= 'fr') throws ConditionViolationException {
         Contract.requires(owner.canBeUserOwner, USER_MUST_BE_AUTHORIZED_TO_BE_OWNER)
         Iterable<CSVRecord> records = CSVFormat.DEFAULT.withDelimiter(";" as char).withFirstRecordAsHeader().parse(fileReader)
         List<User> userList = []
         for (CSVRecord record : records) {
-            userList << new User(lastName: record.get(0), firstName: record.get(1))
+            def user = new User(lastName: record.get(0), firstName: record.get(1))
+            if (record.size() >= 4) {
+                user.username = record.get(2)
+                user.password = record.get(3)
+                user.clearPassword = record.get(3)
+            }
+            userList << user
         }
         addUserListByOwner(userList,owner,language)
     }
@@ -116,6 +127,7 @@ class UserAccountService {
      * @param fileWriter the file write
      * @return the file writer
      */
+    @NotTransactional
     FileWriter printUserListInCSVFile(List<User> userList, FileWriter fileWriter) {
         CSVFormat csvFormat = CSVFormat.DEFAULT.withDelimiter(";" as char)
         CSVPrinter csvPrinter = new CSVPrinter(fileWriter, csvFormat)

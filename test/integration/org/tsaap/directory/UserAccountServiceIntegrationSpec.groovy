@@ -237,7 +237,43 @@ class UserAccountServiceIntegrationSpec extends Specification {
         resUsers[3].errors.each { error -> println error}
         !resUsers[3].validate()
         !resUsers[3].id
-        println resUsers[3].username
+        log.error resUsers[3].username
+
+    }
+
+    def "test add user with username list from excell file by owner"() {
+        given: "a user with  authorization to create users"
+        bootstrapService.initializeRoles()
+        bootstrapService.inializeDevUsers()
+        User owner = bootstrapService.mary
+        owner.canBeUserOwner = true
+
+        and: "a csv file reader from excell"
+        FileReader fileReader = new FileReader("test/integration/resources/userList-excell-with-username.csv")
+
+        when: "owner add user from the files"
+        def resUsers = userAccountService.addUserListFromFileByOwner(fileReader,owner)
+
+        then: "all users have been created and inserted in database"
+        resUsers.size() == 5
+        resUsers[0].validate()
+        resUsers[0].id
+        resUsers[0].owner == owner
+        resUsers[0]
+        resUsers[0].username == "123456789"
+
+        resUsers[1].validate()
+        resUsers[1].username == "234567891"
+        resUsers[1].id
+
+        resUsers[2].validate()
+        resUsers[2].id
+        resUsers[2].username == "345678912"
+
+
+        resUsers[3].validate()
+        resUsers[3].id
+        resUsers[3].username == "456789123"
 
     }
 
@@ -272,12 +308,43 @@ class UserAccountServiceIntegrationSpec extends Specification {
             fileWriter.close()
         } catch (IOException e) {
             System.out.println("Error while flushing/closing fileWriter !!!")
-            e.printStackTrace();
+            System.out.println(e.getMessage())
         }
+    }
 
+    def "test csv report generation from user list with user name added by user with csv file"() {
+        given: "a user with  authorization to create users"
+        bootstrapService.initializeRoles()
+        bootstrapService.inializeDevUsers()
+        User owner = bootstrapService.mary
+        owner.canBeUserOwner = true
 
+        and: "a csv file reader from excell"
+        FileReader fileReader = new FileReader("test/integration/resources/userList-excell-with-username.csv")
 
+        and: "the generated list of users"
+        List<User> users = userAccountService.addUserListFromFileByOwner(fileReader,owner)
 
+        and: "the target file"
+        FileWriter fileWriter = new FileWriter("test/integration/resources/target-user-list-with-username.csv")
+
+        expect: "the list contains the four users in the original file"
+        users.size() == 5
+
+        when: "generating the output csv file"
+        userAccountService.printUserListInCSVFile(users, fileWriter)
+
+        then: "no exception is thrown"
+        noExceptionThrown()
+
+        cleanup:"close file"
+        try {
+            fileWriter.flush()
+            fileWriter.close()
+        } catch (IOException e) {
+            log.error("Error while flushing/closing fileWriter !!!")
+            log.error(e.getMessage())
+        }
     }
 
 

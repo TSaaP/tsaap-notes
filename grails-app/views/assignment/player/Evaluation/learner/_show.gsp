@@ -25,20 +25,9 @@
                                     <br/>
                                 </g:if>
                                 ${raw(currentResponse.explanation)}
-                                <input id="grade_${currentResponse.id}" name="grade_${currentResponse.id}"
-                                       class="rating"
-                                       value="${currentResponse.getGradeFromUser(user)}">
+                                <g:select from="${['null','1','2','3','4','5']}" name="grade_${currentResponse.id}" id="grade_${currentResponse.id}" valueMessagePrefix="player.sequence.interaction.grade" value="${currentResponse.getGradeFromUserAsString(user)}"/>
                             </p>
                         </li>
-                        <r:script>
-            $("#grade_${currentResponse.id}").rating({
-                size: "xs",
-                step: 1,
-                showCaption: false,
-                showClear: false,
-                language: "${RequestContextUtils.getLocale(request).language}"
-            });
-                        </r:script>
                     </g:if>
                 </g:each>
             </ul>

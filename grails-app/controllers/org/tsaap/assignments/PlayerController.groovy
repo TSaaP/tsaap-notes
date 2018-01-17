@@ -184,8 +184,11 @@ class PlayerController {
         params.each {
             if (it.key.startsWith("grade_")) {
                 InteractionResponse response = InteractionResponse.get(it.key.split("_")[1] as Long)
-                Float grade = it.value as Float
-                interactionService.peerGradingFromUserOnResponse(user, response, grade)
+                def gradeAsString = it.value
+                if (gradeAsString != "null") {
+                    Float grade = gradeAsString as Float
+                    interactionService.peerGradingFromUserOnResponse(user, response, grade)
+                }
             }
         }
     }

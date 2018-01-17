@@ -127,6 +127,19 @@ class InteractionResponse {
     }
 
     /**
+     * Get the grade from the given user for this response
+     * @param user the grader
+     * @return the grade if any as a string
+     */
+    String getGradeFromUserAsString(User user) {
+        def grade = getGradeFromUser(user)
+        if (grade) {
+            return (grade as Integer).toString()
+        }
+        return "null"
+    }
+
+    /**
      * Count the number of evaluations for the current response
      * @return
      */

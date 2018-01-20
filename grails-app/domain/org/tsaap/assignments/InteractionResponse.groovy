@@ -144,7 +144,7 @@ class InteractionResponse {
      * @return
      */
     Integer evaluationCount() {
-        PeerGrading.countByResponse(this)
+        PeerGrading.countByResponseAndGradeNotEqual(this,-1f)
     }
 
     static mapping = {

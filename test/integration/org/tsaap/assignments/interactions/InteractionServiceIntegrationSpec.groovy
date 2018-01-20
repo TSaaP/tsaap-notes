@@ -191,6 +191,7 @@ class InteractionServiceIntegrationSpec extends Specification {
         User thom = learners[0]
         User mary = learners[1]
         User john = learners[2]
+        User paul = learners[3]
 
         for (int i = 0; i<4; i++) {
             assignmentService.registerUserOnAssignment(learners[i], assignment)
@@ -210,6 +211,7 @@ class InteractionServiceIntegrationSpec extends Specification {
         when: "peer grading coming from mary and john"
         def pgMary = interactionService.peerGradingFromUserOnResponse(mary, respThom, 1)
         def pgJohn = interactionService.peerGradingFromUserOnResponse(john, respThom, 5)
+        def pgPaul = interactionService.peerGradingFromUserOnResponse(paul, respThom, -1)
         println ">>>>>>>> ${pgJohn.hasErrors()}"
 
         then: "peer grading objets are saved in a consistent way"
@@ -328,6 +330,7 @@ class InteractionServiceIntegrationSpec extends Specification {
         User thom = learners[0]
         User mary = learners[1]
         User john = learners[2]
+        User paul = learners[3]
 
         for (int i = 0; i<4; i++) {
             assignmentService.registerUserOnAssignment(learners[i], assignment)
@@ -346,6 +349,7 @@ class InteractionServiceIntegrationSpec extends Specification {
         when: "peer grading coming from mary and john"
         def pgMary = interactionService.peerGradingFromUserOnResponse(mary, respThom, 1)
         def pgJohn = interactionService.peerGradingFromUserOnResponse(john, respThom, 5)
+        def pgPaul = interactionService.peerGradingFromUserOnResponse(paul, respThom, -1)
         println ">>>>>>>> ${pgJohn.hasErrors()}"
 
         then: "peer grading objets are saved in a consistent way"

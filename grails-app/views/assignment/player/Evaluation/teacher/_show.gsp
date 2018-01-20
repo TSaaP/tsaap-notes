@@ -3,10 +3,7 @@
 <g:if test="${interactionInstance.sequence.statement.hasChoices()}">
     <p>
         ${message(code: 'player.sequence.interaction.firstAttemptSubmissionCount', args: [])} <span
-            id="first_attempt_count_${responseInteraction.id}">${responseInteraction.interactionResponseCount(1)}</span> <g:remoteLink
-            controller="player" action="updateSecondAttemptCount" id="${responseInteraction.id}" title="Refresh"
-            update="first_attempt_count_${responseInteraction.id}"><span class="glyphicon glyphicon-refresh"
-                                                                          aria-hidden="true"></span></g:remoteLink>
+            id="first_attempt_count_${responseInteraction.id}">${responseInteraction.interactionResponseCount(1)}</span>
     </p>
     <p>
         ${message(code: 'player.sequence.interaction.secondAttemptSubmissionCount', args: [])} <span

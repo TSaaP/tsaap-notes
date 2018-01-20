@@ -80,7 +80,7 @@ class InteractionService {
      */
     InteractionResponse updateMeanGradeOfResponse(InteractionResponse response) {
         def query = PeerGrading.where {
-            response == response
+            response == response && grade != -1
         }.projections {
             avg('grade')
         }

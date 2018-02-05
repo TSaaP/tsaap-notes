@@ -25,17 +25,7 @@ hibernate {
 
 // environment specific settings
 environments {
-    development {
-        dataSource {
-            driverClassName = "com.mysql.jdbc.Driver"
-            dialect = "org.hibernate.dialect.MySQL5InnoDBDialect"
-            url = "jdbc:mysql://localhost/tsaap-notes"
-            //url = "jdbc:mysql://localhost/tsaap-notes-dump"
-            username = "tsaap"
-            password = "tsaap"
-            logSql = true
-        }
-    }
+
     test {
         dataSource {
             driverClassName = "com.mysql.jdbc.Driver"
@@ -59,6 +49,26 @@ environments {
     }
 
     production {
+        dataSource {
+            driverClassName = "com.mysql.jdbc.Driver"
+            dialect = "org.hibernate.dialect.MySQL5InnoDBDialect"
+            url = "jdbc:mysql://notes.tsaap.eu/tsaap-notes"
+            pooled = true
+            properties {
+                maxActive = -1
+                minEvictableIdleTimeMillis = 1800000
+                timeBetweenEvictionRunsMillis = 1800000
+                numTestsPerEvictionRun = 3
+                testOnBorrow = true
+                testWhileIdle = true
+                testOnReturn = false
+                validationQuery = "SELECT 1"
+                jdbcInterceptors = "ConnectionState"
+            }
+        }
+    }
+
+    elaasticQuestionsDemo {
         dataSource {
             driverClassName = "com.mysql.jdbc.Driver"
             dialect = "org.hibernate.dialect.MySQL5InnoDBDialect"

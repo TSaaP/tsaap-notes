@@ -15,7 +15,7 @@ class DataMigrationService {
 
     def migrateStatement() {
         List<Statement> statements = Statement.findAllByQuestionTypeIsNull();
-        println('***** Number of statements have to migrate : ' + statements.size() + ' ****')
+        log.info('***** Number of statements have to migrate : ' + statements.size() + ' ****')
         statements.each { statement ->
             QuestionType questionType = QuestionType.Undefined
             Sequence sequence = Sequence.findByStatement(statement)

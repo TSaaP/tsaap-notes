@@ -30,14 +30,11 @@ class BootStrap {
     DataMigrationService dataMigrationService
 
     def init = { servletContext ->
+
         dataMigrationService.migrateStatement()
         bootstrapService.initializeReferenceData()
         Environment.executeForCurrentEnvironment {
             development {
-                Sql.LOG.level = Level.FINE
-                bootstrapService.inializeDevUsers()
-            }
-            demo {
                 bootstrapService.inializeDevUsers()
             }
         }

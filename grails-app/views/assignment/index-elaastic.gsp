@@ -58,9 +58,6 @@
   <tr>
     <th><g:message code="common.title"/></th>
     <th class="not mobile"><g:message code="common.lastUpdate"/></th>
-    <th class="center aligned"><g:message code="assignment.learnerAccess.twoLines"/></th>
-    <th class="center aligned"><g:message code="common.update"/></th>
-    <th class="center aligned"><g:message code="common.launch"/></th>
   </tr>
   </thead>
   <tbody>
@@ -75,25 +72,6 @@
       </td>
 
       <td class="not mobile"><g:formatDate date="${assignmentInstance.lastUpdated}"/></td>
-
-      <td class="center aligned">
-        <button class="ui orange circular icon button" tabindex="0"
-                onclick="window.learnerAccessModalApp.showLearnerAccessModal('${g.createLink(controller: 'player', action: 'register', absolute: true, params: [globalId: assignmentInstance.globalId])}', '${assignmentInstance.title.replaceAll("'", "\\\\u0027")}')">
-          <i class="feed icon"></i>
-        </button>
-      </td>
-      <td class="center aligned">
-        <g:link class="ui secondary icon button" action="show" id="${assignmentInstance.id}">
-          <i class="edit icon"></i>
-        </g:link>
-      </td>
-      <td class="center aligned">
-        <g:link class="ui primary icon button" controller="player" action="show"
-                id="${assignmentInstance.id}">
-          <i class="play icon"></i>
-        </g:link>
-
-      </td>
     </tr>
   </g:each>
   </tbody>
@@ -105,8 +83,6 @@
   <elaastic:paginate class="ui tiny pagination menu" prev="&laquo;" next="&raquo;"
                      total="${assignmentInstanceCount ?: 0}"/>
 </div>
-
-<g:render template="learner_access_modal-elaastic"/>
 
 <r:script>
 

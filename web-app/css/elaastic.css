@@ -7,3 +7,45 @@ div[contenteditable]:focus {
   outline: none;
 }
 
+
+
+
+
+html.elaastic.three-columns, .elaastic.three-columns body {
+  height: 100%;
+}
+
+.elaastic.three-columns .wrap {
+  height: 100vh;
+  display: flex;
+}
+
+.elaastic.three-columns main {
+  flex: 1;
+  width: 100%;
+  display: flex;
+}
+
+.elaastic.three-columns aside, .elaastic.three-columns article {
+  overflow-y: scroll;
+  padding: 2em;
+}
+
+.elaastic.three-columns aside {
+  display: none;
+}
+
+.elaastic.three-columns article {
+  flex: 1;
+}
+
+@media (min-width: 768px) {
+  .elaastic.three-columns aside {
+    display: block;
+    flex: 1;
+  }
+
+  .elaastic.three-columns article {
+    flex: 2;
+  }
+}

@@ -72,8 +72,11 @@
   <g:each in="${learnerAssignmentList}" status="i" var="assignmentInstance">
     <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
 
-      <td><g:link action="show" controller="player"
-                  id="${assignmentInstance.id}">${fieldValue(bean: assignmentInstance, field: "title")}</g:link></td>
+      <td>
+        <g:link action="playFirstSequence" controller="player" id="${assignmentInstance.id}">
+          ${fieldValue(bean: assignmentInstance, field: "title")}
+        </g:link>
+      </td>
 
       <td><g:formatDate date="${assignmentInstance.lastUpdated}"/></td>
 

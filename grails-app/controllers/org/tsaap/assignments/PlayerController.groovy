@@ -40,9 +40,42 @@ class PlayerController {
 
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])
   def show(Assignment assignmentInstance) {
-    render view: "/assignment/player/assignment/"+SkinUtil.getView(params, session, 'show'),
+    render view: "/assignment/player/assignment/" + SkinUtil.getView(params, session, 'show'),
         model: [
             assignmentInstance: assignmentInstance,
+            user              : springSecurityService.currentUser
+        ]
+  }
+
+  @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+  def playFirstSequence(Assignment assignmentInstance) {
+    if(!assignmentInstance) {
+      response.status = 404;
+      return
+    }
+
+    internalPlaySequence(
+        assignmentInstance,
+        assignmentInstance.sequences ? assignmentInstance.sequences.first() : null
+    )
+  }
+
+  @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+  def playSequence(Sequence sequenceInstance) {
+    if (!sequenceInstance) {
+      response.status = 404;
+      return
+    }
+
+
+    internalPlaySequence(sequenceInstance.assignment, sequenceInstance)
+  }
+
+  private internalPlaySequence(Assignment assignment, Sequence sequence) {
+    render view: "/assignment/player/" + SkinUtil.getView(params, session, 'playSequence'),
+        model: [
+            assignmentInstance: assignment,
+            sequenceInstance  : sequence,
             user              : springSecurityService.currentUser
         ]
   }
@@ -186,18 +219,18 @@ class PlayerController {
   }
 
 
-    private def processSubmittedGrades(User user, Interaction interactionInstance, def params) {
-        params.each {
-            if (it.key.startsWith("grade_")) {
-                InteractionResponse response = InteractionResponse.get(it.key.split("_")[1] as Long)
-                def gradeAsString = it.value
-                if (gradeAsString != "null") {
-                    Float grade = gradeAsString as Float
-                    interactionService.peerGradingFromUserOnResponse(user, response, grade)
-                }
-            }
+  private def processSubmittedGrades(User user, Interaction interactionInstance, def params) {
+    params.each {
+      if (it.key.startsWith("grade_")) {
+        InteractionResponse response = InteractionResponse.get(it.key.split("_")[1] as Long)
+        def gradeAsString = it.value
+        if (gradeAsString != "null") {
+          Float grade = gradeAsString as Float
+          interactionService.peerGradingFromUserOnResponse(user, response, grade)
         }
+      }
     }
+  }
 
 
   private void renderSequenceTemplate(user, Sequence sequenceInstance) {

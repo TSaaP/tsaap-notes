@@ -44,7 +44,7 @@
 
   <g:link class="item"
           controller="player"
-          action="show"
+          action="playFirstSequence"
           id="${assignmentInstance.id}"
           data-tooltip="${message(code: 'player.assignment.play')}"
           data-position="right center"

@@ -55,7 +55,15 @@
   <g:render template="/assignment/player/assignment_overview"
             model="[assignmentInstance: assignmentInstance,
                     selectedSequence  : sequenceInstance,
-                    userRole          : userRole]"/>
+                    userRole          : userRole,
+                    context           : 'aside']"/>
+</content>
+<content tag="modal-aside">
+  <g:render template="/assignment/player/assignment_overview"
+            model="[assignmentInstance: assignmentInstance,
+                    selectedSequence  : sequenceInstance,
+                    userRole          : userRole,
+                    context           : 'modal-aside']"/>
 </content>
 
 <g:if test="${sequenceInstance}">

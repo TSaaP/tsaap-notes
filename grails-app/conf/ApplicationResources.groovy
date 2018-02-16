@@ -16,65 +16,66 @@
  */
 
 modules = {
-    application {
-        resource url: 'js/application.js'
-    }
+  application {
+    resource url: 'js/application.js'
+  }
 
-    vue_js {
-        resource url: 'js/vuejs/vue.js', linkOverride: 'https://unpkg.com/vue'
-        resource url: 'js/vuejs/vue-resource.min.js',  linkOverride: 'https://cdn.jsdelivr.net/vue.resource/1.3.1/vue-resource.min.js'
-    }
+  vue_js {
+    resource url: 'js/vuejs/vue.js', linkOverride: 'https://unpkg.com/vue'
+    resource url: 'js/vuejs/vue-resource.min.js', linkOverride: 'https://cdn.jsdelivr.net/vue.resource/1.3.1/vue-resource.min.js'
+  }
 
-    ckeditor_vue_js {
-        dependsOn('vue_js')
-        resource url: 'js/elaastic/VueCkeditorComponent.js'
-    }
+  ckeditor_vue_js {
+    dependsOn('vue_js')
+    resource url: 'js/elaastic/VueCkeditorComponent.js'
+  }
 
-    underscore_js {
-        resource url: 'js/underscore-min.js'
-    }
+  underscore_js {
+    resource url: 'js/underscore-min.js'
+  }
 
-    semantic_ui {
-        dependsOn('jquery')
-        resource url: 'semantic/dist/semantic.min.css'
-        resource url: 'semantic/dist/semantic.min.js'
-    }
+  semantic_ui {
+    dependsOn('jquery')
+    resource url: 'semantic/dist/semantic.min.css'
+    resource url: 'semantic/dist/semantic.min.js'
+  }
 
-    elaastic_ui {
-        resource url: 'css/elaastic.css'
-    }
+  elaastic_ui {
+    resource url: 'css/elaastic.css'
+    resource url: 'js/elaastic/util.js'
+  }
 
-    tsaap_ui {
-        dependsOn('application')
-        dependsOn('jquery')
-        resource url: 'js/moment.js'
-        resource url: 'js/locale/fr.js'
-        resource url: 'js/bootstrap.min.js'
-        resource url: 'css/bootstrap.min.css'
-        resource url: 'js/bootstrap-datetimepicker.js'
-        resource url:  'js/star-rating.min.js'
-        resource url: 'css/star-rating.min.css'
-        resource url: 'js/locales/fr.js'
-    }
+  tsaap_ui {
+    dependsOn('application')
+    dependsOn('jquery')
+    resource url: 'js/moment.js'
+    resource url: 'js/locale/fr.js'
+    resource url: 'js/bootstrap.min.js'
+    resource url: 'css/bootstrap.min.css'
+    resource url: 'js/bootstrap-datetimepicker.js'
+    resource url: 'js/star-rating.min.js'
+    resource url: 'css/star-rating.min.css'
+    resource url: 'js/locales/fr.js'
+  }
 
-    tsaap_icons {
-        dependsOn('tsaap_ui')
-        resource url: 'css/bootstrap-glyphicons.css'
-        resource url: 'css/docs.css'
-    }
+  tsaap_icons {
+    dependsOn('tsaap_ui')
+    resource url: 'css/bootstrap-glyphicons.css'
+    resource url: 'css/docs.css'
+  }
 
-    tsaap_ui_home {
-        dependsOn('tsaap_ui')
-        resource url: 'css/jumbotron.css'
-    }
+  tsaap_ui_home {
+    dependsOn('tsaap_ui')
+    resource url: 'css/jumbotron.css'
+  }
 
-    tsaap_ui_signin {
-        dependsOn('tsaap_ui')
-        resource url: 'css/signin.css'
-    }
+  tsaap_ui_signin {
+    dependsOn('tsaap_ui')
+    resource url: 'css/signin.css'
+  }
 
-    tsaap_ui_notes {
-        dependsOn('tsaap_ui')
-        resource url: 'css/notes.css'
-    }
+  tsaap_ui_notes {
+    dependsOn('tsaap_ui')
+    resource url: 'css/notes.css'
+  }
 }

@@ -27,8 +27,7 @@
     <div class="ui label"
          style="margin-left: 2em;"
          data-tooltip="${message(code: 'player.assignment.registeredUserCount2')}"
-         data-position="bottom center"
-         >
+         data-position="bottom center">
       <i class="users icon"></i> ${assignmentInstance.registeredUserCount()}
     </div>
   </div>
@@ -43,7 +42,8 @@
 
 <g:each in="${assignmentInstance.sequences}" status="i" var="sequenceInstance">
   <div class="ui clearing attached segment ${sequenceInstance.id == selectedSequence?.id ? 'selected' : ''}"
-       style="padding-bottom: 1em;"
+       id="${context}-${sequenceInstance.id}"
+       style="padding-bottom: 1em; cursor: pointer;"
        onclick="window.location = '${g.createLink(controller: 'player', action: 'playSequence', id: sequenceInstance.id)}';">
     <div style="overflow: hidden; height: 100%;">
       <h4 class="ui header">
@@ -58,6 +58,20 @@
     </div>
   </div>
 </g:each>
+<g:if test="${context == 'aside' && selectedSequence?.id}">
+  <r:script>
+    (function() {
+      var container = $('#layout-aside');
+      var target = $('#${context}-${selectedSequence.id}');
+      
+      if(!elaastic.util.isVisible(target, container, 50)) {
+        elaastic.util.ensureIsVisible(target, container);
+      }
+    })();
+
+  </r:script>
+</g:if>
+
 
 <r:style>
   .ui.selected.segment {

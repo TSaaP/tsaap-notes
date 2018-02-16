@@ -114,7 +114,7 @@
   <div class="ui divider"></div>
 
   <div class="only mobile item"
-       onclick="$('#nav-modal').modal('show')"
+       onclick="$('#layout-nav-modal').modal('show')"
        data-tooltip="${g.message(code: 'common.table-of-content')}"
        data-position="right center"
        data-inverted="">
@@ -126,7 +126,7 @@
 
 <div class="wrap" style="margin-left: 90px;">
   <main>
-    <aside>
+    <aside id="layout-aside">
       <g:pageProperty name="page.aside"/>
     </aside>
 
@@ -140,9 +140,9 @@
 
 </div>
 
-<div id="nav-modal" class="ui modal">
+<div id="layout-nav-modal" class="ui modal">
   <div class="content">
-    <g:pageProperty name="page.aside"/>
+    <g:pageProperty name="page.modal-aside"/>
   </div>
 </div>
 

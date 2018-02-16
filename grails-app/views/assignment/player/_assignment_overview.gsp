@@ -18,6 +18,8 @@
   --}%
 
 <%@ page import="org.tsaap.assignments.StateType" %>
+<%@ page import="org.tsaap.assignments.InteractionType" %>
+
 <h3 class="ui top attached block header" style="position: relative;">
   <i class="book icon"></i>
 
@@ -45,17 +47,41 @@
        id="${context}-${sequenceInstance.id}"
        style="padding-bottom: 1em; cursor: pointer; "
        onclick="window.location = '${g.createLink(controller: 'player', action: 'playSequence', id: sequenceInstance.id)}';">
-    <div style="overflow: hidden; height: 100%; padding-top: 2px;">
-      <h4 class="ui header">
-        <div class="ui tiny circular label" style="margin-right: 1em;">${i+1}.</div> ${fieldValue(bean: sequenceInstance, field: "title")}
-      </h4>
 
-      <g:if test="${userRole == 'teacher' || sequenceInstance.state != StateType.beforeStart.name()}">
-        <div style="height: 4em; overflow: hidden;">
-          ${raw(sequenceInstance.content)}
+    <div class="ui grid">
+
+      <div class="twelve wide column">
+        <div style="overflow: hidden; height: 100%; padding-top: 2px;">
+          <h4 class="ui header">
+            <div class="ui tiny circular label"
+                 style="margin-right: 1em;">${i + 1}.</div> ${fieldValue(bean: sequenceInstance, field: "title")}
+          </h4>
+
+          <g:if test="${userRole == 'teacher' || sequenceInstance.state != StateType.beforeStart.name()}">
+            <div style="height: 4em; overflow: hidden;">
+              ${raw(sequenceInstance.content)}
+            </div>
+          </g:if>
         </div>
-      </g:if>
+      </div>
+
+      <div class="four wide middle aligned column" style="text-align: center;">
+        <g:set var="activeInteraction" value="${sequenceInstance.activeInteractionForLearner(user)}"/>
+        <g:if test="${!activeInteraction}">
+          <i class="elaastic-phase big grey minus icon"></i>
+        </g:if>
+        <g:elseif test="${activeInteraction?.interactionType == InteractionType.ResponseSubmission.toString()}">
+          <i class="elaastic-phase big grey comment outline icon"></i>
+        </g:elseif>
+        <g:elseif test="${activeInteraction?.interactionType == InteractionType.Evaluation.toString()}">
+          <i class="elaastic-phase big grey comments outline icon"></i>
+        </g:elseif>
+        <g:elseif test="${activeInteraction?.interactionType == InteractionType.Read.toString()}">
+          <i class="elaastic-phase big grey bar chart outline icon"></i>
+        </g:elseif>
+      </div>
     </div>
+
   </div>
 </g:each>
 <g:if test="${context == 'aside' && selectedSequence?.id}">
@@ -77,5 +103,9 @@
   .ui.selected.segment {
      background-color: #fffaf3;
      color: #573a08;
+  }
+
+  .ui.selected.segment .elaastic-phase.icon {
+    display: none !important;
   }
 </r:style>

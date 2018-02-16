@@ -16,13 +16,7 @@
   -      along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -
   --}%
+<div class="ui blue bottom attached message">
 
-<g:render template="/assignment/player/statement/statement_title-elaastic"
-          model="[statementInstance: sequenceInstance.statement]"/>
-<p>
-    <g:set var="attachment" value="${statementInstance?.attachment}"/>
-    <g:if test="${attachment != null}">
-        <tsaap:viewAttachement width="650" height="380" attachement="${attachment}"/>
-    </g:if>
-    ${raw(statementInstance.content)}
-</p>
+  ${message(code: "player.sequence.interaction.beforeStart.message", args: [interactionInstance.rank])}
+</div>

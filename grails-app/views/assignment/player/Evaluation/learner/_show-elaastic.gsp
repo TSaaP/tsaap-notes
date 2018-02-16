@@ -16,41 +16,27 @@
   -      along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -
   --}%
-<g:if test="${interactionInstance.sequence.isStopped()}">
-  <div class="ui warning message" style="font-size: 1rem;">
-    ${message(code: "player.sequence.readinteraction.beforeStart.message", args: [interactionInstance.rank])}
-    <g:remoteLink controller="player"
-                  action="updateSequenceDisplay"
-                  id="${interactionInstance.sequenceId}"
-                  title="Refresh"
-                  update="sequence_${interactionInstance.sequenceId}">
-      <i class="refresh icon"></i>
-    </g:remoteLink></div>
-</g:if>
-<g:else>
-<div style="font-size: 1rem;">
-  <%@ page import="org.springframework.web.servlet.support.RequestContextUtils" %>
-  <g:set var="sequence" value="${interactionInstance.sequence}"/>
-  <g:set var="responseInteractionInstance" value="${sequence.responseSubmissionInteraction}"/>
-  <g:set var="responseInteractionSpec" value="${responseInteractionInstance.interactionSpecification}"/>
-  <g:set var="responsesToGrade" value="${sequence.findRecommendedResponsesForUser(user)}"/>
-  <g:if test="${sequence.userHasCompletedPhase2(user)}">
-    <div class="ui warning message" role="alert">
-      ${message(code: "player.sequence.interaction.afterResponseSubmission.message", args: [interactionInstance.sequence.activeInteraction.rank])}
-      <g:remoteLink controller="player"
-                    action="updateSequenceDisplay"
-                    id="${interactionInstance.sequenceId}"
-                    title="Refresh"
-                    update="sequence_${interactionInstance.sequenceId}">
-        <i class="refresh icon"></i>
-      </g:remoteLink>
-    </div>
-  </g:if>
-  <g:else>
+<g:set var="sequence" value="${interactionInstance.sequence}"/>
+
+<div class="ui segment">
+  <div class="ui dividing header">
+    <g:message code="sequence.phase.Evaluation.description"/>
+  </div>
+
+
+  <g:if test="${!sequence.userHasCompletedPhase2(user)}">
+
+    <%@ page import="org.springframework.web.servlet.support.RequestContextUtils" %>
+    <g:set var="responseInteractionInstance" value="${sequence.responseSubmissionInteraction}"/>
+    <g:set var="responseInteractionSpec" value="${responseInteractionInstance.interactionSpecification}"/>
+    <g:set var="responsesToGrade" value="${sequence.findRecommendedResponsesForUser(user)}"/>
+
     <g:form class="ui form">
       <g:hiddenField name="id" value="${interactionInstance.id}"/>
       <g:if test="${responsesToGrade}">
-        <div class="ui info top attached message">${message(code: 'player.sequence.interaction.evaluation.intro')}</div>
+        <div class="ui blue message">
+          ${message(code: 'player.sequence.interaction.evaluation.intro')}
+        </div>
 
         <g:each in="${responsesToGrade}" var="currentResponse" status="i">
           <div class="ui attached segment">
@@ -61,7 +47,7 @@
               </g:if>
               ${raw(currentResponse.explanation)}
 
-              <g:select from="${['1','2','3','4','5', '-1']}"
+              <g:select from="${['1', '2', '3', '4', '5', '-1']}"
                         name="grade_${currentResponse.id}"
                         id="grade_${currentResponse.id}"
                         valueMessagePrefix="player.sequence.interaction.grade"
@@ -82,18 +68,21 @@
              value="${responseInteractionInstance.interactionSpecification}"/>
       <g:if test="${sequence.allowsSecondAttemptInLongProcess()}">
         <g:if test="${sequence.userHasSubmittedSecondAttempt(user)}">
-          <div class="ui info message">
+          <div class="ui blue message">
             ${message(code: 'player.sequence.interaction.secondAttemptSubmitted')}
           </div>
         </g:if>
         <g:else>
-          <div class="ui info message">
+          <div class="ui blue message">
             ${message(code: 'player.sequence.interaction.secondAttemptSubmittable')}
           </div>
-          <g:render template="/assignment/player/ResponseSubmission/learner/response_form-elaastic"
-                    model="[user                                       : user, interactionInstance: responseInteractionInstance, attempt: 2,
-                            shouldPresentExplanationAndConfidenceFields: shouldPresentExplanationAndConfidenceFields,
-                            responseSubmissionSpecificationInstance    : responseSubmissionSpecificationInstance]"/>
+
+          <div class="ui basic segment">
+            <g:render template="/assignment/player/ResponseSubmission/learner/response_form-elaastic"
+                      model="[user                                       : user, interactionInstance: responseInteractionInstance, attempt: 2,
+                              shouldPresentExplanationAndConfidenceFields: shouldPresentExplanationAndConfidenceFields,
+                              responseSubmissionSpecificationInstance    : responseSubmissionSpecificationInstance]"/>
+          </div>
         </g:else>
       </g:if>
       <g:if
@@ -113,6 +102,12 @@
                           value="${message(code: 'player.sequence.interaction.submitResponse')}"/>
       </g:else>
     </g:form>
+
+  </g:if>
+  <g:else>
+    <div class="ui blue message">
+      <g:message code="player.sequence.phase.completedByUser"
+                 args="[interactionInstance.sequence.activeInteraction.rank]"/>
+    </div>
   </g:else>
 </div>
-</g:else>

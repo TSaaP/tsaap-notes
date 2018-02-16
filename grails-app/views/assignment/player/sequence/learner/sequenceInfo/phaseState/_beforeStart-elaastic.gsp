@@ -16,7 +16,13 @@
   -      along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -
   --}%
+<div class="ui blue bottom attached message">
 
-<g:render template="/assignment/player/statement/statement_title-elaastic"
-          model="[statementInstance: sequenceInstance.statement]"/>
-
+  ${message(code: "player.sequence.interaction.beforeStart.message", args: [interactionInstance.rank])}
+  <g:remoteLink controller="player"
+                action="updateSequenceDisplay"
+                id="${interactionInstance.sequenceId}"
+                title="Refresh" update="sequence_${interactionInstance.sequenceId}">
+    <i class="refresh icon"></i>
+  </g:remoteLink>
+</div>

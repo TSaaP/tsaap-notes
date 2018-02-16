@@ -16,57 +16,31 @@
   -      along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -
   --}%
+<%@ page import="org.tsaap.assignments.InteractionType" %>
+<%@ page import="org.tsaap.assignments.StateType" %>
 
-<g:render template="/assignment/player/statement/teacher/show-elaastic"
-          model="[statementInstance: sequenceInstance.statement]"/>
+
+<g:render template="/assignment/player/sequence/steps/steps-elaastic"
+          model="[sequence: sequenceInstance,
+                  stateByInteractionType: [
+                      (InteractionType.ResponseSubmission): sequenceInstance.responseSubmissionInteraction?.stateForRegisteredUsers(),
+                      (InteractionType.Evaluation): sequenceInstance.evaluationInteraction?.stateForRegisteredUsers(),
+                      (InteractionType.Read): sequenceInstance.readInteraction?.stateForRegisteredUsers(),
+                  ]]"/>
+
+<g:render template="/assignment/player/sequence/teacher/command"
+          model="[interactionInstance: sequenceInstance.activeInteraction, user: user, attempt: 1]" />
+
+<g:render template="/assignment/player/sequence/teacher/sequenceInfo/sequenceInfo"
+          model="[sequence: sequenceInstance,
+                  activeInteraction: sequenceInstance.activeInteraction,
+                  activeInteractionState: sequenceInstance.activeInteraction.state]"/>
+
+<g:render template="/assignment/player/statement/show-elaastic"
+          model="[statementInstance: sequenceInstance.statement, hideStatement: false]"/>
 
 <g:set var="currentInteraction" value="${sequenceInstance.activeInteraction}"/>
 <g:render
-        template="/assignment/player/${currentInteraction.interactionType}/teacher/${currentInteraction.stateForTeacher(user)}-elaastic"
-        model="[interactionInstance: currentInteraction, user: user, attempt: 1]"/>
-
-<hr/>
-
-<p>
-    <g:if test="${sequenceInstance.isStopped()}">
-        <g:remoteLink class="ui button"
-                      controller="player"
-                      action="reopenSequence"
-                      id="${sequenceInstance.id}"
-                      update="sequence_${sequenceInstance.id}">
-            <i class="play icon"></i>
-            ${message(code: "player.sequence.reopenSequence")}
-        </g:remoteLink>
-    </g:if>
-    <g:if test="${!sequenceInstance.isStopped()}">
-        <g:remoteLink class="ui primary button"
-                      controller="player"
-                      action="stopSequence"
-                      id="${sequenceInstance.id}"
-                      update="sequence_${sequenceInstance.id}">
-            <i class="stop icon"></i>
-            ${message(code: "player.sequence.readinteraction.stopSequence")}
-        </g:remoteLink>
-    </g:if>
-    <g:if test="${sequenceInstance.resultsCanBePublished()}">
-        <g:remoteLink class="ui primary button"
-                      controller="player"
-                      action="publishResultsForSequence"
-                      id="${sequenceInstance.id}"
-                      update="sequence_${sequenceInstance.id}">
-            <i class="stop icon"></i>
-            ${message(code: "player.sequence.publishResults")}
-        </g:remoteLink>
-    </g:if>
-    <g:if test="${sequenceInstance.resultsArePublished}">
-        <g:remoteLink class="ui primary button"
-                      controller="player"
-                      action="unpublishResultsForSequence"
-                      id="${sequenceInstance.id}"
-                      update="sequence_${sequenceInstance.id}">
-            <i class="stop icon"></i>
-            ${message(code: "player.sequence.unpublishResults")}
-        </g:remoteLink>
-    </g:if>
-</p>
+    template="/assignment/player/${currentInteraction.interactionType}/teacher/${currentInteraction.stateForTeacher(user)}-elaastic"
+    model="[interactionInstance: currentInteraction, user: user, attempt: 1]"/>
 

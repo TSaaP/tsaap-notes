@@ -17,13 +17,12 @@
   -
   --}%
 
-<div class="ui label">
-  <g:message code="sequence.state.notPublishedYet" />
+<div class="ui segment">
+  <div class="ui dividing header">
+    <g:message code="questions.results"/>
+  </div>
+
+  <div class="ui message">
+    ${message(code: "player.sequence.readinteraction.not.published")}
+  </div>
 </div>
-<g:remoteLink controller="player"
-              action="updateSequenceDisplay"
-              id="${activeInteraction.sequenceId}"
-              title="Refresh"
-              update="sequence_${activeInteraction.sequenceId}">
-  <i class="blue refresh icon"></i>
-</g:remoteLink>

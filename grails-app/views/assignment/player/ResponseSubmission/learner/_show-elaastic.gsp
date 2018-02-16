@@ -17,60 +17,51 @@
   -
   --}%
 
-<g:if test="${interactionInstance.sequence.isStopped()}">
-  <div class="ui warning message" style="font-size: 1rem;">
-    ${message(code: "player.sequence.readinteraction.beforeStart.message", args: [interactionInstance.rank])}
-    <g:remoteLink controller="player"
-                  action="updateSequenceDisplay"
-                  id="${interactionInstance.sequenceId}"
-                  title="Refresh"
-                  update="sequence_${interactionInstance.sequenceId}">
-      <i class="refresh icon"></i>
-    </g:remoteLink></div>
-</g:if>
-<g:else>
+<div class="ui segment">
+  <div class="ui dividing header">
+    <g:message code="common.answer"/>
+  </div>
+  <g:if test="${!interactionInstance.hasResponseForUser(user, attempt)}">
 
-<div style="font-size: 1rem;">
-<g:if test="${interactionInstance.hasResponseForUser(user, attempt)}">
-  <div class="ui warning message" style="font-size: 1rem;">
-    ${message(code: "player.sequence.interaction.afterResponseSubmission.message", args: [interactionInstance.sequence.activeInteraction.rank])}
-    <g:remoteLink
-        controller="player"
-        action="updateSequenceDisplay"
-        id="${interactionInstance.sequenceId}"
-        title="Refresh"
-        update="sequence_${interactionInstance.sequenceId}">
-      <i class="refresh icon"></i>
-    </g:remoteLink></div>
-</g:if>
-<g:else>
+    <div class="ui blue bottom attached message">
+      <g:message code="sequence.responseSubmission.instruction"/>
+    </div>
 
-  <g:set var="shouldPresentExplanationAndConfidenceFields"
-         value="${attempt == 1 || interactionInstance.sequence.executionIsBlendedOrDistance()}"/>
-  <g:set var="responseSubmissionSpecificationInstance" value="${interactionInstance.interactionSpecification}"/>
-  <g:form class="ui form">
-    <g:hiddenField name="id" value="${interactionInstance.id}"/>
-    <g:render template="/assignment/player/ResponseSubmission/learner/response_form-elaastic"
-              model="[user                                       : user, interactionInstance: interactionInstance, attempt: 1,
-                      shouldPresentExplanationAndConfidenceFields: shouldPresentExplanationAndConfidenceFields,
-                      responseSubmissionSpecificationInstance    : responseSubmissionSpecificationInstance]"/>
-    <g:if
-        test="${shouldPresentExplanationAndConfidenceFields && responseSubmissionSpecificationInstance.studentsProvideExplanation}">
-      <g:submitToRemote controller="player"
-                        action="submitResponse"
-                        update="sequence_${interactionInstance.sequenceId}"
-                        class="ui primary button"
-                        value="${message(code: 'player.sequence.interaction.submitResponse')}"
-                        before="document.getElementById('explanation_${interactionInstance.id}').textContent = CKEDITOR.instances.explanation_${interactionInstance.id}.getData()"/>
-    </g:if>
-    <g:else>
-      <g:submitToRemote controller="player"
-                        action="submitResponse"
-                        update="sequence_${interactionInstance.sequenceId}"
-                        class="ui primary button"
-                        value="${message(code: 'player.sequence.interaction.submitResponse')}"/>
-    </g:else>
-  </g:form>
-</g:else>
+    <div class="ui basic padded large text segment">
+
+      <g:set var="shouldPresentExplanationAndConfidenceFields"
+             value="${attempt == 1 || interactionInstance.sequence.executionIsBlendedOrDistance()}"/>
+      <g:set var="responseSubmissionSpecificationInstance" value="${interactionInstance.interactionSpecification}"/>
+      <g:form class="ui form">
+        <g:hiddenField name="id" value="${interactionInstance.id}"/>
+        <g:render template="/assignment/player/ResponseSubmission/learner/response_form-elaastic"
+                  model="[user                                       : user, interactionInstance: interactionInstance, attempt: 1,
+                          shouldPresentExplanationAndConfidenceFields: shouldPresentExplanationAndConfidenceFields,
+                          responseSubmissionSpecificationInstance    : responseSubmissionSpecificationInstance]"/>
+        <g:if
+            test="${shouldPresentExplanationAndConfidenceFields && responseSubmissionSpecificationInstance.studentsProvideExplanation}">
+          <g:submitToRemote controller="player"
+                            action="submitResponse"
+                            update="sequence_${interactionInstance.sequenceId}"
+                            class="ui primary button"
+                            value="${message(code: 'player.sequence.interaction.submitResponse')}"
+                            before="document.getElementById('explanation_${interactionInstance.id}').textContent = CKEDITOR.instances.explanation_${interactionInstance.id}.getData()"/>
+        </g:if>
+        <g:else>
+          <g:submitToRemote controller="player"
+                            action="submitResponse"
+                            update="sequence_${interactionInstance.sequenceId}"
+                            class="ui primary button"
+                            value="${message(code: 'player.sequence.interaction.submitResponse')}"/>
+        </g:else>
+      </g:form>
+
+    </div>
+
+  </g:if>
+  <g:else>
+    <div class="ui blue bottom attached message">
+      <g:message code="player.sequence.interaction.responseSubmission.hasBeenRecoded"/>
+    </div>
+  </g:else>
 </div>
-</g:else>

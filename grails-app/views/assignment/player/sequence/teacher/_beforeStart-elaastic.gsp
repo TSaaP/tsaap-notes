@@ -17,21 +17,41 @@
   -
   --}%
 
-<g:render template="/assignment/player/statement/${userRole}/${sequenceInstance.state}-elaastic"
-          model="[statementInstance: sequenceInstance.statement]"/>
+<%@ page import="org.tsaap.assignments.InteractionType" %>
+<%@ page import="org.tsaap.assignments.StateType" %>
 
 <g:set var="questionType" value="${sequenceInstance.statement.questionType.name()}"/>
-<div id="interactionSpec_${sequenceInstance.id}">
-  <form class="ui form">
-    <input type="hidden" name="id" value="${sequenceInstance.id}">
 
-    <h5 class="ui top attached block header">
-      <g:message code="sequence.interaction.executionContext"/>
-    </h5>
+<g:render template="/assignment/player/sequence/steps/steps-elaastic"
+          model="[sequence: sequenceInstance,
+                  stateByInteractionType: [
+                      (InteractionType.ResponseSubmission): StateType.beforeStart.name(),
+                      (InteractionType.Evaluation): StateType.beforeStart.name(),
+                      (InteractionType.Read): StateType.beforeStart.name(),
+                  ]]"/>
 
-    <div class="ui bottom attached segment">
+<div class="ui bottom attached warning message">
+  ${message(code:"player.sequence.beforeStart.message")}
+</div>
+
+
+<g:render template="/assignment/player/statement/show-elaastic"
+          model="[statementInstance: sequenceInstance.statement, hideStatement: false]"/>
+
+
+<div class="ui segment" id="interactionSpec_${sequenceInstance.id}">
+
+  <div class="ui blue dividing header" style="border-bottom: 1px solid rgba(14, 110, 184, .15);">
+    <g:message code="sequence.interaction.configure.title"/>
+  </div>
+
+  <div class="ui basic padded segment">
+    <g:form class="ui form" controller="player" action="initializeInteractionsAndStartFirst">
+      <input type="hidden" name="id" value="${sequenceInstance.id}">
 
       <div class="inline fields">
+        <label><g:message code="sequence.interaction.executionContext"/> :</label>
+
         <div class="field">
           <div class="ui radio checkbox">
             <input type="radio" name="executionContext" id="executionContext_${sequenceInstance.id}_${questionType}"
@@ -64,20 +84,21 @@
         </div>
       </div>
 
-    </div>
+      <div class="ui  divider"></div>
 
+      <div id="configuration_${sequenceInstance.id}">
+        <g:render template="/assignment/player/sequence/teacher/interactions_configuration-elaastic"
+                  model="[sequenceId: sequenceInstance.id, questionType: questionType]"/>
+      </div>
 
-    <div id="configuration_${sequenceInstance.id}">
-      <g:render template="/assignment/player/sequence/teacher/interactions_configuration-elaastic"
-                model="[sequenceId: sequenceInstance.id, questionType: questionType]"/>
-    </div>
+      <div class="ui hidden divider"></div>
 
-    <div class="ui hidden divider"></div>
-    <div>
-      <g:submitToRemote class="ui primary button"
-                        url="[action: 'initializeInteractionsAndStartFirst', controller: 'player']"
-                        update="sequence_${sequenceInstance.id}"
+      <div>
+        <g:hiddenField name="reloadPage" value="${true}"/>
+        <g:submitButton name="startButton"
+                        class="ui primary button"
                         value="${message(code: "player.sequence.start")}"/>
-    </div>
-  </form>
+      </div>
+    </g:form>
+  </div>
 </div>

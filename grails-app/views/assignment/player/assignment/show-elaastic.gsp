@@ -106,7 +106,10 @@
     id="registered_user_count">${assignmentInstance.registeredUserCount()}</span>
 
   <g:remoteLink
-      controller="player" action="updateRegisteredUserCount" id="${assignmentInstance.id}" title="Refresh"
+      controller="player"
+      action="updateRegisteredUserCount"
+      id="${assignmentInstance.id}"
+      title="Refresh"
       update="registered_user_count">
     <i class="refresh icon"></i></g:remoteLink>
   <br/>

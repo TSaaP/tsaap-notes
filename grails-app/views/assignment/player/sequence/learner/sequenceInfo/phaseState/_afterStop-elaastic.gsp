@@ -17,12 +17,14 @@
   -
   --}%
 
-<h3 class="ui header">
-  ${statementInstance.title}
-  <g:if test="showQuestionType">
-    
-    [<span style="font-variant: all-small-caps; font-weight: normal; font-size: 0.8em; vertical-align: text-top">
-      <g:message code="statement.questionType.${statementInstance.questionType}"/>
-    </span>]
-  </g:if>
-</h3>
+<div class="ui bottom attached blue message">
+  ${message(code: "player.sequence.interaction.closed.forLearner", args: [activeInteraction.rank])}
+  <g:remoteLink
+      controller="player"
+      action="updateSequenceDisplay"
+      id="${interactionInstance.sequenceId}"
+      title="Refresh"
+      update="sequence_${interactionInstance.sequenceId}">
+    <i class="refresh icon"></i>
+  </g:remoteLink>
+</div>

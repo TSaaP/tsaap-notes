@@ -17,16 +17,49 @@
   -
   --}%
 
+<%@ page import="org.tsaap.assignments.InteractionType" %>
+<%@ page import="org.tsaap.assignments.StateType" %>
+
 <g:set var="activeInteraction" value="${sequenceInstance.activeInteractionForLearner(user)}"/>
-<g:render template="/assignment/player/sequence/learner/steps/steps-elaastic"
-          model="[activeInteraction: activeInteraction]"/>
+<g:set var="activeInteractionState" value="${activeInteraction.stateForLearner(user)}"/>
+
+<g:render template="/assignment/player/sequence/steps/steps-elaastic"
+          model="[sequence              : sequenceInstance,
+                  stateByInteractionType: [
+                      (InteractionType.ResponseSubmission): sequenceInstance.responseSubmissionInteraction?.stateForLearner(user),
+                      (InteractionType.Evaluation)        : sequenceInstance.evaluationInteraction?.stateForLearner(user),
+                      (InteractionType.Read)              : sequenceInstance.readInteraction?.stateForLearner(user),
+                  ]]"/>
+
+<g:render template="/assignment/player/sequence/learner/sequenceInfo/sequenceInfo"
+          model="[sequence              : sequenceInstance,
+                  activeInteraction     : activeInteraction,
+                  activeInteractionState: activeInteractionState]"/>
 
 
-<g:render template="/assignment/player/statement/${userRole}/${sequenceInstance.state}-elaastic"
-          model="[statementInstance: sequenceInstance.statement]"/>
+<g:render template="/assignment/player/statement/show-elaastic"
+          model="[statementInstance: sequenceInstance.statement, hideStatement: false]"/>
 
-<g:set var="currentInteraction" value="${activeInteraction}"/>
-<g:render
-        template="/assignment/player/${currentInteraction.interactionType}/${userRole}/${currentInteraction.stateForLearner(user)}-elaastic"
-        model="[interactionInstance: currentInteraction, user: user, attempt: 1]"/>
+<g:if test="${activeInteraction.interactionType != InteractionType.Read.name()}">
+  <g:render
+      template="/assignment/player/${activeInteraction.interactionType}/learner/${sequenceInstance.isStopped() ? StateType.afterStop.name() : activeInteractionState}-elaastic"
+      model="[interactionInstance: activeInteraction, user: user, attempt: 1]"/>
+</g:if>
+
+%{-- Result display --}%
+<g:if test="${sequenceInstance.isStopped() || activeInteraction.isRead()}">
+  <g:if test="${sequenceInstance.resultsArePublished}">
+    <g:render template="/assignment/player/Read/learner/show-results-elaastic"
+              model="[interactionInstance: activeInteraction, user: user]"/>
+  </g:if>
+  <g:elseif
+      test="${activeInteraction.interactionType == InteractionType.Read.name() && sequenceInstance.state == StateType.show.name()}">
+    <g:render template="/assignment/player/Read/learner/info_not_published_yet-elaastic"
+              model="[interactionInstance: activeInteraction]"/>
+  </g:elseif>
+  <g:elseif test="${sequenceInstance.state == StateType.afterStop.name()}">
+    <g:render template="/assignment/player/Read/learner/info_not_published-elaastic"
+              model="[interactionInstance: activeInteraction]"/>
+  </g:elseif>
+</g:if>
 

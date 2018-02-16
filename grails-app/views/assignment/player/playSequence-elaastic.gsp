@@ -55,6 +55,7 @@
   <g:render template="/assignment/player/assignment_overview"
             model="[assignmentInstance: assignmentInstance,
                     selectedSequence  : sequenceInstance,
+                    user              : user,
                     userRole          : userRole,
                     context           : 'aside']"/>
 </content>
@@ -62,12 +63,13 @@
   <g:render template="/assignment/player/assignment_overview"
             model="[assignmentInstance: assignmentInstance,
                     selectedSequence  : sequenceInstance,
+                    user              : user,
                     userRole          : userRole,
                     context           : 'modal-aside']"/>
 </content>
 
 <g:if test="${sequenceInstance}">
-  <div class="ui attached large text segment" id="sequence_${sequenceInstance.id}">
+  <div id="sequence_${sequenceInstance.id}">
     <g:render
         template="/assignment/player/sequence/${userRole}/${org.tsaap.skin.SkinUtil.getView(params, session, sequenceInstance.state)}"
         model="[userRole: userRole, sequenceInstance: sequenceInstance, user: user]"/>

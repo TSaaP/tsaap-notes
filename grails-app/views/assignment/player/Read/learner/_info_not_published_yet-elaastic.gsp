@@ -17,13 +17,18 @@
   -
   --}%
 
-<g:render template="/assignment/player/statement/statement_title-elaastic"
-          model="[statementInstance: sequenceInstance.statement]"/>
+<div class="ui segment">
+  <div class="ui dividing header">
+    <g:message code="questions.results"/>
+  </div>
 
-<p>
-    <g:set var="attachment" value="${statementInstance?.attachment}"/>
-    <g:if test="${attachment != null}">
-        <tsaap:viewAttachement width="650" height="380" attachement="${attachment}"/>
-    </g:if>
-    ${raw(statementInstance.content)}
-</p>
+  <div class="ui warning message" style="font-size: 1rem;">
+    ${message(code: "player.sequence.readinteraction.beforeStart.message", args: [interactionInstance.rank])}
+    <g:remoteLink controller="player"
+                  action="updateSequenceDisplay"
+                  id="${interactionInstance.sequenceId}"
+                  title="Refresh"
+                  update="sequence_${interactionInstance.sequenceId}">
+      <i class="refresh icon"></i>
+    </g:remoteLink></div>
+</div>

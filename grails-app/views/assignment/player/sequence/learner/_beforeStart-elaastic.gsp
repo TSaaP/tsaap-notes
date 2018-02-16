@@ -16,13 +16,24 @@
   -      along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -
   --}%
+<%@ page import="org.tsaap.assignments.InteractionType" %>
+<%@ page import="org.tsaap.assignments.StateType" %>
 
-<g:render template="/assignment/player/statement/${userRole}/beforeStart-elaastic"
-          model="[statementInstance: sequenceInstance.statement]"/>
 
-<div class="ui warning message" style="font-size: 1rem;">
+<g:render template="/assignment/player/sequence/steps/steps-elaastic"
+          model="[sequence: sequenceInstance,
+                  stateByInteractionType: [
+                      (InteractionType.ResponseSubmission): StateType.beforeStart.name(),
+                      (InteractionType.Evaluation): StateType.beforeStart.name(),
+                      (InteractionType.Read): StateType.beforeStart.name(),
+                  ]]"/>
+
+<div class="ui bottom attached warning message">
   ${message(code:"player.sequence.beforeStart.message")}
   <g:remoteLink controller="player" action="updateSequenceDisplay" id="${sequenceInstance.id}" title="Refresh" update="sequence_${sequenceInstance.id}">
     <i class="refresh icon"></i>
   </g:remoteLink>
 </div>
+
+<g:render template="/assignment/player/statement/show-elaastic"
+          model="[statementInstance: sequenceInstance.statement, hideStatement: true]" />

@@ -16,7 +16,20 @@
   -      along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -
   --}%
+<%@ page import="org.tsaap.assignments.StateType;" %>
 
-<div class="ui label">
-  <g:message code="sequence.phase.closed" />
-</div>
+<g:if test="${sequenceInstance.resultsArePublished}">
+  <div class="ui bottom attached blue message">
+    <g:message code="player.sequence.interaction.read.teacher.show.message"/>
+  </div>
+</g:if>
+<g:elseif test="${sequenceInstance.state == StateType.show.name()}">
+  <div class="ui blue bottom attached message">
+    ${message(code: "player.sequence.readinteraction.beforeStart.message", args: [interactionInstance.rank])}
+  </div>
+</g:elseif>
+<g:else>
+  <div class="ui bottom attached message">
+    ${message(code: "player.sequence.readinteraction.not.published")}
+  </div>
+</g:else>

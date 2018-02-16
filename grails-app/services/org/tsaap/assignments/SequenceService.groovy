@@ -319,6 +319,9 @@ class SequenceService {
         if (sequence.executionIsBlended()) {
             sequence.readInteraction.state = StateType.beforeStart.name()
         }
+        else {
+            sequence.resultsArePublished = true
+        }
         sequence.state = StateType.show.name()
         sequence.save()
     }

@@ -27,6 +27,7 @@
   <div class="field">
     <g:if test="${isMultipleChoice}">
       <div class="inline fields">
+        <label><g:message code="common.your.answer" /></label>
         <g:each in="${1..itemCount}" var="checkBoxElet" status="i">
           <div class="field">
             <div class="ui checkbox" id="multiple_choice_${interactionInstance.id}_${i}">
@@ -47,6 +48,7 @@ $('#multiple_choice_${interactionInstance.id}_${i}').checkbox();
     </g:if>
     <g:else>
       <div class="inline fields">
+        <label><g:message code="common.your.answer" /></label>
         <g:each in="${1..itemCount}" var="radioBoxElet" status="i">
           <g:set var="choiceIsExpected"
                  value="${choiceSpecification?.expectedChoiceListContainsChoiceWithIndex(i + 1)}"/>

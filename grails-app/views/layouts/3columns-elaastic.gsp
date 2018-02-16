@@ -40,7 +40,7 @@
   <ckeditor:resources/>
 </head>
 
-<body class="elaastic three-columns">
+<body class="elaastic three-columns" style="background-color: #f9f9f9">
 
 <div class="ui left vertical inverted visible sidebar labeled icon menu"
      style="background-color: #4f7691; overflow: visible !important;">
@@ -133,7 +133,6 @@
     <article>
       <div class="ui container">
         <g:layoutBody/>
-        <g:render template="/layouts/footer-elaastic"/>
       </div>
     </article>
   </main>

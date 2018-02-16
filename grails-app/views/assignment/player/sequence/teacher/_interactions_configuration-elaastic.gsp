@@ -20,46 +20,41 @@
 <%@ page import="org.tsaap.assignments.QuestionType" %>
 
 
-<h5 class="ui top attached block header">
-  <g:message code="sequence.interaction.configuration"/>
-</h5>
+<div class="ui field">
+  <div class="ui checkbox" id="phaseFirstSubmission_${sequenceId}">
+    <input type="checkbox"
+           class="hidden"
+           name="studentsProvideExplanation"
+           id="studentsProvideExplanation_${sequenceId}_${questionType}"
+           value="${QuestionType.OpenEnded.name() == questionType}" ${QuestionType.OpenEnded.name() == questionType ? 'checked' : ''}/>
+    <label>
+      <g:message
+          code="sequence.interaction.studentsProvideAtextualExplanation"/>
+    </label>
+  </div>
+</div>
 
-<div class="ui bottom attached segment">
-  <div class="ui field">
-    <div class="ui checkbox" id="phaseFirstSubmission_${sequenceId}">
-      <input type="checkbox"
-             class="hidden"
-             name="studentsProvideExplanation"
-             id="studentsProvideExplanation_${sequenceId}_${questionType}"
-             value="${QuestionType.OpenEnded.name() == questionType}" ${QuestionType.OpenEnded.name() == questionType ? 'checked' : ''}/>
+<div class="ui inline fields" id="phaseConfrontation_${sequenceId}">
+  <div class="field">
+    <div class="ui checkbox">
+      <input type="checkbox" checked disabled value="true">
+
       <label>
         <g:message
-            code="sequence.interaction.studentsProvideAtextualExplanation"/>
+            code="sequence.interaction.studentsEvaluate"/>
       </label>
     </div>
   </div>
 
-  <div class="ui inline fields" id="phaseConfrontation_${sequenceId}" >
-    <div class="field">
-      <div class="ui checkbox">
-        <input type="checkbox" checked disabled value="true">
-
-        <label>
-          <g:message
-              code="sequence.interaction.studentsEvaluate"/>
-        </label>
-      </div>
-    </div>
-
-    <div class="field">
-      <g:select id="responseToEvaluateCount_${sequenceId}‡"
-                name="responseToEvaluateCount"
-                class="compact"
-                from="${5..1}"/>
-      <g:message code="sequence.interaction.answers"/>
-    </div>
+  <div class="field">
+    <g:select id="responseToEvaluateCount_${sequenceId}‡"
+              name="responseToEvaluateCount"
+              class="compact"
+              from="${5..1}"/>
+    <g:message code="sequence.interaction.answers"/>
   </div>
 </div>
+
 
 <r:script>
     manageConfigurationChange("${sequenceId}", "${questionType}", $("#studentsProvideExplanation_${sequenceId}_${questionType}"));

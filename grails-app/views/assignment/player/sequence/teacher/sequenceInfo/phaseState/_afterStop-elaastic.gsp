@@ -17,13 +17,6 @@
   -
   --}%
 
-<g:render template="/assignment/player/statement/statement_title-elaastic"
-          model="[statementInstance: sequenceInstance.statement]"/>
-
-<p>
-    <g:set var="attachment" value="${statementInstance?.attachment}"/>
-    <g:if test="${attachment != null}">
-        <tsaap:viewAttachement width="650" height="380" attachement="${attachment}"/>
-    </g:if>
-    ${raw(statementInstance.content)}
-</p>
+<div class="ui bottom attached blue message">
+  ${message(code: "player.sequence.interaction.closed.forTeacher", args: [activeInteraction.rank])}
+</div>

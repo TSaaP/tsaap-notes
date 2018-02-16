@@ -16,5 +16,15 @@
   -      along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -
   --}%
-<g:render template="/assignment/player/Read/learner/beforeStart-elaastic"
-          model="[interactionInstance:interactionInstance, user:user]"/>
+
+<div class="ui blue bottom attached message">
+  ${message(code: "player.sequence.interaction.inprogress", args: [activeInteraction.rank])}
+  <g:remoteLink
+      controller="player"
+      action="updateSequenceDisplay"
+      id="${interactionInstance.sequenceId}"
+      title="Refresh"
+      update="sequence_${interactionInstance.sequenceId}">
+    <i class="refresh icon"></i>
+  </g:remoteLink>
+</div>

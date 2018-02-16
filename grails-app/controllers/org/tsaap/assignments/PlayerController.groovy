@@ -49,7 +49,7 @@ class PlayerController {
 
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])
   def playFirstSequence(Assignment assignmentInstance) {
-    if(!assignmentInstance) {
+    if (!assignmentInstance) {
       response.status = 404;
       return
     }
@@ -88,8 +88,11 @@ class PlayerController {
     } else if (user.isTeacher() && user != assignmentInstance.owner) {
       assignmentService.registerUserOnAssignment(user, assignmentInstance)
     }
-    render view: "/assignment/player/assignment/show", model: [assignmentInstance: assignmentInstance,
-                                                               user              : user]
+    render view: "/assignment/player/assignment/show",
+        model: [
+            assignmentInstance: assignmentInstance,
+            user              : user
+        ]
   }
 
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])
@@ -97,7 +100,12 @@ class PlayerController {
     User user = springSecurityService.currentUser
     interactionService.startInteraction(interactionInstance, user)
     Sequence sequenceInstance = interactionInstance.sequence
-    renderSequenceTemplate(user, sequenceInstance)
+
+    if (params.reloadPage) {
+      chain(action: 'playSequence', id: sequenceInstance.id)
+    } else {
+      renderSequenceTemplate(user, sequenceInstance)
+    }
   }
 
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])
@@ -122,7 +130,13 @@ class PlayerController {
       sequenceService.startSequenceInBlendedOrDistanceContext(sequenceInstance, user)
     }
     interactionService.buildInteractionResponsesFromTeacherExplanationsForASequence(user, sequenceInstance)
-    renderSequenceTemplate(user, sequenceInstance)
+
+    if (params.reloadPage) {
+      chain(action: 'playSequence', id: sequenceInstance.id)
+    } else {
+      renderSequenceTemplate(user, sequenceInstance)
+    }
+
   }
 
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])
@@ -130,14 +144,24 @@ class PlayerController {
     User user = springSecurityService.currentUser
     interactionService.stopInteraction(interactionInstance, user)
     Sequence sequenceInstance = interactionInstance.sequence
-    renderSequenceTemplate(user, sequenceInstance)
+
+    if (params.reloadPage) {
+      chain(action: 'playSequence', id: sequenceInstance.id)
+    } else {
+      renderSequenceTemplate(user, sequenceInstance)
+    }
   }
 
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])
   def stopSequence(Sequence sequenceInstance) {
     User user = springSecurityService.currentUser
     sequenceService.stopSequence(sequenceInstance, user)
-    renderSequenceTemplate(user, sequenceInstance)
+
+    if (params.reloadPage) {
+      chain(action: 'playSequence', id: sequenceInstance.id)
+    } else {
+      renderSequenceTemplate(user, sequenceInstance)
+    }
   }
 
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])

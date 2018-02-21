@@ -21,7 +21,7 @@
 
 <a class="ui right floated icon red tiny button"
    href="#"
-   onclick="$('#confirm-delete-sequence-modal').modal('show');">
+   onclick="$('#confirm-delete-sequence-modal-${sequenceInstance.id}').modal('show');">
   <i class="trash icon"></i>
 </a>
 
@@ -52,7 +52,7 @@
 
 %{-- Delete confirm modal --}%
 <div>
-  <div id="confirm-delete-sequence-modal" class="ui tiny modal">
+  <div id="confirm-delete-sequence-modal-${sequenceInstance.id}" class="ui tiny modal">
     <div class="header">
       <g:message code="common.delete"/>
     </div>
@@ -74,7 +74,7 @@
     </div>
   </div>
   <r:script>
-  $('#confirm-delete-sequence-modal').modal({
+  $('#confirm-delete-sequence-modal-${sequenceInstance.id}').modal({
     onApprove: function() {
       window.location = '${createLink(controller: "sequence", action: "deleteSequence", id: sequenceInstance.id)}';
     }

@@ -1,4 +1,3 @@
-import org.gualdi.grails.plugins.ckeditor.Ckeditor
 
 /*
  * Copyright (C) 2013-2016 Université Toulouse 3 Paul Sabatier
@@ -18,7 +17,7 @@ import org.gualdi.grails.plugins.ckeditor.Ckeditor
  */
 
 // Fichier de configuration externe par défaut
-grails.config.locations = ["file:${userHome}/.grails/tsaap-notes-config.groovy"]
+grails.config.locations = ["file:${userHome}/.grails/elaastic-questions-config.groovy"]
 
 // Fichier de configuration externe spécifique (si la propriété système est définie)
 def appConfigLocation = System.properties["${appName}.config.location"]
@@ -107,7 +106,7 @@ environments {
     development {
         grails.logging.jul.usebridge = true
         grails.resources.debug=true
-        grails.serverURL = "http://localhost:8080/tsaap-notes"
+        grails.serverURL = "http://localhost:8080/elaastic-questions"
     }
     production {
         grails.logging.jul.usebridge = false

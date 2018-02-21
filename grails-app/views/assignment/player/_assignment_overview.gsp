@@ -43,11 +43,11 @@
 <g:each in="${assignmentInstance.sequences}" status="i" var="sequenceInstance">
   <div class="ui clearing attached segment ${sequenceInstance.id == selectedSequence?.id ? 'selected' : ''}"
        id="${context}-${sequenceInstance.id}"
-       style="padding-bottom: 1em; cursor: pointer;"
+       style="padding-bottom: 1em; cursor: pointer; "
        onclick="window.location = '${g.createLink(controller: 'player', action: 'playSequence', id: sequenceInstance.id)}';">
-    <div style="overflow: hidden; height: 100%;">
+    <div style="overflow: hidden; height: 100%; padding-top: 2px;">
       <h4 class="ui header">
-        <g:message code="common.question"/> ${i + 1} - ${fieldValue(bean: sequenceInstance, field: "title")}
+        <div class="ui tiny circular label" style="margin-right: 1em;">${i+1}.</div> ${fieldValue(bean: sequenceInstance, field: "title")}
       </h4>
 
       <g:if test="${userRole == 'teacher' || sequenceInstance.state != StateType.beforeStart.name()}">

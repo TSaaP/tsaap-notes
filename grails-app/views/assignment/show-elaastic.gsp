@@ -122,7 +122,7 @@
       <h3 class="ui header">
         <g:link action="editSequence" controller="sequence"
                 id="${sequenceInstance.id}">
-          <g:message code="common.question"/> ${i + 1} - ${fieldValue(bean: sequenceInstance, field: "title")}
+          <div class="ui tiny circular label" style="margin-right: 1em;">${i+1}.</div> ${fieldValue(bean: sequenceInstance, field: "title")}
         </g:link>
       </h3>
     </div>

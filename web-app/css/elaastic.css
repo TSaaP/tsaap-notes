@@ -21,7 +21,6 @@ html.elaastic.three-columns, .elaastic.three-columns body {
 }
 
 .elaastic.three-columns main {
-  flex: 1;
   width: 100%;
   display: flex;
 }

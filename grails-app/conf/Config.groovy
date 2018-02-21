@@ -189,7 +189,7 @@ environments {
     }
     travis_ci {
         tsaap.auth.check_user_email = false
-        tsaap.datastore.path = './tsaap-repo'
+        tsaap.datastore.path = './elaastic-questions-repo'
     }
     production {
         tsaap.auth.check_user_email = true

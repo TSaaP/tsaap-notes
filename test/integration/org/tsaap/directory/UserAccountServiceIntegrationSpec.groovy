@@ -232,12 +232,9 @@ class UserAccountServiceIntegrationSpec extends Specification {
 
         resUsers[2].validate()
         resUsers[2].id
-        println resUsers[2].username
 
-        resUsers[3].errors.each { error -> println error}
-        !resUsers[3].validate()
-        !resUsers[3].id
-        log.error resUsers[3].username
+        resUsers[3].validate()
+        resUsers[3].id
 
     }
 

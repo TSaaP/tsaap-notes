@@ -53,7 +53,7 @@ environments {
         dataSource {
             driverClassName = "com.mysql.jdbc.Driver"
             dialect = "org.hibernate.dialect.MySQL5InnoDBDialect"
-            url = "jdbc:mysql://localhost/tsaap_notes_travis"
+            url = "jdbc:mysql://localhost/elaastic_questions_travis"
             username = "travis"
             password = ""
             logSql = true

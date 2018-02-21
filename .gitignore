@@ -16,3 +16,4 @@ cobertura.ser
 
 CustomConfig.groovy
 /test/integration/resources/target-user-list.csv
+/test/integration/resources/target-user-list-with-username.csv

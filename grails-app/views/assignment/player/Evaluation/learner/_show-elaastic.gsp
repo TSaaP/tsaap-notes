@@ -50,7 +50,7 @@
               </g:if>
               ${raw(currentResponse.explanation)}
 
-              <g:select from="${['null','1','2','3','4','5']}"
+              <g:select from="${['1','2','3','4','5', '-1']}"
                         name="grade_${currentResponse.id}"
                         id="grade_${currentResponse.id}"
                         valueMessagePrefix="player.sequence.interaction.grade"

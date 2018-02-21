@@ -136,7 +136,7 @@ class InteractionResponse {
         if (grade) {
             return (grade as Integer).toString()
         }
-        return "null"
+        return "-1"
     }
 
     /**

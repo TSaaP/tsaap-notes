@@ -77,59 +77,50 @@
       </div>
 
       <div class="scrolling content">
+
         <g:if test="${badResponses}">
-          <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-            <div class="panel panel-default">
-              <div class="panel-heading" role="tab" id="headingOne">
-                <h4 class="panel-title">
+          <div class="ui styled fluid accordion" id="accordion">
+                <div class="active title">
+                    <i class="dropdown icon"></i>
                   <g:set var="responsesChoice"
                          value="${responses.size() > 0 ? responses.get(0).choiceListSpecification : null}"/>
-                  <a role="button" data-toggle="collapse" data-parent="#accordion"
-                     href="#collapseOne${sequence.id}"
-                     aria-expanded="true" aria-controls="collapseOne${sequence.id}">
                     ${message(code: "player.sequence.users.responses")}: ${responsesChoice}<strong>-</strong>
                     ${message(code: "player.sequence.user.score", args: [100])}<strong>-</strong>
                     ${message(code: "player.sequence.responseCount")}: ${responses.size()}
-                  </a>
-                </h4>
-              </div>
+                </div>
 
-              <div id="collapseOne${sequence.id}" class="panel-collapse collapse in" role="tabpanel"
-                   aria-labelledby="headingOne${sequence.id}">
-                <div class="panel-body">
+
+              <div class="active content">
+                <p class="panel-body">
                   <g:render template="/assignment/player/ExplanationList-elaastic"
                             model="[responses: responses, sequence: sequence, displaysAll: true]"/>
-                </div>
+                </p>
               </div>
-            </div>
+
 
             <g:each in="${badResponses}" var="answerMap" status="i">
               <g:each in="${answerMap.value}" var="explanationList" status="j">
-                <div class="panel panel-default">
-                  <div class="panel-heading" role="tab" id="heading${explanationList.key}">
-                    <g:set var="answerGroup" value="${sequence.id}_${i}_${j}"/>
-                    <h4 class="panel-title">
-                      <a role="button" data-toggle="collapse" data-parent="#accordion"
-                         href="#collapse${answerGroup}" aria-expanded="true"
-                         aria-controls="collapse${answerGroup}">
+                    <div class="title">
+                      <i class="dropdown icon"></i>
                         ${message(code: "player.sequence.users.responses")}: ${explanationList.key}<strong>-</strong>
                         ${message(code: "player.sequence.user.score", args: [answerMap.key])}<strong>-</strong>
                         ${message(code: "player.sequence.responseCount")}: ${explanationList.value.size()}
-                      </a>
-                    </h4>
                   </div>
 
-                  <div id="collapse${answerGroup}" class="panel-collapse collapse" role="tabpanel"
-                       aria-labelledby="heading${answerGroup}">
-                    <div class="panel-body">
+                  <div class="content">
+                    <p class="panel-body">
                       <g:render template="/assignment/player/ExplanationList-elaastic"
                                 model="[responses: explanationList.value, sequence: sequence, displaysAll: true]"/>
-                    </div>
+                    </p>
                   </div>
-                </div>
               </g:each>
             </g:each>
           </div>
+          <r:script>
+            $('#accordion')
+                    .accordion()
+            ;
+          </r:script>
         </g:if>
         <g:else>
           <g:render template="/assignment/player/ExplanationList-elaastic"

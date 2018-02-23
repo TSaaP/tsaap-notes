@@ -1,7 +1,4 @@
-<div class="ui divider"></div>
-<footer style="margin-bottom: 2em;">
-
-  <p>&copy; Tsaap Development Group 2013 - Ticetime 2017 – Tsaap-Notes version %{--
+%{--
   -
   -  Copyright (C) 2017 Ticetime
   -
@@ -20,17 +17,36 @@
   -
   --}%
 
-<g:meta name="app.version"/> -
-    <a href="${grailsApplication.config.grails.serverURL}/terms">Mentions</a></p>
+<div class="ui divider"></div>
+<footer style="margin-bottom: 2em;">
+
+
+  <div class="ui horizontal celled link list">
+    <span class="item">
+      Copyright &copy; 2013-2018 Tsaap Development Group & Ticetime
+    </span>
+    <span class="item">
+      <em>elaastic-questions</em> version <g:meta name="app.version"/>
+    </span>
+    <a class="item" href="${grailsApplication.config.grails.serverURL}/terms">
+      Mentions
+    </a>
+  </div>
+
+
+
   <g:if env="development">
+    <div class="ui hidden divider"></div>
     <sec:ifNotSwitched>
       <form class="ui form" action='${request.contextPath}/j_spring_security_switch_user' method='POST'>
         <div class="field">
           <label>Switch to user:</label>
+
           <div class="two fields">
             <div class="field">
               <input type='text' name='j_username'/>
             </div>
+
             <div class="field">
               <input class="ui button" type='submit' value='Switch'/>
             </div>
@@ -46,4 +62,5 @@
   </g:if>
 
 </footer>
+
 <div class="ui hidden divider"></div>

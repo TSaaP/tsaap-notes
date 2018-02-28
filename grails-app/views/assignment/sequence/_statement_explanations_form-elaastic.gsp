@@ -116,7 +116,7 @@
             itemCount: parseInt($('#itemCount').val()),
             isOpenEnded: $('#hasChoices').val() === 'false',
             ckeditorConfig: {
-                customConfig: '/tsaap-notes/ckeditor/config.js',
+                customConfig: '/${grails.util.Metadata.current.'app.name'}/ckeditor/config.js',
                 height: 100
             }
         },
@@ -145,9 +145,8 @@
   </g:if>
   },
   created: function() {
-
       if (this.statementId) {
-          this.$http.get('/tsaap-notes/sequence/findAllFakeExplanation/'+this.statementId).then(function(response)  {
+          this.$http.get('${g.createLink(controller: 'sequence', action: 'findAllFakeExplanation')}/'+this.statementId).then(function(response)  {
               this.fakeExplanationList = response.body;
           }, function(response) {
               alert('An error occured contacting the server: '+response.body);

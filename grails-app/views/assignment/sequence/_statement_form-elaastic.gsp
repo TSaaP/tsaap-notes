@@ -147,7 +147,7 @@
         modeEdit: false,
         shouldShowNotice: false,
         ckeditorConfig: {
-          customConfig: '/tsaap-notes/ckeditor/config.js'
+          customConfig: '/${grails.util.Metadata.current.'app.name'}/ckeditor/config.js'
         }
       },
       mounted: function () {

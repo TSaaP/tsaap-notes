@@ -101,6 +101,14 @@ class PlayerController {
   }
 
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+  def updateActiveInteractionAndStartInteraction(Interaction interactionInstance) {
+    User user = springSecurityService.currentUser
+    interactionService.updateActiveInteractionAndStartInteraction(interactionInstance, user)
+    Sequence sequenceInstance = interactionInstance.sequence
+    renderSequenceTemplate(user, sequenceInstance)
+  }
+
+  @Secured(['IS_AUTHENTICATED_REMEMBERED'])
   def initializeInteractionsAndStartFirst(Sequence sequenceInstance) {
     User user = springSecurityService.currentUser
     List<Interaction> interactions =

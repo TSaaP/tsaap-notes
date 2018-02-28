@@ -19,34 +19,17 @@
 
 <g:set var="sequence" value="${interactionInstance.sequence}"/>
 
-<g:set var="responseSubmissionInteraction" value="${sequence.responseSubmissionInteraction}"/>
-<div class="ui message" style="font-size: 1rem;">
-  <p>
-    <g:message code="player.sequence.interaction.responseCount" args="[1]"/>
-    <span id="response_count_${responseSubmissionInteraction.id}">
-      ${responseSubmissionInteraction.interactionResponseCount(1)}
-    </span>
-  </p>
-  <g:if test="${sequence.isDefaultProcess()}">
-    <g:if test="${sequence.statement.hasChoices()}">
-      <p>
-        <g:message code="player.sequence.interaction.responseCount" args="[2]"/>
-        <span id="response_count_${responseSubmissionInteraction.id}">
-          ${responseSubmissionInteraction.interactionResponseCount(2)}
-        </span>
-      </p>
-    </g:if>
-    <p>
-      ${message(code: 'player.sequence.interaction.evaluationCount', args: [])} <span
-        id="evaluation_count_${responseSubmissionInteraction.id}">${responseSubmissionInteraction.evaluationCount()}</span>
-    </p>
-  </g:if>
-</div>
+<g:render template="/assignment/player/sequence/teacher/dashboard/progression-indicators" model="[interactionInstance:interactionInstance]"/>
+
 <g:if test="${resultsArePublished}">
   <div class="ui warning message" style="font-size: 1rem;">
     ${message(code: "player.sequence.interaction.read.teacher.show.message", args: [interactionInstance.rank])}
   </div>
 </g:if>
+
+<g:set var="responseSubmissionInteraction" value="${sequence.responseSubmissionInteraction}"/>
+<g:render template="/assignment/player/sequence/teacher/dashboard/responseDistributionCharts" model="[interactionInstance:responseSubmissionInteraction]"/>
+
 
 <g:if test="${sequence.hasExplanations()}">
   <g:set var="attempt" value="${sequence.executionIsBlendedOrDistance() ? 2 : 1}"/>
@@ -61,7 +44,7 @@
   <g:render template="/assignment/player/${org.tsaap.skin.SkinUtil.getView(params, session, 'ExplanationList')}"
             model="[responses: responses, sequence: sequence, badResponses: badResponses]"/>
 </g:if>
-<g:if test="${sequence.executionIsBlendedOrDistance() && !sequence.isStopped()}">
+<g:if test="${!sequence.isStopped()}">
   <div style="margin-top: 15px">
     <g:remoteLink class="ui button"
                   controller="player"
@@ -72,4 +55,6 @@
       ${message(code: "player.sequence.readinteraction.updateAllResults", args: [interactionInstance.rank])}</g:remoteLink>
   </div>
 </g:if>
+
+
 

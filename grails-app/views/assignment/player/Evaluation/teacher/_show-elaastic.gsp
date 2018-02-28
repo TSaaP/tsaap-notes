@@ -16,40 +16,11 @@
   -      along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -
   --}%
-<g:set var="responseInteraction" value="${interactionInstance.sequence.responseSubmissionInteraction}"/>
-<div class="ui message" style="font-size: 1rem;">
-  <g:if test="${interactionInstance.sequence.statement.hasChoices()}">
-    <p>
-      ${message(code: 'player.sequence.interaction.firstAttemptSubmissionCount', args: [])}
-      <span id="first_attempt_count_${responseInteraction.id}">${responseInteraction.interactionResponseCount(1)}</span>
-    </p>
+<g:set var="sequence" value="${interactionInstance.sequence}"/>
+<g:render template="/assignment/player/sequence/teacher/dashboard/dashboard-elaastic"
+          model="[interactionInstance: interactionInstance, user: user, resultsArePublished: false]"/>
 
-    <p>
-      ${message(code: 'player.sequence.interaction.secondAttemptSubmissionCount', args: [])}
-      <span id="second_attempt_count_${responseInteraction.id}">
-        ${responseInteraction.interactionResponseCount(2)}
-      </span>
-      <g:remoteLink
-          controller="player"
-          action="updateSecondAttemptCount"
-          id="${responseInteraction.id}"
-          title="Refresh"
-          update="second_attempt_count_${responseInteraction.id}">
-        <i class="refresh icon"></i>
-      </g:remoteLink>
-    </p>
-  </g:if>
-  <p>${message(code: 'player.sequence.interaction.evaluationCount', args: [])}
-    <span id="evaluation_count_${responseInteraction.id}">${responseInteraction.evaluationCount()}</span>
-    <g:remoteLink controller="player"
-                  action="updateEvaluationCount"
-                  id="${responseInteraction.id}"
-                  title="Refresh"
-                  update="evaluation_count_${responseInteraction.id}">
-      <i class="refresh icon"></i>
-    </g:remoteLink>
-  </p>
-</div>
+<hr/>
 <g:remoteLink class="ui primary button"
               controller="player"
               action="stopInteraction"

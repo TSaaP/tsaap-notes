@@ -17,4 +17,4 @@
   -
   --}%
 
-<g:render template="/assignment/player/Read/teacher/show-elaastic" model="[interactionInstance:interactionInstance, user:user]"/>
+<g:render template="/assignment/player/Read/teacher/beforeStart-elaastic" model="[interactionInstance:interactionInstance, user:user]"/>

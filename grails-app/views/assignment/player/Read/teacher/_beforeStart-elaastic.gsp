@@ -18,9 +18,12 @@
   --}%
 
 <g:set var="sequence" value="${interactionInstance.sequence}"/>
-<g:render template="/assignment/player/Read/teacher/dashboard-elaastic"
+<g:render template="/assignment/player/sequence/teacher/dashboard/dashboard-elaastic"
           model="[interactionInstance: interactionInstance, user: user, resultsArePublished: false]"/>
-<div style="margin-top: 15px">
+
+<hr/>
+
+<P>
   <g:remoteLink class="ui primary button"
                 controller="player"
                 action="startInteraction"
@@ -29,4 +32,4 @@
     <i class="play icon"></i>
     ${message(code: "player.sequence.readinteraction.start", args: [interactionInstance.rank])}
   </g:remoteLink>
-</div>
+</p>

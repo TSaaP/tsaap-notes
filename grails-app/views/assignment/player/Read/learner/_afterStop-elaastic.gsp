@@ -16,5 +16,5 @@
   -      along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -
   --}%
-<g:render template="/assignment/player/Read/learner/show-elaastic"
+<g:render template="/assignment/player/Read/learner/beforeStart-elaastic"
           model="[interactionInstance:interactionInstance, user:user]"/>

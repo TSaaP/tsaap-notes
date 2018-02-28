@@ -73,25 +73,33 @@ class Interaction {
     void doAfterStop() {
         state = StateType.afterStop.name()
         if (isResponseSubmission()) {
-            if (sequence.statement.hasChoices()) {
-                updateResults()
-            }
-            if (interactionSpecification.studentsProvideExplanation) {
-                updateExplanationRecommendationMapping()
-            }
-            save()
+            doAfterStopOfResponseSubmission()
         }
         if (isEvaluation()) {
-            def respSubmInter = sequence.responseSubmissionInteraction
-            if (sequence.statement.hasChoices()) {
-                respSubmInter.updateResults(2)
-                respSubmInter.save()
-            }
-            int attemptEvaluated = sequence.executionIsFaceToFace() ? 1 : 2
-            respSubmInter.findAllEvaluatedResponses(attemptEvaluated).each {
-                interactionService.updateMeanGradeOfResponse(it)
-            }
+            doAfterSopOfEvaluation()
         }
+    }
+
+    private void doAfterSopOfEvaluation() {
+        def respSubmInter = sequence.responseSubmissionInteraction
+        if (sequence.statement.hasChoices()) {
+            respSubmInter.updateResults(2)
+            respSubmInter.save()
+        }
+        int attemptEvaluated = sequence.executionIsFaceToFace() ? 1 : 2
+        respSubmInter.findAllEvaluatedResponses(attemptEvaluated).each {
+            interactionService.updateMeanGradeOfResponse(it)
+        }
+    }
+
+    private void doAfterStopOfResponseSubmission() {
+        if (sequence.statement.hasChoices()) {
+            updateResults()
+        }
+        if (interactionSpecification.studentsProvideExplanation) {
+            updateExplanationRecommendationMapping()
+        }
+        save()
     }
 
     /**

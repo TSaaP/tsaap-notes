@@ -19,13 +19,11 @@
 
 <g:render template="/assignment/player/statement/teacher/show-elaastic"
           model="[statementInstance: sequenceInstance.statement]"/>
-<g:set var="rank" value="${sequenceInstance.activeInteraction.rank}"/>
-<g:set var="i" value="${0}"/>
-<g:while test="${i < rank}">
-  <g:set var="currentInteraction" value="${sequenceInstance.interactions[i++]}"/>
-  <g:render
-      template="/assignment/player/${currentInteraction.interactionType}/teacher/${currentInteraction.stateForTeacher(user)}-elaastic"
-      model="[interactionInstance: currentInteraction, user: user, attempt: 1]"/>
-</g:while>
+
+<g:set var="currentInteraction" value="${sequenceInstance.activeInteraction}"/>
+<g:render
+        template="/assignment/player/${currentInteraction.interactionType}/teacher/${currentInteraction.stateForTeacher(user)}-elaastic"
+        model="[interactionInstance: currentInteraction, user: user, attempt: 1]"/>
+
 
 

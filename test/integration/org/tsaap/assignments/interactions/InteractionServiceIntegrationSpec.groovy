@@ -66,8 +66,46 @@ class InteractionServiceIntegrationSpec extends Specification {
         then: "the interaction is in consistent state"
         interaction.state == StateType.afterStop.name()
 
-        and: "the current active interaction is the second one"
-        sequence.activeInteraction == sequence.evaluationInteraction
+        and: "the current active interaction remain the same"
+        sequence.activeInteraction == interaction
+
+    }
+
+    void "test update active interaction"() {
+        given: "an assignment with one sequence and 2 interactions"
+        Assignment assignment = bootstrapTestService.assignment3WithInteractions
+        Sequence sequence = assignment.lastSequence
+        Interaction interaction = assignment.lastSequence.responseSubmissionInteraction
+
+        expect: "the active interaction is the first one and is started"
+        sequence.activeInteraction == interaction
+
+        when:"the interaction is not started"
+        interaction.state == StateType.beforeStart.name()
+
+        and:"the active interaction is updated"
+        interactionService.updateActiveInteraction(interaction, interaction.owner)
+
+        then: "an exception is thrown"
+        thrown(ConditionViolationException)
+
+        when:"the interaction is started but not closed"
+        interactionService.startInteraction(interaction, interaction.owner)
+
+        and:"the active interaction is updated"
+        interactionService.updateActiveInteraction(interaction, interaction.owner)
+
+        then: "an exception is thrown"
+        thrown(ConditionViolationException)
+
+        when:"the interaction is closed"
+        interactionService.stopInteraction(interaction, interaction.owner)
+
+        and:"the active interaction is updated"
+        interactionService.updateActiveInteraction(interaction, interaction.owner)
+
+        then: "the active interaction is now the second one"
+        sequence.activeInteraction == assignment.lastSequence.evaluationInteraction
 
     }
 

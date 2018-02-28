@@ -17,22 +17,14 @@
 -
 --}%
 
-<div class="ui message" style="font-size: 1rem;">
-<g:message code="player.sequence.interaction.responseCount" args="[1]"/>
-<span id="response_count_${interactionInstance.id}">
-  ${interactionInstance.interactionResponseCount()}
-</span>
-<g:remoteLink controller="player"
-              action="updateInteractionResponseCount"
-              id="${interactionInstance.id}"
-              title="Refresh"
-              update="response_count_${interactionInstance.id}">
-  <i class="refresh icon"></i>
-</g:remoteLink>
-</div>
+<g:render template="/assignment/player/sequence/teacher/dashboard/dashboard-elaastic"
+          model="[interactionInstance:interactionInstance, user: user, resultsArePublished: false]"/>
 
-<g:remoteLink class="ui primary button" controller="player" action="stopInteraction" id="${interactionInstance.id}"
-              update="sequence_${interactionInstance.sequenceId}">
-  <i class="stop icon"></i>
-  ${message(code: "player.sequence.interaction.stop", args: [interactionInstance.rank])}
-</g:remoteLink>
+<hr/>
+<p>
+  <g:remoteLink class="ui primary button" controller="player" action="stopInteraction" id="${interactionInstance.id}"
+                update="sequence_${interactionInstance.sequenceId}">
+    <i class="stop icon"></i>
+    ${message(code: "player.sequence.interaction.stop", args: [interactionInstance.rank])}
+  </g:remoteLink>
+</p>

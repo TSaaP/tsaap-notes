@@ -12,8 +12,23 @@ class InteractionService {
     BootstrapService bootstrapService
 
     /**
+     * Update the active interaction and start it
+     * @param currentActiveInteraction the current active interaction of the current sequence
+     * @param user the user performing the operation
+     * @return the started interaction
+     */
+    Interaction updateActiveInteractionAndStartInteraction(Interaction currentActiveInteraction, User user) {
+        Contract.requires(currentActiveInteraction.owner == user, ONLY_OWNER_CAN_STOP_INTERACTION)
+        Contract.requires(currentActiveInteraction.state == StateType.afterStop.name(), INTERACTION_IS_NOT_CLOSED)
+        def activeInteraction = updateActiveInteraction(currentActiveInteraction,user)
+        startInteraction(activeInteraction, user)
+    }
+
+
+    /**
      * Start an interaction
      * @param interaction the interaction to start
+     * @param user the user performing the operation
      * @return the started interaction
      */
     Interaction startInteraction(Interaction interaction, User user) {
@@ -29,14 +44,32 @@ class InteractionService {
     /**
      * Stop an interaction
      * @param interaction the interaction to stop
+     * @param user the user performing the operation
      * @return the stopped interaction
      */
     Interaction stopInteraction(Interaction interaction, User user) {
         Contract.requires(interaction.owner == user, ONLY_OWNER_CAN_STOP_INTERACTION)
         Contract.requires(interaction.state == StateType.show.name(), INTERACTION_IS_NOT_STARTED)
         interaction.doAfterStop()
-        updateActiveInteractionInSequence(interaction)
         interaction
+    }
+
+    /**
+     * Update the active interaction in the current sequence
+     * @param currentActiveInteraction the current active interaction of the current sequence
+     * @param user the user performing the operation
+     * @return the new active interaction of the current sequence
+     */
+    Interaction updateActiveInteraction(Interaction currentActiveInteraction, User user) {
+        Contract.requires(currentActiveInteraction.owner == user, ONLY_OWNER_CAN_STOP_INTERACTION)
+        Contract.requires(currentActiveInteraction.state == StateType.afterStop.name(), INTERACTION_IS_NOT_CLOSED)
+        Sequence sequence = currentActiveInteraction.sequence
+        int newRank = currentActiveInteraction.rank+1
+        if (newRank <= sequence.interactions.size()) {
+            sequence.activeInteraction = sequence.interactions[newRank-1]
+            sequence.save()
+        }
+        sequence.activeInteraction
     }
 
     /**
@@ -160,18 +193,12 @@ class InteractionService {
     }
 
 
-    private void updateActiveInteractionInSequence(Interaction interaction) {
-        Sequence sequence = interaction.sequence
-        int newRank = interaction.rank+1
-        if (newRank <= sequence.interactions.size()) {
-            sequence.activeInteraction = sequence.interactions[newRank-1]
-            sequence.save()
-        }
-    }
+
 
     private static final String ONLY_OWNER_CAN_START_INTERACTION = 'Only owner can start an interaction'
     private static final String ONLY_OWNER_CAN_STOP_INTERACTION = 'Only owner can stop an interaction'
     private static final String INTERACTION_IS_NOT_STARTED = 'The interaction is not started'
+    private static final String INTERACTION_IS_NOT_CLOSED = 'The interaction is not closed'
     private static final String INTERACTION_CANNOT_RECEIVE_RESPONSE = 'The interaction cannot receive response'
     private static
     final String LEARNER_NOT_REGISTERED_IN_ASSIGNMENT = 'Learner is not registered in the relative assignment'

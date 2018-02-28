@@ -44,7 +44,7 @@
   <div class="content">
     <g:message code="assignment.my.list.label"/>
     <div class="sub header">
-      <g:message code="assignment.my.list.description" />
+      <g:message code="assignment.my.list.description"/>
     </div>
   </div>
 </h2>
@@ -58,20 +58,33 @@
   <tr>
     <th><g:message code="common.title"/></th>
     <th class="not mobile"><g:message code="common.lastUpdate"/></th>
+    <th></th>
   </tr>
   </thead>
   <tbody>
   <g:each in="${assignmentInstanceList}" status="i" var="assignmentInstance">
     <tr>
       <td>
-        <h5 class="ui header">
-          <g:link action="show" id="${assignmentInstance.id}">
-            ${fieldValue(bean: assignmentInstance, field: "title")}
-          </g:link>
-        </h5>
+
+        <g:link action="show" id="${assignmentInstance.id}" data-tooltip="${g.message(code: 'assignment.action.show.label')}" data-inverted="">
+          ${fieldValue(bean: assignmentInstance, field: "title")}
+        </g:link>
+
+        &nbsp; [<g:link action="show" id="${assignmentInstance.id}"  data-tooltip="${g.message(code: 'assignment.action.show.label')}" data-inverted=""><i class="edit outline icon" style="margin: 0;"></i></g:link>]
+
       </td>
 
       <td class="not mobile"><g:formatDate date="${assignmentInstance.lastUpdated}"/></td>
+
+      <td>
+        <g:link class="ui compact icon primary button"
+                controller="player"
+                action="playFirstSequence"
+                id="${assignmentInstance.id}"
+                data-tooltip="${g.message(code: 'player.assignment.play')}"
+                data-inverted="">
+          <i class="play icon"></i></g:link>
+      </td>
     </tr>
   </g:each>
   </tbody>

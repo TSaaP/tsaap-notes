@@ -69,7 +69,7 @@
 </g:elseif>
 
 <g:elseif test="${activeInteraction.sequence.executionContext == ExecutionContextType.Blended.toString()}">
-  <g:if test="activeInteraction.interactionType == InteractionType.Read.toString()">
+  <g:if test="${activeInteraction.interactionType == InteractionType.Read.toString()}">
     <g:if test="${activeInteraction.state == StateType.beforeStart.toString()}">
       <g:render template="/assignment/player/sequence/learner/steps/step_label_read_before_start-elaastic"
                 model="[activeInteraction: activeInteraction]"/>

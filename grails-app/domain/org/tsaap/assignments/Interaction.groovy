@@ -76,11 +76,11 @@ class Interaction {
             doAfterStopOfResponseSubmission()
         }
         if (isEvaluation()) {
-            doAfterSopOfEvaluation()
+            doAfterStopOfEvaluation()
         }
     }
 
-    private void doAfterSopOfEvaluation() {
+    private void doAfterStopOfEvaluation() {
         def respSubmInter = sequence.responseSubmissionInteraction
         if (sequence.statement.hasChoices()) {
             respSubmInter.updateResults(2)

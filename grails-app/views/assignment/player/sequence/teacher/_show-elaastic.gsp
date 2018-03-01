@@ -25,5 +25,48 @@
         template="/assignment/player/${currentInteraction.interactionType}/teacher/${currentInteraction.stateForTeacher(user)}-elaastic"
         model="[interactionInstance: currentInteraction, user: user, attempt: 1]"/>
 
+<hr/>
 
+<p>
+    <g:if test="${sequenceInstance.isStopped()}">
+        <g:remoteLink class="ui button"
+                      controller="player"
+                      action="reopenSequence"
+                      id="${sequenceInstance.id}"
+                      update="sequence_${sequenceInstance.id}">
+            <i class="play icon"></i>
+            ${message(code: "player.sequence.reopenSequence")}
+        </g:remoteLink>
+    </g:if>
+    <g:if test="${!sequenceInstance.isStopped()}">
+        <g:remoteLink class="ui primary button"
+                      controller="player"
+                      action="stopSequence"
+                      id="${sequenceInstance.id}"
+                      update="sequence_${sequenceInstance.id}">
+            <i class="stop icon"></i>
+            ${message(code: "player.sequence.readinteraction.stopSequence")}
+        </g:remoteLink>
+    </g:if>
+    <g:if test="${sequenceInstance.resultsCanBePublished()}">
+        <g:remoteLink class="ui primary button"
+                      controller="player"
+                      action="publishResultsForSequence"
+                      id="${sequenceInstance.id}"
+                      update="sequence_${sequenceInstance.id}">
+            <i class="stop icon"></i>
+            ${message(code: "player.sequence.publishResults")}
+        </g:remoteLink>
+    </g:if>
+    <g:if test="${sequenceInstance.resultsArePublished}">
+        <g:remoteLink class="ui primary button"
+                      controller="player"
+                      action="unpublishResultsForSequence"
+                      id="${sequenceInstance.id}"
+                      update="sequence_${sequenceInstance.id}">
+            <i class="stop icon"></i>
+            ${message(code: "player.sequence.unpublishResults")}
+        </g:remoteLink>
+    </g:if>
+</p>
 

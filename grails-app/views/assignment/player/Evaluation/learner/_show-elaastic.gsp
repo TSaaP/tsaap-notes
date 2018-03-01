@@ -16,7 +16,18 @@
   -      along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -
   --}%
-
+<g:if test="${interactionInstance.sequence.isStopped()}">
+  <div class="ui warning message" style="font-size: 1rem;">
+    ${message(code: "player.sequence.readinteraction.beforeStart.message", args: [interactionInstance.rank])}
+    <g:remoteLink controller="player"
+                  action="updateSequenceDisplay"
+                  id="${interactionInstance.sequenceId}"
+                  title="Refresh"
+                  update="sequence_${interactionInstance.sequenceId}">
+      <i class="refresh icon"></i>
+    </g:remoteLink></div>
+</g:if>
+<g:else>
 <div style="font-size: 1rem;">
   <%@ page import="org.springframework.web.servlet.support.RequestContextUtils" %>
   <g:set var="sequence" value="${interactionInstance.sequence}"/>
@@ -104,3 +115,4 @@
     </g:form>
   </g:else>
 </div>
+</g:else>

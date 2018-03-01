@@ -20,6 +20,7 @@ class Sequence {
 
     Interaction activeInteraction
     String state = StateType.beforeStart.name()
+    Boolean resultsArePublished = false
 
     static constraints = {
         activeInteraction nullable: true
@@ -169,6 +170,10 @@ class Sequence {
         executionContext == ExecutionContextType.Blended.name()
     }
 
+    /**
+     * Indicate if sequence execution is face to face
+     * @return true if sequence execution is face to face
+     */
     boolean executionIsFaceToFace() {
         executionContext == ExecutionContextType.FaceToFace.name()
     }
@@ -284,12 +289,27 @@ class Sequence {
         !isDefaultProcess()
     }
 
+
 /**
  *
  * @return true if the sequence is stopped
  */
     boolean isStopped() {
         state == StateType.afterStop.name()
+    }
+
+
+    /**
+     *
+     * @return true if results can be published
+     */
+    boolean resultsCanBePublished() {
+        if (resultsArePublished) {
+            return false
+        }
+        isStopped() ||
+                (activeInteraction == readInteraction) ||
+                (evaluationInteraction.state == StateType.afterStop.name())
     }
 
     /**

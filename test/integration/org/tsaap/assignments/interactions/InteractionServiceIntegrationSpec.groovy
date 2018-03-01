@@ -84,7 +84,7 @@ class InteractionServiceIntegrationSpec extends Specification {
         interaction.state == StateType.beforeStart.name()
 
         and:"the active interaction is updated"
-        interactionService.updateActiveInteraction(interaction, interaction.owner)
+        interactionService.setNextActiveInteraction(interaction, interaction.owner)
 
         then: "an exception is thrown"
         thrown(ConditionViolationException)
@@ -93,7 +93,7 @@ class InteractionServiceIntegrationSpec extends Specification {
         interactionService.startInteraction(interaction, interaction.owner)
 
         and:"the active interaction is updated"
-        interactionService.updateActiveInteraction(interaction, interaction.owner)
+        interactionService.setNextActiveInteraction(interaction, interaction.owner)
 
         then: "an exception is thrown"
         thrown(ConditionViolationException)
@@ -102,7 +102,7 @@ class InteractionServiceIntegrationSpec extends Specification {
         interactionService.stopInteraction(interaction, interaction.owner)
 
         and:"the active interaction is updated"
-        interactionService.updateActiveInteraction(interaction, interaction.owner)
+        interactionService.setNextActiveInteraction(interaction, interaction.owner)
 
         then: "the active interaction is now the second one"
         sequence.activeInteraction == assignment.lastSequence.evaluationInteraction

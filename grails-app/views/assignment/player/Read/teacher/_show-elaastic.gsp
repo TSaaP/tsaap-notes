@@ -20,29 +20,5 @@
 <g:render template="/assignment/player/sequence/teacher/dashboard/dashboard-elaastic"
           model="[interactionInstance: interactionInstance, user: user, resultsArePublished: true]"/>
 
-<hr/>
-
-<p>
-    <g:remoteLink class="ui primary button"
-                  controller="player"
-                  action="stopInteraction"
-                  id="${interactionInstance.id}"
-                  update="sequence_${interactionInstance.sequenceId}">
-        <i class="stop icon"></i>
-        ${message(code: "player.sequence.readinteraction.hideResults")}
-    </g:remoteLink>
-
-    <g:set var="sequence" value="${interactionInstance.sequence}"/>
-    <g:if test="${!sequence.isStopped()}">
-        <g:remoteLink class="ui primary button"
-                      controller="player"
-                      action="stopSequence"
-                      id="${sequence.id}"
-                      update="sequence_${interactionInstance.sequenceId}">
-            <i class="stop icon"></i>
-            ${message(code: "player.sequence.readinteraction.stopSequence", args: [interactionInstance.rank])}
-        </g:remoteLink>
-    </g:if>
-</p>
 
 

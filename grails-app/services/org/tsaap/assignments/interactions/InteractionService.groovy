@@ -17,10 +17,10 @@ class InteractionService {
      * @param user the user performing the operation
      * @return the started interaction
      */
-    Interaction updateActiveInteractionAndStartInteraction(Interaction currentActiveInteraction, User user) {
+    Interaction startNextInteraction(Interaction currentActiveInteraction, User user) {
         Contract.requires(currentActiveInteraction.owner == user, ONLY_OWNER_CAN_STOP_INTERACTION)
         Contract.requires(currentActiveInteraction.state == StateType.afterStop.name(), INTERACTION_IS_NOT_CLOSED)
-        def activeInteraction = updateActiveInteraction(currentActiveInteraction,user)
+        def activeInteraction = setNextActiveInteraction(currentActiveInteraction,user)
         startInteraction(activeInteraction, user)
     }
 
@@ -60,7 +60,7 @@ class InteractionService {
      * @param user the user performing the operation
      * @return the new active interaction of the current sequence
      */
-    Interaction updateActiveInteraction(Interaction currentActiveInteraction, User user) {
+    Interaction setNextActiveInteraction(Interaction currentActiveInteraction, User user) {
         Contract.requires(currentActiveInteraction.owner == user, ONLY_OWNER_CAN_STOP_INTERACTION)
         Contract.requires(currentActiveInteraction.state == StateType.afterStop.name(), INTERACTION_IS_NOT_CLOSED)
         Sequence sequence = currentActiveInteraction.sequence

@@ -16,6 +16,8 @@
   -      along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -
   --}%
+<g:if test="${!interactionInstance.sequence.isStopped()}">
+<hr/>
 <p>
   <g:remoteLink class="ui primary button"
                 controller="player"
@@ -24,3 +26,4 @@
                 update="sequence_${interactionInstance.sequenceId}">
     <span class="glyphicon glyphicon-play"></span> ${message(code: "player.sequence.interaction.start", args: [interactionInstance.rank])}</g:remoteLink>
 </p>
+</g:if>

@@ -101,9 +101,9 @@ class PlayerController {
   }
 
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])
-  def updateActiveInteractionAndStartInteraction(Interaction interactionInstance) {
+  def startNextInteraction(Interaction interactionInstance) {
     User user = springSecurityService.currentUser
-    interactionService.updateActiveInteractionAndStartInteraction(interactionInstance, user)
+    interactionService.startNextInteraction(interactionInstance, user)
     Sequence sequenceInstance = interactionInstance.sequence
     renderSequenceTemplate(user, sequenceInstance)
   }
@@ -139,6 +139,29 @@ class PlayerController {
     sequenceService.stopSequence(sequenceInstance, user)
     renderSequenceTemplate(user, sequenceInstance)
   }
+
+  @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+  def reopenSequence(Sequence sequenceInstance) {
+    User user = springSecurityService.currentUser
+    sequenceService.reopenSequence(sequenceInstance, user)
+    renderSequenceTemplate(user, sequenceInstance)
+  }
+
+  @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+  def publishResultsForSequence(Sequence sequenceInstance) {
+    User user = springSecurityService.currentUser
+    sequenceService.publishResultsForSequence(sequenceInstance, user)
+    renderSequenceTemplate(user, sequenceInstance)
+  }
+
+  @Secured(['IS_AUTHENTICATED_REMEMBERED'])
+  def unpublishResultsForSequence(Sequence sequenceInstance) {
+    User user = springSecurityService.currentUser
+    sequenceService.unpublishResultsForSequence(sequenceInstance, user)
+    renderSequenceTemplate(user, sequenceInstance)
+  }
+
+
 
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])
   def updateRegisteredUserCount(Assignment assignmentInstance) {

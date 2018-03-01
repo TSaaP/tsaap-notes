@@ -357,8 +357,8 @@ class SequenceServiceIntegrationSpec extends Specification {
         when: "the owner of the sequence is triggering the update of all results"
         sequenceService.updateAllResults(sequence, sequence.owner)
 
-        then: "an exception is thrown"
-        thrown(ConditionViolationException)
+        then: "an exception is not thrown"
+        noExceptionThrown()
 
         when: "a student of the sequence is triggering the update of all results"
         def mary = bootstrapTestService.learnerMary

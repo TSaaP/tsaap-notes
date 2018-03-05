@@ -35,7 +35,7 @@ class PlayerController {
     Assignment assignmentInstance = assignmentService.findAssignmentByGlobalId(globalId)
     User user = springSecurityService.currentUser
     assignmentService.registerUserOnAssignment(user, assignmentInstance)
-    redirect(action: "index", controller: "player")
+    redirect(action: "playFirstSequence", controller: "player", id:"${assignmentInstance.id}")
   }
 
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])

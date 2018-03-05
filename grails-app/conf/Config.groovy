@@ -161,6 +161,7 @@ grails.plugins.springsecurity.authority.className = 'org.tsaap.directory.Role'
 // security config
 grails.plugins.springsecurity.password.algorithm = 'bcrypt'
 grails.plugins.springsecurity.successHandler.defaultTargetUrl = '/home/index'
+grails.plugins.springsecurity.logout.afterLogoutUrl = 'http://questions.elaastic.com/'
 
 environments {
     development {

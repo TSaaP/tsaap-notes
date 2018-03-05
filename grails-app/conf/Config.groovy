@@ -165,6 +165,7 @@ grails.plugins.springsecurity.successHandler.defaultTargetUrl = '/home/index'
 environments {
     development {
         grails.plugins.springsecurity.useSwitchUserFilter = true
+        grails.plugins.springsecurity.logout.afterLogoutUrl = 'http://4745f1170b.url-de-test.ws/'
     }
     test {
         // hack : in test environment, the bcrypt is not considered

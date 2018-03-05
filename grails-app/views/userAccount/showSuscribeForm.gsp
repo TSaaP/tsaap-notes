@@ -264,10 +264,10 @@
       .modal({
         closable: false,
         onDeny: function() {
-          window.location = '${g.createLink(uri: '/')}';
+          window.location = "${grailsApplication.config.grails.plugins.springsecurity.logout.afterLogoutUrl}";
         },
         onHide: function() {
-          window.location = '${g.createLink(uri: '/')}';
+          window.location = "${grailsApplication.config.grails.plugins.springsecurity.logout.afterLogoutUrl}";
         }
       })
       .modal('show');

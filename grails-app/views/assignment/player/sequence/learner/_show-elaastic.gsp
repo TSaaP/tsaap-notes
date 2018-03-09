@@ -63,3 +63,5 @@
   </g:elseif>
 </g:if>
 
+<div class="ui hidden divider"></div>
+

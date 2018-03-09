@@ -45,3 +45,4 @@
     template="/assignment/player/${currentInteraction.interactionType}/teacher/${currentInteraction.stateForTeacher(user)}-elaastic"
     model="[interactionInstance: currentInteraction, user: user, attempt: 1]"/>
 
+<div class="ui hidden divider"></div>

@@ -21,19 +21,20 @@
 
 
 <g:render template="/assignment/player/sequence/steps/steps-elaastic"
-          model="[sequence: sequenceInstance,
+          model="[sequence              : sequenceInstance,
+                  showStatistics        : true,
                   stateByInteractionType: [
                       (InteractionType.ResponseSubmission): sequenceInstance.responseSubmissionInteraction?.stateForRegisteredUsers(),
-                      (InteractionType.Evaluation): sequenceInstance.evaluationInteraction?.stateForRegisteredUsers(),
-                      (InteractionType.Read): sequenceInstance.readInteraction?.stateForRegisteredUsers(),
+                      (InteractionType.Evaluation)        : sequenceInstance.evaluationInteraction?.stateForRegisteredUsers(),
+                      (InteractionType.Read)              : sequenceInstance.readInteraction?.stateForRegisteredUsers(),
                   ]]"/>
 
 <g:render template="/assignment/player/sequence/teacher/command"
-          model="[interactionInstance: sequenceInstance.activeInteraction, user: user, attempt: 1]" />
+          model="[interactionInstance: sequenceInstance.activeInteraction, user: user, attempt: 1]"/>
 
 <g:render template="/assignment/player/sequence/teacher/sequenceInfo/sequenceInfo"
-          model="[sequence: sequenceInstance,
-                  activeInteraction: sequenceInstance.activeInteraction,
+          model="[sequence              : sequenceInstance,
+                  activeInteraction     : sequenceInstance.activeInteraction,
                   activeInteractionState: sequenceInstance.activeInteraction.state]"/>
 
 <g:render template="/assignment/player/statement/show-elaastic"

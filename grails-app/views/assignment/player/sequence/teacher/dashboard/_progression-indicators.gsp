@@ -22,25 +22,24 @@
 <g:set var="responseSubmissionInteraction" value="${sequence.responseSubmissionInteraction}"/>
 <div class="ui message" style="font-size: 1rem;">
   <p>
-    <g:message code="player.sequence.interaction.responseCount" args="[1]"/>
+    <g:message code="player.sequence.interaction.responseCount" args="[1]"/> :
     <span id="response_count_${responseSubmissionInteraction.id}">
       ${responseSubmissionInteraction.interactionResponseCount(1)}
     </span>
   </p>
-  <g:if test="${sequence.isDefaultProcess()}">
-    <g:if test="${sequence.statement.hasChoices()}">
-      <p>
-        <g:message code="player.sequence.interaction.responseCount" args="[2]"/>
-        <span id="response_count_${responseSubmissionInteraction.id}">
-          ${responseSubmissionInteraction.interactionResponseCount(2)}
-        </span>
-      </p>
-    </g:if>
-    <p>
-      ${message(code: 'player.sequence.interaction.evaluationCount', args: [])} <span
-        id="evaluation_count_${responseSubmissionInteraction.id}">${responseSubmissionInteraction.evaluationCount()}</span>
-    </p>
-  </g:if>
+
+  <p>
+    <g:message code="player.sequence.interaction.responseCount" args="[2]"/> :
+    <span id="response_count_${responseSubmissionInteraction.id}">
+      ${responseSubmissionInteraction.interactionResponseCount(2)}
+    </span>
+  </p>
+
+  <p>
+    ${message(code: 'player.sequence.interaction.evaluationCount', args: [])} : <span
+      id="evaluation_count_${responseSubmissionInteraction.id}">${responseSubmissionInteraction.evaluationCount()}</span>
+  </p>
+
 </div>
 
 

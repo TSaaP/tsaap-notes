@@ -64,8 +64,14 @@
 }
 </r:style>
 
+<g:set var="responseSubmissionInteraction" value="${sequence.responseSubmissionInteraction}"/>
 <div class="ui three top attached steps">
   <div class="${responseSubmissionCss} step">
+    <g:if test="${showStatistics}">
+      <div class="floating ui grey label" style="left: 3em;" data-inverted="" data-tooltip="${g.message(code: 'player.sequence.interaction.responseCount', args: [1])}" data-position="bottom left"><i
+          class="comment outline icon"></i>${responseSubmissionInteraction.interactionResponseCount(1)}</div>
+    </g:if>
+
     <i class="comment outline icon"></i>
 
     <div class="content">
@@ -77,6 +83,13 @@
   </div>
 
   <div class="${evaluationCss} step">
+
+    <g:if test="${showStatistics}">
+      <div class="floating ui grey label" style="left: 3em;"data-inverted="" data-tooltip="${g.message(code: 'player.sequence.interaction.peerEvaluationCount')}" data-position="bottom left"><i class="comments outline icon"></i>${responseSubmissionInteraction.evaluationCount()}</div>
+
+      <div class="floating ui grey label" style="left: 9em;" data-inverted="" data-tooltip="${g.message(code: 'player.sequence.interaction.responseCount', args: [2])}" data-position="bottom left"><i class="comment outline icon"></i>${responseSubmissionInteraction.interactionResponseCount(2)}</div>
+    </g:if>
+
     <i class="comments outline icon"></i>
 
     <div class="content">

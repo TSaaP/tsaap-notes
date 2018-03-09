@@ -21,20 +21,25 @@ class AssignmentController {
     params.order = params.order ?: 'desc'
     User owner = springSecurityService.currentUser
     respond assignmentService.findAllAssignmentsForOwner(owner, params),
-        model: [assignmentInstanceCount: assignmentService.countAllAssignmentsForOwner(owner)],
+        model: [assignmentInstanceCount: assignmentService.countAllAssignmentsForOwner(owner), user: owner],
         view: SkinUtil.getView(params, session, 'index')
   }
 
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])
   def show(Assignment assignmentInstance) {
 
-    respond assignmentInstance, view: SkinUtil.getView(params, session, 'show')
+    respond assignmentInstance,
+        model: [user: springSecurityService.currentUser],
+        view: SkinUtil.getView(params, session, 'show')
   }
 
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])
   def create() {
     render(
-        model: [assignmentInstance: new Assignment()],
+        model: [
+            assignmentInstance: new Assignment(),
+            user: springSecurityService.currentUser
+        ],
         view: SkinUtil.getView(params, session, 'create')
     )
   }
@@ -63,7 +68,10 @@ class AssignmentController {
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])
   def edit(Assignment assignmentInstance) {
     render(
-        model:[assignmentInstance: assignmentInstance],
+        model:[
+            assignmentInstance: assignmentInstance,
+            user: springSecurityService.currentUser
+        ],
         view: SkinUtil.getView(params, session, 'edit')
     )
   }
@@ -129,7 +137,11 @@ class AssignmentController {
     Statement statementInstance = new Statement()
     render(
         view: "sequence/"+SkinUtil.getView(params,session, 'create_sequence'),
-        model: [assignmentInstance: assignmentInstance, statementInstance: statementInstance]
+        model: [
+            assignmentInstance: assignmentInstance,
+            statementInstance: statementInstance,
+            user: springSecurityService.currentUser
+        ]
     )
   }
 

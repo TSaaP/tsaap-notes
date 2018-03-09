@@ -25,43 +25,46 @@ import org.tsaap.skin.SkinUtil
 
 class UserAccountBatchCreationController {
 
-    UserAccountService userAccountService
-    SpringSecurityService springSecurityService
+  UserAccountService userAccountService
+  SpringSecurityService springSecurityService
 
-    /**
-     * Displays form to upload csv file
-     */
-    def index() {
-        render(view: "/directory/"+SkinUtil.getView(params, session, 'userAccountBatchCreation'))
-    }
+  /**
+   * Displays form to upload csv file
+   */
+  def index() {
+    render(
+        view: "/directory/" + SkinUtil.getView(params, session, 'userAccountBatchCreation'),
+        model: [user: springSecurityService.currentUser]
+    )
+  }
 
-    /**
-     * Processes the uploaded csv file
-     */
-    def doProcessCSVFile() {
-        User user = springSecurityService.currentUser
-        CommonsMultipartFile file = request.getFile('csvFile')
-        List<User> userList
-        if (file && !file.isEmpty()) {
-            InputStreamReader reader = new InputStreamReader(file.inputStream)
-            try {
-                userList = userAccountService.addUserListFromFileByOwner(reader, user)
-                response.setContentType("text/csv")
-                response.setCharacterEncoding("UTF-8")
-                response.setHeader("Content-Disposition","Attachment;Filename=\"${message(code:'useraccount.generatedFileName')}\"")
-                render(view: "/directory/userAccountsCreated", model: [userList:userList])
-            } catch (Exception e) {
-                log.error(e.message)
-                flash.message = "useraccount.batchCreation.errorMessage"
-                redirect(action: "index", controller: "userAccountBatchCreation")
-            } finally {
-                try {
-                    reader.close()
-                } catch (Exception e1) {
-                    log.error(e1.message)
-                }
-            }
+  /**
+   * Processes the uploaded csv file
+   */
+  def doProcessCSVFile() {
+    User user = springSecurityService.currentUser
+    CommonsMultipartFile file = request.getFile('csvFile')
+    List<User> userList
+    if (file && !file.isEmpty()) {
+      InputStreamReader reader = new InputStreamReader(file.inputStream)
+      try {
+        userList = userAccountService.addUserListFromFileByOwner(reader, user)
+        response.setContentType("text/csv")
+        response.setCharacterEncoding("UTF-8")
+        response.setHeader("Content-Disposition", "Attachment;Filename=\"${message(code: 'useraccount.generatedFileName')}\"")
+        render(view: "/directory/userAccountsCreated", model: [userList: userList])
+      } catch (Exception e) {
+        log.error(e.message)
+        flash.message = "useraccount.batchCreation.errorMessage"
+        redirect(action: "index", controller: "userAccountBatchCreation")
+      } finally {
+        try {
+          reader.close()
+        } catch (Exception e1) {
+          log.error(e1.message)
         }
+      }
     }
+  }
 
 }

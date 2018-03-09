@@ -21,7 +21,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="layout" content="top_menu-elaastic">
+  <meta name="layout" content="left_menu-elaastic">
   <r:require modules="semantic_ui,jquery,elaastic_ui"/>
 </head>
 

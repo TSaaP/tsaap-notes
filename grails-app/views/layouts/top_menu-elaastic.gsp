@@ -93,28 +93,7 @@
         </div>
       </tsaap:ifNotLoggedIn>
       <tsaap:ifLoggedIn>
-        <div id="user-menu-dropdown" class="ui dropdown item">
-          <i class="user icon"></i> <sec:username/><i class="dropdown icon"></i>
-
-          <div class="ui vertical menu">
-            <g:link controller="userAccount"
-                    action="doEdit"
-                    class="item"><i
-                class="address card outline icon"></i> ${message(code: "layout.main.account")}</g:link>
-
-            <tsaap:ifUserOwner>
-              <div class="ui divider"></div>
-              <g:link
-                  controller="userAccountBatchCreation" class="item">
-                <i class="add user icon"></i> ${message(code: "layout.main.goUserAccountCreation")}
-              </g:link>
-              <div class="ui divider"></div>
-            </tsaap:ifUserOwner>
-
-            <g:link controller="logout" class="item"><i
-                class="sign out icon"></i> ${message(code: "layout.main.disconnect")}</g:link>
-          </div>
-        </div>
+        <g:render template="/layouts/userMenu" model="[user: user]" />
       </tsaap:ifLoggedIn>
     </div>
   </div>
@@ -125,13 +104,6 @@
   </div>
 </div>
 
-<r:script>
-  $(document)
-      .ready(function () {
-    // Initialize dropdown
-    $('#user-menu-dropdown').dropdown();
-  });
-</r:script>
 <r:layoutResources/>
 </body>
 </html>

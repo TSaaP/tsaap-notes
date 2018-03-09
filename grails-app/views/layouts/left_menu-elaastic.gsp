@@ -83,33 +83,7 @@
     </g:link>
   </sec:ifAnyGranted>
 
-
-  <div id="user-menu-dropdown"
-       class="ui dropdown item"
-       data-tooltip="${message(code: "layout.main.account")}"
-       data-position="right center"
-       data-inverted="">
-    <i class="user icon"></i>
-
-    <div class="ui vertical menu">
-      <g:link controller="userAccount"
-              action="doEdit"
-              class="item"><i
-          class="address card outline icon"></i> ${message(code: "layout.main.account")}</g:link>
-
-      <tsaap:ifUserOwner>
-        <div class="ui divider"></div>
-        <g:link
-            controller="userAccountBatchCreation" class="item">
-          <i class="add user icon"></i> ${message(code: "layout.main.goUserAccountCreation")}
-        </g:link>
-        <div class="ui divider"></div>
-      </tsaap:ifUserOwner>
-
-      <g:link controller="logout" class="item"><i
-          class="sign out icon"></i> ${message(code: "layout.main.disconnect")}</g:link>
-    </div>
-  </div>
+  <g:render template="/layouts/userMenu" model="[user: user]"/>
 
   <div class="ui divider"></div>
 
@@ -129,14 +103,6 @@
 
 </div>
 
-<r:script>
-  $(document)
-      .ready(function () {
-
-    // Initialize dropdown
-    $('#user-menu-dropdown').dropdown();
-  });
-</r:script>
 <r:layoutResources/>
 </body>
 </html>

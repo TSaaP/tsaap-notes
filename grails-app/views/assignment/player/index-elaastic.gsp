@@ -66,6 +66,7 @@
   <tr>
     <th><g:message code="player.assignment.label" default="Work"/></th>
     <th><g:message code="assignment.lastupdated.label" default="Last update"/></th>
+    <th></th>
   </tr>
   </thead>
   <tbody>
@@ -79,6 +80,15 @@
       </td>
 
       <td><g:formatDate date="${assignmentInstance.lastUpdated}"/></td>
+
+      <td>
+        <g:link class="ui compact icon primary button"
+                controller="player"
+                action="playFirstSequence"
+                id="${assignmentInstance.id}"
+                data-tooltip="${g.message(code: 'player.assignment.play')}"
+                data-inverted=""><i class="play icon"></i></g:link>
+      </td>
 
     </tr>
   </g:each>

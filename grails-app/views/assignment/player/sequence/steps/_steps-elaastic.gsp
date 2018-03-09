@@ -59,7 +59,7 @@
     background-color: #dff0ff;
   }
 
-  .ui.steps .step.active-phase .title, .ui.steps .step.active-phase i:before {
+  .ui.steps .step.active-phase .title, .ui.steps .step.active-phase i.phase-icon:before {
     color: #4183c4;
 }
 </r:style>
@@ -72,7 +72,7 @@
           class="comment outline icon"></i>${responseSubmissionInteraction.interactionResponseCount(1)}</div>
     </g:if>
 
-    <i class="comment outline icon"></i>
+    <i class="phase-icon comment outline icon"></i>
 
     <div class="content">
       <div class="title"><g:message code="sequence.phase.1"/></div>
@@ -90,7 +90,7 @@
       <div class="floating ui grey label" style="left: 9em;" data-inverted="" data-tooltip="${g.message(code: 'player.sequence.interaction.responseCount', args: [2])}" data-position="bottom left"><i class="comment outline icon"></i>${responseSubmissionInteraction.interactionResponseCount(2)}</div>
     </g:if>
 
-    <i class="comments outline icon"></i>
+    <i class="phase-icon comments outline icon"></i>
 
     <div class="content">
       <div class="title"><g:message code="sequence.phase.2"/></div>
@@ -101,7 +101,7 @@
   </div>
 
   <div class="${readCss} step">
-    <i class="bar chart icon"></i>
+    <i class="phase-icon bar chart icon"></i>
 
     <div class="content">
       <div class="title"><g:message code="sequence.phase.3"/></div>

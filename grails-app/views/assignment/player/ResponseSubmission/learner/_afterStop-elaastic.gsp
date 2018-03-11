@@ -24,7 +24,7 @@
 
   <g:if test="${interactionInstance.hasResponseForUser(user, attempt)}">
     <div class="ui blue bottom attached message">
-      <g:message code="player.sequence.interaction.responseSubmission.hasBeenRecoded"/>
+      <g:message code="player.sequence.interaction.responseSubmission.hasBeenRecorded"/>
     </div>
   </g:if>
   <g:else>

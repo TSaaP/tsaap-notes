@@ -61,7 +61,7 @@
   </g:if>
   <g:else>
     <div class="ui blue bottom attached message">
-      <g:message code="player.sequence.interaction.responseSubmission.hasBeenRecoded"/>
+      <g:message code="player.sequence.interaction.responseSubmission.hasBeenRecorded"/>
     </div>
   </g:else>
 </div>

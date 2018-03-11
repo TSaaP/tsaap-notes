@@ -9,7 +9,22 @@
 
 <body>
 
+<g:set var="assignmentInstance" value="${sequenceInstance.assignment}"/>
+<g:set var="statementInstance" value="${sequenceInstance.statement}"/>
+
 <content tag="specificMenu">
+  <g:link action="show"
+          controller="assignment"
+          id="${assignmentInstance.id}"
+          class="item"
+          data-tooltip="${g.message(code: 'assignment.back.to.assignment')}"
+          data-position="right center"
+          data-inverted="">
+
+    <i class="yellow long arrow alternate left icon"></i>
+  </g:link>
+
+
   <a href="#" class="item"
      onclick="$('#sequenceForm').submit();"
      data-tooltip="${message(code: 'common.save')}"
@@ -29,9 +44,6 @@
 </content>
 
 <div id="edit-sequence">
-  <g:set var="assignmentInstance" value="${sequenceInstance.assignment}"/>
-  <g:set var="statementInstance" value="${sequenceInstance.statement}"/>
-
   <g:form name="sequenceForm"
           class="ui form"
           controller="sequence"
@@ -68,17 +80,6 @@
 
       <div class="content">
         ${assignmentInstance?.title}
-        <g:link action="show"
-                controller="assignment"
-                id="${assignmentInstance.id}"
-                class="ui small compact button"
-                style="margin-left: 2em;
-        vertical-align: text-bottom">
-
-          <i class="caret left icon"></i>
-          <g:message code="common.back"/>
-        </g:link>
-
         <div class="sub header">
           <g:message code="sequence.edition.label"/>
         </div>

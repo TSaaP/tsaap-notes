@@ -92,17 +92,7 @@
           style="cursor: pointer">
       ${assignmentInstance?.title}
     </span>
-
-    <g:link action="index"
-            controller="assignment"
-            id="${assignmentInstance.id}"
-            class="ui small compact button"
-            style="margin-left: 2em;
-        vertical-align: text-bottom">
-
-      <i class="caret left icon"></i>
-      <g:message code="common.back"/>
-    </g:link>
+    
     <div class="sub header">
       <g:message code="assignment.action.show.label"/>
     </div>

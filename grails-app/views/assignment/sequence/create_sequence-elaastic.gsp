@@ -66,16 +66,6 @@
 
       <div class="content">
         ${assignmentInstance?.title}
-        <g:link action="show"
-                controller="assignment"
-                id="${assignmentInstance.id}"
-                class="ui small compact button"
-                style="margin-left: 2em;
-        vertical-align: text-bottom">
-
-          <i class="caret left icon"></i>
-          <g:message code="common.back"/>
-        </g:link>
 
         <div class="sub header">
           <div class="sub header">Création d'une question</div>

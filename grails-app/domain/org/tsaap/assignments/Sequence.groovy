@@ -41,12 +41,12 @@ class Sequence {
      */
     List<Interaction> getInteractions() {
         if (id == null) {
-            return []
+            return null
         }
         if (interactions == null) {
             interactions = Interaction.findAllBySequence(this, [sort: 'rank', order: 'asc'])
         }
-        interactions ?: []
+        interactions
     }
 
     /**
@@ -54,7 +54,8 @@ class Sequence {
      * @return the response submission interaction
      */
     Interaction getResponseSubmissionInteraction() {
-        getInteractions()?.first()
+        getInteractions() // init on the fly
+        interactions ? interactions.first() : null
     }
 
 /**
@@ -62,11 +63,8 @@ class Sequence {
  * @return the evaluation interaction
  */
     Interaction getEvaluationInteraction() {
-        def result = null
-        if (getInteractions()?.size() > 2) {
-            result = interactions[1]
-        }
-        result
+        getInteractions() // init on the fly
+        interactions.size() == 3 ? interactions[1] : null
     }
 
 /**
@@ -74,7 +72,8 @@ class Sequence {
  * @return the read interaction
  */
     Interaction getReadInteraction() {
-        getInteractions()?.last()
+        getInteractions() // init on the fly
+        interactions.size() == 3 ? interactions[2] : null
     }
 
 /**

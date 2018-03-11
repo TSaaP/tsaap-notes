@@ -21,7 +21,9 @@
 
 <a class="ui right floated icon red tiny button"
    href="#"
-   onclick="$('#confirm-delete-sequence-modal-${sequenceInstance.id}').modal('show');">
+   onclick="$('#confirm-delete-sequence-modal-${sequenceInstance.id}').modal('show');"
+   data-tooltip="${g.message(code: 'common.delete')}"
+   data-inverted="">
   <i class="trash icon"></i>
 </a>
 
@@ -29,7 +31,9 @@
   <g:link class="ui right floated icon tiny button"
           action="downSequence"
           id="${sequenceInstance.id}"
-          controller="sequence">
+          controller="sequence"
+          data-tooltip="${g.message(code: 'common.moveDown')}"
+          data-inverted="">
     <i class="arrow down icon"></i>
   </g:link>
 </g:if>
@@ -38,7 +42,9 @@
   <g:link class="ui right floated icon tiny button"
           action="upSequence"
           id="${sequenceInstance.id}"
-          controller="sequence">
+          controller="sequence"
+          data-tooltip="${g.message(code: 'common.moveUp')}"
+          data-inverted="">
     <i class="arrow up icon"></i>
   </g:link>
 </g:if>
@@ -46,8 +52,19 @@
 <g:link class="ui right floated icon secondary tiny button"
         action="editSequence"
         controller="sequence"
-        id="${sequenceInstance.id}">
+        id="${sequenceInstance.id}"
+        data-tooltip="${g.message(code: 'common.update')}"
+        data-inverted="">
   <i class="edit icon"></i>
+</g:link>
+
+<g:link class="ui right floated icon primary tiny button"
+        action="playSequence"
+        controller="player"
+        id="${sequenceInstance.id}"
+        data-tooltip="${g.message(code: 'sequence.play')}"
+        data-inverted="">
+  <i class="play icon"></i>
 </g:link>
 
 %{-- Delete confirm modal --}%

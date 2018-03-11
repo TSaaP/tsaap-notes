@@ -125,7 +125,7 @@
                   action="publishResultsForSequence"
                   id="${sequenceInstance.id}"
                   update="sequence_${sequenceInstance.id}">
-      <i class="stop icon"></i>
+      <i class="feed icon"></i>
       ${message(code: "player.sequence.publishResults")}
     </g:remoteLink>
   </g:if>
@@ -135,7 +135,7 @@
                   action="unpublishResultsForSequence"
                   id="${sequenceInstance.id}"
                   update="sequence_${sequenceInstance.id}">
-      <i class="stop icon"></i>
+      <i class="close icon"></i>
       ${message(code: "player.sequence.unpublishResults")}
     </g:remoteLink>
   </g:if>

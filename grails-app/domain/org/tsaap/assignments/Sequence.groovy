@@ -41,12 +41,12 @@ class Sequence {
      */
     List<Interaction> getInteractions() {
         if (id == null) {
-            return null
+            return []
         }
         if (interactions == null) {
             interactions = Interaction.findAllBySequence(this, [sort: 'rank', order: 'asc'])
         }
-        interactions
+        interactions ?: []
     }
 
     /**

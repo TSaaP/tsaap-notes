@@ -16,6 +16,3 @@
 -      along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -
 --}%
-
-<g:render template="/assignment/player/sequence/teacher/dashboard/dashboard-elaastic"
-          model="[interactionInstance:interactionInstance, user: user, resultsArePublished: false]"/>

@@ -18,13 +18,12 @@
   --}%
 
 
-<div class="ui segment">
-  <div class="ui dividing header">
-    <g:message code="common.statement"/>
+<div class="ui accordion segment" id="statement-accordion">
+  <div class="ui dividing active title header">
+    <i class="dropdown icon"></i><g:message code="common.statement"/>
   </div>
 
-
-  <div class="ui basic padded large text segment">
+  <div class="ui basic padded large text segment active content">
     <h3 class="ui header">
       ${statementInstance.title}
       <g:if test="showQuestionType">
@@ -47,3 +46,9 @@
   </div>
 
 </div>
+
+<r:script>
+  $(document).ready(function () {
+    $('#statement-accordion').accordion();
+  });
+</r:script>

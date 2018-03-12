@@ -37,11 +37,12 @@
                   activeInteraction     : sequenceInstance.activeInteraction,
                   activeInteractionState: sequenceInstance.activeInteraction.state]"/>
 
-<g:render template="/assignment/player/sequence/teacher/dashboard/dashboard-elaastic"
-          model="[interactionInstance: sequenceInstance.activeInteraction, user: user, resultsArePublished: sequenceInstance.resultsArePublished]"/>
-
 <g:render template="/assignment/player/statement/show-elaastic"
           model="[statementInstance: sequenceInstance.statement, hideStatement: false]"/>
+
+
+<g:render template="/assignment/player/sequence/teacher/dashboard/dashboard-elaastic"
+          model="[interactionInstance: sequenceInstance.activeInteraction, user: user, resultsArePublished: sequenceInstance.resultsArePublished]"/>
 
 <g:set var="currentInteraction" value="${sequenceInstance.activeInteraction}"/>
 <g:render

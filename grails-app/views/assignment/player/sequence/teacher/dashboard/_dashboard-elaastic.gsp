@@ -19,10 +19,10 @@
 
 <g:set var="sequence" value="${interactionInstance.sequence}"/>
 
-<div class="ui segment">
+<div class="ui accordion segment" id="result-accordion">
 
-  <div class="ui dividing header">
-    <g:message code="questions.results"/>
+  <div class="ui dividing active title header">
+    <i class="dropdown icon"></i><g:message code="questions.results"/>
     <g:if test="${!sequence.isStopped()}">
       <g:remoteLink style="float: right"
                     controller="player"
@@ -36,7 +36,7 @@
     </g:if>
   </div>
 
-  <div class="ui basic padded segment" style="font-size: 1rem;" id="interaction_${interactionInstance.id}_result">
+  <div class="ui basic padded segment active content" style="font-size: 1rem;" id="interaction_${interactionInstance.id}_result">
     <g:if test="${resultsArePublished}">
       <div class="ui warning message" style="font-size: 1rem;">
         ${message(code: "player.sequence.interaction.read.teacher.show.message", args: [interactionInstance.rank])}
@@ -63,6 +63,13 @@
     
   </div>
 </div>
+
+<r:script>
+  $(document).ready(function () {
+    $('#result-accordion').accordion();
+  });
+</r:script>
+
 
 
 

@@ -23,30 +23,41 @@
 <g:set var="questionType" value="${sequenceInstance.statement.questionType.name()}"/>
 
 <g:render template="/assignment/player/sequence/steps/steps-elaastic"
-          model="[sequence: sequenceInstance,
+          model="[sequence              : sequenceInstance,
                   stateByInteractionType: [
                       (InteractionType.ResponseSubmission): StateType.beforeStart.name(),
-                      (InteractionType.Evaluation): StateType.beforeStart.name(),
-                      (InteractionType.Read): StateType.beforeStart.name(),
+                      (InteractionType.Evaluation)        : StateType.beforeStart.name(),
+                      (InteractionType.Read)              : StateType.beforeStart.name(),
                   ]]"/>
 
-<div class="ui bottom attached warning message">
-  ${message(code:"player.sequence.beforeStart.message")}
+<div class="ui attached stackable icon menu">
+  <a class="item" style="width: 100%; text-align: center; display: block; outline: none;"
+     href="#"
+     onclick="$('#interactionSpec_${sequenceInstance.id}').modal('show');">
+    <i class="green play icon"></i>
+    &nbsp; ${message(code: "player.sequence.start")}
+  </a>
 </div>
 
+<div class="ui bottom attached warning message">
+  ${message(code: "player.sequence.beforeStart.message")}
+</div>
 
 <g:render template="/assignment/player/statement/show-elaastic"
           model="[statementInstance: sequenceInstance.statement, hideStatement: false]"/>
 
 
-<div class="ui segment" id="interactionSpec_${sequenceInstance.id}">
+<div class="ui small modal" id="interactionSpec_${sequenceInstance.id}">
 
-  <div class="ui blue dividing header" style="border-bottom: 1px solid rgba(14, 110, 184, .15);">
+  <div class="header" style="border-bottom: 1px solid rgba(14, 110, 184, .15);">
     <g:message code="sequence.interaction.configure.title"/>
   </div>
 
-  <div class="ui basic padded segment">
-    <g:form class="ui form" controller="player" action="initializeInteractionsAndStartFirst">
+  <div class="content">
+    <g:form class="ui form"       
+            name="interactionSpec_${sequenceInstance.id}_form"
+            controller="player"
+            action="initializeInteractionsAndStartFirst">
       <input type="hidden" name="id" value="${sequenceInstance.id}">
 
       <div class="inline fields">
@@ -95,10 +106,27 @@
 
       <div>
         <g:hiddenField name="reloadPage" value="${true}"/>
-        <g:submitButton name="startButton"
-                        class="ui primary button"
-                        value="${message(code: "player.sequence.start")}"/>
+        %{--<g:submitButton name="startButton"--}%
+        %{--class="ui primary button"--}%
+        %{--value="${message(code: "player.sequence.start")}"/>--}%
+
       </div>
     </g:form>
   </div>
+
+  <div class="actions">
+    <div class="ui approve primary button">${message(code: "player.sequence.start")}</div>
+
+    <div class="ui cancel button">${message(code: "common.cancel")}</div>
+  </div>
 </div>
+
+<r:script>
+  $(document).ready(function() {
+    $('#interactionSpec_${sequenceInstance.id}').modal({
+      onApprove: function() {
+        $('#interactionSpec_${sequenceInstance.id}_form').submit();
+      }
+    });
+  });
+</r:script>

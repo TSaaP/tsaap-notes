@@ -20,18 +20,18 @@
 <%@ page import="org.tsaap.assignments.StateType" %>
 <%@ page import="org.tsaap.assignments.InteractionType" %>
 
-<h3 class="ui top attached block header" style="position: relative;">
+<h3 class="ui top attached block header" style="position: relative; padding-top: 1em;">
+  <div class="floating ui grey label"
+       style="left: 3em;"
+       data-tooltip="${message(code: 'player.assignment.registeredUserCount2')}"
+       data-inverted=""
+       data-position="bottom left">
+    <i class="users icon"></i> ${assignmentInstance.registeredUserCount()}
+  </div>
   <i class="book icon"></i>
 
   <div class="content">
     ${assignmentInstance?.title}
-
-    <div class="ui label"
-         style="margin-left: 2em;"
-         data-tooltip="${message(code: 'player.assignment.registeredUserCount2')}"
-         data-position="bottom center">
-      <i class="users icon"></i> ${assignmentInstance.registeredUserCount()}
-    </div>
   </div>
 
 </h3>

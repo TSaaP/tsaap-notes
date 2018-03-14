@@ -41,6 +41,16 @@
      data-inverted="">
     <i class="${sequenceInstance?.statement?.attachment ? 'grey' : 'yellow'} attach icon"></i>
   </a>
+
+  <g:link class="item"
+          controller="player"
+          action="playSequence"
+          id="${sequenceInstance.id}"
+          data-tooltip="${message(code: 'sequence.play')}"
+          data-position="right center"
+          data-inverted="">
+    <i class="yellow play icon"></i>
+  </g:link>
 </content>
 
 <div id="edit-sequence">

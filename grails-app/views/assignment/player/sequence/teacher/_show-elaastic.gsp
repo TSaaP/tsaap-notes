@@ -38,7 +38,7 @@
                   activeInteractionState: sequenceInstance.activeInteraction.state]"/>
 
 <g:render template="/assignment/player/statement/show-elaastic"
-          model="[statementInstance: sequenceInstance.statement, hideStatement: false]"/>
+          model="[statementInstance: sequenceInstance.statement, hideStatement: false, isClosed: true]"/>
 
 
 <g:render template="/assignment/player/sequence/teacher/dashboard/dashboard-elaastic"

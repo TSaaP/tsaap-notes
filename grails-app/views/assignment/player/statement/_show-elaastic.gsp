@@ -18,22 +18,18 @@
   --}%
 
 
-<div class="ui accordion segment" id="statement-accordion">
-  <div class="ui dividing active title header">
-    <i class="dropdown icon"></i><g:message code="common.statement"/>
+<div class="ui accordion segment" id="statement-accordion" style="padding-bottom: 0;">
+  <div class="ui ${isClosed ? '' : 'active'} title header">
+    <i class="dropdown icon"></i> ${statementInstance.title}
+    <g:if test="showQuestionType">
+
+      [<span style="font-variant: all-small-caps; font-weight: normal; font-size: 0.8em; vertical-align: text-top">
+      <g:message code="statement.questionType.${statementInstance.questionType}"/>
+    </span>]
+    </g:if>
   </div>
 
-  <div class="ui basic padded large text segment active content">
-    <h3 class="ui header">
-      ${statementInstance.title}
-      <g:if test="showQuestionType">
-
-        [<span style="font-variant: all-small-caps; font-weight: normal; font-size: 0.8em; vertical-align: text-top">
-        <g:message code="statement.questionType.${statementInstance.questionType}"/>
-      </span>]
-      </g:if>
-    </h3>
-
+  <div class="ui basic padded large text segment ${isClosed ? '' : 'active'} content">
     <g:if test="${!hideStatement}">
       <p>
         <g:set var="attachment" value="${statementInstance?.attachment}"/>

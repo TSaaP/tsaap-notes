@@ -225,7 +225,7 @@
               },
               success: function(data) {
                 if(data.success) {
-                  var loginUrl = '/tsaap-notes/login/auth?justRegistered=true&skin=elaastic';
+                  var loginUrl = '${g.createLink(uri: '/login/auth')}?justRegistered=true&skin=elaastic';
                   var checkEmail = ${checkEmail};
 
                   if(checkEmail) {

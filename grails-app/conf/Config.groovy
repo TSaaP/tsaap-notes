@@ -183,11 +183,11 @@ environments {
 environments {
     development {
         tsaap.auth.check_user_email = true
-        tsaap.datastore.path = '/opt/shared/tsaap-repo'
+        tsaap.datastore.path = '/opt/shared/elaastic-questions-repo'
     }
     test {
         tsaap.auth.check_user_email = false
-        tsaap.datastore.path = '/opt/shared/tsaap-repo'
+        tsaap.datastore.path = '/opt/shared/elaastic-questions-repo'
     }
     travis_ci {
         tsaap.auth.check_user_email = false

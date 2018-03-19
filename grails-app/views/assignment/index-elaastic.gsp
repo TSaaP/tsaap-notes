@@ -53,42 +53,59 @@
   <div class="ui info message" role="status"><i class="close icon"></i> ${raw(flash.message)}</div>
 </g:if>
 
-<table class="ui single selectable line unstackable table">
-  <thead>
-  <tr>
-    <th><g:message code="common.title"/></th>
-    <th class="not mobile"><g:message code="common.lastUpdate"/></th>
-    <th></th>
-  </tr>
-  </thead>
-  <tbody>
-  <g:each in="${assignmentInstanceList}" status="i" var="assignmentInstance">
+<g:if test="${assignmentInstanceList}">
+  <table class="ui single selectable line unstackable table">
+    <thead>
     <tr>
-      <td>
-
-        <g:link action="show" id="${assignmentInstance.id}" data-tooltip="${g.message(code: 'assignment.action.show.label')}" data-inverted="">
-          ${fieldValue(bean: assignmentInstance, field: "title")}
-        </g:link>
-
-        &nbsp; [<g:link action="show" id="${assignmentInstance.id}"  data-tooltip="${g.message(code: 'assignment.action.show.label')}" data-inverted=""><i class="edit outline icon" style="margin: 0;"></i></g:link>]
-
-      </td>
-
-      <td class="not mobile"><g:formatDate date="${assignmentInstance.lastUpdated}"/></td>
-
-      <td>
-        <g:link class="ui compact icon primary button"
-                controller="player"
-                action="playFirstSequence"
-                id="${assignmentInstance.id}"
-                data-tooltip="${g.message(code: 'player.assignment.play')}"
-                data-inverted="">
-          <i class="play icon"></i></g:link>
-      </td>
+      <th><g:message code="common.title"/></th>
+      <th class="not mobile"><g:message code="common.lastUpdate"/></th>
+      <th></th>
     </tr>
-  </g:each>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+    <g:each in="${assignmentInstanceList}" status="i" var="assignmentInstance">
+      <tr>
+        <td>
+
+          <g:link action="show" id="${assignmentInstance.id}"
+                  data-tooltip="${g.message(code: 'assignment.action.show.label')}" data-inverted="">
+            ${fieldValue(bean: assignmentInstance, field: "title")}
+          </g:link>
+
+          &nbsp; [<g:link action="show" id="${assignmentInstance.id}"
+                          data-tooltip="${g.message(code: 'assignment.action.show.label')}" data-inverted=""><i
+              class="edit outline icon" style="margin: 0;"></i></g:link>]
+
+        </td>
+
+        <td class="not mobile"><g:formatDate date="${assignmentInstance.lastUpdated}"/></td>
+
+        <td>
+          <g:link class="ui compact icon primary button"
+                  controller="player"
+                  action="playFirstSequence"
+                  id="${assignmentInstance.id}"
+                  data-tooltip="${g.message(code: 'player.assignment.play')}"
+                  data-inverted="">
+            <i class="play icon"></i></g:link>
+        </td>
+      </tr>
+    </g:each>
+    </tbody>
+  </table>
+</g:if>
+<g:else>
+  <div class="ui info message">
+    <g:message code="assignment.you.have.none" />
+  </div>
+</g:else>
+
+<div class="ui basic segment">
+  <g:link action="create"
+          class="ui primary button">
+    <i class="add icon"></i> <g:message code="assignment.create.label"/>
+  </g:link>
+</div>
 
 <div class="ui hidden divider"></div>
 

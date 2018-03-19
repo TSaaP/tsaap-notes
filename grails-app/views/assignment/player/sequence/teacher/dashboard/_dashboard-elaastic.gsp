@@ -23,8 +23,16 @@
 
   <div class="ui dividing active title header">
     <i class="dropdown icon"></i><g:message code="questions.results"/>
+
+    <g:if test="${resultsArePublished}">
+      <span class="ui blue label" style="float: right;"><i class="check icon"></i><g:message code="common.published"/></span>
+    </g:if>
+    <g:else>
+      <span class="ui grey label" style="float: right;"><g:message code="common.unpublished" /></span>
+    </g:else>
+
     <g:if test="${!sequence.isStopped()}">
-      <g:remoteLink style="float: right"
+      <g:remoteLink style="float: right;"
                     controller="player"
                     action="updateResultsAndSequenceDisplay"
                     id="${sequence.id}"
@@ -34,15 +42,12 @@
                     data-position="top right">
         <i class="small refresh icon"></i></g:remoteLink>
     </g:if>
+
   </div>
 
-  <div class="ui basic padded segment active content" style="font-size: 1rem;" id="interaction_${interactionInstance.id}_result">
-    <g:if test="${resultsArePublished}">
-      <div class="ui warning message" style="font-size: 1rem;">
-        ${message(code: "player.sequence.interaction.read.teacher.show.message", args: [interactionInstance.rank])}
-      </div>
-    </g:if>
-
+  <div class="ui basic padded segment active content" style="font-size: 1rem;"
+       id="interaction_${interactionInstance.id}_result">
+    
     <g:set var="responseSubmissionInteraction" value="${sequence.responseSubmissionInteraction}"/>
     <g:render template="/assignment/player/sequence/teacher/dashboard/responseDistributionCharts"
               model="[interactionInstance: responseSubmissionInteraction]"/>
@@ -60,7 +65,7 @@
       <g:render template="/assignment/player/${org.tsaap.skin.SkinUtil.getView(params, session, 'ExplanationList')}"
                 model="[responses: responses, sequence: sequence, badResponses: badResponses]"/>
     </g:if>
-    
+
   </div>
 </div>
 

@@ -30,5 +30,15 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="2" author="jtra">
+        <comment>migrate results publication</comment>
+        <sql>
+            UPDATE sequence s, interaction i
+            SET s.results_are_published = true
+            WHERE s.`active_interaction_id` = i.id
+            AND i.interaction_type = 'Read' AND i.state IN ('show', 'afterStop')
+        </sql>
+    </changeSet>
+
 
 </databaseChangeLog>

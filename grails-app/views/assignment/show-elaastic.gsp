@@ -166,3 +166,12 @@
 
 </body>
 </html>
+
+<r:script>
+$(document).ready(function() {
+  let selectedSequence = $(location.hash);
+  if(selectedSequence) {
+    selectedSequence.addClass('secondary');
+  }
+});
+</r:script>

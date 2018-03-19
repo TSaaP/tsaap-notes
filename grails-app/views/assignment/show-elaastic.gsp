@@ -92,7 +92,7 @@
           style="cursor: pointer">
       ${assignmentInstance?.title}
     </span>
-    
+
     <div class="sub header">
       <g:message code="assignment.action.show.label"/>
     </div>
@@ -101,7 +101,7 @@
 
 <g:if test="${!assignmentInstance.sequences}">
   <div class="ui segment bottom attached">
-    <g:message code="assignment.empty"/>
+    <p><g:message code="assignment.empty"/></p>
   </div>
 </g:if>
 
@@ -112,7 +112,8 @@
       <h3 class="ui header">
         <g:link action="editSequence" controller="sequence"
                 id="${sequenceInstance.id}">
-          <div class="ui tiny circular label" style="margin-right: 1em;">${i+1}.</div> ${fieldValue(bean: sequenceInstance, field: "title")}
+          <div class="ui tiny circular label"
+               style="margin-right: 1em;">${i + 1}.</div> ${fieldValue(bean: sequenceInstance, field: "title")}
         </g:link>
       </h3>
     </div>
@@ -128,6 +129,15 @@
     ${raw(sequenceInstance.content)}
   </div>
 </g:each>
+
+<div class="ui basic segment">
+  <g:link class="ui primary button"
+          action="addSequence"
+          controller="assignment"     
+          resource="${assignmentInstance}">
+    <i class="add icon"></i><g:message code="assignment.action.addSequence.label"/>
+  </g:link>
+</div>
 
 <g:render template="learner_access_modal-elaastic"/>
 

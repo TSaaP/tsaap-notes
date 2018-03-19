@@ -45,7 +45,7 @@
 <div class="ui left vertical inverted visible sidebar labeled icon menu"
      style="background-color: #4f7691; overflow: visible !important;">
 
-  <g:link uri="/" class="header item" style="margin-top: 1em;">
+  <g:link url="${grailsApplication.config.grails.plugins.springsecurity.logout.afterLogoutUrl}" class="header item" style="margin-top: 1em;">
     <img src="${resource(dir: 'images/elaastic/logos', file: 'Elaastic_pictoRVB.png')}" style="width: 48px"/>
   </g:link>
 

@@ -48,7 +48,7 @@
 <div id="page-content" class="ui container">
   <div class="ui large top fixed inverted menu" style="background-color: #4f7691;">
     <div class="header item">
-      <g:link uri="/">
+      <g:link url="${grailsApplication.config.grails.plugins.springsecurity.logout.afterLogoutUrl}">
         <img class="ui avatar bordered circular image logo"
              src="${resource(dir: 'images/elaastic/logos', file: 'Elaastic_pictoRVB.png')}"/>
       </g:link>

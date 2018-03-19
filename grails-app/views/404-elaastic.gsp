@@ -35,7 +35,7 @@
     </div>
     <p>${message(code: "error.404.text")}</p>
 
-    <p><g:link uri="/"><i class="home icon"></i> <g:message code="back.home"/> </g:link></p>
+    <p><g:link url="${grailsApplication.config.grails.plugins.springsecurity.logout.afterLogoutUrl}"><i class="home icon"></i> <g:message code="back.home"/> </g:link></p>
   </div>
 </div>
 

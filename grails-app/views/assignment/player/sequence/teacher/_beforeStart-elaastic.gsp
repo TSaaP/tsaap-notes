@@ -95,6 +95,18 @@
         </div>
       </div>
 
+      <div class="ui info message" id="context-faceToFace-notice">
+        <g:message code="sequence.interaction.executionContext.faceToFace.notice" />
+      </div>
+
+      <div class="ui info message" id="context-distance-notice" style="display: none">
+        <g:message code="sequence.interaction.executionContext.distance.notice" />
+      </div>
+
+      <div class="ui info message" id="context-blended-notice" style="display: none">
+        <g:message code="sequence.interaction.executionContext.blended.notice" />
+      </div>
+
       <div class="ui  divider"></div>
 
       <div id="configuration_${sequenceInstance.id}">
@@ -106,10 +118,6 @@
 
       <div>
         <g:hiddenField name="reloadPage" value="${true}"/>
-        %{--<g:submitButton name="startButton"--}%
-        %{--class="ui primary button"--}%
-        %{--value="${message(code: "player.sequence.start")}"/>--}%
-
       </div>
     </g:form>
   </div>

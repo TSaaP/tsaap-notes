@@ -20,6 +20,11 @@
 
 <r:script>
 
+  var faceToFaceNotice = $('#context-faceToFace-notice');
+  var distanceNotice = $('#context-distance-notice');
+  var blendedNotice = $('#context-blended-notice');
+
+
   function manageConfigurationChange(sequenceId, questionType, sourceEvent) {
     var phaseConfrontationPanel = $('#phaseConfrontation_' + sequenceId);
     var phaseFirstSubmission = $('#phaseFirstSubmission_' + sequenceId);
@@ -40,6 +45,31 @@
   function manageExecutionContext(sequenceId, questionType, sourceEvent) {
     var studentsProvideExplanation = $('#studentsProvideExplanation_' + sequenceId + '_' + questionType);
     var configurationPanel = $('#configuration_' + sequenceId);
+
+
+    switch (sourceEvent.val()) {
+    case 'FaceToFace':
+      distanceNotice.hide();
+      blendedNotice.hide();
+      faceToFaceNotice.show();
+      break;
+
+    case 'Distance':
+      faceToFaceNotice.hide();
+      blendedNotice.hide();
+      distanceNotice.show();
+      break;
+
+    case 'Blended':
+      faceToFaceNotice.hide();
+      distanceNotice.hide();
+      blendedNotice.show();
+      break;
+
+    default:
+      throw('Unknown execution context');
+    }
+
     switch (sourceEvent.val()) {
     case 'FaceToFace':
       configurationPanel.show();

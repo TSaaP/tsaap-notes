@@ -56,8 +56,27 @@
       <g:if test="${explanation}">
         <g:set var="explanationCount" value="${explanationCount + 1}"/>
         <div class="ui info message explanation">
-          <strong><g:formatNumber number="${theResponse.meanGrade}" type="number"
-                                  maxFractionDigits="2"/>/5  @${theResponse.learner.username}</strong> ${message(code: "player.sequence.explanation.evaluated")} ${theResponse.evaluationCount()} ${message(code: "player.sequence.explanation.contributors")}<br/>
+          <strong>
+            <g:if test="${theResponse.meanGrade != null}">
+              <g:formatNumber number="${theResponse.meanGrade}"
+                              type="number"
+                              maxFractionDigits="2"/>/5
+            </g:if>
+            @${theResponse.learner.username}
+          </strong>
+
+
+          <div class="ui mini right floated statistic">
+            <g:set var="nbEvaluation" value="${theResponse.evaluationCount()}"/>
+            <div class="value" style="color:#276f86;">
+              ${nbEvaluation}
+            </div>
+
+            <div class="label" style="color: #276f86;">
+              ${nbEvaluation > 1 ? g.message(code: 'common.evaluations') : g.message(code: 'common.evaluation')}
+            </div>
+          </div>
+          <br/>
           ${raw(explanation)}
         </div>
       </g:if>

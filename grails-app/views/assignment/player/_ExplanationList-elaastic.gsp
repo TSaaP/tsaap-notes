@@ -83,7 +83,7 @@
 
     </g:each>
 
-    <g:if test="${!explanationCount}">
+    <g:if test="${!explanationCount && !badResponses}">
       <div class="ui warning message">
         ${message(code: "player.sequence.explanation.noExplanation")}
       </div>

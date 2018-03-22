@@ -73,7 +73,6 @@
     switch (sourceEvent.val()) {
     case 'FaceToFace':
       configurationPanel.show();
-      studentsProvideExplanation.prop("checked", false);
       studentsProvideExplanation.prop("disabled", false);
       manageConfigurationChange(sequenceId, questionType, studentsProvideExplanation);
       break;
@@ -87,7 +86,7 @@
   }
 
   $('input[name=studentsProvideExplanation]').on('change', function () {
-    var infos = this.id.split("_")
+    var infos = this.id.split("_");
     var sequenceId = infos[1];
     var questionType = infos[2];
     manageConfigurationChange(sequenceId, questionType, $(this))

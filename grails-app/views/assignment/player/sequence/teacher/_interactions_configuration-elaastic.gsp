@@ -26,7 +26,7 @@
            class="hidden"
            name="studentsProvideExplanation"
            id="studentsProvideExplanation_${sequenceId}_${questionType}"
-           value="${QuestionType.OpenEnded.name() == questionType}" ${QuestionType.OpenEnded.name() == questionType ? 'checked' : ''}/>
+           value="true" checked />
     <label>
       <g:message
           code="sequence.interaction.studentsProvideAtextualExplanation"/>

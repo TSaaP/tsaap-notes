@@ -115,7 +115,7 @@ $('#exclusive_choice_${interactionInstance.id}_${i}').checkbox();
     </r:style>
 
     <r:script>
-      var confidenceSelectionApp = new Vue({
+      new Vue({
         el: '#confidenceSelectionApp',
         data: {
           selectedConfidenceDegree: ${firstAttemptResponse?.confidenceDegree ?: 'null'}

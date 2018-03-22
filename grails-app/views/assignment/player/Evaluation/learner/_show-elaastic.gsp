@@ -38,27 +38,25 @@
           ${message(code: 'player.sequence.interaction.evaluation.intro')}
         </div>
 
-        <g:each in="${responsesToGrade}" var="currentResponse" status="i">
-          <div class="ui attached segment">
-            <g:if test="${i < interactionInstance.interactionSpecification.responseToEvaluateCount}">
-              <g:if test="${sequence.statement.hasChoices()}">
-                <strong>${message(code: 'player.sequence.interaction.choice.label')} ${currentResponse.choiceList()}</strong>
-                <br/>
+        <div id="phase2-evaluation-app">
+          <g:each in="${responsesToGrade}" var="currentResponse" status="i">
+            <div class="ui attached segment">
+              <g:if test="${i < interactionInstance.interactionSpecification.responseToEvaluateCount}">
+                <g:if test="${sequence.statement.hasChoices()}">
+                  <strong>${message(code: 'player.sequence.interaction.choice.label')} ${currentResponse.choiceList()}</strong>
+                  <br/>
+                </g:if>
+                ${raw(currentResponse.explanation)}
+
+
+                <evaluation-input current-response-id="${currentResponse.id}"
+                                  value="${currentResponse.getGradeFromUserAsString(user)}"></evaluation-input>
+
               </g:if>
-              ${raw(currentResponse.explanation)}
+            </div>
+          </g:each>
+        </div>
 
-              <g:select from="${['1', '2', '3', '4', '5', '-1']}"
-                        name="grade_${currentResponse.id}"
-                        id="grade_${currentResponse.id}"
-                        valueMessagePrefix="player.sequence.interaction.grade"
-                        value="${currentResponse.getGradeFromUserAsString(user)}"/>
-
-              <r:script>
-                $('#grade_${currentResponse.id}').dropdown();
-              </r:script>
-            </g:if>
-          </div>
-        </g:each>
         <div class="ui hidden divider"></div>
 
       </g:if>
@@ -111,3 +109,51 @@
     </div>
   </g:else>
 </div>
+
+
+<r:style>
+  .field.grade .active.item {
+    background-color: #dff0ff !important;
+    color: #0e6eb8 !important;
+  }
+</r:style>
+
+<r:script>
+  new Vue({
+    el: '#phase2-evaluation-app',
+    components: {
+      'evaluation-input' : {
+        props: ['currentResponseId', 'value'],
+        template: '\
+        <div class="field grade">\
+            <input type="hidden" :id="\'grade_\'+currentResponseId" :name="\'grade_\'+currentResponseId" v-model="grade" />\
+            <label><g:message code="player.sequence.interaction.your.evaluation"/></label>\
+  <div class="ui stackable pagination menu">\
+    <a class="item" v-bind:class="{ active: grade === -1 }" v-on:click="grade = -1">\
+    ${g.message(code: 'player.sequence.interaction.grade.-1').replaceAll("'", "\\\\u0027")}\
+    </a>\
+    <div class="disabled item">\
+    \
+    </div>\
+    \
+    <g:each in="[1, 2, 3, 4, 5]" var="grade">\
+      <a class="item" \
+         v-bind:class="{ active: grade === ${grade} }" \
+         v-on:click="grade = ${grade}" \
+         data-inverted="" \
+         data-tooltip="${raw(g.message(code: 'player.sequence.interaction.grade.' + grade).replaceAll("'", "\\\\u0027"))}" \
+         data-position="top center">\
+      ${grade}\
+      </a>\
+    </g:each>\
+  </div>\
+        </div>',
+        data: function() {
+          return {
+            grade: this.value
+          }
+        }
+      }
+    }
+});
+</r:script>

@@ -77,8 +77,15 @@
     <div class="content">
       <div class="title"><g:message code="sequence.phase.1"/></div>
 
-      <div class="description" style="min-height: 2.5rem;"><g:message
-          code="sequence.phase.ResponseSubmission.description"/></div>
+      <div class="description" style="min-height: 2.5rem;">
+        <g:if test="${sequence.responseSubmissionSpecification?.studentsProvideExplanation}">
+          <g:message code="sequence.phase.ResponseSubmission.arguedResponse"/>
+        </g:if>
+        <g:else>
+          <g:message code="sequence.phase.ResponseSubmission.firstResponse"/>
+        </g:else>
+
+      </div>
     </div>
   </div>
 

@@ -24,13 +24,6 @@
   <div class="ui dividing active title header">
     <i class="dropdown icon"></i><g:message code="questions.results"/>
 
-    <g:if test="${resultsArePublished}">
-      <span class="ui blue label" style="float: right;"><i class="check icon"></i><g:message code="common.published"/></span>
-    </g:if>
-    <g:else>
-      <span class="ui grey label" style="float: right;"><g:message code="common.unpublished" /></span>
-    </g:else>
-
     <g:if test="${!sequence.isStopped()}">
       <g:remoteLink style="float: right;"
                     controller="player"

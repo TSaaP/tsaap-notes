@@ -55,27 +55,74 @@
       <g:set var="explanation" value="${theResponse?.explanation}"/>
       <g:if test="${explanation}">
         <g:set var="explanationCount" value="${explanationCount + 1}"/>
-        <div class="ui info message explanation">
-          <strong>
+        <div class="ui info message explanation" style="padding-top: 3em;">
+          <g:set var="nbEvaluation" value="${theResponse.evaluationCount()}"/>
+
+          <div class="ui top left attached teal label">
             <g:if test="${theResponse.meanGrade != null}">
+
+              <i class="star icon"></i>
               <g:formatNumber number="${theResponse.meanGrade}"
                               type="number"
                               maxFractionDigits="2"/>/5
+
+
+
+              <a class="detail">${nbEvaluation} ${nbEvaluation > 1 ? g.message(code: 'common.evaluations') : g.message(code: 'common.evaluation')}</a>
             </g:if>
+            <g:else>
+              <i class="minus icon"></i>
+            </g:else>
+          </div>
+
+          %{--<div class="ui left floated basic segment" style="font-size: 0.75rem;">--}%
+
+
+            %{--<a class="ui blue circular label">--}%
+              %{--<g:if test="${theResponse.meanGrade != null}">--}%
+                %{--<g:formatNumber number="${theResponse.meanGrade}"--}%
+                                %{--type="number"--}%
+                                %{--maxFractionDigits="2"/>/5--}%
+              %{--</g:if>--}%
+              %{--<g:else>--}%
+                %{--<i class="minus icon"></i>--}%
+              %{--</g:else>--}%
+            %{--</a>--}%
+
+              %{--<div class="ui mini statistic">--}%
+                %{--<g:set var="nbEvaluation" value="${theResponse.evaluationCount()}"/>--}%
+                %{--<div class="value" style="color:#276f86;">--}%
+                  %{--<g:if test="${theResponse.meanGrade != null}">--}%
+                    %{--<g:formatNumber number="${theResponse.meanGrade}"--}%
+                                    %{--type="number"--}%
+                                    %{--maxFractionDigits="2"/>/5--}%
+                  %{--</g:if>--}%
+                  %{--<g:else>--}%
+                    %{--<i class="minus icon"></i>--}%
+                  %{--</g:else>--}%
+                %{--</div>--}%
+
+                %{--<div class="label" style="color: #276f86;">--}%
+                  %{--Note moy.--}%
+                %{--</div>--}%
+              %{--</div>--}%
+
+              %{--<div class="ui mini statistic">--}%
+                %{--<g:set var="nbEvaluation" value="${theResponse.evaluationCount()}"/>--}%
+                %{--<div class="value" style="color:#276f86;">--}%
+                  %{--${nbEvaluation}--}%
+                %{--</div>--}%
+
+                %{--<div class="label" style="color: #276f86;">--}%
+                  %{--${nbEvaluation > 1 ? g.message(code: 'common.evaluations') : g.message(code: 'common.evaluation')}--}%
+                %{--</div>--}%
+              %{--</div>--}%
+          %{--</div>--}%
+
+          <strong>                                                       
             @${theResponse.learner.username}
           </strong>
 
-
-          <div class="ui mini right floated statistic">
-            <g:set var="nbEvaluation" value="${theResponse.evaluationCount()}"/>
-            <div class="value" style="color:#276f86;">
-              ${nbEvaluation}
-            </div>
-
-            <div class="label" style="color: #276f86;">
-              ${nbEvaluation > 1 ? g.message(code: 'common.evaluations') : g.message(code: 'common.evaluation')}
-            </div>
-          </div>
           <br/>
           ${raw(explanation)}
         </div>

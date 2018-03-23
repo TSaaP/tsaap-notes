@@ -72,13 +72,8 @@
     </h2>
 
     <h3 class="ui top attached block header">
-      <i class="book icon"></i>
-
       <div class="content">
-        ${assignmentInstance?.title}
-        <div class="sub header">
-        Question n°${assignmentInstance.countSequences()+1}
-        </div>
+        ${assignmentInstance?.title} – Question n°${assignmentInstance.countSequences()+1}
       </div>
 
     </h3>

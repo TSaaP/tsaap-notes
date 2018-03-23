@@ -99,8 +99,6 @@
 </h2>
 
 <h3 class="ui top attached block header">
-  <i class="book icon"></i>
-
   <div class="content">
     <span onclick="$('#assignment-editProperties-modal').modal('show');"
           style="cursor: pointer">

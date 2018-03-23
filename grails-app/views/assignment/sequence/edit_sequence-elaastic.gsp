@@ -98,13 +98,8 @@
 
     <h3 class="ui block top attached header">
 
-      <i class="book icon"></i>
-
       <div class="content">
-        ${assignmentInstance?.title}
-        <div class="sub header">
-          Question n°${sequenceInstance.rank}
-        </div>
+        ${assignmentInstance?.title} – Question n°${sequenceInstance.rank}
       </div>
     </h3>
 

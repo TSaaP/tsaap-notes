@@ -60,18 +60,28 @@
       </div>
     </g:hasErrors>
 
-    <h2 class="ui block top attached header">
+    <h2 class="ui header">
+      <i class="large icons">
+        <i class="question circle outline icon"></i>
+        <i class="corner add icon"></i>
+      </i>
 
+      <div class="content" style="vertical-align: middle;">
+        <g:message code="question.create" />
+      </div>
+    </h2>
+
+    <h3 class="ui top attached block header">
       <i class="book icon"></i>
 
       <div class="content">
         ${assignmentInstance?.title}
-
         <div class="sub header">
-          <div class="sub header">Création d'une question</div>
+        Question n°${assignmentInstance.countSequences()+1}
         </div>
       </div>
-    </h2>
+
+    </h3>
 
     <div class="ui bottom attached segment">
 

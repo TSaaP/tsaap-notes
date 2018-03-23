@@ -84,17 +84,29 @@
       </div>
     </g:hasErrors>
 
-    <h2 class="ui block top attached header">
+
+    <h2 class="ui header">
+      <i class="large icons">
+        <i class="question circle outline icon"></i>
+        <i class="corner pencil alternate icon"></i>
+      </i>
+
+      <div class="content" style="vertical-align: middle;">
+        <g:message code="question.update" />
+      </div>
+    </h2>
+
+    <h3 class="ui block top attached header">
 
       <i class="book icon"></i>
 
       <div class="content">
         ${assignmentInstance?.title}
         <div class="sub header">
-          <g:message code="sequence.edition.label"/>
+          Question n°${sequenceInstance.rank}
         </div>
       </div>
-    </h2>
+    </h3>
 
     <div class="ui bottom attached segment">
 

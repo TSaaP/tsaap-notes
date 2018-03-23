@@ -84,7 +84,21 @@
   <div class="ui info message" role="status"><i class="close icon"></i> ${raw(flash.message)}</div>
 </g:if>
 
-<h2 class="ui top attached block header">
+<h2 class="ui header">
+  <i class="large icons">
+    <i class="book icon"></i>
+    <i class="corner pencil alternate  icon"></i>
+  </i>
+
+  <div class="content" style="vertical-align: middle;">
+    Préparer un sujet
+    <div class="sub header">
+      Cette page vous permet d'ajouter des questions au sujet, d'en retirer, de les modifier et de les réordonner
+    </div>
+  </div>
+</h2>
+
+<h3 class="ui top attached block header">
   <i class="book icon"></i>
 
   <div class="content">
@@ -92,12 +106,8 @@
           style="cursor: pointer">
       ${assignmentInstance?.title}
     </span>
-
-    <div class="sub header">
-      <g:message code="assignment.action.show.label"/>
-    </div>
   </div>
-</h2>
+</h3>
 
 <g:if test="${!assignmentInstance.sequences}">
   <div class="ui segment bottom attached">
@@ -133,7 +143,7 @@
 <div class="ui basic segment">
   <g:link class="ui primary button"
           action="addSequence"
-          controller="assignment"     
+          controller="assignment"
           resource="${assignmentInstance}">
     <i class="add icon"></i><g:message code="assignment.action.addSequence.label"/>
   </g:link>
@@ -168,10 +178,10 @@
 </html>
 
 <r:script>
-$(document).ready(function() {
-  let selectedSequence = $(location.hash);
-  if(selectedSequence) {
-    selectedSequence.addClass('secondary');
-  }
-});
+  $(document).ready(function () {
+    let selectedSequence = $(location.hash);
+    if (selectedSequence) {
+      selectedSequence.addClass('secondary');
+    }
+  });
 </r:script>

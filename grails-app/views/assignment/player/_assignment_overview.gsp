@@ -66,19 +66,50 @@
       </div>
 
       <div class="four wide middle aligned column" style="text-align: center;">
-        <g:set var="activeInteraction" value="${sequenceInstance.activeInteractionForLearner(user)}"/>
-        <g:if test="${!activeInteraction}">
-          <i class="elaastic-phase big grey minus icon"></i>
+        <g:if test="${sequenceInstance.executionIsFaceToFace() || sequenceInstance.owner != user}">
+          <g:set var="activeInteraction" value="${sequenceInstance.activeInteractionForLearner(user)}"/>
+          <g:if test="${sequenceInstance.isStopped()}">
+            <g:if test="${sequenceInstance.resultsArePublished}">
+              <i class="elaastic-phase big grey bar chart outline icon"></i>
+            </g:if>
+            <g:else>
+              <i class="elaastic-phase big grey lock icon"></i>
+            </g:else>
+          </g:if>
+          <g:elseif test="${!activeInteraction}">
+            <i class="elaastic-phase big grey minus icon"></i>
+          </g:elseif>
+          <g:elseif test="${activeInteraction?.interactionType == InteractionType.ResponseSubmission.toString()}">
+            <i class="elaastic-phase big grey comment outline icon"></i>
+          </g:elseif>
+          <g:elseif test="${activeInteraction?.interactionType == InteractionType.Evaluation.toString()}">
+            <i class="elaastic-phase big grey comments outline icon"></i>
+          </g:elseif>
+          <g:elseif test="${activeInteraction?.interactionType == InteractionType.Read.toString()}">
+            <i class="elaastic-phase big grey bar chart outline icon"></i>
+          </g:elseif>
         </g:if>
-        <g:elseif test="${activeInteraction?.interactionType == InteractionType.ResponseSubmission.toString()}">
-          <i class="elaastic-phase big grey comment outline icon"></i>
-        </g:elseif>
-        <g:elseif test="${activeInteraction?.interactionType == InteractionType.Evaluation.toString()}">
-          <i class="elaastic-phase big grey comments outline icon"></i>
-        </g:elseif>
-        <g:elseif test="${activeInteraction?.interactionType == InteractionType.Read.toString()}">
-          <i class="elaastic-phase big grey bar chart outline icon"></i>
-        </g:elseif>
+        <g:else><!-- Distance & blended for teacher  -->
+          <g:if test="${sequenceInstance.isNotStarted()}">
+            <i class="elaastic-phase big grey minus icon"></i>
+          </g:if>
+          <g:elseif test="${sequenceInstance.isStopped()}">
+            <g:if test="${sequenceInstance.resultsArePublished}">
+              <i class="elaastic-phase big grey bar chart outline icon"></i>
+            </g:if>
+            <g:else>
+              <i class="elaastic-phase big grey lock icon"></i>
+            </g:else>
+          </g:elseif>
+          <g:else><!-- the sequence is open -->
+            <div><i class="elaastic-phase large grey comment outline icon"></i></div>
+
+            <div><i class="elaastic-phase large grey comments outline icon"></i></div>
+            <g:if test="${sequenceInstance.resultsArePublished}">
+              <div><i class="elaastic-phase large  grey bar chart outline icon"></i></div>
+            </g:if>
+          </g:else>
+        </g:else>
       </div>
     </div>
 

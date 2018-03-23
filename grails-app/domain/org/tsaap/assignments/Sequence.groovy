@@ -297,6 +297,10 @@ class Sequence {
         state == StateType.afterStop.name()
     }
 
+    boolean isNotStarted() {
+        state == StateType.beforeStart.name()
+    }
+
 
     /**
      *

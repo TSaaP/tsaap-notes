@@ -42,7 +42,7 @@
        id="interaction_${interactionInstance.id}_result">
 
     <g:set var="responseSubmissionInteraction" value="${sequence.responseSubmissionInteraction}"/>
-    <g:if test="${responseSubmissionInteraction.hasAnyResult()}">
+    <g:if test="${!interactionInstance.sequence.statement.hasChoices() || responseSubmissionInteraction.hasAnyResult()}">
       <g:render template="/assignment/player/sequence/teacher/dashboard/responseDistributionCharts"
                 model="[interactionInstance: responseSubmissionInteraction]"/>
 

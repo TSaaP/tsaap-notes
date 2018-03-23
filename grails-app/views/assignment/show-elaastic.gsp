@@ -93,7 +93,7 @@
   <div class="content" style="vertical-align: middle;">
     Préparer un sujet
     <div class="sub header">
-      Cette page vous permet d'ajouter des questions au sujet, d'en retirer, de les modifier et de les réordonner
+      <g:message code="assignment.page.show.notice" />
     </div>
   </div>
 </h2>

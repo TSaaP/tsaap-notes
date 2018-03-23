@@ -26,7 +26,7 @@
       Copyright &copy; 2013-2018 Tsaap Development Group & Ticetime
     </span>
     <span class="item">
-      <em>elaastic-questions</em> version <g:meta name="app.version"/>
+      <em>elaastic</em> version <g:meta name="app.version"/>
     </span>
     <a class="item" href="${grailsApplication.config.grails.serverURL}/terms">
       Mentions

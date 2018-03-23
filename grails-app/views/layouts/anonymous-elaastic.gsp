@@ -27,7 +27,7 @@
   <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible"/>
   <meta content="width=device-width, initial-scale=1, maximum-scale=2, user-scalable=no" name="viewport"/>
   <meta name="description"
-        content="elaastic-questions">  %{-- TODO description --}%
+        content="${g.message(code: 'elaastic.description')}">
   <meta name="author" content="Ticetime">
   <meta content="#ffffff" name="theme-color"/>
   <link rel="shortcut icon" href="${resource(dir: 'images', file: 'favicon.ico')}"

@@ -26,7 +26,7 @@
 
   <r:require modules="semantic_ui,jquery,elaastic_ui,vue_js"/>
   <g:set var="entityName" value="${message(code: 'assignment.label', default: 'Assignment')}"/>
-  <title><g:message code="assignment.label" args="[entityName]"/></title>
+  <title>${assignmentInstance.title}</title>
 </head>
 
 <body>

@@ -20,7 +20,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>elaastic-questions</title>
+  <title><g:message code="common.error" /></title>
   <meta name="layout" content="anonymous-elaastic">
   <r:require modules="semantic_ui,elaastic_ui,jquery"/>
 </head>

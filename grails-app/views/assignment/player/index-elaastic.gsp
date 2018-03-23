@@ -24,7 +24,7 @@
   <meta name="layout" content="left_menu-elaastic">
   <r:require modules="semantic_ui,jquery,elaastic_ui"/>
   <g:set var="entityName" value="${message(code: message(code: "player.assignment.label"), default: 'Work')}"/>
-  <title><g:message code="player.assignment.list.label" args="[entityName]"/></title>
+  <title><g:message code="player.my.assignment.list.label" /></title>
 </head>
 
 <body>

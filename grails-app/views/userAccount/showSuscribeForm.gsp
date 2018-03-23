@@ -22,7 +22,7 @@
 <html>
 <head>
   <meta name="layout" content="elaastic-minimal">
-  <title>elaastic - <g:message code="index.newUser.signUp.action"/></title>
+  <title><g:message code="index.newUser.signUp.action"/></title>
   <r:require modules="semantic_ui,elaastic_ui,jquery,vue_js"/>
 </head>
 

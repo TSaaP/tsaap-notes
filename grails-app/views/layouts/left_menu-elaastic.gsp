@@ -30,7 +30,7 @@
   <meta content="#ffffff" name="theme-color"/>
   <link rel="shortcut icon" href="${resource(dir: 'images', file: 'favicon.ico')}"
         type="image/x-icon">
-  <title><g:layoutTitle default="elaastic-questions"/></title>
+  <title>elaastic: <g:layoutTitle /></title>
   <style type="text/css">[v-cloak] {
     display: none;
   }</style>

@@ -43,7 +43,7 @@
   <meta name="layout" content="left_menu-elaastic">
   <r:require modules="semantic_ui,jquery,elaastic_ui,vue_js"/>
   <g:set var="entityName" value="${message(code: 'player.assignment.label', default: 'Play Assignment')}"/>
-  <title><g:message code="assignment.label" args="[entityName]"/></title>
+  <title>${assignmentInstance?.title}</title>
 </head>
 
 <body>

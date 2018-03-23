@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta name="layout" content="elaastic-minimal">
-  <title>elaastic-questions</title>
+  <title><g:message code="common.home" /></title>
 
   <r:require modules="semantic_ui,elaastic_ui,jquery,vue_js"/>
 </head>

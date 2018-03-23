@@ -20,7 +20,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-  <title>${message(code: "tsaap.terms.title")}</title>
+  <title>${message(code: "common.terms")}</title>
   <meta name="layout" content="anonymous-elaastic">
   <r:require modules="semantic_ui,elaastic_ui,jquery"/>
 </head>
@@ -31,7 +31,7 @@
   <i class="law icon"></i>
   <div class="content">
     <div class="header">
-      ${message(code: "tsaap.terms.title")}
+      ${message(code: "common.terms")}
     </div>
     <p>${message(code: "tsaap.terms")}</p>
 

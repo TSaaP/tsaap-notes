@@ -23,7 +23,7 @@
   <meta name="layout" content="left_menu-elaastic">
   <r:require modules="semantic_ui,jquery,elaastic_ui,vue_js"/>
   <g:set var="entityName" value="${message(code: message(code: "assignment.label"), default: 'Assignment')}"/>
-  <title><g:message code="assignment.list.label" args="[entityName]"/></title>
+  <title><g:message code="assignment.my.list.label" /></title>
 </head>
 
 <body>

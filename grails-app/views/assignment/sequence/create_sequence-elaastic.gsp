@@ -4,7 +4,7 @@
   <meta name="layout" content="left_menu-elaastic">
   <r:require modules="semantic_ui,jquery,elaastic_ui,vue_js,underscore_js,ckeditor_vue_js"/>
   <g:set var="entityName" value="${message(code: 'sequence.label', default: 'Question')}"/>
-  <title><g:message code="default.create.label" args="[entityName]"/></title>
+  <title><g:message code="question.create" /></title>
 </head>
 
 <body>

@@ -22,7 +22,7 @@
 <head>
   <meta name="layout" content="3columns-elaastic">
   <r:require modules="semantic_ui,jquery,elaastic_ui,vue_js"/>
-  <title>elaastic-questions: ${assignmentInstance?.title}</title>
+  <title>${assignmentInstance?.title}</title>
 </head>
 
 <body>

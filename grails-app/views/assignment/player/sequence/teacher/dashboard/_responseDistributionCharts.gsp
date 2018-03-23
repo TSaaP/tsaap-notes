@@ -24,8 +24,9 @@
     <g:set var="choiceSpecification"
            value="${interactionInstance.sequence.statement.getChoiceSpecificationObject()}"/>
 
-    <g:set var="resultList" value="${interactionInstance.resultsByAttempt()["1"]}"/>
-    <g:set var="resultList2" value="${interactionInstance.resultsByAttempt()?.get("2")}"/>
+    <g:set var="resultsByAttempt" value="${interactionInstance.resultsByAttempt()}" />
+    <g:set var="resultList" value="${resultsByAttempt["1"]}"/>
+    <g:set var="resultList2" value="${resultsByAttempt["2"]}"/>
     <g:each var="i" in="${(1..choiceSpecification.itemCount)}">
       <g:set var="choiceStatus"
              value="${choiceSpecification.expectedChoiceListContainsChoiceWithIndex(i) ? 'green' : 'red'}"/>

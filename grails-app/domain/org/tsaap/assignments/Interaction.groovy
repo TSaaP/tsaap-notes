@@ -48,6 +48,12 @@ class Interaction {
     jsonSlurper.parseText(results)
   }
 
+  boolean hasAnyResult() {
+    Map results = resultsByAttempt()
+
+    return results["1"]?.size() || results["2"]?.size()
+  }
+
   /**
    * Get the results for the last attempt
    * @return the results

@@ -40,25 +40,31 @@
 
   <div class="ui basic padded segment active content" style="font-size: 1rem;"
        id="interaction_${interactionInstance.id}_result">
-    
+
     <g:set var="responseSubmissionInteraction" value="${sequence.responseSubmissionInteraction}"/>
-    <g:render template="/assignment/player/sequence/teacher/dashboard/responseDistributionCharts"
-              model="[interactionInstance: responseSubmissionInteraction]"/>
+    <g:if test="${responseSubmissionInteraction.hasAnyResult()}">
+      <g:render template="/assignment/player/sequence/teacher/dashboard/responseDistributionCharts"
+                model="[interactionInstance: responseSubmissionInteraction]"/>
 
-    <g:if test="${sequence.hasExplanations()}">
-      <g:set var="attempt" value="${sequence.executionIsBlendedOrDistance() ? 2 : 1}"/>
-      <g:if test="${sequence.statement.hasChoices()}">
-        <g:set var="responses" value="${sequence.findAllGoodResponses(attempt)}"/>
-        <g:set var="badResponses" value="${sequence.findAllBadResponses(attempt)}"/>
+      <g:if test="${sequence.hasExplanations()}">
+        <g:set var="attempt" value="${sequence.executionIsBlendedOrDistance() ? 2 : 1}"/>
+        <g:if test="${sequence.statement.hasChoices()}">
+          <g:set var="responses" value="${sequence.findAllGoodResponses(attempt)}"/>
+          <g:set var="badResponses" value="${sequence.findAllBadResponses(attempt)}"/>
+        </g:if>
+        <g:else>
+          <g:set var="responses" value="${sequence.findAllOpenResponses(attempt)}"/>
+          <g:set var="badResponses" value="${[:]}"/>
+        </g:else>
+        <g:render template="/assignment/player/${org.tsaap.skin.SkinUtil.getView(params, session, 'ExplanationList')}"
+                  model="[responses: responses, sequence: sequence, badResponses: badResponses]"/>
       </g:if>
-      <g:else>
-        <g:set var="responses" value="${sequence.findAllOpenResponses(attempt)}"/>
-        <g:set var="badResponses" value="${[:]}"/>
-      </g:else>
-      <g:render template="/assignment/player/${org.tsaap.skin.SkinUtil.getView(params, session, 'ExplanationList')}"
-                model="[responses: responses, sequence: sequence, badResponses: badResponses]"/>
     </g:if>
-
+    <g:else>
+      <div class="ui warning message">
+        ${message(code: "player.sequence.noContribution")}
+      </div>
+    </g:else>
   </div>
 </div>
 

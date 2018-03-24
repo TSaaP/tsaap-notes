@@ -33,7 +33,7 @@
     <div class="header">
       ${message(code: "common.terms")}
     </div>
-    <p>${message(code: "tsaap.terms")}</p>
+    <p>${message(code: "elaastic.terms")}</p>
 
     <p><g:link url="${grailsApplication.config.grails.plugins.springsecurity.logout.afterLogoutUrl}"><i class="home icon"></i> <g:message code="back.home"/> </g:link></p>
   </div>

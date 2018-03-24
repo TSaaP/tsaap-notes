@@ -67,10 +67,10 @@ class UserAccountController {
     def checkEmail = grailsApplication.config.tsaap.auth.check_user_email ?: true
 
     if (user.hasErrors()) {
-      render(view: '/index', model: [user: user])
+      render(view: '/index-elaastic', model: [user: user])
     } else {
       flash.message = message(code: checkEmail ? 'subscription.success.email_to_be_checked' : 'subscription.success')
-      redirect(uri: '/login/auth')
+      redirect(uri: '/login/auth-elaastic')
     }
   }
 

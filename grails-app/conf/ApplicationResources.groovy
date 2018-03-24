@@ -45,37 +45,4 @@ modules = {
     resource url: 'js/elaastic/util.js'
   }
 
-  tsaap_ui {
-    dependsOn('application')
-    dependsOn('jquery')
-    resource url: 'js/moment.js'
-    resource url: 'js/locale/fr.js'
-    resource url: 'js/bootstrap.min.js'
-    resource url: 'css/bootstrap.min.css'
-    resource url: 'js/bootstrap-datetimepicker.js'
-    resource url: 'js/star-rating.min.js'
-    resource url: 'css/star-rating.min.css'
-    resource url: 'js/locales/fr.js'
-  }
-
-  tsaap_icons {
-    dependsOn('tsaap_ui')
-    resource url: 'css/bootstrap-glyphicons.css'
-    resource url: 'css/docs.css'
-  }
-
-  tsaap_ui_home {
-    dependsOn('tsaap_ui')
-    resource url: 'css/jumbotron.css'
-  }
-
-  tsaap_ui_signin {
-    dependsOn('tsaap_ui')
-    resource url: 'css/signin.css'
-  }
-
-  tsaap_ui_notes {
-    dependsOn('tsaap_ui')
-    resource url: 'css/notes.css'
-  }
 }

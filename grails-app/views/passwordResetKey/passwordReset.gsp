@@ -19,12 +19,12 @@
 <html lang="en">
 <head>
     <title>${message(code: "passwordReset.page.title")}</title>
-    <meta name='layout' content='anonymous'/>
-    <r:require module="tsaap_ui_signin"/>
+    <meta name="layout" content="anonymous-elaastic">
+    <r:require modules="semantic_ui,elaastic_ui,jquery"/>
 </head>
 
 <body>
-<div class="container">
+<div class="ui container">
 
     <g:form class="form-signin" controller="passwordResetKey" action='resetPassword'
             params="[passwordResetKey: params.passwordResetKey]">

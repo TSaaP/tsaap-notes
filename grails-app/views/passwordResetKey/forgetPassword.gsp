@@ -26,13 +26,12 @@
 <html>
 <head>
     <title>${message(code: "passwordReset.request.page.title")}</title>
-    <meta name='layout' content='home'/>
-    <r:require module="tsaap_ui_signin"/>
-    <link rel="stylesheet" type="text/css" href="css/bootstrap-glyphicons.css"/>
+    <meta name="layout" content="anonymous-elaastic">
+    <r:require modules="semantic_ui,elaastic_ui,jquery"/>
 </head>
 
 <body>
-<div class="container">
+<div class="ui container">
     <div class="col-xs-12" style="height:70px;"></div>
 
     <div class="row">

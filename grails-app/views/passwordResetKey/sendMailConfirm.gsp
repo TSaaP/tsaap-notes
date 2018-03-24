@@ -25,25 +25,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>${message(code: "settings.unsubscribedMention.page.title")}</title>
-    <meta name='layout' content='anonymous'/>
-    <r:require module="tsaap_ui_signin"/>
+  <title>${message(code: "settings.unsubscribedMention.page.title")}</title>
+  <meta name="layout" content="anonymous-elaastic">
+  <r:require modules="semantic_ui,elaastic_ui,jquery"/>
 </head>
 
 <body>
-<div class="container">
-    <div class="body-content">
-        <g:if test='${flash.message}'>
+<div class="ui container">
 
-        <div class="alert alert-info" role="alert">
-            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-            ${flash.message}
-        </div>
-        </g:if>
-        <g:link class="btn btn-primary" controller="passwordResetKey"
-                action="goIndex">${message(code: "password.redirect.home.page")}</g:link>
+  <g:if test='${flash.message}'>
 
+    <div class="ui message">
+      <i class="exclamation icon"></i>
+      ${flash.message}
     </div>
+  </g:if>
+  <g:link class="ui primary button"
+          controller="passwordResetKey"
+          action="goIndex">${message(code: "password.redirect.home.page")}</g:link>
+
 </div>
 
 </body>

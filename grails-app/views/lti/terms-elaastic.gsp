@@ -21,7 +21,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-  <title>${message(code: "tsaap.terms.title")}</title>
+  <title>${message(code: "elaastic.terms.title")}</title>
   <meta name="layout" content="anonymous-elaastic">
   <r:require modules="semantic_ui,elaastic_ui,jquery"/>
 </head>
@@ -33,20 +33,20 @@
 
   <div class="content">
     <div class="header">
-      ${message(code: "tsaap.terms.title")}
+      ${message(code: "elaastic.terms.title")}
     </div>
 
-    <p>${message(code: "tsaap.terms")}</p>
+    <p>${message(code: "elaastic.terms")}</p>
   </div>
 </div>
 
 
 <div class="ui segment">
-  <h3 class="ui header">${message(code: "tsaap.terms.question")}</h3>
+  <h3 class="ui header">${message(code: "elaastic.terms.question")}</h3>
   <g:link class="ui primary button" controller="userAccount" action="ltiConnection"
-          params='[agree: "true", assignment_id: params.assignment_id, username: params.username, contextId: params.contextId, contextName: params.contextName, displaysAll: "on"]'>${message(code: "tsaap.terms.agree")}</g:link>
+          params='[agree: "true", assignment_id: params.assignment_id, username: params.username, contextId: params.contextId, contextName: params.contextName, displaysAll: "on"]'>${message(code: "elaastic.terms.agree")}</g:link>
   <g:link class="ui button" controller="userAccount" action="ltiConnection"
-          params='[agree: "false"]'>${message(code: "tsaap.terms.disagree")}</g:link>
+          params='[agree: "false"]'>${message(code: "elaastic.terms.disagree")}</g:link>
 
 </div>
 </body>

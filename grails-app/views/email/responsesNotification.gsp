@@ -51,8 +51,6 @@
     </g:each>
 </g:if>
 <br>
-<a href="${createLink(absolute: 'true', action: 'doSettings', controller: 'settings', params: [key: key])}">${message(code: "email.manage", locale: new Locale(user.language))}</a>
-<br>
 <a href="${createLink(absolute: 'true', action: 'doUnsubscribeMention', controller: 'unsubscribeKey', params: [key: key])}">
     ${message(code: "email.unsubscribeMention.label", locale: new Locale(user.language))}
 </a>

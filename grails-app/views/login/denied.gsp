@@ -15,12 +15,16 @@
   -     along with this program.  If not, see <http://www.gnu.org/licenses/>.
   --}%
 <head>
-    <meta name='layout' content='main'/>
-    <title>
-        <g:message code="springSecurity.denied.title"/></title>
-    <r:require module="tsaap_ui"/>
+  <meta name='layout' content='elaastic-minimal'/>
+  <title>
+    <g:message code="springSecurity.denied.title"/>
+  </title>
+  <meta name='layout' content='elaastic-minimal'/>
+  <r:require modules="semantic_ui,elaastic_ui,jquery"/>
 </head>
 
 <body>
-<div class='alert-danger'><g:message code="springSecurity.denied.message"/></div>
+<div class='ui negative message'>
+  <g:message code="springSecurity.denied.message"/>
+</div>
 </body>

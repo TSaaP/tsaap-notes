@@ -25,18 +25,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>${message(code: "settings.unsubscribedMention.page.title")}</title>
-    <meta name='layout' content='anonymous'/>
-    <r:require module="tsaap_ui_signin"/>
+  <title>${message(code: "settings.unsubscribedMention.page.title")}</title>
+  <meta name='layout' content='anonymous-elaastic'/>
+  <r:require modules="semantic_ui,elaastic_ui,jquery"/>
 </head>
 
 <body>
-<div class="container">
-    <div class="body-content">
-        <div class="alert alert-info" role="alert">
-            <p>${message(code: "settings.unsubscribedDaily.message")}</p>
-        </div>
-    </div>
+<div class="ui container">
+
+  <div class="ui message">
+    <p>${message(code: "settings.unsubscribedDaily.message")}</p>
+  </div>
+
 </div>
 
 </body>

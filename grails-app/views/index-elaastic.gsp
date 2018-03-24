@@ -44,9 +44,6 @@
                       action="doEdit"
                       class="item"><i
                   class="address card outline icon"></i> ${message(code: "layout.main.account")}</g:link>
-              <g:link controller="settings"
-                      action="doSettings"
-                      class="item"><i class="settings icon"></i> ${message(code: "layout.main.settings")}</g:link>
               <g:link controller="logout" class="item"><i
                   class="sign out icon"></i> ${message(code: "layout.main.disconnect")}</g:link>
             </div>
@@ -78,9 +75,6 @@
                   action="doEdit"
                   class="item"><i
               class="address card outline icon"></i> ${message(code: "layout.main.account")}</g:link>
-          <g:link controller="settings"
-                  action="doSettings"
-                  class="item"><i class="settings icon"></i> ${message(code: "layout.main.settings")}</g:link>
           <g:link controller="logout" class="item"><i
               class="sign out icon"></i> ${message(code: "layout.main.disconnect")}</g:link>
         </div>
@@ -116,9 +110,6 @@
                           action="doEdit"
                           class="item"><i
                       class="address card outline icon"></i> ${message(code: "layout.main.account")}</g:link>
-                  <g:link controller="settings"
-                          action="doSettings"
-                          class="item"><i class="settings icon"></i> ${message(code: "layout.main.settings")}</g:link>
                   <g:link controller="logout" class="item"><i
                       class="sign out icon"></i> ${message(code: "layout.main.disconnect")}</g:link>
                 </div>

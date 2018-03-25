@@ -20,7 +20,9 @@
 grails.config.locations = ["file:${userHome}/.grails/elaastic-questions-config.groovy"]
 
 // Fichier de configuration externe spécifique (si la propriété système est définie)
-def appConfigLocation = System.properties["${appName}.config.location"]
+// Use of tsaap-notes prefix to preserve compliance with tsaap-notes deployment and
+// elaastic deployment in a same container
+def appConfigLocation = System.properties["tsaap-notes.config.location"]
 if (appConfigLocation) {
     grails.config.locations = ["file:$appConfigLocation"]
 }
@@ -116,6 +118,8 @@ environments {
     }
 }
 
+// logging
+
 environments {
     development {
         log4j = {
@@ -150,7 +154,32 @@ environments {
                     'net.sf.ehcache.hibernate'
         }
     }
+    elaasticQuestionsDemo {
+        log4j = {
 
+            appenders {
+                rollingFile name: "rollingFile",
+                        maxFileSize: "2MB",
+                        file: "/srv/datadisk02/Logs/elaastic/elaastic-questions-demo-app.log"
+            }
+            root {
+                info 'rollingFile'
+            }
+
+            error 'org.codehaus.groovy.grails.web.servlet',  //  controllers
+                    'org.codehaus.groovy.grails.web.pages', //  GSP
+                    'org.codehaus.groovy.grails.web.sitemesh', //  layouts
+                    'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
+                    'org.codehaus.groovy.grails.web.mapping', // URL mapping
+                    'org.codehaus.groovy.grails.commons', // core / classloading
+                    'org.codehaus.groovy.grails.plugins', // plugins
+                    'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
+                    'org.springframework',
+                    'org.hibernate',
+                    'net.sf.ehcache.hibernate'
+        }
+        grails.plugins.springsecurity.logout.afterLogoutUrl = 'http://questions.elaastic.com/'
+    }
 }
 
 // Added by the Spring Security Core plugin:

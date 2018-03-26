@@ -21,7 +21,7 @@ modules = {
   }
 
   vue_js {
-    resource url: 'js/vuejs/vue.js', linkOverride: 'https://unpkg.com/vue'
+    resource url: 'js/vuejs/vue.min.js', linkOverride: 'https://unpkg.com/vue'
     resource url: 'js/vuejs/vue-resource.min.js', linkOverride: 'https://cdn.jsdelivr.net/vue.resource/1.3.1/vue-resource.min.js'
   }
 

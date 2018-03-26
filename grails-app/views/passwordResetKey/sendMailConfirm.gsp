@@ -41,8 +41,9 @@
     </div>
   </g:if>
   <g:link class="ui primary button"
-          controller="passwordResetKey"
-          action="goIndex">${message(code: "password.redirect.home.page")}</g:link>
+          url="${grailsApplication.config.grails.plugins.springsecurity.logout.afterLogoutUrl}">
+    ${message(code: "password.redirect.home.page")}
+  </g:link>
 
 </div>
 

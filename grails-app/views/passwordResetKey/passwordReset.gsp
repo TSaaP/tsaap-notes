@@ -18,38 +18,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>${message(code: "passwordReset.page.title")}</title>
-    <meta name="layout" content="anonymous-elaastic">
-    <r:require modules="semantic_ui,elaastic_ui,jquery"/>
+  <title>${message(code: "passwordReset.page.title")}</title>
+  <meta name="layout" content="anonymous-elaastic">
+  <r:require modules="semantic_ui,elaastic_ui,jquery"/>
 </head>
 
 <body>
 <div class="ui container">
 
-    <g:form class="form-signin" controller="passwordResetKey" action='resetPassword'
-            params="[passwordResetKey: params.passwordResetKey]">
-        <h3>${message(code: "passwordReset.page.reset.titre")}</h3>
-        <g:if test='${flash.message}'>
-            <div class='alert'>${flash.message}</div>
-        </g:if>
+  <g:form class="ui form"
+          controller="passwordResetKey"
+          action='resetPassword'
+          params="[passwordResetKey: params.passwordResetKey]">
+    <h3>${message(code: "passwordReset.page.reset.titre")}</h3>
+    <g:if test='${flash.message}'>
+      <div class='ui warning message'>${flash.message}</div>
+    </g:if>
 
-        <div class="form-group">
-            <input type="password" class="input-block-level"
-                   placeholder="${message(code: 'springSecurity.login.password.placeholder')}"
-                   name='password' id='password'>
-        </div>
+    <div class="field">
+      <input type="password"
+             class="input-block-level"
+             placeholder="${message(code: 'springSecurity.login.password.placeholder')}"
+             name='password'
+             id='password'>
+    </div>
 
-        <div class="form-group">
-            <input type="password" class="input-block-level"
-                   placeholder="${message(code: 'springSecurity.login.password.confirm.placeholder')}"
-                   name='passwordConfirm' id='passwordConfirm'>
-        </div>
+    <div class="field">
+      <input type="password"
+             class="input-block-level"
+             placeholder="${message(code: 'springSecurity.login.password.confirm.placeholder')}"
+             name='passwordConfirm'
+             id='passwordConfirm'>
+    </div>
 
 
-        <button class="btn btn-large btn-primary btn-block"
-                type="submit"
-                id="submit">${message(code: "passwordReset.form.button")}</button>
-    </g:form>
+    <button class="ui primary button"
+            type="submit"
+            id="submit">${message(code: "passwordReset.form.button")}</button>
+  </g:form>
 
 </div>
 

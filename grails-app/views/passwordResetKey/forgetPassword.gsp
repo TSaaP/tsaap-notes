@@ -25,42 +25,40 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-    <title>${message(code: "passwordReset.request.page.title")}</title>
-    <meta name="layout" content="anonymous-elaastic">
-    <r:require modules="semantic_ui,elaastic_ui,jquery"/>
+  <title>${message(code: "passwordReset.request.page.title")}</title>
+  <meta name="layout" content="anonymous-elaastic">
+  <r:require modules="semantic_ui,elaastic_ui,jquery"/>
 </head>
 
 <body>
-<div class="ui container">
-    <div class="col-xs-12" style="height:70px;"></div>
+<div class="ui container" style="padding-top: 5em;">
 
-    <div class="row">
-        <div class="col-lg-6 col-lg-offset-3">
-            <g:if test='${flash.message}'>
-                <div class="alert alert-danger" role="alert">
-                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                    ${flash.message}
-                </div>
-            </g:if>
-            <div class="panel panel-primary" style="background-color:transparent">
-                <div class="panel-heading">${message(code: "springSecurity.login.lostPassword.title")}</div>
-
-                <div class="panel-body">
-                    <g:form class="form-horizontal" action="doReset">
-                        <div class="input-group">
-                            <span class="input-group-addon" id="sizing-addon2">@</span>
-                            <input type="text" class="form-control" placeholder="Email" name="email" id="email"
-                                   aria-describedby="sizing-addon2">
-                        </div>
-                        <br>
-                        <button class="btn btn-primary"
-                                type="submit"
-                                id="submit">${message(code: "springSecurity.login.lostPassword.button")}</button>
-                    </g:form>
-                </div>
-            </div>
-        </div>
+  <g:if test='${flash.message}'>
+    <div class="ui error message">
+      <i class="exclamation icon"></i> ${flash.message}
     </div>
+  </g:if>
+
+  <h2 class="ui block top attached header">${message(code: "springSecurity.login.lostPassword.title")}</h2>
+
+  <div class="ui bottom attached segment">
+
+    <g:form class="ui horizontal form" action="doReset">
+      <div class="field">
+        <div class="ui left icon input">
+          <input type="text" placeholder="Email" name="email" id="email" aria-describedby="sizing-addon2">
+          <i class="at icon"></i>
+        </div>
+
+      </div>
+      <br>
+      <button class="ui primary button"
+              type="submit"
+              id="submit">${message(code: "springSecurity.login.lostPassword.button")}</button>
+    </g:form>
+
+  </div>
+
 </div>
 </body>
 </html>

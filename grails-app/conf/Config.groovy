@@ -20,9 +20,7 @@
 grails.config.locations = ["file:${userHome}/.grails/elaastic-questions-config.groovy"]
 
 // Fichier de configuration externe spécifique (si la propriété système est définie)
-// Use of tsaap-notes prefix to preserve compliance with tsaap-notes deployment and
-// elaastic deployment in a same container
-def appConfigLocation = System.properties["tsaap-notes.config.location"]
+def appConfigLocation = System.properties["${appName}.config.location"]
 if (appConfigLocation) {
     grails.config.locations = ["file:$appConfigLocation"]
 }

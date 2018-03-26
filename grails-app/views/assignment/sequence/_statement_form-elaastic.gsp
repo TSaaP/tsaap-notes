@@ -131,7 +131,7 @@
     <vue-ckeditor v-bind:id="'content'"
                   v-bind:name="'content'"
                   v-model="content"
-                  placeholder="${g.message(code: "sequence.statement.content.type.here")}"
+                  placeholder="${g.message(code: "sequence.statement.content.type.here")}<br/><br/>${g.img(file: 'moon-picnic.jpg', dir:'images/example', style: 'opacity: 0.25; float: left; margin-right: 3em; width: 125px;')} ${g.message(code: "sequence.statement.content.example")}"
                   v-on:focus="startEditing"
                   v-on:blur="stopEditing"
                   v-bind:config="ckeditorConfig"/>

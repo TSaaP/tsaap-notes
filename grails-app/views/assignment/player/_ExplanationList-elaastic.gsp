@@ -17,13 +17,13 @@
   -
   --}%
 
+
 <div style="font-size: 1rem">
   <g:if test="${displaysAll}">
-    <g:set var="explanationCount" value="${0}"/>
+    <g:set var="explanationCount" value="${responses.collect { it?.explanation ? 1 : 0 }.sum()}"/>
     <g:each in="${responses}" var="response" status="i">
       <g:set var="explanation" value="${response?.explanation}"/>
       <g:if test="${explanation}">
-        <g:set var="explanationCount" value="${explanationCount + 1}"/>
         <div class="ui info message explanation">
           <g:set var="grade" value="${response.meanGrade}"/>
           <strong>
@@ -49,12 +49,12 @@
     </g:if>
   </g:if>
   <g:else>
-    <g:set var="explanationCount" value="${0}"/>
+    <g:set var="explanationCount" value="${responses.collect { it?.explanation ? 1 : 0 }.sum()}"/>
+
     <g:each var="i" in="${(0..<Math.min(responses.size(), 3))}">
       <g:set var="theResponse" value="${responses.get(i)}"/>
       <g:set var="explanation" value="${theResponse?.explanation}"/>
       <g:if test="${explanation}">
-        <g:set var="explanationCount" value="${explanationCount + 1}"/>
         <div class="ui info message explanation" style="${theResponse.meanGrade != null ? 'padding-top: 3em;' : ''}">
           <g:set var="nbEvaluation" value="${theResponse.evaluationCount()}"/>
 

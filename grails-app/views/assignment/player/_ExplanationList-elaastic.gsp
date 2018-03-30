@@ -24,21 +24,8 @@
     <g:each in="${responses}" var="response" status="i">
       <g:set var="explanation" value="${response?.explanation}"/>
       <g:if test="${explanation}">
-        <div class="ui info message explanation">
-          <g:set var="grade" value="${response.meanGrade}"/>
-          <strong>
-            <g:if test="${grade != null}">
-              <g:formatNumber number="${grade}" type="number"
-                              maxFractionDigits="2"/>/5
-            </g:if>
-            @${response.learner.username}
-          </strong>
-          <g:if test="${grade != null}">
-            ${message(code: "player.sequence.explanation.evaluated")} ${response.evaluationCount()} ${message(code: "player.sequence.explanation.contributors")}
-          </g:if>
-          <br/>
-          ${raw(explanation)}
-        </div>
+        <g:render template="/assignment/player/explanation-elaastic"
+                  model="[theResponse: theResponse, explanation: explanation]"/>
 
       </g:if>
     </g:each>
@@ -55,29 +42,8 @@
       <g:set var="theResponse" value="${responses.get(i)}"/>
       <g:set var="explanation" value="${theResponse?.explanation}"/>
       <g:if test="${explanation}">
-        <div class="ui info message explanation" style="${theResponse.meanGrade != null ? 'padding-top: 3em;' : ''}">
-          <g:set var="nbEvaluation" value="${theResponse.evaluationCount()}"/>
-
-          <g:if test="${theResponse.meanGrade != null}">
-            <div class="ui top left attached teal label">
-              
-              <g:formatNumber number="${theResponse.meanGrade}"
-                              type="number"
-                              maxFractionDigits="2"/>/5
-
-
-
-              <a class="detail">${nbEvaluation} ${nbEvaluation > 1 ? g.message(code: 'common.evaluations') : g.message(code: 'common.evaluation')}</a>
-            </div>
-          </g:if>
-
-          <strong>
-            @${theResponse.learner.username}
-          </strong>
-
-          <br/>
-          ${raw(explanation)}
-        </div>
+        <g:render template="/assignment/player/explanation-elaastic"
+                  model="[theResponse: theResponse, explanation: explanation]"/>
       </g:if>
 
     </g:each>

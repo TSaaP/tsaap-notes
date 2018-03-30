@@ -76,6 +76,7 @@ CKEDITOR.editorConfig = function( config ) {
 		%{--{ name: 'editing', groups: [ 'find', 'selection', 'spellchecker', 'editing' ] },--}%
 		%{--{ name: 'forms', groups: [ 'forms' ] },--}%
 		{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+		{ name: 'links', groups: [ 'links' ] },
 		{ name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'paragraph' ] },
 		{ name: 'insert', groups: [ 'insert' ] } ,
 		%{--{ name: 'styles', groups: [ 'styles' ] },--}%

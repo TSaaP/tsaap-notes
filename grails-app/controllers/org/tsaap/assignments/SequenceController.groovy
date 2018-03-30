@@ -53,8 +53,14 @@ class SequenceController {
 
     flash.message = message(code: 'sequence.updated.message',
         args: [message(code: 'sequence.label', default: 'Question'), sequenceInstance.title.encodeAsRaw()])
-    
-    redirect controller: "sequence", action: "editSequence", params: [id: sequenceInstance.id]
+
+    if(params.returnOnSubject) {
+      redirect action: "show", controller: "assignment", params: [id: assignmentInstance.id], fragment: "sequence_"+sequenceInstance.id
+    }
+    else {
+      redirect controller: "sequence", action: "editSequence", params: [id: sequenceInstance.id]
+    }
+
   }
 
 
@@ -92,8 +98,14 @@ class SequenceController {
         args: [
             sequenceInstance.title.encodeAsRaw()]
     )
-    redirect action: "editSequence", controller: "sequence", params: [id: sequenceInstance.id]
 
+
+    if(params.returnOnSubject) {
+      redirect action: "show", controller: "assignment", params: [id: assignmentInstance.id], fragment: "sequence_"+sequenceInstance.id
+    }
+    else {
+      redirect controller: "sequence", action: "editSequence", params: [id: sequenceInstance.id]
+    }
   }
 
 

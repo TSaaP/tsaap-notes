@@ -93,8 +93,8 @@
 
     <div class="ui hidden divider"></div>
 
-    <button type="submit" class="ui primary button">
-      ${message(code: 'default.button.create.label', default: 'Create')}
+    <button type="submit" class="ui primary button" name="returnOnSubject" value="true">
+      ${message(code: 'question.createAndReturnToSubject')}
     </button>
 
     <g:link action="show"

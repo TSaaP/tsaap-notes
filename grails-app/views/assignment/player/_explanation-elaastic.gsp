@@ -26,9 +26,7 @@
       <g:formatNumber number="${theResponse.meanGrade}"
                       type="number"
                       maxFractionDigits="2"/>/5
-
-
-
+      
       <span class="detail">${nbEvaluation} ${nbEvaluation > 1 ? g.message(code: 'common.evaluations') : g.message(code: 'common.evaluation')}</span>
     </div>
   </g:if>
@@ -38,5 +36,5 @@
   </strong>
 
   <br/>
-  ${raw(explanation)}
+  ${raw(theResponse.explanation)}
 </div>

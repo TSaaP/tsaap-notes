@@ -25,7 +25,7 @@
       <g:set var="explanation" value="${response?.explanation}"/>
       <g:if test="${explanation}">
         <g:render template="/assignment/player/explanation-elaastic"
-                  model="[theResponse: theResponse, explanation: explanation]"/>
+                  model="[theResponse: response, explanation: explanation]"/>
 
       </g:if>
     </g:each>
@@ -41,9 +41,9 @@
     <g:each var="i" in="${(0..<Math.min(responses.size(), 3))}">
       <g:set var="theResponse" value="${responses.get(i)}"/>
       <g:set var="explanation" value="${theResponse?.explanation}"/>
-      <g:if test="${explanation}">
+      <g:if test="${theResponse?.explanation}">
         <g:render template="/assignment/player/explanation-elaastic"
-                  model="[theResponse: theResponse, explanation: explanation]"/>
+                  model="[theResponse: theResponse, explanation: theResponse?.explanation]"/>
       </g:if>
 
     </g:each>

@@ -18,7 +18,8 @@
 CKEDITOR.plugins.addExternal( 'pbckcode', '${resource(dir: '/ckeditor/plugins/pbckcode/')}' );
 CKEDITOR.plugins.addExternal( 'confighelper', '${resource(dir: '/ckeditor/plugins/confighelper/')}' );
 CKEDITOR.editorConfig = function( config ) {
-    config.floatSpaceDockedOffsetY = 30;
+    config.floatSpaceDockedOffsetY = 10;
+    config.floatSpaceDockedOffsetX = 60;
     config.extraPlugins = 'pbckcode,confighelper';
 
         config.pbckcode = {

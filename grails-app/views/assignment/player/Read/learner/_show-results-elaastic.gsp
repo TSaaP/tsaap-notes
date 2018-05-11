@@ -103,7 +103,8 @@
                       controller="player"
                       action="updateResultsAndSequenceDisplay"
                       id="${sequence.id}"
-                      update="sequence_${interactionInstance.sequenceId}">
+                      update="sequence_${interactionInstance.sequenceId}"
+                      onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'sequence_${interactionInstance.sequenceId}'])">
           <i class="refresh icon"></i>
           ${message(code: "player.sequence.readinteraction.updateAllResults", args: [interactionInstance.rank])}</g:remoteLink>
       </div>

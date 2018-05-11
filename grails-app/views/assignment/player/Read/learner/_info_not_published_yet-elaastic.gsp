@@ -28,7 +28,8 @@
                   action="updateSequenceDisplay"
                   id="${interactionInstance.sequenceId}"
                   title="Refresh"
-                  update="sequence_${interactionInstance.sequenceId}">
+                  update="sequence_${interactionInstance.sequenceId}"
+                  onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'sequence_${interactionInstance.sequenceId}'])">
       <i class="refresh icon"></i>
     </g:remoteLink></div>
 </div>

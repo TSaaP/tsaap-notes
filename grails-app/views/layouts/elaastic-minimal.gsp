@@ -35,6 +35,8 @@
         type="image/x-icon">
   <title>elaastic: <g:layoutTitle /></title>
   <r:layoutResources/>
+  <script type="text/javascript"
+          src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 </head>
 
 <body>

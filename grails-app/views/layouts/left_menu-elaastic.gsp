@@ -35,6 +35,8 @@
     display: none;
   }</style>
   <r:layoutResources/>
+  <script type="text/javascript"
+          src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   %{-- TODO Find out how to load CK resources only when required... --}%
   <ckeditor:resources/>

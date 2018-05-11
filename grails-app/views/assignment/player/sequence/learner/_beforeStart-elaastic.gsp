@@ -30,7 +30,12 @@
 
 <div class="ui bottom attached warning message">
   ${message(code:"player.sequence.beforeStart.message")}
-  <g:remoteLink controller="player" action="updateSequenceDisplay" id="${sequenceInstance.id}" title="Refresh" update="sequence_${sequenceInstance.id}">
+  <g:remoteLink controller="player"
+                action="updateSequenceDisplay"
+                id="${sequenceInstance.id}"
+                title="Refresh"
+                update="sequence_${sequenceInstance.id}"
+                onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'sequence_${sequenceInstance.id}'])">
     <i class="refresh icon"></i>
   </g:remoteLink>
 </div>

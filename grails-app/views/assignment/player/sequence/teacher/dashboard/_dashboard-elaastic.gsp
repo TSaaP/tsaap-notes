@@ -32,7 +32,8 @@
                     update="sequence_${interactionInstance.sequenceId}"
                     data-tooltip="${message(code: "player.sequence.readinteraction.updateAllResults", args: [interactionInstance.rank])}"
                     data-inverted=""
-                    data-position="top right">
+                    data-position="top right"
+                    onComplete="MathJax.Hub.Queue(['Typeset',MathJax.Hub,'sequence_${interactionInstance.sequenceId}'])">
         <i class="small refresh icon"></i></g:remoteLink>
     </g:if>
 

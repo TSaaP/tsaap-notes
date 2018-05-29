@@ -88,11 +88,8 @@ class PlayerController {
     } else if (user.isTeacher() && user != assignmentInstance.owner) {
       assignmentService.registerUserOnAssignment(user, assignmentInstance)
     }
-    render view: "/assignment/player/assignment/"+SkinUtil.getView(params, session, 'show'),
-        model: [
-            assignmentInstance: assignmentInstance,
-            user              : user
-        ]
+
+    internalPlaySequence(assignmentInstance, null)
   }
 
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])

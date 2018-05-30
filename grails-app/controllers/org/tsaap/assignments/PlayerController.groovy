@@ -35,7 +35,7 @@ class PlayerController {
     Assignment assignmentInstance = assignmentService.findAssignmentByGlobalId(globalId)
     User user = springSecurityService.currentUser
     assignmentService.registerUserOnAssignment(user, assignmentInstance)
-    redirect(action: "playFirstSequence", controller: "player", id:"${assignmentInstance.id}")
+    redirect(action: "playFirstSequence", controller: "player", id: "${assignmentInstance.id}")
   }
 
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])
@@ -89,7 +89,10 @@ class PlayerController {
       assignmentService.registerUserOnAssignment(user, assignmentInstance)
     }
 
-    internalPlaySequence(assignmentInstance, null)
+    internalPlaySequence(
+        assignmentInstance,
+        assignmentInstance.sequences ? assignmentInstance.sequences.first() : null
+    )
   }
 
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])
@@ -181,7 +184,6 @@ class PlayerController {
     sequenceService.unpublishResultsForSequence(sequenceInstance, user)
     renderSequenceTemplate(user, sequenceInstance)
   }
-
 
 
   @Secured(['IS_AUTHENTICATED_REMEMBERED'])

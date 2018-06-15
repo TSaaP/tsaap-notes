@@ -34,6 +34,10 @@ modules = {
     resource url: 'js/underscore-min.js'
   }
 
+  vega_js {
+    resource url: 'js/vega.min.js'
+  }
+
   semantic_ui {
     dependsOn('jquery')
     resource url: 'semantic/dist/semantic.min.css'
@@ -44,5 +48,12 @@ modules = {
     resource url: 'css/elaastic.css'
     resource url: 'js/elaastic/util.js'
   }
+
+  elaastic_graph_result {
+    dependsOn(['vega_js', 'underscore_js'])
+    resource url: 'js/elaastic/graph/result-graph.js'
+  }
+
+
 
 }

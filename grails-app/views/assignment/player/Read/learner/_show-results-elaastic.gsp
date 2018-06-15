@@ -16,6 +16,7 @@
   -      along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -
   --}%
+<r:require module="elaastic_graph_result"></r:require>
 
 <div class="ui segment">
   <div class="ui dividing header">
@@ -29,51 +30,41 @@
     <g:set var="sequence" value="${interactionInstance.sequence}"/>
     <g:set var="displayedResultInteraction" value="${sequence.responseSubmissionInteraction}"/>
     <g:set var="choiceSpecification" value="${sequence.statement.getChoiceSpecificationObject()}"/>
+
     <g:if test="${sequence.statement.hasChoices()}">
-      <g:set var="resultList" value="${displayedResultInteraction.resultsOfLastAttempt()}"/>
-      <g:set var="userResponse" value="${displayedResultInteraction.lastAttemptResponseForUser(user)}"/>
 
-      <g:each var="i" in="${(1..choiceSpecification.itemCount)}">
-        <g:set var="choiceStatus"
-               value="${choiceSpecification.expectedChoiceListContainsChoiceWithIndex(i) ? 'green' : 'red'}"/>
-        <g:set var="percentResult" value="${resultList[i]}"/>
+      <div style="text-align: center;">
+        <div id='vega-view'></div>
+      </div>
 
-        <div class="ui ${choiceStatus} progress" data-percent="${percentResult}">
-          <div class="bar">
-            <div class="progress"></div>
-          </div>
+        <g:set var="resultList" value="${displayedResultInteraction.resultsOfLastAttempt()}"/>
+        <g:set var="userResponse" value="${displayedResultInteraction.lastAttemptResponseForUser(user)}"/>
+        
+      <r:script>
+(function() {
+var i18n = {
+  percentageOfVoters: '${g.message(code: "player.sequence.result.percentageOfVoters").replaceAll("'", "\\\\u0027")}',
+  choice: '${g.message(code: "player.sequence.interaction.choice.label").replaceAll("'", "\\\\u0027")}'
+};
 
-          <div class="label">
-            <g:if test="${userResponse?.choiceList()?.contains(i)}">
-              <g:set var="suffix"
-                     value="${choiceSpecification.choiceWithIndexInExpectedChoiceList(i)?.score > 0 ? 'up' : 'down'}"/>
-              <i class="thumbs ${suffix} icon"></i>
+var results = ${raw(displayedResultInteraction.results)};
+// Keep only the last attempt
+if(typeof results[2] !== 'undefined') {
+  delete results[1]
+}
 
-            </g:if>
-            ${message(code: "player.sequence.interaction.choice.label")} ${i}
-          </div>
-        </div>
+elaastic.renderGraph(
+  '#vega-view',
+        ${raw(displayedResultInteraction.sequence.statement.choiceSpecification)},
+        results,
+        ${raw(userResponse?.choiceListSpecification ? userResponse.choiceListSpecification : 'null')},
+        i18n
+);
+}());
+      </r:script>
 
-      </g:each>
-      <g:set var="percentResult" value="${resultList[0]}"/>
 
-      <g:if test="${percentResult}">
-        <div class="ui top attached warning small message">
-          <div class="header">
-            ${message(code: "player.sequence.interaction.NoResponse.label")}
-          </div>
-        </div>
 
-        <div class="ui bottom attached segment" style="margin-bottom: 1rem;">
-          <div class="ui warning compact progress"
-               data-percent="${percentResult}">
-            <div class="bar">
-              <div class="progress"></div>
-            </div>
-          </div>
-        </div>
-
-      </g:if>
       <div class="ui message">
         <g:if test="${userResponse?.score != null}">
           ${message(code: "player.sequence.interaction.read.learner.show.score.message")}
@@ -112,10 +103,3 @@
 
   </div>
 </div>
-
-<r:script>
-$('#interaction_${interactionInstance.id}_result .ui.progress').progress({
-  autoSuccess: false,
-  showActivity: false
-});
-</r:script>

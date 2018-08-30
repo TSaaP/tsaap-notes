@@ -100,7 +100,10 @@
 </table>
 
 <div class="ui right aligned basic segment">
-  <elaastic:paginate class="ui tiny pagination menu" prev="&laquo;" next="&raquo;"
+  <elaastic:paginate class="ui tiny pagination menu"
+                     action="index"
+                     prev="&laquo;"
+                     next="&raquo;"
                      total="${ltiConsumerInstanceCount ?: 0}"/>
 </div>
 

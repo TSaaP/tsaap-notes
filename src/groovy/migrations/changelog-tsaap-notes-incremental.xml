@@ -54,4 +54,6 @@
     <include file="changelog-205.xml" relativeToChangelogFile="true"/>
     <include file="changelog-196-2.xml" relativeToChangelogFile="true"/>
     <include file="changelog-208.xml" relativeToChangelogFile="true"/>
+    <include file="changelog-eq-48.xml" relativeToChangelogFile="true"/>
+    <include file="changelog-eq-49.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

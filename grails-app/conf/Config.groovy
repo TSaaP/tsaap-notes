@@ -1,4 +1,3 @@
-import org.gualdi.grails.plugins.ckeditor.Ckeditor
 
 /*
  * Copyright (C) 2013-2016 Université Toulouse 3 Paul Sabatier
@@ -17,12 +16,14 @@ import org.gualdi.grails.plugins.ckeditor.Ckeditor
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Fichier de configuration externe propre à l'application
+// Fichier de configuration externe par défaut
+grails.config.locations = ["file:${userHome}/.grails/elaastic-questions-config.groovy"]
+
+// Fichier de configuration externe spécifique (si la propriété système est définie)
 def appConfigLocation = System.properties["${appName}.config.location"]
 if (appConfigLocation) {
     grails.config.locations = ["file:$appConfigLocation"]
 }
-
 
 
 grails.project.groupId = appName // change this to alter the default package name and Maven publishing destination
@@ -52,7 +53,8 @@ grails.mime.types = [all          : '*/*',
 //grails.urlmapping.cache.maxsize = 1000
 
 // What URL patterns should be processed by the resources plugin
-grails.resources.adhoc.patterns = ['/images/*', '/css/*', '/js/*', '/plugins/*']
+grails.resources.adhoc.patterns = ['/images/*', '/css/*', '/js/*', '/plugins/*', '/fonts/*', '/semantic/*']
+grails.resources.adhoc.includes = ['/images/**', '/css/**', '/js/**', '/plugins/**', '/fonts/**', 'semantic/**']
 
 // Legacy setting for codec used to encode data with ${}
 grails.views.default.codec = "html"
@@ -113,6 +115,8 @@ environments {
     }
 }
 
+// logging
+
 environments {
     development {
         log4j = {
@@ -147,7 +151,6 @@ environments {
                     'net.sf.ehcache.hibernate'
         }
     }
-
 }
 
 // Added by the Spring Security Core plugin:
@@ -178,11 +181,15 @@ environments {
 environments {
     development {
         tsaap.auth.check_user_email = true
-        tsaap.datastore.path = '/opt/shared/tsaap-repo'
+        tsaap.datastore.path = '/opt/shared/elaastic-questions-repo'
+        // subscription source
+        elaastic.subscription.source='tsaap'
     }
     test {
         tsaap.auth.check_user_email = false
-        tsaap.datastore.path = '/opt/shared/tsaap-repo'
+        tsaap.datastore.path = '/opt/shared/elaastic-questions-repo'
+        // subscription source
+        elaastic.subscription.source='tsaap'
     }
     travis_ci {
         tsaap.auth.check_user_email = false
@@ -190,9 +197,9 @@ environments {
     }
     production {
         tsaap.auth.check_user_email = true
-    }
-    elaasticQuestionsDemo {
-        tsaap.auth.check_user_email = true
+        // subscription source
+        elaastic.subscription.source='tsaap'
+
     }
 }
 

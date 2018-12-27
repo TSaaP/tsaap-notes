@@ -63,14 +63,14 @@ class PasswordResetServiceIntegrationSpec extends Specification {
         def key = passwordResetService.generatePasswordResetKeyForUser(bootstrapTestService.learnerPaul)
 
         then: "the key is found"
-        key == passwordResetService.findAllPasswordResetKey()[0]
+        key == passwordResetService.findAllPasswordResetKey(UserAccountService.DEFAULT_SUBSCRIPTION_SOURCE)[0]
 
         when: "the key is marked as sent"
         key.passwordResetEmailSent = true
         key.save()
 
         then: "the key is not found"
-        passwordResetService.findAllPasswordResetKey().size() == 0
+        passwordResetService.findAllPasswordResetKey(UserAccountService.DEFAULT_SUBSCRIPTION_SOURCE).size() == 0
 
         when: "a new key is added and is obsolete"
         def obsKey = passwordResetService.generatePasswordResetKeyForUser(bootstrapTestService.learnerMary)
@@ -78,7 +78,7 @@ class PasswordResetServiceIntegrationSpec extends Specification {
         obsKey.save()
 
         then: "the key is not found"
-        passwordResetService.findAllPasswordResetKey().size() == 0
+        passwordResetService.findAllPasswordResetKey(UserAccountService.DEFAULT_SUBSCRIPTION_SOURCE).size() == 0
     }
 
     def "remove old keys"() {

@@ -20,6 +20,7 @@ package org.tsaap.directory
 class PasswordResetKeyJob {
 
     PasswordResetService passwordResetService
+    def grailsApplication
 
     static triggers = {
         // every 2 minutes
@@ -28,7 +29,8 @@ class PasswordResetKeyJob {
 
     def execute() {
         log.debug("Start Password reset key Job...")
-        passwordResetService.sendPasswordResetKeyMessages()
+        def subscriptionSource = grailsApplication.config.elaastic.subscription.source
+        passwordResetService.sendPasswordResetKeyMessages(subscriptionSource)
         log.debug("End Password reset key Job.")
     }
 }

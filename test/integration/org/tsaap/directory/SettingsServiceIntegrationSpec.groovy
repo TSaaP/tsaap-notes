@@ -27,7 +27,7 @@ class SettingsServiceIntegrationSpec extends Specification {
     void "test adding settings for a user"() {
         given: "an user with settings"
         def settingsCount = Settings.count()
-        def user = userAccountService.addUser(new User(firstName: "Alexandre", lastName: "Lagane",
+        def user = userAccountService.addUser(new User(firstName: "Alex", lastName: "Logan",
                 username: "Alex_test",
                 email: "alag@nomail.com",
                 password: "password",

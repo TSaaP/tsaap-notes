@@ -34,7 +34,8 @@ class PasswordResetKeyController {
 
         def user = User.findByEmail(params.email)
         if (user) {
-            passwordResetService.generatePasswordResetKeyForUser(user)
+            def subscriptionSource = grailsApplication.config.elaastic.subscription.source ?: UserAccountService.DEFAULT_SUBSCRIPTION_SOURCE
+            passwordResetService.generatePasswordResetKeyForUser(user, subscriptionSource)
             flash.message = message(code: 'passwordReset.email.success')
             render view: 'sendMailConfirm'
         }

@@ -61,7 +61,7 @@ class ActivationKeyServiceIntegrationSpec extends Specification {
     void "test removeOldActivationKeys"() {
 
         given: "Create activation key for user1"
-        activationKey = new ActivationKey(activationKey: "Key", activationEmailSent: false, dateCreated: new Date(), user: user1)
+        activationKey = new ActivationKey(activationKey: "Key", activationEmailSent: false, dateCreated: new Date(), user: user1, subscriptionSource: "elaastic")
         activationKey.save()
 
         expect: "Users and activation keys are presents"
@@ -76,7 +76,7 @@ class ActivationKeyServiceIntegrationSpec extends Specification {
         User.count() == 13
 
         when: "Create activation key for user2"
-        ActivationKey activationKey2 = new ActivationKey(activationKey: "Key", activationEmailSent: false, user: user2)
+        ActivationKey activationKey2 = new ActivationKey(activationKey: "Key", activationEmailSent: false, user: user2, subscriptionSource: "elaastic")
         activationKey2.save()
         activationKey2.dateCreated = DateUtils.addHours(new Date(), -lifetime - 1)
         activationKey2.save()
@@ -89,7 +89,7 @@ class ActivationKeyServiceIntegrationSpec extends Specification {
         User.count() == 12
 
         when: "Create activation key for user3"
-        ActivationKey activationKey3 = new ActivationKey(activationKey: "Key", activationEmailSent: true, user: user3)
+        ActivationKey activationKey3 = new ActivationKey(activationKey: "Key", activationEmailSent: true, user: user3, subscriptionSource: "elaastic")
         activationKey3.save()
         activationKey3.dateCreated = DateUtils.addHours(new Date(), -lifetime - 1)
         activationKey3.save()

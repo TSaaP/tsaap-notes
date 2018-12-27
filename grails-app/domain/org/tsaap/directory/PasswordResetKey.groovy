@@ -23,10 +23,12 @@ class PasswordResetKey {
     Date dateCreated
     User user
     boolean passwordResetEmailSent = false
+    String subscriptionSource
 
     static belongsTo = [user: User]
 
     static constraints = {
         passwordResetKey blank: false
+        subscriptionSource blank: false, nullable: false
     }
 }

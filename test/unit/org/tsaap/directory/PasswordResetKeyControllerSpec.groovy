@@ -95,7 +95,7 @@ class PasswordResetKeyControllerSpec extends Specification {
     void "test resetPassword action"() {
 
         when:"generate password rest key for user for reset current password"
-        PasswordResetKey prk = new PasswordResetKey(passwordResetKey: UUID.randomUUID().toString(), user: user).save()
+        PasswordResetKey prk = new PasswordResetKey(passwordResetKey: UUID.randomUUID().toString(), user: user, subscriptionSource: 'elaastic').save()
         params.passwordResetKey = PasswordResetKey.findByUser(user).passwordResetKey
 
         and:"try the reset password when the passwords are not the same"

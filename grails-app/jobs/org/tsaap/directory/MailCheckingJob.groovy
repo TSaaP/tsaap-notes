@@ -21,6 +21,7 @@ package org.tsaap.directory
 class MailCheckingJob {
 
     MailCheckingService mailCheckingService
+    def grailsApplication
 
     static triggers = {
         // every 2 minutes
@@ -29,7 +30,8 @@ class MailCheckingJob {
 
     def execute() {
         log.debug("Start email checking job...")
-        mailCheckingService.sendCheckingEmailMessages()
+        def subscriptionSource = grailsApplication.config.elaastic.subscription.source
+        mailCheckingService.sendCheckingEmailMessages(subscriptionSource)
         log.debug("End email checking  job.")
     }
 }

@@ -48,7 +48,8 @@ class UserAccountBatchCreationController {
     if (file && !file.isEmpty()) {
       InputStreamReader reader = new InputStreamReader(file.inputStream)
       try {
-        userList = userAccountService.addUserListFromFileByOwner(reader, user)
+        def subscriptionSource = grailsApplication.config.elaastic.subscription.source ?: UserAccountService.DEFAULT_SUBSCRIPTION_SOURCE
+        userList = userAccountService.addUserListFromFileByOwner(reader, user, subscriptionSource)
         response.setContentType("text/csv")
         response.setCharacterEncoding("UTF-8")
         response.setHeader("Content-Disposition", "Attachment;Filename=\"${message(code: 'useraccount.generatedFileName')}\"")

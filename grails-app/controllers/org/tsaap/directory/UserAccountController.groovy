@@ -103,8 +103,9 @@ class UserAccountController {
     }
     User user = new User(params)
     def checkEmail = grailsApplication.config.tsaap.auth.check_user_email ?: true
+    def subscriptionSource = grailsApplication.config.elaastic.subscription.source ?: UserAccountService.DEFAULT_SUBSCRIPTION_SOURCE
     if (params.password == params.password2) {
-      user = userAccountService.addUser(user, mainRole, !checkEmail, params.language, checkEmail)
+      user = userAccountService.addUser(user, mainRole, !checkEmail, params.language, checkEmail, subscriptionSource)
     } else {
       user.errors.rejectValue('password', 'user.password.confirm.fail', 'The two passwords must be the same.')
     }

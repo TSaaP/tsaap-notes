@@ -29,6 +29,8 @@ import org.tsaap.contracts.Contract
 
 class UserAccountService {
 
+    public static final String DEFAULT_SUBSCRIPTION_SOURCE = "elaastic"
+
     SettingsService settingsService
     UserProvisionAccountService userProvisionAccountService
     SpringSecurityService springSecurityService
@@ -55,13 +57,13 @@ class UserAccountService {
      * @param user the user to be added
      * @return the created user
      */
-    User addUser(User user, Role mainRole, Boolean enabled = false, String language = 'fr', boolean checkEmailAccount = false) {
+    User addUser(User user, Role mainRole, Boolean enabled = false, String language = 'fr', boolean checkEmailAccount = false, String subscriptionSource= DEFAULT_SUBSCRIPTION_SOURCE) {
         user.enabled = enabled
         user.save()
         if (!user.hasErrors()) {
             UserRole.create(user, mainRole)
             if (checkEmailAccount) {
-                ActivationKey actKey = new ActivationKey(activationKey: UUID.randomUUID().toString(), user: user)
+                ActivationKey actKey = new ActivationKey(activationKey: UUID.randomUUID().toString(), user: user, subscriptionSource: subscriptionSource)
                 actKey.save()
             }
             UnsubscribeKey unsubKey = new UnsubscribeKey(unsubscribeKey: UUID.randomUUID().toString(), user: user)
@@ -80,7 +82,7 @@ class UserAccountService {
      * @return the list of users
      */
     @NotTransactional
-    List<User> addUserListByOwner(List<User> userList, User owner, String language = 'fr') throws ConditionViolationException {
+    List<User> addUserListByOwner(List<User> userList, User owner, String language = 'fr', String subscriptionSource = DEFAULT_SUBSCRIPTION_SOURCE) throws ConditionViolationException {
         Contract.requires(owner.canBeUserOwner, USER_MUST_BE_AUTHORIZED_TO_BE_OWNER)
         Sql sql = new Sql(dataSource)
         userList.each { User user ->
@@ -90,7 +92,7 @@ class UserAccountService {
                 user.password = user.clearPassword
             }
             user.owner = owner
-            addUser(user, RoleEnum.STUDENT_ROLE.role, true, language)
+            addUser(user, RoleEnum.STUDENT_ROLE.role, true, language,false, subscriptionSource)
         }
         sql.close()
         userList
@@ -105,7 +107,7 @@ class UserAccountService {
      * @throws ConditionViolationException
      */
     @NotTransactional
-    List<User> addUserListFromFileByOwner(InputStreamReader fileReader, User owner, String language= 'fr') throws ConditionViolationException {
+    List<User> addUserListFromFileByOwner(InputStreamReader fileReader, User owner, String language= 'fr', String subscriptionSource = DEFAULT_SUBSCRIPTION_SOURCE) throws ConditionViolationException {
         Contract.requires(owner.canBeUserOwner, USER_MUST_BE_AUTHORIZED_TO_BE_OWNER)
         Iterable<CSVRecord> records = CSVFormat.DEFAULT.withDelimiter(";" as char).withFirstRecordAsHeader().parse(fileReader)
         List<User> userList = []
@@ -118,7 +120,7 @@ class UserAccountService {
             }
             userList << user
         }
-        addUserListByOwner(userList,owner,language)
+        addUserListByOwner(userList,owner,language, subscriptionSource)
     }
 
     /**

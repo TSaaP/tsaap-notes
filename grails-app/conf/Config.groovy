@@ -205,16 +205,19 @@ environments {
     }
 }
 
-// email checking on subscription
 
 environments {
     development {
         tsaap.auth.check_user_email = true
         tsaap.datastore.path = '/opt/shared/elaastic-questions-repo'
+        // subscription source
+        elaastic.subscription.source='elaastic'
     }
     test {
         tsaap.auth.check_user_email = false
         tsaap.datastore.path = '/opt/shared/elaastic-questions-repo'
+        // subscription source
+        elaastic.subscription.source='elaastic'
     }
     travis_ci {
         tsaap.auth.check_user_email = false
@@ -222,10 +225,16 @@ environments {
     }
     production {
         tsaap.auth.check_user_email = true
+        // subscription source
+        elaastic.subscription.source='tsaap'
+
     }
     elaasticQuestionsDemo {
         tsaap.auth.check_user_email = true
+        // subscription source
+        elaastic.subscription.source='elaastic'
     }
 }
+
 
 ckeditor.config = '/ckeditor/config.js'

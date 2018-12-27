@@ -23,10 +23,12 @@ class ActivationKey {
     Date dateCreated
     User user
     boolean activationEmailSent = false
+    String subscriptionSource
 
     static belongsTo = [user: User]
 
     static constraints = {
         activationKey blank: false
+        subscriptionSource blank: false, nullable: false
     }
 }

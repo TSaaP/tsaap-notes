@@ -35,8 +35,8 @@ class MailCheckingService {
      * Send email to check user emails and then activate the corresponding user
      * accounts
      */
-    def sendCheckingEmailMessages() {
-        Map notifications = findAllNotifications()
+    def sendCheckingEmailMessages(String subscriptionSource=UserAccountService.DEFAULT_SUBSCRIPTION_SOURCE) {
+        Map notifications = findAllNotifications(subscriptionSource)
         List<String> actKeysWithEmailSent = []
         notifications.each { actKey, map ->
             actKeysWithEmailSent << actKey
@@ -66,14 +66,14 @@ class MailCheckingService {
      * </ul>
      * @return the notifications as a map
      */
-    private Map findAllNotifications() {
+    protected Map findAllNotifications(String subscriptionSource) {
         def sql = new Sql(dataSource)
         def req = """
               SELECT tuser.id as user_id, tuser.first_name, tuser.email, tsettings.language, tact_key.activation_key
               FROM user as tuser
               INNER JOIN  activation_key as tact_key ON tact_key.user_id = tuser.id
               INNER JOIN settings as tsettings ON tsettings.user_id = tuser.id
-              where tact_key.activation_email_sent = false"""
+              where tact_key.activation_email_sent = false and tact_key.subscription_source = $subscriptionSource """
         def rows = sql.rows(req)
         log.debug("Select request : $req")
         log.debug("Nb rows selected : ${rows.size()}")

@@ -30,8 +30,8 @@ class PasswordResetService {
     /**
      * Send password reset key to users asking for a reset
      */
-    def sendPasswordResetKeyMessages() {
-        def prkList = findAllPasswordResetKey()
+    def sendPasswordResetKeyMessages(String subcriptionSource = UserAccountService.DEFAULT_SUBSCRIPTION_SOURCE) {
+        def prkList = findAllPasswordResetKey(subcriptionSource)
         prkList.each { prk ->
             try {
                 def sub = messageSource.getMessage("email.passwordReset.notification.title", null, new Locale(prk.user.settings.language))
@@ -52,9 +52,10 @@ class PasswordResetService {
     /**
      * Generate (and get) a password reset key for a user
      * @param user the user asking for the key
+     * @param subscriptionSource the subscribtion source
      * @return the key generated
      */
-    PasswordResetKey generatePasswordResetKeyForUser(User user) {
+    PasswordResetKey generatePasswordResetKeyForUser(User user, String subscriptionSource = UserAccountService.DEFAULT_SUBSCRIPTION_SOURCE) {
         def lifetime = grailsApplication.config.tsaap.auth.password_reset_key.lifetime_in_hours ?: 1
         def prk = PasswordResetKey.findByUser(user)
         if (prk) {
@@ -66,6 +67,7 @@ class PasswordResetService {
         } else {
             prk = new PasswordResetKey(passwordResetKey: UUID.randomUUID().toString(), user: user)
         }
+        prk.subscriptionSource = subscriptionSource
         prk.save()
         prk
     }
@@ -74,10 +76,11 @@ class PasswordResetService {
      * Find all the password reset keys not yet sent to users concerned
      * @return the list of password reset keys
      */
-    List<PasswordResetKey> findAllPasswordResetKey() {
+    List<PasswordResetKey> findAllPasswordResetKey(String subscriptionSource) {
         def lifetime = grailsApplication.config.tsaap.auth.password_reset_key.lifetime_in_hours ?: 1
         PasswordResetKey.withCriteria {
             eq 'passwordResetEmailSent', false
+            eq 'subscriptionSource', subscriptionSource
             gt 'dateCreated', DateUtils.addHours(new Date(), -lifetime)
             join 'user'
             join 'user.settings'
